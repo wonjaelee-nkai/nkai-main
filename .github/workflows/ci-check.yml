@@ -1,0 +1,94 @@
+name: CI Check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check ES5 forbidden syntax
+        run: |
+          echo "=== Checking for forbidden ES6+ syntax ==="
+          ERRORS=0
+
+          # Check for arrow functions in production JS files
+          if grep -rn "=>" --include="*.js" \
+            --exclude-dir=node_modules \
+            --exclude-dir=archive \
+            --exclude-dir=.github \
+            --exclude="*.jsx" \
+            --exclude="*_gs_*" \
+            --exclude="Code_gs_*" \
+            --exclude="nkai_gas_*" \
+            index.html js/ saju-engine.js nkai-breakdown.js analysis-flow.js 2>/dev/null; then
+            echo "⚠ Arrow functions detected in production files"
+            ERRORS=$((ERRORS+1))
+          fi
+
+          # Check for optional chaining
+          if grep -rn '\?\.' --include="*.js" \
+            index.html js/ saju-engine.js nkai-breakdown.js analysis-flow.js 2>/dev/null; then
+            echo "⚠ Optional chaining (?.) detected"
+            ERRORS=$((ERRORS+1))
+          fi
+
+          # Check for const/let (should use var for ES5)
+          if grep -rn '^\s*\(const\|let\)\s' --include="*.js" \
+            index.html js/ saju-engine.js nkai-breakdown.js analysis-flow.js 2>/dev/null; then
+            echo "⚠ const/let detected (use var for ES5)"
+            ERRORS=$((ERRORS+1))
+          fi
+
+          if [ $ERRORS -gt 0 ]; then
+            echo "::warning::ES5 compliance issues found. Review before deploying."
+          else
+            echo "ES5 check passed."
+          fi
+
+      - name: Check forbidden words
+        run: |
+          echo "=== Checking for forbidden words ==="
+          FORBIDDEN="사주|오행|운세|신강|신약|재성|식상|일간|사주팔자"
+
+          if grep -rn "$FORBIDDEN" \
+            index.html js/ saju-engine.js nkai-breakdown.js analysis-flow.js 2>/dev/null; then
+            echo "::warning::Forbidden words found in production files!"
+          else
+            echo "No forbidden words found."
+          fi
+
+      - name: Check KIPA 16Q integrity
+        run: |
+          echo "=== Checking KIPA 16Q markers ==="
+          if [ -f index.html ]; then
+            START=$(grep -c "KIPA-16Q-START" index.html || true)
+            END=$(grep -c "KIPA-16Q-END" index.html || true)
+            if [ "$START" -gt 0 ] && [ "$END" -gt 0 ]; then
+              echo "KIPA 16Q markers intact (START: $START, END: $END)"
+            else
+              echo "::warning::KIPA 16Q markers missing in index.html!"
+            fi
+          fi
+
+      - name: Check no secrets in code
+        run: |
+          echo "=== Checking for exposed secrets ==="
+          FOUND=0
+          if grep -rn "live_sk_\|live_ck_\|ghp_\|sbfls3827" \
+            --include="*.js" --include="*.html" --include="*.md" \
+            --exclude-dir=.git . 2>/dev/null; then
+            echo "::error::Secrets detected in tracked files!"
+            FOUND=1
+          fi
+          if [ $FOUND -eq 0 ]; then
+            echo "No secrets found."
+          fi

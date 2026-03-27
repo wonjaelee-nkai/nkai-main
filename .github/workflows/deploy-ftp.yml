@@ -1,0 +1,56 @@
+name: Deploy to Gabia FTP
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'js/**'
+      - 'css/**'
+      - 'style.css'
+      - 'saju-engine.js'
+      - 'nkai-breakdown.js'
+      - 'analysis-flow.js'
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: FTP Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to Gabia via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: 211.47.74.55
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /public_html/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/*.md
+            **/*.csv
+            **/*.xlsx
+            **/*.pdf
+            **/*.pptx
+            **/*.docx
+            **/*.hwpx
+            **/*.zip
+            **/*.pem
+            **/*.key
+            **/archive/**
+            **/nkai-claude-code-setup/**
+            **/*.jsx
+            **/CLAUDE.md
+            **/config.js
+            **/.claude/**
+            **/.github/**
+            **/organize_downloads.py
+            **/회사로고/**
+            **/정책자금/**
