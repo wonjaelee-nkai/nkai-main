@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#070C14;padding:28px 20px;font-family:'Arial',sans-serif;}
+.section{margin-bottom:36px;}
+.section-title{font-size:9px;color:#334155;letter-spacing:4px;font-family:monospace;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #0F1E2E;}
+.row{display:flex;gap:14px;flex-wrap:wrap;}
+.item{display:flex;flex-direction:column;gap:6px;align-items:center;}
+.chip{font-size:8px;color:#475569;letter-spacing:2px;font-family:monospace;text-align:center;}
+.badge{font-size:7px;padding:2px 8px;border-radius:10px;font-family:monospace;letter-spacing:1px;text-align:center;}
+
+/* 카드 공통 */
+.card{border-radius:10px;position:relative;overflow:hidden;}
+.mini{width:160px;height:90px;}
+.wide{width:340px;height:56px;}
+.sq{width:72px;height:72px;border-radius:12px;}
+</style>
+</head>
+<body>
+
+<!-- ① 홈페이지 헤더 -->
+<div class="section">
+<div class="section-title">① WEBSITE HEADER  ·  워드마크 다크  (골드+네이비)</div>
+<div style="background:#0A0F1A;border:1px solid rgba(232,197,91,0.1);border-radius:10px;padding:14px 20px;display:flex;align-items:center;gap:12px;width:340px;">
+  <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+    <defs><linearGradient id="h1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F0D06A"/><stop offset="100%" stop-color="#C9921A"/></linearGradient><linearGradient id="h2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5AA8FF"/><stop offset="100%" stop-color="#1A5FCC"/></linearGradient></defs>
+    <polygon points="24,6 42,15 24,24 6,15" fill="url(#h1)"/><polygon points="6,15 6,33 24,42 24,24" fill="url(#h2)" opacity="0.9"/><polygon points="42,15 42,33 24,42 24,24" fill="#0A1628"/>
+  </svg>
+  <div>
+    <div style="font-size:18px;font-weight:900;color:white;letter-spacing:-0.5px;">N-KAI</div>
+    <div style="font-size:7px;color:#334155;letter-spacing:4px;">NEURIN KAIROS AI</div>
+  </div>
+  <div style="margin-left:auto;display:flex;gap:16px;">
+    <div style="font-size:11px;color:#64748B;">무료 분석</div>
+    <div style="font-size:11px;color:#64748B;">리포트</div>
+    <div style="font-size:11px;padding:4px 12px;background:#E8C55B;color:#0A0F1A;border-radius:6px;font-weight:700;">시작하기</div>
+  </div>
+</div>
+<div class="chip" style="margin-top:6px;">골드 CTA · 네이비 배경 · 큐브 골드+블루</div>
+</div>
+
+<!-- ② PDF 리포트 커버 -->
+<div class="section">
+<div class="section-title">② PDF REPORT COVER  ·  풀 로고  (골드+네이비 다크)</div>
+<div style="background:linear-gradient(135deg,#070C14,#0D1B2A);border:1px solid rgba(232,197,91,0.15);border-radius:10px;padding:18px 22px;width:340px;position:relative;">
+  <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#E8C55B,#5AA8FF,transparent);"></div>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+    <svg width="36" height="36" viewBox="0 0 48 48" fill="none">
+      <defs><linearGradient id="p1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F0D06A"/><stop offset="100%" stop-color="#C9921A"/></linearGradient><linearGradient id="p2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5AA8FF"/><stop offset="100%" stop-color="#1A5FCC"/></linearGradient></defs>
+      <polygon points="24,6 42,15 24,24 6,15" fill="url(#p1)"/><polygon points="6,15 6,33 24,42 24,24" fill="url(#p2)" opacity="0.9"/><polygon points="42,15 42,33 24,42 24,24" fill="#0A1628"/>
+      <line x1="6" y1="15" x2="42" y2="15" stroke="rgba(255,255,255,0.15)" stroke-width="0.6"/>
+    </svg>
+    <div>
+      <div style="font-size:20px;font-weight:900;color:white;letter-spacing:-0.5px;">N-KAI</div>
+      <div style="font-size:8px;color:#334155;letter-spacing:3px;">NEURIN KAIROS AI</div>
+    </div>
+    <div style="margin-left:auto;font-size:8px;color:#E8C55B;font-family:monospace;">Living Profile®</div>
+  </div>
+  <div style="font-size:11px;color:#64748B;font-family:monospace;">개인 금융 DNA 분석 리포트  ·  Standard</div>
+  <div style="font-size:8px;color:#1E293B;margin-top:4px;font-family:monospace;">뉴린카이로스에이아이 주식회사  ·  172-87-03400</div>
+</div>
+<div class="chip" style="margin-top:6px;">골드 상단바 · 네이비 배경 · Living Profile® 골드 강조</div>
+</div>
+
+<!-- ③ SNS 프로필 -->
+<div class="section">
+<div class="section-title">③ SNS PROFILE  ·  로고마크 단독  (다크/라이트)</div>
+<div class="row">
+  <div class="item">
+    <div class="sq" style="background:#0A0F1A;border:1px solid rgba(232,197,91,0.2);display:flex;align-items:center;justify-content:center;">
+      <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+        <defs><linearGradient id="s1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F0D06A"/><stop offset="100%" stop-color="#C9921A"/></linearGradient><linearGradient id="s2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5AA8FF"/><stop offset="100%" stop-color="#1A5FCC"/></linearGradient></defs>
+        <polygon points="24,6 42,15 24,24 6,15" fill="url(#s1)"/><polygon points="6,15 6,33 24,42 24,24" fill="url(#s2)" opacity="0.9"/><polygon points="42,15 42,33 24,42 24,24" fill="#0A1628"/>
+        <line x1="6" y1="15" x2="42" y2="15" stroke="rgba(255,255,255,0.18)" stroke-width="0.7"/>
+        <line x1="24" y1="6" x2="24" y2="24" stroke="rgba(255,255,255,0.12)" stroke-width="0.7"/>
+        <line x1="24" y1="24" x2="24" y2="42" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div class="chip">다크 배경용</div>
+  </div>
+  <div class="item">
+    <div class="sq" style="background:#F1F5F9;border:1px solid #E2E8F0;display:flex;align-items:center;justify-content:center;">
+      <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+        <defs><linearGradient id="sl1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E8C55B"/><stop offset="100%" stop-color="#B8820A"/></linearGradient></defs>
+        <polygon points="24,6 42,15 24,24 6,15" fill="url(#sl1)"/><polygon points="6,15 6,33 24,42 24,24" fill="#2D70CC" opacity="0.88"/><polygon points="42,15 42,33 24,42 24,24" fill="#1E293B"/>
+      </svg>
+    </div>
+    <div class="chip">라이트 배경용</div>
+  </div>
+  <div class="item">
+    <div class="sq" style="background:#0A0F1A;border:1px solid #1E293B;display:flex;align-items:center;justify-content:center;">
+      <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+        <polygon points="24,6 42,15 24,24 6,15" fill="white" opacity="0.9"/><polygon points="6,15 6,33 24,42 24,24" fill="white" opacity="0.55"/><polygon points="42,15 42,33 24,42 24,24" fill="white" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="chip">모노크롬</div>
+  </div>
+</div>
+</div>
+
+<!-- ④ 투자자 덱 -->
+<div class="section">
+<div class="section-title">④ INVESTOR DECK  ·  슬라이드 우상단  (골드 강조)</div>
+<div style="background:#0D1B2A;border:1px solid rgba(232,197,91,0.08);border-radius:10px;padding:0;width:340px;overflow:hidden;">
+  <div style="background:linear-gradient(135deg,#060A12,#0A1420);padding:16px 20px;display:flex;justify-content:space-between;align-items:flex-start;">
+    <div>
+      <div style="font-size:8px;color:#334155;letter-spacing:3px;font-family:monospace;margin-bottom:8px;">CONFIDENTIAL  ·  2026</div>
+      <div style="font-size:17px;font-weight:900;color:white;line-height:1.2;">N-KAI<br><span style="font-size:11px;color:#E8C55B;font-weight:700;">행동 예측 AI 플랫폼</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <svg width="22" height="22" viewBox="0 0 48 48" fill="none">
+        <defs><linearGradient id="d1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F0D06A"/><stop offset="100%" stop-color="#C9921A"/></linearGradient><linearGradient id="d2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5AA8FF"/><stop offset="100%" stop-color="#1A5FCC"/></linearGradient></defs>
+        <polygon points="24,6 42,15 24,24 6,15" fill="url(#d1)"/><polygon points="6,15 6,33 24,42 24,24" fill="url(#d2)" opacity="0.9"/><polygon points="42,15 42,33 24,42 24,24" fill="#0A1628"/>
+      </svg>
+      <div style="font-size:14px;font-weight:900;color:white;letter-spacing:-0.5px;">N-KAI</div>
+    </div>
+  </div>
+  <div style="height:2px;background:linear-gradient(90deg,#E8C55B,#5AA8FF,rgba(124,91,240,0.5),transparent);"></div>
+  <div style="padding:10px 20px;display:flex;gap:12px;">
+    <div style="font-size:8px;color:#1E3A5F;font-family:monospace;">Patent ×4</div>
+    <div style="font-size:8px;color:#1E3A5F;font-family:monospace;">Living Profile®</div>
+    <div style="font-size:8px;color:#1E3A5F;font-family:monospace;">Bayesian Engine</div>
+  </div>
+</div>
+<div class="chip" style="margin-top:6px;">골드 헤드라인 · 3색 하단바 · 로고 우상단 28px</div>
+</div>
+
+<!-- ⑤ 이메일 서명 -->
+<div class="section">
+<div class="section-title">⑤ EMAIL SIGNATURE  ·  라이트 배경  (블루+골드)</div>
+<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:14px 18px;width:340px;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+    <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
+      <defs><linearGradient id="e1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E8C55B"/><stop offset="100%" stop-color="#B8820A"/></linearGradient></defs>
+      <polygon points="24,6 42,15 24,24 6,15" fill="url(#e1)"/><polygon points="6,15 6,33 24,42 24,24" fill="#2D70CC" opacity="0.88"/><polygon points="42,15 42,33 24,42 24,24" fill="#1E293B"/>
+    </svg>
+    <div style="border-left:2px solid #E8C55B;padding-left:10px;">
+      <div style="font-size:13px;font-weight:900;color:#0F172A;">이원재  ·  Lee Won-Jae</div>
+      <div style="font-size:10px;color:#64748B;margin-top:1px;">대표이사 · CEO  |  뉴린카이로스에이아이(주)</div>
+    </div>
+  </div>
+  <div style="height:1px;background:linear-gradient(90deg,#E8C55B30,#5AA8FF20,transparent);margin-bottom:8px;"></div>
+  <div style="display:flex;gap:14px;">
+    <div style="font-size:10px;color:#64748B;">📱 010-3816-6178</div>
+    <div style="font-size:10px;color:#2D70CC;">wonjae@neurinkairosai.ai</div>
+    <div style="font-size:10px;color:#94A3B8;">neurinkairosai.com</div>
+  </div>
+</div>
+<div class="chip" style="margin-top:6px;">라이트 배경 · 블루 이메일 강조 · 골드 좌측 바</div>
+</div>
+
+<!-- ⑥ 보라(Purple) — AI 예측 관련 채널 -->
+<div class="section">
+<div class="section-title">⑥ AI / TECH 채널  ·  퍼플 강조  (XAI · 예측 · 알고리즘)</div>
+<div style="background:linear-gradient(135deg,#0A0714,#0D0B20);border:1px solid rgba(124,91,240,0.2);border-radius:10px;padding:16px 20px;width:340px;position:relative;">
+  <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7C5BF0,#5AA8FF,rgba(232,197,91,0.3));"></div>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+    <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+      <defs><linearGradient id="ai1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#AFA9EC"/><stop offset="100%" stop-color="#534AB7"/></linearGradient></defs>
+      <polygon points="24,6 42,15 24,24 6,15" fill="url(#ai1)"/><polygon points="6,15 6,33 24,42 24,24" fill="#5AA8FF" opacity="0.7"/><polygon points="42,15 42,33 24,42 24,24" fill="#0A0714"/>
+    </svg>
+    <div style="font-size:17px;font-weight:900;color:white;letter-spacing:-0.5px;">N-KAI</div>
+    <div style="margin-left:auto;font-size:8px;padding:3px 8px;background:rgba(124,91,240,0.15);border:1px solid rgba(124,91,240,0.3);border-radius:6px;color:#AFA9EC;font-family:monospace;">Behavioral AI</div>
+  </div>
+  <div style="font-size:9px;color:#534AB7;font-family:monospace;letter-spacing:1px;">Bayesian · Neural CDE · ROC Auto-Calibration</div>
+</div>
+<div class="chip" style="margin-top:6px;">퍼플 큐브 · 퍼플 배지 · 기술 스택 표시 (학회·개발자 채널)</div>
+</div>
+
+</body>
+</html>

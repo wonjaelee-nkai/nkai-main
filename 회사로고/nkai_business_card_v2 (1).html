@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#111827;display:flex;flex-direction:column;align-items:center;padding:32px 20px;gap:12px;font-family:'Arial',sans-serif;}
+.label{font-size:10px;color:#334155;letter-spacing:3px;font-family:monospace;margin-bottom:8px;text-align:center;}
+.card{width:360px;height:200px;border-radius:12px;position:relative;overflow:hidden;}
+.front{background:linear-gradient(135deg,#070C14 0%,#0D1B2A 60%,#091520 100%);border:1px solid rgba(232,197,91,0.15);}
+.front-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:24px 24px;}
+.front-glow{position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(90,168,255,0.05) 0%,transparent 70%);}
+.front-accent{position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,#E8C55B 0%,#5AA8FF 55%,transparent 100%);}
+.back{background:linear-gradient(135deg,#0A0F1A 0%,#0D1520 100%);border:1px solid rgba(90,168,255,0.1);}
+.back-top-bar{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#E8C55B,#5AA8FF,#7C5BF0);}
+</style>
+</head>
+<body>
+
+<div class="label">FRONT  ·  앞면</div>
+<div class="card front">
+  <div class="front-grid"></div>
+  <div class="front-glow"></div>
+  <div class="front-accent"></div>
+
+  <svg width="54" height="54" viewBox="0 0 48 48" fill="none" style="position:absolute;top:16px;right:20px;opacity:0.92;">
+    <defs>
+      <linearGradient id="a1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F0D06A"/><stop offset="100%" stop-color="#C9921A"/></linearGradient>
+      <linearGradient id="a2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5AA8FF"/><stop offset="100%" stop-color="#1A5FCC"/></linearGradient>
+    </defs>
+    <polygon points="24,6 42,15 24,24 6,15" fill="url(#a1)"/>
+    <polygon points="6,15 6,33 24,42 24,24" fill="url(#a2)" opacity="0.9"/>
+    <polygon points="42,15 42,33 24,42 24,24" fill="#0A1628"/>
+    <line x1="6" y1="15" x2="42" y2="15" stroke="rgba(255,255,255,0.15)" stroke-width="0.6"/>
+    <line x1="24" y1="6" x2="24" y2="24" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+    <line x1="24" y1="24" x2="6" y2="15" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <line x1="24" y1="24" x2="42" y2="15" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+    <line x1="24" y1="24" x2="24" y2="42" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+  </svg>
+
+  <!-- 파티클 -->
+  <div style="position:absolute;width:3px;height:3px;border-radius:50%;background:#E8C55B;opacity:0.5;top:78px;right:82px;"></div>
+  <div style="position:absolute;width:2px;height:2px;border-radius:50%;background:#5AA8FF;opacity:0.4;top:98px;right:75px;"></div>
+  <div style="position:absolute;width:2px;height:2px;border-radius:50%;background:#7C5BF0;opacity:0.35;top:68px;right:94px;"></div>
+
+  <div style="position:absolute;inset:0;padding:22px 26px 22px 32px;display:flex;flex-direction:column;justify-content:space-between;">
+    <div>
+      <div style="font-size:23px;font-weight:900;color:#F1F5F9;letter-spacing:-0.5px;line-height:1.1;">이원재</div>
+      <div style="font-size:10px;color:#475569;letter-spacing:3px;margin-top:3px;">LEE  WON-JAE</div>
+      <div style="font-size:10px;color:#E8C55B;letter-spacing:1px;margin-top:6px;font-weight:700;">대표이사  ·  CEO</div>
+    </div>
+    <div>
+      <div style="width:100%;height:1px;background:linear-gradient(90deg,rgba(232,197,91,0.3),rgba(90,168,255,0.15),transparent);margin-bottom:10px;"></div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="font-size:10px;color:#94A3B8;display:flex;align-items:center;gap:8px;">
+          <div style="width:3px;height:3px;border-radius:50%;background:#E8C55B;flex-shrink:0;"></div>
+          010-3816-6178
+        </div>
+        <div style="font-size:10px;color:#94A3B8;display:flex;align-items:center;gap:8px;">
+          <div style="width:3px;height:3px;border-radius:50%;background:#5AA8FF;flex-shrink:0;"></div>
+          wonjae@neurinkairosai.com
+        </div>
+        <div style="font-size:10px;color:#94A3B8;display:flex;align-items:center;gap:8px;">
+          <div style="width:3px;height:3px;border-radius:50%;background:#7C5BF0;flex-shrink:0;"></div>
+          neurinkairosai.com
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="label" style="margin-top:24px;">BACK  ·  뒷면</div>
+<div class="card back">
+  <div class="back-top-bar"></div>
+  <div style="position:absolute;inset:0;padding:24px 28px;display:flex;flex-direction:column;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <svg width="36" height="36" viewBox="0 0 48 48" fill="none">
+        <defs>
+          <linearGradient id="b1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F0D06A"/><stop offset="100%" stop-color="#C9921A"/></linearGradient>
+          <linearGradient id="b2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5AA8FF"/><stop offset="100%" stop-color="#1A5FCC"/></linearGradient>
+        </defs>
+        <polygon points="24,6 42,15 24,24 6,15" fill="url(#b1)"/>
+        <polygon points="6,15 6,33 24,42 24,24" fill="url(#b2)" opacity="0.9"/>
+        <polygon points="42,15 42,33 24,42 24,24" fill="#0A1628"/>
+        <line x1="6" y1="15" x2="42" y2="15" stroke="rgba(255,255,255,0.15)" stroke-width="0.6"/>
+        <line x1="24" y1="6" x2="24" y2="24" stroke="rgba(255,255,255,0.12)" stroke-width="0.6"/>
+        <line x1="24" y1="24" x2="24" y2="42" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>
+      </svg>
+      <div>
+        <div style="font-size:20px;font-weight:900;color:white;letter-spacing:-0.5px;">N-KAI</div>
+        <div style="font-size:8px;color:#334155;letter-spacing:4px;margin-top:1px;">NEURIN  KAIROS  AI</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;">
+      <div>
+        <div style="font-size:8px;color:#334155;letter-spacing:2px;font-family:monospace;text-transform:uppercase;margin-bottom:2px;">Company</div>
+        <div style="font-size:9px;color:#94A3B8;line-height:1.5;">뉴린카이로스에이아이<br>주식회사</div>
+      </div>
+      <div>
+        <div style="font-size:8px;color:#334155;letter-spacing:2px;font-family:monospace;text-transform:uppercase;margin-bottom:2px;">Biz Reg.</div>
+        <div style="font-size:10px;color:#CBD5E1;">172-87-03400</div>
+      </div>
+      <div>
+        <div style="font-size:8px;color:#334155;letter-spacing:2px;font-family:monospace;text-transform:uppercase;margin-bottom:2px;">Website</div>
+        <div style="font-size:10px;color:#CBD5E1;">neurinkairosai.com</div>
+      </div>
+      <div>
+        <div style="font-size:8px;color:#334155;letter-spacing:2px;font-family:monospace;text-transform:uppercase;margin-bottom:2px;">Founded</div>
+        <div style="font-size:10px;color:#CBD5E1;">2025.09.11, Seoul</div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:9px;color:#1E3A5F;font-style:italic;">Behavioral Prediction Engine</div>
+      <div style="font-size:8px;color:#1E293B;font-family:monospace;letter-spacing:1px;">Patent × 4  ·  Living Profile®</div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:12px;font-size:9px;color:#1E293B;letter-spacing:2px;font-family:monospace;text-align:center;">
+  90mm × 50mm  ·  무광 코팅 권장  ·  별색 없음
+</div>
+
+</body>
+</html>

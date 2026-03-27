@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-KAI — B2B Partnership Deck v3.0 · N-Grade Revenue</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap');
+  :root {
+    --bg: #06080f; --surface: #0d1117; --card: #131a27;
+    --border: #1c2841; --accent: #3b82f6; --glow: #60a5fa;
+    --green: #10b981; --red: #ef4444; --amber: #f59e0b; --purple: #a78bfa;
+    --text: #edf2f7; --muted: #7b8aa4; --dim: #4a5772;
+    --econ: #2D8CFF; --expr: #5AA8FF; --crisis: #00D68F;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Outfit', -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); }
+  body::after {
+    content:''; position:fixed; inset:0; z-index:9999; pointer-events:none;
+    background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity:0.35;
+  }
+
+  /* Slide System */
+  .slide {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    justify-content: center; padding: 40px 60px;
+    opacity: 0; transform: translateX(60px); pointer-events: none;
+    transition: all 0.45s cubic-bezier(.4,0,.2,1);
+  }
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+  .slide.prev { opacity: 0; transform: translateX(-60px); }
+
+  /* Top Bar */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 28px; background: rgba(6,8,15,0.88); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo { font-family: var(--mono); font-weight: 700; font-size: 14px; color: var(--accent); letter-spacing: 1px; }
+  .logo em { font-style: normal; color: var(--green); font-size: 10px; }
+  .slide-counter { font-family: var(--mono); font-size: 12px; color: var(--dim); }
+  .part-badge {
+    padding: 3px 12px; border-radius: 14px; font-size: 10px; font-weight: 700;
+    font-family: var(--mono); letter-spacing: 0.5px;
+  }
+
+  /* Navigation */
+  .nav-dots {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100;
+    display: flex; gap: 6px; padding: 8px 16px;
+    background: rgba(13,17,23,0.9); border: 1px solid var(--border); border-radius: 20px;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--dim);
+    cursor: pointer; transition: all 0.3s;
+  }
+  .dot.active { background: var(--accent); transform: scale(1.3); }
+  .dot.part-a { border: 1px solid var(--red); }
+  .dot.part-b { border: 1px solid var(--accent); }
+  .dot.part-c { border: 1px solid var(--green); }
+  .dot.part-d { border: 1px solid var(--amber); }
+
+  .nav-arrow {
+    position: fixed; top: 50%; z-index: 100; transform: translateY(-50%);
+    width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border);
+    background: rgba(13,17,23,0.8); color: var(--muted); font-size: 18px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .nav-arrow:hover { background: var(--accent); color: white; border-color: var(--accent); }
+  .nav-left { left: 14px; }
+  .nav-right { right: 14px; }
+
+  /* Shared Components */
+  .badge { display:inline-block; padding:3px 10px; border-radius:16px; font-size:10px; font-weight:700; font-family:var(--mono); letter-spacing:0.5px; }
+  .badge-accent { background:rgba(59,130,246,0.12); color:var(--accent); border:1px solid rgba(59,130,246,0.25); }
+  .badge-green { background:rgba(16,185,129,0.12); color:var(--green); border:1px solid rgba(16,185,129,0.25); }
+  .badge-red { background:rgba(239,68,68,0.12); color:var(--red); border:1px solid rgba(239,68,68,0.25); }
+  .badge-amber { background:rgba(245,158,11,0.12); color:var(--amber); border:1px solid rgba(245,158,11,0.25); }
+  .badge-purple { background:rgba(167,139,250,0.12); color:var(--purple); border:1px solid rgba(167,139,250,0.25); }
+
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; }
+  .card-glow { box-shadow:0 0 30px rgba(59,130,246,0.06); border-color:rgba(59,130,246,0.2); }
+  .s-title { font-size: 28px; font-weight: 800; line-height: 1.2; margin-bottom: 8px; }
+  .s-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+  .grid { display:grid; gap:14px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  .stat-big { font-family: var(--mono); font-size: 32px; font-weight: 700; }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* Phone Mockup */
+  .phone {
+    width: 260px; height: 520px; border-radius: 28px; border: 2px solid var(--border);
+    background: var(--surface); overflow: hidden; position: relative; flex-shrink: 0;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  }
+  .phone-notch {
+    width: 100px; height: 22px; background: var(--bg); border-radius: 0 0 14px 14px;
+    margin: 0 auto; position: relative; z-index: 2;
+  }
+  .phone-screen { padding: 8px 14px; font-size: 11px; overflow-y: auto; height: calc(100% - 22px); }
+  .phone-screen h4 { font-size: 13px; margin-bottom: 8px; }
+
+  /* SVG Charts */
+  .bar-h {
+    height: 18px; border-radius: 4px; margin-bottom: 4px;
+    display: flex; align-items: center; padding-left: 8px; font-size: 10px; font-weight: 600;
+  }
+  .bar-label { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
+
+  /* Responsive — v4 완전 패치 */
+  @media (max-width: 768px) {
+    .slide { padding: 56px 12px 76px; }
+    .s-title { font-size: 18px !important; line-height: 1.3; }
+    .s-sub, .s-subtitle { font-size: 11px !important; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .phone { width: 160px; height: 320px; }
+    .nav-arrow { display: none; }
+
+    /* ── 표지 폰트 축소 ── */
+    [style*="font-size:72px"] { font-size: 36px !important; letter-spacing: 1px !important; }
+    [style*="font-size:38px"] { font-size: 22px !important; }
+    [style*="font-size:44px"] { font-size: 26px !important; }
+    [style*="font-size:36px"] { font-size: 20px !important; }
+    [style*="font-size:32px"] { font-size: 18px !important; }
+
+    /* ── 구분선 숨기기 ── */
+    [style*="width:1px;background:var(--border)"] { display: none !important; }
+
+    /* ── flex 줄바꿈 전체 ── */
+    [style*="display:flex"][style*="gap"] { flex-wrap: wrap !important; }
+    [style*="justify-content:center;gap"] { flex-wrap: wrap !important; gap: 8px !important; }
+
+    /* ── 2열/3열 → 1열 ── */
+    [style*="grid-template-columns:1fr 1fr"],
+    [style*="grid-template-columns:repeat(2"],
+    [style*="grid-template-columns:1fr auto"] { grid-template-columns: 1fr !important; }
+    [style*="grid-template-columns:repeat(3"],
+    [style*="grid-template-columns:1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+    [style*="grid-template-columns:repeat(4"] { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── 타임라인 세로 ── */
+    .split { flex-direction: column !important; gap: 14px; align-items: stretch; }
+    .timeline-h { flex-direction: column; gap: 8px; }
+    .tl-item::before { display: none; }
+    .tl-item { text-align: left; display: flex; align-items: flex-start; gap: 6px; }
+
+    /* ── 테이블: 가로 스크롤, 텍스트 가독성 ── */
+    table { display: block !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+    table td, table th { white-space: normal; font-size: 10px !important; padding: 6px 5px !important; }
+    table thead th { font-size: 9px !important; }
+
+    /* ── SVG 매트릭스 축소 ── */
+    svg[viewBox] { max-height: 260px; }
+
+    /* ── 카드/폰트 축소 ── */
+    .card { padding: 10px !important; }
+    .bar-fill { font-size: 9px !important; }
+    [style*="font-size:18px"][style*="font-weight:900"] { font-size: 15px !important; }
+    [style*="font-size:20px"][style*="font-weight:900"] { font-size: 16px !important; }
+
+    /* ── 창업자 서사 타임라인 ── */
+    [style*="grid-template-columns:80px 1fr"] { grid-template-columns: 60px 1fr !important; }
+
+    /* ── 표지 countup 숫자 4개 ── */
+    [style*="display:flex;gap:28px;justify-content:center"] { gap: 8px !important; flex-wrap: wrap !important; }
+  }
+
+  @media (max-width: 480px) {
+    .slide { padding: 50px 8px 68px; }
+    .s-title { font-size: 15px !important; }
+    .s-sub, .s-subtitle { font-size: 10px !important; }
+    .progress-bar { height: 2px; }
+    .nav-dot { width: 5px; height: 5px; }
+    .badge { font-size: 8px !important; padding: 3px 8px !important; }
+
+    [style*="font-size:72px"] { font-size: 28px !important; letter-spacing: 0 !important; }
+    [style*="font-size:38px"] { font-size: 18px !important; }
+    [style*="font-size:44px"] { font-size: 20px !important; }
+    [style*="font-size:36px"] { font-size: 16px !important; }
+    [style*="font-size:18px"][style*="font-weight:900"] { font-size: 14px !important; }
+    [style*="font-family:var(--mono)"][style*="font-weight:900"] { font-size: 14px !important; }
+
+    [style*="display:flex;gap"] { flex-wrap: wrap !important; }
+    [style*="grid-template-columns:1fr 1fr"],
+    [style*="grid-template-columns:1fr 1fr 1fr"],
+    [style*="grid-template-columns:repeat(3"],
+    [style*="grid-template-columns:repeat(4"] { grid-template-columns: 1fr !important; }
+
+    table td, table th { font-size: 9px !important; padding: 4px 3px !important; }
+
+    .card { padding: 8px !important; }
+    .metric-ring { width: 60px; height: 60px; }
+    .metric-ring .val { font-size: 14px; }
+    .flow-card { min-width: 80px; }
+    svg[viewBox] { max-height: 200px; }
+  }
+
+  /* Special Layouts */
+  .split { display: flex; gap: 36px; align-items: center; }
+  .split-text { flex: 1; }
+  .split-visual { flex: 0 0 auto; }
+  .flow-row { display: flex; gap: 12px; align-items: stretch; flex-wrap: wrap; }
+  .flow-card { flex: 1; min-width: 140px; text-align: center; }
+  .flow-arrow { display: flex; align-items: center; color: var(--dim); font-size: 20px; }
+
+  .metric-ring {
+    width: 90px; height: 90px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; flex-direction: column; font-family: var(--mono);
+    border: 3px solid;
+  }
+  .metric-ring .val { font-size: 22px; font-weight: 800; line-height: 1; }
+  .metric-ring .unit { font-size: 9px; opacity: 0.7; }
+
+  .timeline-h { display: flex; gap: 0; align-items: flex-start; }
+  .tl-item { flex: 1; text-align: center; position: relative; }
+  .tl-item::before { content:''; position:absolute; top:14px; left:50%; right:-50%; height:2px; background:var(--border); z-index:0; }
+  .tl-item:last-child::before { display:none; }
+  .tl-dot { width:28px; height:28px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; position:relative; z-index:1; margin-bottom:8px; }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes pulse-glow {
+    0%,100% { box-shadow:0 0 0 0 rgba(59,130,246,0.3); }
+    50% { box-shadow:0 0 20px 4px rgba(59,130,246,0.15); }
+  }
+  .card-glow { animation: pulse-glow 3s ease infinite; }
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="logo">N-KAI <em>B2B PARTNERSHIP DECK v4.0</em></div>
+  <div id="partBadge" class="part-badge" style="background:rgba(239,68,68,0.12);color:var(--red);border:1px solid rgba(239,68,68,0.25);">PART A · WHY</div>
+  <div class="slide-counter"><span id="curr">1</span> / <span id="total">15</span></div>
+</div>
+
+<!-- Navigation -->
+<div class="nav-arrow nav-left" onclick="go(-1)">◁</div>
+<div class="nav-arrow nav-right" onclick="go(1)">▷</div>
+<div class="nav-dots" id="dots"></div>
+
+<!-- ===== PART A: WHY ===== -->
+
+<!-- Slide 1: Cover -->
+<div class="slide active" data-part="a" id="coverSlide">
+  <div style="text-align:center;">
+    <div class="badge badge-red" style="margin-bottom:16px;">CONFIDENTIAL · B2B PARTNERSHIP</div>
+    <div style="font-family:var(--mono);font-size:72px;font-weight:900;letter-spacing:6px;margin-bottom:6px;">
+      <span style="color:var(--accent);">N-KAI</span>
+    </div>
+    <div style="font-size:11px;font-family:var(--mono);color:var(--dim);letter-spacing:3px;margin-bottom:20px;">FINANCIAL DNA ENGINE · P25KAI001KR</div>
+    <div style="font-size:19px;font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.7;">
+      당신의 고객을 <span style="color:var(--accent);">살아있는 프로필</span>로 이해하는 AI 금융 DNA 분석 엔진
+    </div>
+    <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:32px;padding:10px 28px;background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.2);border-radius:30px;display:inline-block;">
+      MBTI는 <span style="color:var(--dim);">입</span>이 말하고, N-KAI는 <span style="color:var(--accent);">지갑</span>이 말한다
+    </div>
+    <div style="display:flex;justify-content:center;gap:32px;margin-bottom:32px;flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div style="font-family:var(--mono);font-size:38px;font-weight:900;color:var(--green);" class="countup" data-target="510">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px;">실거래 검증 건수</div>
+        <div style="font-size:9px;color:var(--dim);">창업자 6개월 MCC 실데이터</div>
+      </div>
+      <div style="width:1px;background:var(--border);"></div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--mono);font-size:38px;font-weight:900;color:var(--accent);" class="countup" data-target="4">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px;">출원 특허</div>
+        <div style="font-size:9px;color:var(--dim);">1건 심사청구 완료</div>
+      </div>
+      <div style="width:1px;background:var(--border);"></div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--mono);font-size:38px;font-weight:900;color:var(--amber);" class="countup" data-target="97.3" data-float="1">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px;">탄력적 복원력 (%)</div>
+        <div style="font-size:9px;color:var(--dim);">Neural CDE · 7 변곡점 실증</div>
+      </div>
+      <div style="width:1px;background:var(--border);"></div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--mono);font-size:38px;font-weight:900;color:var(--purple);" class="countup" data-target="20">0</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px;">금융업 경력 (년)</div>
+        <div style="font-size:9px;color:var(--dim);">창업자 롯데카드 도메인</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--dim);">뉴린카이로스에이아이(주) · 대표이사 이원재 · 사업자 172-87-03400 · neurinkairosai.com</div>
+    <div style="font-size:10px;color:var(--dim);margin-top:6px;">→ / ← 키 또는 화살표 클릭 · 모바일 스와이프 가능</div>
+  </div>
+</div>
+
+<!-- Slide 2: Problem -->
+<div class="slide" data-part="a">
+  <div class="badge badge-red" style="margin-bottom:14px;">PROBLEM</div>
+  <div class="s-title">금융 AI의 구조적 한계 — <span style="color:var(--red);">Dead Profile</span></div>
+  <div class="s-sub">기존 시스템은 '죽은 프로필'을 만들고 있습니다</div>
+  <div class="grid grid-3">
+    <div class="card" style="border-color:rgba(239,68,68,0.3);">
+      <div style="font-size:28px;margin-bottom:10px;">💀</div>
+      <div style="font-weight:700;margin-bottom:6px;">Dead Profile</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5;">1회 설문 → 영구 고정. 시간이 지나면 현실과 괴리</div>
+      <div style="margin-top:12px;font-family:var(--mono);font-size:24px;font-weight:800;color:var(--red);">87%</div>
+      <div style="font-size:10px;color:var(--dim);">금융 AI 중 정적 프로필 비율</div>
+    </div>
+    <div class="card" style="border-color:rgba(239,68,68,0.3);">
+      <div style="font-size:28px;margin-bottom:10px;">🎭</div>
+      <div style="font-weight:700;margin-bottom:6px;">편향된 자기보고</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5;">사회적 바람직성 편향 → 실제 행동과 불일치</div>
+      <div style="margin-top:12px;font-family:var(--mono);font-size:24px;font-weight:800;color:var(--red);">62%</div>
+      <div style="font-size:10px;color:var(--dim);">MBTI 재검사 시 유형 변경률</div>
+    </div>
+    <div class="card" style="border-color:rgba(239,68,68,0.3);">
+      <div style="font-size:28px;margin-bottom:10px;">🔒</div>
+      <div style="font-weight:700;margin-bottom:6px;">후천 데이터만</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5;">선천적 기질 고려 없음 → 일관된 기준점 부재</div>
+      <div style="margin-top:12px;font-family:var(--mono);font-size:24px;font-weight:800;color:var(--red);">0건</div>
+      <div style="font-size:10px;color:var(--dim);">선천+후천 융합 특허 선행기술</div>
+    </div>
+  </div>
+  <div style="margin-top:20px;padding:14px 18px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:10px;font-size:12px;color:var(--muted);line-height:1.5;">
+    <strong style="color:var(--red);">결과:</strong> 고객 이탈률 증가 · 부적합 상품 추천 · 리스크 오판 → 카드사·금융사의 고객 가치 훼손
+  </div>
+</div>
+
+<!-- Slide 3: Solution -->
+<div class="slide" data-part="a">
+  <div class="badge badge-green" style="margin-bottom:14px;">SOLUTION</div>
+  <div class="s-title"><span style="color:var(--red);text-decoration:line-through;opacity:0.5;">Dead Profile</span> → <span style="color:var(--green);">Living Profile</span></div>
+  <div class="s-sub">시간이 지날수록 더 정확해지는 유일한 금융 페르소나 엔진</div>
+  <div class="grid grid-4" style="margin-bottom:20px;">
+    <div class="card" style="text-align:center;border-color:rgba(167,139,250,0.3);">
+      <div style="font-size:22px;">🧬</div>
+      <div style="font-weight:700;font-size:13px;margin:8px 0 4px;">선천적 기질 DNA</div>
+      <div style="font-size:11px;color:var(--muted);">생년월일시 → 기질 에너지 벡터</div>
+      <div class="badge badge-purple" style="margin-top:8px;">불변 기준점</div>
+    </div>
+    <div class="card" style="text-align:center;border-color:rgba(59,130,246,0.3);">
+      <div style="font-size:22px;">🧠</div>
+      <div style="font-weight:700;font-size:13px;margin:8px 0 4px;">KIPA 16문항</div>
+      <div style="font-size:11px;color:var(--muted);">4축 행동 성향 분석 → 후천 벡터</div>
+      <div class="badge badge-accent" style="margin-top:8px;">자기인식</div>
+    </div>
+    <div class="card" style="text-align:center;border-color:rgba(16,185,129,0.3);">
+      <div style="font-size:22px;">💳</div>
+      <div style="font-weight:700;font-size:13px;margin:8px 0 4px;">MCC 소비 데이터</div>
+      <div style="font-size:11px;color:var(--muted);">카드 실거래 → 행동 패턴 학습</div>
+      <div class="badge badge-green" style="margin-top:8px;">행동 증거</div>
+    </div>
+    <div class="card" style="text-align:center;border-color:rgba(245,158,11,0.3);">
+      <div style="font-size:22px;">🔄</div>
+      <div style="font-weight:700;font-size:13px;margin:8px 0 4px;">동적 진화 엔진</div>
+      <div style="font-size:11px;color:var(--muted);">4대 알고리즘 → 프로필 자동 갱신</div>
+      <div class="badge badge-amber" style="margin-top:8px;">특허 보호</div>
+    </div>
+  </div>
+  <div class="card card-glow" style="text-align:center;padding:16px;">
+    <div style="font-size:15px;font-weight:700;color:var(--accent);">💡 N-KAI 한 줄 정의</div>
+    <div style="font-size:13px;color:var(--muted);margin-top:6px;">MBTI는 입이 말하고, <strong style="color:var(--text);">N-KAI는 지갑이 말한다</strong> — 선천 기질 × 후천 행동 × 실거래 데이터로 진화하는 금융 DNA</div>
+  </div>
+</div>
+
+<!-- Slide 4 (v2.1): Competitive Positioning Map -->
+<div class="slide" data-part="a">
+  <div class="badge badge-red" style="margin-bottom:14px;">COMPETITIVE MOAT</div>
+  <div class="s-title">왜 <span style="color:var(--accent);">N-KAI만</span> 가능한가</div>
+  <div class="s-sub">선천×후천 수리적 융합 + 실거래 동적 진화 — 이 조합은 특허로 보호됩니다</div>
+
+  <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px 0;">
+    <table style="width:100%;min-width:480px;border-collapse:collapse;font-size:12px;">
+      <thead>
+        <tr style="border-bottom:2px solid var(--border);">
+          <th style="text-align:left;padding:10px 8px;color:var(--dim);font-size:10px;width:20%;">기능</th>
+          <th style="text-align:center;padding:10px 6px;color:var(--dim);font-size:10px;">MBTI</th>
+          <th style="text-align:center;padding:10px 6px;color:var(--dim);font-size:10px;">토스 운세</th>
+          <th style="text-align:center;padding:10px 6px;color:var(--dim);font-size:10px;">신한 포춘</th>
+          <th style="text-align:center;padding:10px 6px;color:var(--dim);font-size:10px;">점신</th>
+          <th style="text-align:center;padding:10px 6px;font-size:10px;color:var(--accent);font-weight:700;background:rgba(59,130,246,0.08);border-radius:8px 8px 0 0;">N-KAI</th>
+        </tr>
+      </thead>
+      <tbody style="word-break:keep-all;">
+        <tr style="border-bottom:1px solid rgba(148,163,184,0.07);">
+          <td style="padding:9px 8px;color:var(--muted);">선천 기질 분석</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--amber);">△</td>
+          <td style="text-align:center;color:var(--amber);">△</td>
+          <td style="text-align:center;color:var(--green);">✓</td>
+          <td style="text-align:center;color:var(--green);font-weight:700;background:rgba(59,130,246,0.04);">✓</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(148,163,184,0.07);">
+          <td style="padding:9px 8px;color:var(--muted);">행동 설문 융합</td>
+          <td style="text-align:center;color:var(--green);">✓</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--green);font-weight:700;background:rgba(59,130,246,0.04);">✓</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(148,163,184,0.07);">
+          <td style="padding:9px 8px;color:var(--text);font-weight:700;">선천×후천 수리적 융합</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;font-weight:800;background:rgba(59,130,246,0.08);border-radius:4px;"><span style="color:var(--accent);">✓ 특허</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(148,163,184,0.07);">
+          <td style="padding:9px 8px;color:var(--muted);">MCC 실거래 학습</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--green);font-weight:700;background:rgba(59,130,246,0.04);">✓ 510건</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(148,163,184,0.07);">
+          <td style="padding:9px 8px;color:var(--text);font-weight:700;">프로필 동적 진화</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;font-weight:800;background:rgba(59,130,246,0.08);border-radius:4px;"><span style="color:var(--accent);">✓ 특허</span></td>
+        </tr>
+        <tr>
+          <td style="padding:9px 8px;color:var(--muted);">금융 특화 아키타입</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--amber);">△</td>
+          <td style="text-align:center;color:var(--dim);">✗</td>
+          <td style="text-align:center;color:var(--green);font-weight:700;background:rgba(59,130,246,0.04);">✓ 16형</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- 2x2 포지셔닝 매트릭스 -->
+  <div style="margin-top:16px;">
+    <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:10px;text-align:center;">
+      포지셔닝 매트릭스 — N-KAI가 독점하는 사분면
+    </div>
+    <div style="position:relative;width:100%;max-width:480px;margin:0 auto;">
+      <!-- SVG 매트릭스 -->
+      <svg viewBox="0 0 560 400" style="width:100%;max-height:300px;" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <filter id="svgGlow"><feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- 제목 -->
+  <text x="280" y="22" text-anchor="middle" font-size="12" fill="#94a3b8" font-weight="600">포지셔닝 매트릭스 — N-KAI가 독점하는 사분면</text>
+
+  <!-- 배경 4분면 (중심 x=280, y=210) -->
+  <rect x="30"  y="35"  width="235" height="170" rx="6" fill="rgba(148,163,184,0.04)" stroke="rgba(148,163,184,0.1)" stroke-width="1"/>
+  <rect x="295" y="35"  width="235" height="170" rx="6" fill="rgba(148,163,184,0.04)" stroke="rgba(148,163,184,0.1)" stroke-width="1"/>
+  <rect x="30"  y="225" width="235" height="155" rx="6" fill="rgba(148,163,184,0.04)" stroke="rgba(148,163,184,0.1)" stroke-width="1"/>
+  <!-- N-KAI 독점 사분면 강조 -->
+  <rect x="295" y="225" width="235" height="155" rx="6" fill="rgba(59,130,246,0.07)" stroke="rgba(59,130,246,0.45)" stroke-width="2"/>
+  <text x="412" y="248" text-anchor="middle" font-size="9" fill="rgba(59,130,246,0.55)" font-weight="700" letter-spacing="1.5">N-KAI 독점</text>
+
+  <!-- 축선 -->
+  <line x1="280" y1="28" x2="280" y2="388" stroke="rgba(148,163,184,0.18)" stroke-width="1" stroke-dasharray="5 3"/>
+  <line x1="22"  y1="210" x2="538" y2="210" stroke="rgba(148,163,184,0.18)" stroke-width="1" stroke-dasharray="5 3"/>
+
+  <!-- X축 라벨 -->
+  <text x="140" y="398" text-anchor="middle" font-size="10" fill="#64748b">◀ 정적 분석</text>
+  <text x="420" y="398" text-anchor="middle" font-size="10" fill="#3b82f6" font-weight="700">동적 진화 ▶</text>
+
+  <!-- Y축 라벨 -->
+  <text x="12" y="130" text-anchor="middle" font-size="10" fill="#64748b" transform="rotate(-90,12,130)">기질 분석 ▲</text>
+  <text x="12" y="300" text-anchor="middle" font-size="10" fill="#64748b" transform="rotate(-90,12,300)">행동 분석 ▼</text>
+
+  <!-- ── 경쟁사 1: 점신 (기질·정적, 좌상) ── -->
+  <circle cx="140" cy="115" r="26" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="140" y="110" text-anchor="middle" font-size="10" fill="#f59e0b" font-weight="700">점신</text>
+  <text x="140" y="124" text-anchor="middle" font-size="8"  fill="#94a3b8">기질·정적</text>
+
+  <!-- ── 경쟁사 2: 신한포춘 (기질+약동적, 우상 하단부) ── -->
+  <circle cx="350" cy="160" r="22" fill="rgba(100,116,139,0.10)" stroke="#64748b" stroke-width="1.5"/>
+  <text x="350" y="155" text-anchor="middle" font-size="9"  fill="#94a3b8" font-weight="600">신한포춘</text>
+  <text x="350" y="168" text-anchor="middle" font-size="7.5" fill="#64748b">기질·약동적</text>
+
+  <!-- ── 경쟁사 3: MBTI (행동·정적, 좌하) ── -->
+  <circle cx="130" cy="300" r="26" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="130" y="295" text-anchor="middle" font-size="10" fill="#ef4444" font-weight="700">MBTI</text>
+  <text x="130" y="309" text-anchor="middle" font-size="8"  fill="#94a3b8">행동·정적</text>
+
+  <!-- ── 경쟁사 4: 토스운세 (행동·약동적, 우하 중간) ── -->
+  <circle cx="340" cy="300" r="22" fill="rgba(168,85,247,0.10)" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="340" y="295" text-anchor="middle" font-size="9"  fill="#a855f7" font-weight="600">토스운세</text>
+  <text x="340" y="308" text-anchor="middle" font-size="7.5" fill="#94a3b8">행동·약동적</text>
+
+  <!-- ── N-KAI (기질×동적, 우상단 중심) ── -->
+  <!-- 특허 배지 먼저 (원 위에) -->
+  <rect x="398" y="48" width="88" height="16" rx="8" fill="rgba(59,130,246,0.25)" stroke="rgba(59,130,246,0.5)" stroke-width="1"/>
+  <text x="442" y="59" text-anchor="middle" font-size="8" fill="#60a5fa" font-weight="700">특허 보호 구역</text>
+
+  <!-- N-KAI 원 -->
+  <circle cx="442" cy="105" r="36" fill="rgba(59,130,246,0.15)" stroke="#3b82f6" stroke-width="2.5" filter="url(#svgGlow)"/>
+  <circle cx="442" cy="105" r="29" fill="rgba(59,130,246,0.08)" stroke="rgba(59,130,246,0.25)" stroke-width="1"/>
+  <text x="442" y="100" text-anchor="middle" font-size="12" fill="#3b82f6" font-weight="900">N-KAI</text>
+  <text x="442" y="116" text-anchor="middle" font-size="9"  fill="#10b981" font-weight="700">기질×동적</text>
+
+  <!-- 설명 텍스트 (우하 사분면 하단) -->
+  <text x="412" y="355" text-anchor="middle" font-size="8.5" fill="#64748b">선천×후천 융합</text>
+  <text x="412" y="368" text-anchor="middle" font-size="8.5" fill="#64748b">+ 실거래 진화</text>
+</svg>
+    </div>
+  </div>
+  <div class="card" style="padding:14px;border-left:3px solid var(--red);">
+    <div style="font-size:12px;color:var(--text);line-height:1.7;">
+      <strong style="color:var(--red);">결론:</strong> 경쟁사는 기질 <strong>OR</strong> 행동 중 하나만 수행 — <strong style="color:var(--accent);">수리 융합 × 동적 진화</strong>의 우상단 사분면은 <strong>N-KAI만 존재</strong> · <span style="font-size:10px;color:var(--dim);">특허 P25KAI001KR 보호</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PART B: PRODUCT ===== -->
+
+<!-- Slide 5 NEW: Architect 45년 서사 — 기술의 실증자 -->
+<div class="slide" data-part="b">
+  <div class="badge badge-accent" style="margin-bottom:14px;">FOUNDER PROOF · WHY THIS WORKS</div>
+  <div class="s-title">이 기술의 <span style="color:var(--amber);">실증자</span>는 창업자 본인입니다</div>
+  <div class="s-sub">45년 인생 서사 = Neural CDE 97.3% 탄력적 복원력의 살아있는 증거</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+    <!-- 왼쪽: 타임라인 -->
+    <div class="card" style="padding:16px;border-color:rgba(245,158,11,0.3);">
+      <div style="font-size:10px;font-weight:700;color:var(--amber);letter-spacing:1px;margin-bottom:12px;">INFLECTION POINTS — 7 변곡점</div>
+      <div style="position:relative;padding-left:20px;border-left:2px solid rgba(245,158,11,0.3);">
+        <div style="margin-bottom:10px;"><span style="font-size:9px;color:var(--amber);font-weight:700;">1986</span> <span style="font-size:10px;color:var(--muted);">20m 추락 · 턱 30바늘 → 생존</span></div>
+        <div style="margin-bottom:10px;"><span style="font-size:9px;color:var(--amber);font-weight:700;">2000</span> <span style="font-size:10px;color:var(--muted);">오토바이 사고 · 다리 흉터 → 복귀</span></div>
+        <div style="margin-bottom:10px;"><span style="font-size:9px;color:var(--accent);font-weight:700;">2006</span> <span style="font-size:10px;color:var(--muted);">롯데카드 입사 → 금융 DNA 시작</span></div>
+        <div style="margin-bottom:10px;"><span style="font-size:9px;color:var(--red);font-weight:700;">2007</span> <span style="font-size:10px;color:var(--muted);">정면충돌 사고 (상대방 사망) · 생존</span></div>
+        <div style="margin-bottom:10px;"><span style="font-size:9px;color:var(--red);font-weight:700;">2022.09</span> <span style="font-size:10px;color:var(--muted);">폐암 수술 → <strong style="color:var(--green);">10/1 즉시 복귀</strong></span></div>
+        <div style="margin-bottom:10px;"><span style="font-size:9px;color:var(--green);font-weight:700;">2025.06</span> <span style="font-size:10px;color:var(--muted);">롯데카드 20년 퇴직 · 창업 결정</span></div>
+        <div><span style="font-size:9px;color:var(--accent);font-weight:700;">2025.09</span> <span style="font-size:10px;color:var(--text);font-weight:700;">뉴린카이로스에이아이(주) 설립</span></div>
+      </div>
+    </div>
+    <!-- 오른쪽: 실증 결과 -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card" style="padding:14px;border-color:rgba(16,185,129,0.3);text-align:center;">
+        <div style="font-family:var(--mono);font-size:44px;font-weight:900;color:var(--green);">97.3%</div>
+        <div style="font-size:11px;color:var(--muted);">7번의 위기 후 평균 복원력</div>
+        <div style="font-size:9px;color:var(--dim);margin-top:4px;">이것이 Neural CDE 알고리즘의 실증 기준값</div>
+      </div>
+      <div class="card" style="padding:14px;border-color:rgba(59,130,246,0.3);">
+        <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px;">20년 롯데카드 핵심 경력</div>
+        <div style="font-size:10px;color:var(--muted);line-height:1.7;">
+          영업 · 신용리스크 · 마케팅 · 할부금융 · 신사업<br>
+          <strong style="color:var(--text);">상호부조 상품 단독 기획 → ₩70억 수익 창출</strong><br>
+          <span style="color:var(--green);">MCC 데이터 설계 도메인 20년 내재화</span>
+        </div>
+      </div>
+      <div class="card" style="padding:14px;background:rgba(245,158,11,0.04);border-color:rgba(245,158,11,0.25);">
+        <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:6px;">"죽음 앞에서 돌아온 사람의 엔진이 N-KAI"</div>
+        <div style="font-size:10px;color:var(--muted);line-height:1.6;">창업자의 45년 인생 데이터가 곧 기술의 실증 데이터입니다.<br>N-KAI는 <strong style="color:var(--text);">설문이 아닌 삶</strong>에서 검증된 알고리즘입니다.</div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:10px 16px;background:rgba(59,130,246,0.04);border:1px solid rgba(59,130,246,0.15);border-radius:8px;font-size:11px;color:var(--muted);text-align:center;">
+    <strong style="color:var(--accent);">핵심 차별점:</strong> 경쟁사는 데이터로 모델을 만듭니다. N-KAI는 <strong style="color:var(--text);">창업자의 삶</strong>이 먼저 모델이 되고, 데이터로 검증했습니다.
+  </div>
+</div>
+
+<!-- Slide 5: B2B2C Engine Integration -->
+<div class="slide" data-part="b">
+  <div class="badge badge-accent" style="margin-bottom:14px;">ENGINE · B2B2C</div>
+  <div class="s-title">귀사 앱에 N-KAI 엔진을 탑재하면</div>
+  <div class="s-sub">화이트라벨 API · 귀사 브랜드로 운영 · 고객은 N-KAI를 모릅니다</div>
+  <div class="grid grid-2" style="margin-bottom:16px;">
+    <div class="card" style="border-color:rgba(239,68,68,0.3);">
+      <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:10px;">❌ 현재: 귀사의 고객 분류</div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--muted);line-height:1.5;">
+        <div style="padding:8px;background:rgba(239,68,68,0.04);border-radius:6px;">1회 설문 → 5등급 투자성향 (안정/안정추구/위험중립/적극/공격)</div>
+        <div style="padding:8px;background:rgba(239,68,68,0.04);border-radius:6px;">3년간 동일 등급 유지 → 고객과 괴리 발생</div>
+        <div style="padding:8px;background:rgba(239,68,68,0.04);border-radius:6px;">상품 추천 정확도 ↓ → 이탈률 ↑ · LTV ↓</div>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(16,185,129,0.3);">
+      <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:10px;">✅ N-KAI 엔진 탑재 후</div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--muted);line-height:1.5;">
+        <div style="padding:8px;background:rgba(16,185,129,0.04);border-radius:6px;">선천 기질 + KIPA + MCC 실거래 → 16 아키타입 분류</div>
+        <div style="padding:8px;background:rgba(16,185,129,0.04);border-radius:6px;">매월 자동 갱신 → Living Profile로 진화</div>
+        <div style="padding:8px;background:rgba(16,185,129,0.04);border-radius:6px;">아키타입별 맞춤 상품 추천 → 교차판매 ↑ · LTV ↑</div>
+      </div>
+    </div>
+  </div>
+  <div class="card card-glow" style="padding:16px;">
+    <div style="font-size:12px;font-weight:700;margin-bottom:10px;">🔌 통합 아키텍처</div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;">
+      <div style="padding:8px 14px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:8px;color:var(--purple);font-weight:600;">귀사 앱</div>
+      <span style="color:var(--dim);">→ API Call →</span>
+      <div style="padding:8px 14px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:8px;color:var(--accent);font-weight:600;">N-KAI 엔진</div>
+      <span style="color:var(--dim);">→ MCC 피드 →</span>
+      <div style="padding:8px 14px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:8px;color:var(--green);font-weight:600;">동적 진화 처리</div>
+      <span style="color:var(--dim);">→ JSON 응답 →</span>
+      <div style="padding:8px 14px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:8px;color:var(--amber);font-weight:600;">귀사 UI에 표시</div>
+    </div>
+    <div style="margin-top:10px;font-size:10px;color:var(--dim);">고객은 귀사 앱 안에서 모든 경험을 합니다. N-KAI 브랜드 노출 없음 (화이트라벨)</div>
+  </div>
+</div>
+
+<!-- Slide 6: B2B2C White-Label User Journey -->
+<div class="slide" data-part="b">
+  <div class="badge badge-accent" style="margin-bottom:14px;">ENGINE · 고객 여정</div>
+  <div class="s-title">귀사 고객이 경험하는 흐름</div>
+  <div class="s-sub">화이트라벨 · 귀사 브랜드 UI 안에서 모든 경험 완결 · N-KAI 브랜드 비노출</div>
+  <div style="display:flex;gap:32px;justify-content:center;align-items:flex-start;flex-wrap:wrap;">
+    <!-- Phone 1: Partner App - Persona Tab -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen" style="background:linear-gradient(180deg,#0a0f1a,#060810);">
+          <div style="text-align:center;padding:10px 0 6px;">
+            <div style="font-size:14px;font-weight:800;color:var(--purple);">💳 Partner Card</div>
+            <div style="font-size:9px;color:var(--muted);margin-top:2px;">내 금융 성향 분석</div>
+          </div>
+          <div style="background:var(--card);border-radius:10px;padding:12px;margin-bottom:8px;">
+            <div style="font-size:10px;color:var(--muted);margin-bottom:8px;">이미 보유한 데이터로 즉시 분석</div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div style="display:flex;justify-content:space-between;font-size:10px;padding:6px 8px;background:rgba(16,185,129,0.06);border-radius:6px;">
+                <span style="color:var(--muted);">생년월일</span><span style="color:var(--green);">✅ 가입정보</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:10px;padding:6px 8px;background:rgba(16,185,129,0.06);border-radius:6px;">
+                <span style="color:var(--muted);">MCC 거래내역</span><span style="color:var(--green);">✅ 6개월분</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:10px;padding:6px 8px;background:rgba(59,130,246,0.06);border-radius:6px;">
+                <span style="color:var(--muted);">행동 설문</span><span style="color:var(--accent);">3분 소요</span>
+              </div>
+            </div>
+          </div>
+          <div style="background:var(--accent);border-radius:8px;padding:10px;text-align:center;font-size:12px;font-weight:700;color:white;">내 금융 DNA 무료 분석 →</div>
+          <div style="margin-top:8px;font-size:8px;text-align:center;color:var(--dim);">AI 기반 행동 분석 · 투자자문 아님</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--muted);">① 귀사 앱 내 분석 진입</div>
+    </div>
+
+    <!-- Phone 2: KIPA in Partner App -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen" style="background:linear-gradient(180deg,#0a0f1a,#060810);">
+          <div style="padding:10px 0 6px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:10px;color:var(--purple);">💳 Partner Card</span>
+              <span style="font-size:10px;font-family:var(--mono);color:var(--accent);">7 / 16</span>
+            </div>
+            <div style="height:3px;background:var(--border);border-radius:2px;margin-top:6px;">
+              <div style="height:100%;width:44%;background:var(--accent);border-radius:2px;"></div>
+            </div>
+          </div>
+          <div style="background:var(--card);border-radius:10px;padding:14px;margin-top:12px;">
+            <div style="font-size:12px;font-weight:700;line-height:1.5;margin-bottom:12px;">
+              Q7. 예상치 못한 큰 지출이 발생했을 때, 나는 보통...
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:10px;color:var(--muted);line-height:1.4;">
+                ① 즉시 예산을 재조정하고 다른 항목을 줄인다
+              </div>
+              <div style="background:rgba(59,130,246,0.08);border:1px solid var(--accent);border-radius:8px;padding:10px;font-size:10px;color:var(--accent);font-weight:600;line-height:1.4;">
+                ② 일단 처리하고, 자연스럽게 회복되길 기다린다 ✓
+              </div>
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:10px;color:var(--muted);line-height:1.4;">
+                ③ 비상금이 있으므로 크게 신경쓰지 않는다
+              </div>
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:10px;color:var(--muted);line-height:1.4;">
+                ④ 스트레스를 받아 보상 소비를 하게 된다
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:12px;">
+            <div style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center;font-size:10px;color:var(--muted);">← 이전</div>
+            <div style="flex:1;background:var(--accent);border-radius:8px;padding:8px;text-align:center;font-size:10px;color:white;font-weight:700;">다음 →</div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--muted);">② KIPA 16문항 (귀사 UI)</div>
+    </div>
+
+    <!-- Phone 3: Result in Partner App -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen" style="background:linear-gradient(180deg,#0a0f1a,#060810);">
+          <div style="text-align:center;padding:6px 0;">
+            <div style="font-size:9px;color:var(--green);">✓ 분석 완료</div>
+            <div style="font-size:8px;color:var(--purple);">💳 Partner Card</div>
+          </div>
+          <div style="background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(167,139,250,0.1));border:1px solid rgba(59,130,246,0.2);border-radius:12px;padding:12px;text-align:center;margin-bottom:8px;">
+            <div style="font-size:9px;color:var(--muted);">나의 금융 DNA</div>
+            <div style="font-size:16px;font-weight:900;color:var(--accent);margin:4px 0 2px;">전략적 항해사</div>
+            <div style="display:flex;justify-content:center;gap:12px;margin-top:8px;">
+              <div style="text-align:center;">
+                <div style="font-size:14px;font-weight:800;color:var(--econ);">78</div>
+                <div style="font-size:7px;color:var(--muted);">💰경제감각</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:14px;font-weight:800;color:var(--expr);">62</div>
+                <div style="font-size:7px;color:var(--muted);">⚡표현에너지</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:14px;font-weight:800;color:var(--crisis);">85</div>
+                <div style="font-size:7px;color:var(--muted);">🛡️위기대응력</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:var(--card);border-radius:10px;padding:10px;margin-bottom:6px;">
+            <div style="font-size:9px;color:var(--amber);font-weight:700;margin-bottom:4px;">🎯 맞춤 추천 상품</div>
+            <div style="font-size:9px;color:var(--muted);line-height:1.6;">
+              1. 글로벌 ETF 적립식 (아키타입 매치 92%)<br>
+              2. 달러 분산투자 (위기대응 최적화)<br>
+              3. 건강보험 리밸런싱 (에너지 플로우 연동)
+            </div>
+          </div>
+          <div style="background:var(--card);border-radius:10px;padding:8px;margin-bottom:6px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:9px;font-weight:700;">N-Score</span>
+              <span style="font-family:var(--mono);font-size:14px;font-weight:800;color:var(--green);">74</span>
+            </div>
+            <div style="height:4px;background:var(--bg);border-radius:2px;margin-top:4px;">
+              <div style="height:100%;width:74%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:2px;"></div>
+            </div>
+          </div>
+          <div style="background:var(--accent);border-radius:8px;padding:8px;text-align:center;font-size:9px;color:white;font-weight:700;">맞춤 상품 상세보기 →</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--muted);">③ 결과 + 맞춤 상품 추천</div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 7: B2B2C Revenue Model -->
+<div class="slide" data-part="b">
+  <div class="badge badge-accent" style="margin-bottom:14px;">ENGINE · 수익 모델</div>
+  <div class="s-title">이중 수익 구조 — B2C 직접 + B2B2C 엔진</div>
+  <div class="s-sub">귀사는 엔진 탑재 비용 · N-KAI는 자체 B2C로 별도 매출 · 이해 충돌 없음</div>
+  <div class="grid grid-2" style="margin-bottom:16px;">
+    <div class="card" style="border-color:rgba(59,130,246,0.3);">
+      <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:12px;">🔌 B2B2C (귀사 탑재)</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="padding:10px;background:rgba(59,130,246,0.04);border-radius:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;">
+            <span style="font-weight:600;">API 건당 과금</span>
+            <span style="color:var(--accent);font-weight:700;">₩500~2,000/건</span>
+          </div>
+          <div style="font-size:9px;color:var(--dim);margin-top:2px;">분석 1회 = 1 API Call · 볼륨 디스카운트</div>
+        </div>
+        <div style="padding:10px;background:rgba(59,130,246,0.04);border-radius:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;">
+            <span style="font-weight:600;">월정액 라이선스</span>
+            <span style="color:var(--accent);font-weight:700;">₩500만~/월</span>
+          </div>
+          <div style="font-size:9px;color:var(--dim);margin-top:2px;">무제한 호출 · 전용 서버 · SLA 99.9%</div>
+        </div>
+        <div style="padding:10px;background:rgba(59,130,246,0.04);border-radius:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;">
+            <span style="font-weight:600;">익명화 인사이트 리포트</span>
+            <span style="color:var(--accent);font-weight:700;">별도 협의</span>
+          </div>
+          <div style="font-size:9px;color:var(--dim);margin-top:2px;">아키타입별 소비 트렌드 분석 · 분기 배포</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding:8px;background:rgba(59,130,246,0.06);border-radius:6px;text-align:center;font-size:10px;color:var(--accent);font-weight:600;">
+        귀사 가치: 교차판매 정확도 ↑ · 이탈률 ↓ · LTV ↑
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(167,139,250,0.3);">
+      <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:12px;">📱 B2C (자체 서비스)</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="padding:10px;background:rgba(167,139,250,0.04);border-radius:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;">
+            <span style="font-weight:600;">Standard 리포트</span>
+            <span style="color:var(--purple);font-weight:700;">₩9,900</span>
+          </div>
+          <div style="font-size:9px;color:var(--dim);margin-top:2px;">아키타입 + N-Score + 12개월 골든타임</div>
+        </div>
+        <div style="padding:10px;background:rgba(167,139,250,0.04);border-radius:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;">
+            <span style="font-weight:600;">Premium 구독</span>
+            <span style="color:var(--purple);font-weight:700;">₩19,900/월</span>
+          </div>
+          <div style="font-size:9px;color:var(--dim);margin-top:2px;">+ 소비 패턴 분석 + 궁합 매칭 (Phase 2)</div>
+        </div>
+        <div style="padding:10px;background:rgba(167,139,250,0.04);border-radius:8px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;">
+            <span style="font-weight:600;">VIP 코칭</span>
+            <span style="color:var(--purple);font-weight:700;">₩49,900/월</span>
+          </div>
+          <div style="font-size:9px;color:var(--dim);margin-top:2px;">+ MyData 연동 + AI 1:1 코칭 (Phase 3)</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;padding:8px;background:rgba(167,139,250,0.06);border-radius:6px;text-align:center;font-size:10px;color:var(--purple);font-weight:600;">
+        neurinkairosai.com 직접 운영 · B2B와 독립
+      </div>
+    </div>
+  </div>
+  <div class="card card-glow" style="padding:14px;">
+    <div style="font-size:12px;font-weight:700;margin-bottom:8px;">💡 귀사에 N-KAI 엔진이 필요한 이유</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:11px;text-align:center;">
+      <div>
+        <div style="font-size:22px;font-weight:800;color:var(--green);">16</div>
+        <div style="color:var(--muted);">아키타입 분류<br><span style="font-size:9px;color:var(--dim);">vs 기존 5등급</span></div>
+      </div>
+      <div>
+        <div style="font-size:22px;font-weight:800;color:var(--accent);">매월</div>
+        <div style="color:var(--muted);">자동 갱신<br><span style="font-size:9px;color:var(--dim);">vs 3년 고정</span></div>
+      </div>
+      <div>
+        <div style="font-size:22px;font-weight:800;color:var(--amber);">3배</div>
+        <div style="color:var(--muted);">상품 매칭 정밀도<br><span style="font-size:9px;color:var(--dim);">예측 기반 타겟</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PART C: PROOF ===== -->
+
+<!-- Slide 8: DNA Profile (Real Data) -->
+<div class="slide" data-part="c">
+  <div class="badge badge-green" style="margin-bottom:14px;">PROOF · REAL DATA</div>
+  <div class="s-title">창업자 실데이터 — 선천적 기질 DNA 프로필</div>
+  <div class="s-sub">생년월일시 기반 5-Energy 분석 · 510건 실데이터로 검증된 프로필</div>
+  <div class="split">
+    <div class="split-text">
+      <div class="card" style="margin-bottom:14px;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">선천적 기질 DNA — 5-Energy 분포</div>
+        <div style="padding:4px 0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <div style="width:50px;font-size:10px;color:var(--purple);font-weight:700;">Metal</div>
+            <div style="flex:1;height:22px;background:var(--bg);border-radius:4px;overflow:hidden;">
+              <div style="height:100%;width:78%;background:linear-gradient(90deg,rgba(167,139,250,0.6),var(--purple));border-radius:4px;display:flex;align-items:center;padding-left:8px;">
+                <span style="font-size:10px;font-weight:700;color:white;">78%</span>
+              </div>
+            </div>
+            <div style="width:60px;font-size:9px;color:var(--muted);text-align:right;">압도적 코어</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <div style="width:50px;font-size:10px;color:var(--amber);font-weight:700;">Earth</div>
+            <div style="flex:1;height:22px;background:var(--bg);border-radius:4px;overflow:hidden;">
+              <div style="height:100%;width:18%;background:linear-gradient(90deg,rgba(245,158,11,0.5),var(--amber));border-radius:4px;display:flex;align-items:center;padding-left:6px;">
+                <span style="font-size:10px;font-weight:700;color:white;">18%</span>
+              </div>
+            </div>
+            <div style="width:60px;font-size:9px;color:var(--muted);text-align:right;">안정 보조</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <div style="width:50px;font-size:10px;color:var(--accent);font-weight:700;">Water</div>
+            <div style="flex:1;height:22px;background:var(--bg);border-radius:4px;overflow:hidden;">
+              <div style="height:100%;width:4%;background:var(--accent);border-radius:4px;min-width:20px;display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:9px;font-weight:700;color:white;">4%</span>
+              </div>
+            </div>
+            <div style="width:60px;font-size:9px;color:var(--muted);text-align:right;">미량</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <div style="width:50px;font-size:10px;color:var(--red);font-weight:700;">Fire</div>
+            <div style="flex:1;height:22px;background:var(--bg);border-radius:4px;overflow:hidden;">
+              <div style="height:100%;width:2%;background:var(--bg);border-radius:4px;min-width:20px;display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:9px;font-weight:700;color:var(--dim);">0%</span>
+              </div>
+            </div>
+            <div style="width:60px;font-size:9px;color:var(--red);text-align:right;">⚠ 부재</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:50px;font-size:10px;color:var(--green);font-weight:700;">Wood</div>
+            <div style="flex:1;height:22px;background:var(--bg);border-radius:4px;overflow:hidden;">
+              <div style="height:100%;width:2%;background:var(--bg);border-radius:4px;min-width:20px;display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:9px;font-weight:700;color:var(--dim);">0%</span>
+              </div>
+            </div>
+            <div style="width:60px;font-size:9px;color:var(--red);text-align:right;">⚠ 부재</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;padding:8px;background:rgba(167,139,250,0.06);border-radius:6px;font-size:10px;color:var(--muted);">
+          <strong style="color:var(--purple);">해석:</strong> Metal 에너지 극도 집중 → 분석력·정교함·원칙 중심 의사결정 구조. Fire/Wood 부재 → 후천 경험으로 보상하는 독특한 프로필
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="card" style="padding:12px;">
+          <div style="font-size:10px;color:var(--muted);">코어 에너지 타입</div>
+          <div style="font-size:14px;font-weight:700;color:var(--accent);">Precision Analyst</div>
+        </div>
+        <div class="card" style="padding:12px;">
+          <div style="font-size:10px;color:var(--muted);">에너지 밸런스</div>
+          <div style="font-size:14px;font-weight:700;color:var(--green);">고에너지 자립형 (0.857)</div>
+        </div>
+        <div class="card" style="padding:12px;">
+          <div style="font-size:10px;color:var(--muted);">경제감각 인자</div>
+          <div style="font-size:14px;font-weight:700;color:var(--amber);">0.000 — 후천 보상 구조</div>
+        </div>
+        <div class="card" style="padding:12px;">
+          <div style="font-size:10px;color:var(--muted);">표현에너지 인자</div>
+          <div style="font-size:14px;font-weight:700;color:var(--purple);">0.143 — 집중 채널형</div>
+        </div>
+      </div>
+    </div>
+    <div class="split-visual">
+      <div style="display:flex;gap:16px;flex-direction:column;align-items:center;">
+        <div class="metric-ring" style="border-color:var(--econ);"><div class="val" style="color:var(--econ);">78</div><div class="unit" style="color:var(--econ);">💰경제감각</div></div>
+        <div class="metric-ring" style="border-color:var(--expr);"><div class="val" style="color:var(--expr);">62</div><div class="unit" style="color:var(--expr);">⚡표현에너지</div></div>
+        <div class="metric-ring" style="border-color:var(--crisis);"><div class="val" style="color:var(--crisis);">85</div><div class="unit" style="color:var(--crisis);">🛡️위기대응력</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 9: MCC Map -->
+<div class="slide" data-part="c">
+  <div class="badge badge-green" style="margin-bottom:14px;">PROOF · MCC DATA</div>
+  <div class="s-title">MCC 소비지도 — 신한카드 454건 실거래</div>
+  <div class="s-sub">2025.09 ~ 2026.02 · 6개월 · 가맹점분류코드(MCC) 기반 카테고리 분석</div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;margin-bottom:12px;">카테고리별 건수</div>
+      <div style="font-size:10px;">
+        <div class="bar-label">식비-배달 (185건)</div>
+        <div class="bar-h" style="width:100%;background:var(--econ);">185</div>
+        <div class="bar-label">기타 (78건)</div>
+        <div class="bar-h" style="width:42%;background:var(--dim);">78</div>
+        <div class="bar-label">카페 (57건)</div>
+        <div class="bar-h" style="width:31%;background:var(--amber);">57</div>
+        <div class="bar-label">생필품/쇼핑 (39건)</div>
+        <div class="bar-h" style="width:21%;background:var(--purple);">39</div>
+        <div class="bar-label">교통 (24건)</div>
+        <div class="bar-h" style="width:13%;background:var(--green);">24</div>
+        <div class="bar-label">건강 (12건)</div>
+        <div class="bar-h" style="width:6.5%;background:var(--crisis);">12</div>
+        <div class="bar-label">외식 (11건)</div>
+        <div class="bar-h" style="width:6%;background:var(--expr);">11</div>
+        <div class="bar-label">유흥 (2건→0)</div>
+        <div class="bar-h" style="width:1%;background:var(--red);">🔴</div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;margin-bottom:16px;">월별 추이 — 건강 전환 시각화</div>
+      <!-- Legend first -->
+      <div style="display:flex;justify-content:center;gap:14px;font-size:10px;color:var(--muted);margin-bottom:12px;">
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--green);vertical-align:middle;margin-right:3px;"></span>건강식</span>
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--dim);vertical-align:middle;margin-right:3px;"></span>중립</span>
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--amber);vertical-align:middle;margin-right:3px;"></span>외식</span>
+        <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--red);vertical-align:middle;margin-right:3px;"></span>유흥</span>
+      </div>
+      <!-- Chart area -->
+      <div style="display:flex;align-items:flex-end;gap:8px;height:120px;">
+        <!-- 9월 -->
+        <div style="flex:1;text-align:center;">
+          <div style="display:flex;flex-direction:column;">
+            <div style="background:var(--red);height:8px;border-radius:3px 3px 0 0;"></div>
+            <div style="background:var(--amber);height:7px;"></div>
+            <div style="background:var(--dim);height:5px;"></div>
+          </div>
+        </div>
+        <!-- 10월 -->
+        <div style="flex:1;text-align:center;">
+          <div style="display:flex;flex-direction:column;">
+            <div style="background:var(--red);height:24px;border-radius:3px 3px 0 0;"></div>
+            <div style="background:var(--amber);height:32px;"></div>
+            <div style="background:var(--dim);height:38px;"></div>
+            <div style="background:var(--green);height:14px;"></div>
+          </div>
+        </div>
+        <!-- 11월 -->
+        <div style="flex:1;text-align:center;">
+          <div style="display:flex;flex-direction:column;">
+            <div style="background:var(--red);height:12px;border-radius:3px 3px 0 0;opacity:0.8;"></div>
+            <div style="background:var(--amber);height:13px;"></div>
+            <div style="background:var(--dim);height:32px;"></div>
+            <div style="background:var(--green);height:28px;"></div>
+          </div>
+        </div>
+        <!-- 12월 -->
+        <div style="flex:1;text-align:center;">
+          <div style="display:flex;flex-direction:column;">
+            <div style="background:var(--red);height:8px;border-radius:3px 3px 0 0;opacity:0.5;"></div>
+            <div style="background:var(--amber);height:9px;"></div>
+            <div style="background:var(--dim);height:34px;"></div>
+            <div style="background:var(--green);height:47px;"></div>
+          </div>
+        </div>
+        <!-- 1월 -->
+        <div style="flex:1;text-align:center;">
+          <div style="display:flex;flex-direction:column;">
+            <div style="background:var(--dim);height:24px;border-radius:3px 3px 0 0;"></div>
+            <div style="background:var(--green);height:68px;"></div>
+          </div>
+        </div>
+        <!-- 2월 -->
+        <div style="flex:1;text-align:center;">
+          <div style="display:flex;flex-direction:column;">
+            <div style="background:var(--dim);height:19px;border-radius:3px 3px 0 0;"></div>
+            <div style="background:var(--green);height:86px;"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Labels below chart -->
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <div style="flex:1;text-align:center;font-size:9px;line-height:1.4;">
+          <div style="color:var(--text);font-weight:600;">9월</div>
+          <div style="color:var(--dim);">17건</div>
+          <div style="color:var(--red);font-size:8px;">Pre-PoC</div>
+        </div>
+        <div style="flex:1;text-align:center;font-size:9px;line-height:1.4;">
+          <div style="color:var(--text);font-weight:600;">10월</div>
+          <div style="color:var(--dim);">100건</div>
+          <div style="color:var(--red);font-size:8px;">⚠유흥극대</div>
+        </div>
+        <div style="flex:1;text-align:center;font-size:9px;line-height:1.4;">
+          <div style="color:var(--text);font-weight:600;">11월</div>
+          <div style="color:var(--dim);">77건</div>
+          <div style="color:var(--amber);font-size:8px;">전환기</div>
+        </div>
+        <div style="flex:1;text-align:center;font-size:9px;line-height:1.4;">
+          <div style="color:var(--text);font-weight:600;">12월</div>
+          <div style="color:var(--dim);">90건</div>
+          <div style="color:var(--green);font-size:8px;">건강식↑</div>
+        </div>
+        <div style="flex:1;text-align:center;font-size:9px;line-height:1.4;">
+          <div style="color:var(--text);font-weight:600;">1월</div>
+          <div style="color:var(--dim);">85건</div>
+          <div style="color:var(--green);font-size:8px;">⭐루틴</div>
+        </div>
+        <div style="flex:1;text-align:center;font-size:9px;line-height:1.4;">
+          <div style="color:var(--text);font-weight:600;">2월</div>
+          <div style="color:var(--dim);">97건</div>
+          <div style="color:var(--green);font-size:8px;">⭐⭐수렴</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);">
+        <strong style="color:var(--green);">핵심:</strong> 🔴→🟢 6개월 전환 완성 · 유흥 ₩496K → 0 영구 소멸
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 10: Cluster + Bayesian -->
+<div class="slide" data-part="c">
+  <div class="badge badge-green" style="margin-bottom:14px;">PROOF · ALGORITHMS</div>
+  <div class="s-title">클러스터 진화 + 베이지안 수렴</div>
+  <div class="s-sub">비지도 학습 8 클러스터 · 베이지안 추론 0.50 → 0.95 → 0.99+</div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;margin-bottom:10px;">8 클러스터 소비행동 진화</div>
+      <table style="width:100%;font-size:10px;border-collapse:collapse;">
+        <tr style="color:var(--muted);border-bottom:1px solid var(--border);">
+          <th style="text-align:left;padding:4px;">클러스터</th>
+          <th style="padding:4px;">9~10월</th>
+          <th style="padding:4px;">12월</th>
+          <th style="padding:4px;">2월</th>
+          <th style="padding:4px;">추세</th>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(28,40,65,0.5);">
+          <td style="padding:4px;color:var(--green);font-weight:600;">C1 배달루틴</td>
+          <td style="text-align:center;padding:4px;">—</td>
+          <td style="text-align:center;padding:4px;">10%</td>
+          <td style="text-align:center;padding:4px;color:var(--green);font-weight:700;">40%</td>
+          <td style="text-align:center;padding:4px;">⭐ 핵심</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(28,40,65,0.5);">
+          <td style="padding:4px;color:var(--green);">C2 건강식</td>
+          <td style="text-align:center;padding:4px;">—</td>
+          <td style="text-align:center;padding:4px;">—</td>
+          <td style="text-align:center;padding:4px;color:var(--green);">15%</td>
+          <td style="text-align:center;padding:4px;">⭐ 신규</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(28,40,65,0.5);">
+          <td style="padding:4px;color:var(--amber);">C3 카페루틴</td>
+          <td style="text-align:center;padding:4px;">12%</td>
+          <td style="text-align:center;padding:4px;">14%</td>
+          <td style="text-align:center;padding:4px;">13%</td>
+          <td style="text-align:center;padding:4px;">→ 안정</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(28,40,65,0.5);">
+          <td style="padding:4px;color:var(--red);">C5 외식/사교</td>
+          <td style="text-align:center;padding:4px;">45%</td>
+          <td style="text-align:center;padding:4px;">11%</td>
+          <td style="text-align:center;padding:4px;color:var(--red);">4%</td>
+          <td style="text-align:center;padding:4px;">🔴 급감</td>
+        </tr>
+        <tr>
+          <td style="padding:4px;color:var(--red);">C6 유흥</td>
+          <td style="text-align:center;padding:4px;">3%</td>
+          <td style="text-align:center;padding:4px;">12%</td>
+          <td style="text-align:center;padding:4px;font-weight:700;">0%</td>
+          <td style="text-align:center;padding:4px;">🔴 소멸</td>
+        </tr>
+      </table>
+      <div style="margin-top:10px;padding:8px;background:rgba(16,185,129,0.06);border-radius:6px;font-size:10px;color:var(--green);">
+        <strong>구조적 전환:</strong> C5+C6 소멸 → C1+C2 생성 = Dead Profile에서 감지 불가
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;margin-bottom:10px;">베이지안 확률 수렴 궤적</div>
+      <svg viewBox="0 0 400 200" style="width:100%;">
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3b82f6" stop-opacity="0.2"/><stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/></linearGradient>
+        </defs>
+        <rect x="0" y="0" width="400" height="200" fill="none"/>
+        <line x1="40" y1="10" x2="40" y2="175" stroke="#1c2841" stroke-width="1"/>
+        <line x1="40" y1="175" x2="390" y2="175" stroke="#1c2841" stroke-width="1"/>
+        <line x1="40" y1="10" x2="390" y2="10" stroke="#1c2841" stroke-width="0.5" stroke-dasharray="4"/>
+        <line x1="40" y1="92" x2="390" y2="92" stroke="#1c2841" stroke-width="0.5" stroke-dasharray="4"/>
+        <text x="8" y="15" font-size="9" fill="#7b8aa4" font-family="Space Mono">1.0</text>
+        <text x="8" y="97" font-size="9" fill="#7b8aa4" font-family="Space Mono">0.5</text>
+        <text x="8" y="180" font-size="9" fill="#7b8aa4" font-family="Space Mono">0.0</text>
+        <polygon points="40,92 75,67 110,135 145,80 180,72 215,55 250,35 285,25 320,18 355,13 390,10 390,175 40,175" fill="url(#bg)"/>
+        <polyline points="40,92 75,67 110,135 145,80 180,72 215,55 250,35 285,25 320,18 355,13 390,10" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="40" cy="92" r="4" fill="#3b82f6"/><text x="32" y="104" font-size="8" fill="#7b8aa4">.50</text>
+        <circle cx="110" cy="135" r="4" fill="#ef4444"/><text x="98" y="150" font-size="8" fill="#ef4444">.25⚠</text>
+        <circle cx="250" cy="35" r="4" fill="#10b981"/><text x="240" y="28" font-size="8" fill="#10b981">.82</text>
+        <circle cx="355" cy="13" r="4" fill="#10b981"/><text x="345" y="8" font-size="8" fill="#10b981">.95</text>
+        <circle cx="390" cy="10" r="5" fill="#f59e0b" stroke="#f59e0b" stroke-width="2"/>
+        <text x="370" y="6" font-size="9" fill="#f59e0b" font-weight="bold">.99+</text>
+      </svg>
+      <div style="font-size:10px;color:var(--muted);margin-top:6px;text-align:center;">
+        10회 갱신 + B-Correction(모닝루틴 3.5년 확정) → 최종 <strong style="color:var(--amber);">0.99+</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 11: Neural CDE + Recovery -->
+<div class="slide" data-part="c">
+  <div class="badge badge-green" style="margin-bottom:14px;">PROOF · DEEP ALGORITHMS</div>
+  <div class="s-title">Neural CDE 궤적 + 회복률 <span style="color:var(--green);">97.3%</span></div>
+  <div class="s-sub">위기-회복 패턴 포착 · 7건 중 2건은 위기 전보다 더 나은 구조로 전환</div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;margin-bottom:12px;">Neural CDE Phase 0→3</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:60px;font-size:10px;font-weight:700;color:var(--red);">Phase 0</div>
+          <div style="flex:1;height:20px;background:rgba(239,68,68,0.15);border-radius:4px;position:relative;overflow:hidden;">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:45%;background:rgba(239,68,68,0.4);border-radius:4px;"></div>
+            <span style="position:absolute;left:8px;top:2px;font-size:9px;">외식0.45 유흥0.35 ⚠</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:60px;font-size:10px;font-weight:700;color:var(--amber);">전환점</div>
+          <div style="flex:1;height:20px;background:rgba(245,158,11,0.15);border-radius:4px;position:relative;">
+            <span style="position:absolute;left:8px;top:2px;font-size:9px;">카드 교체 리셋 · 의지 개입 ⚡</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:60px;font-size:10px;font-weight:700;color:var(--accent);">Phase 1</div>
+          <div style="flex:1;height:20px;background:rgba(59,130,246,0.15);border-radius:4px;position:relative;overflow:hidden;">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:60%;background:rgba(59,130,246,0.3);border-radius:4px;"></div>
+            <span style="position:absolute;left:8px;top:2px;font-size:9px;">배달 전환 + 건강식 방향</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:60px;font-size:10px;font-weight:700;color:var(--accent);">Phase 2</div>
+          <div style="flex:1;height:20px;background:rgba(59,130,246,0.15);border-radius:4px;position:relative;overflow:hidden;">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:80%;background:rgba(59,130,246,0.3);border-radius:4px;"></div>
+            <span style="position:absolute;left:8px;top:2px;font-size:9px;">5극 체제 확정 · 루틴 수렴</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:60px;font-size:10px;font-weight:700;color:var(--green);">Phase 3</div>
+          <div style="flex:1;height:20px;background:rgba(16,185,129,0.15);border-radius:4px;position:relative;overflow:hidden;">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:97%;background:rgba(16,185,129,0.3);border-radius:4px;"></div>
+            <span style="position:absolute;left:8px;top:2px;font-size:9px;">궤적 수렴 완료 · σ≈0 ✅</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;margin-bottom:10px;">탄력적 복원력 97.3% — 7 변곡점</div>
+      <div style="display:flex;flex-direction:column;gap:5px;font-size:10px;">
+        <div style="display:flex;gap:8px;align-items:center;padding:6px;background:rgba(16,185,129,0.06);border-radius:6px;">
+          <span style="color:var(--green);font-weight:700;width:16px;">IP1</span>
+          <span style="flex:1;color:var(--muted);">법인카드 개설 → 소비구조 재편</span>
+          <span style="font-family:var(--mono);font-weight:700;color:var(--green);">100%</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;padding:6px;background:rgba(16,185,129,0.06);border-radius:6px;">
+          <span style="color:var(--green);font-weight:700;width:16px;">IP2</span>
+          <span style="flex:1;color:var(--muted);">유흥 ₩496K→0 영구 소멸 (비가역적 전환)</span>
+          <span style="font-family:var(--mono);font-weight:700;color:var(--green);">100%</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;padding:6px;background:rgba(16,185,129,0.06);border-radius:6px;">
+          <span style="color:var(--green);font-weight:700;width:16px;">IP3</span>
+          <span style="flex:1;color:var(--muted);">건강 위기 2주 복귀</span>
+          <span style="font-family:var(--mono);font-weight:700;color:var(--green);">95%</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;padding:6px;">
+          <span style="color:var(--muted);font-weight:700;width:16px;">IP4</span>
+          <span style="flex:1;color:var(--muted);">연말 지출 폭증 → 정상화</span>
+          <span style="font-family:var(--mono);font-weight:700;">88%</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;padding:6px;">
+          <span style="color:var(--muted);font-weight:700;width:16px;">IP5</span>
+          <span style="flex:1;color:var(--muted);">법적 분쟁 중 소비구조 유지</span>
+          <span style="font-family:var(--mono);font-weight:700;">92%</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;padding:6px;background:rgba(16,185,129,0.06);border-radius:6px;">
+          <span style="color:var(--green);font-weight:700;width:16px;">IP6</span>
+          <span style="flex:1;color:var(--muted);">건강 루틴 확립 (C2 신규 클러스터 생성)</span>
+          <span style="font-family:var(--mono);font-weight:700;color:var(--green);">100%</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;padding:6px;background:rgba(16,185,129,0.06);border-radius:6px;">
+          <span style="color:var(--green);font-weight:700;width:16px;">IP7</span>
+          <span style="flex:1;color:var(--muted);">사업 안정화 N-Score 52→74</span>
+          <span style="font-family:var(--mono);font-weight:700;color:var(--green);">95%</span>
+        </div>
+      </div>
+      <div style="margin-top:8px;text-align:center;font-size:11px;color:var(--muted);">
+        7건 평균 <strong style="color:var(--green);font-size:16px;">97.3%</strong> 회복 · IP2·IP6은 <strong style="color:var(--accent);">구조적 전환</strong>(위기 전보다 더 나은 상태로 재편)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 12: Predictions + Laws -->
+<div class="slide" data-part="c">
+  <div class="badge badge-green" style="margin-bottom:14px;">PROOF · PREDICTIONS</div>
+  <div class="s-title">행동 법칙 발견 + 예측 5연속 적중</div>
+  <div class="s-sub">510건 데이터에서 도출한 반복 가능한 행동 패턴 · 식사 73%+ · 크레이빙 88% · 쾌변 91%</div>
+  <div class="grid grid-2">
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;margin-bottom:10px;">🎯 5연속 적중 로그 (02/23~25)</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="padding:8px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);border-radius:8px;font-size:10px;">
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--green);font-weight:700;">#1 비빔밥 예측 60%</span><span style="color:var(--green);">✅ 고추장비빔밥</span></div>
+        </div>
+        <div style="padding:8px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);border-radius:8px;font-size:10px;">
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--green);font-weight:700;">#2 포케볼(담백) 40%</span><span style="color:var(--green);">✅ 새우아보카도볼</span></div>
+        </div>
+        <div style="padding:8px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.15);border-radius:8px;font-size:10px;">
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--green);font-weight:700;">#3 비빔밥/국물류 60%</span><span style="color:var(--green);">✅ 강된장비빔밥</span></div>
+        </div>
+        <div style="padding:8px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:8px;font-size:10px;">
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--amber);font-weight:700;">#4 국물 한식 55%</span><span style="color:var(--amber);">⭐ 김치찌개 (3분의 기적)</span></div>
+        </div>
+        <div style="padding:8px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:8px;font-size:10px;">
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--amber);font-weight:700;">#5 쾌변 가능 70%</span><span style="color:var(--amber);">⭐ 완전 쾌변 (모닝루틴 9일)</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:12px;font-weight:700;margin-bottom:10px;">📐 검증된 행동 법칙</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="padding:8px;border-left:3px solid var(--green);background:rgba(16,185,129,0.04);font-size:10px;line-height:1.5;">
+          <div style="font-weight:700;color:var(--green);">크레이빙 3일 포화 법칙</div>
+          <div style="color:var(--muted);">동일 음식 3일 연속 → 4일째 다른 카테고리로 전환. 적중률 85%</div>
+        </div>
+        <div style="padding:8px;border-left:3px solid var(--accent);background:rgba(59,130,246,0.04);font-size:10px;line-height:1.5;">
+          <div style="font-weight:700;color:var(--accent);">서브클러스터 분화 법칙</div>
+          <div style="color:var(--muted);">주 클러스터 안정화 → 2~3주 후 세부 변종 출현. 적중률 90%</div>
+        </div>
+        <div style="padding:8px;border-left:3px solid var(--crisis);background:rgba(0,214,143,0.04);font-size:10px;line-height:1.5;">
+          <div style="font-weight:700;color:var(--crisis);">쾌변 공식 v1</div>
+          <div style="color:var(--muted);">모닝루틴 + 건강식 + 3일 연속 → 4일째 쾌변 확률 91%</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:10px;background:rgba(59,130,246,0.06);border-radius:8px;text-align:center;font-size:11px;color:var(--muted);">
+        <strong style="color:var(--accent);">핵심:</strong> 이 법칙들은 1명에서 발견했지만, 1,000명 파일럿에서 <strong style="color:var(--text);">통계적 검증</strong>이 가능합니다
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PART D: SCALE ===== -->
+
+<!-- Slide 13: N-Score v3.0 + 3대 핵심 지표 + 16 아키타입 체계 (N-Grade 기준서 v1.0) -->
+<div class="slide" data-part="d">
+  <div class="badge badge-amber" style="margin-bottom:14px;">N-SCORE v3.0</div>
+  <div class="s-title">3대 핵심 지표 × 16 아키타입 — <span style="color:var(--accent);">Living Profile 엔진</span></div>
+  <div class="s-sub">N-Score 200~950점 · 9등급(N1~N9) · 선천67% + KIPA33% 융합 · 특허 P25KAI001KR</div>
+
+  <!-- 3대 핵심 지표 -->
+  <div class="grid grid-3" style="margin-bottom:10px;">
+    <div class="card card-glow" style="text-align:center;padding:14px 10px;border-color:rgba(45,140,255,0.4);">
+      <div style="font-size:20px;margin-bottom:4px;">💰</div>
+      <div style="font-size:13px;font-weight:800;color:#2D8CFF;margin-bottom:2px;">경제감각</div>
+      <div style="font-size:9px;color:var(--dim);margin-bottom:6px;">Financial Sense · 가중치 ×200</div>
+      <div style="height:6px;background:rgba(45,140,255,0.15);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:65%;background:#2D8CFF;border-radius:3px;"></div>
+      </div>
+      <div style="margin-top:6px;padding:5px 8px;background:rgba(45,140,255,0.06);border-radius:6px;font-size:9px;color:var(--muted);line-height:1.5;">
+        돈을 다루는 성향 · 소비 패턴 · 투자 기질<br>
+        <strong style="color:#2D8CFF;">→ 맞춤 포트폴리오 추천의 핵심축</strong>
+      </div>
+    </div>
+    <div class="card" style="text-align:center;padding:14px 10px;border-color:rgba(90,168,255,0.4);">
+      <div style="font-size:20px;margin-bottom:4px;">⚡</div>
+      <div style="font-size:13px;font-weight:800;color:#5AA8FF;margin-bottom:2px;">표현에너지</div>
+      <div style="font-size:9px;color:var(--dim);margin-bottom:6px;">Expressive Energy · 가중치 ×160</div>
+      <div style="height:6px;background:rgba(90,168,255,0.15);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:53%;background:#5AA8FF;border-radius:3px;"></div>
+      </div>
+      <div style="margin-top:6px;padding:5px 8px;background:rgba(90,168,255,0.06);border-radius:6px;font-size:9px;color:var(--muted);line-height:1.5;">
+        의사결정 스타일 · 소통 방식 · 금융상품 선호<br>
+        <strong style="color:#5AA8FF;">→ 커뮤니케이션 채널 최적화</strong>
+      </div>
+    </div>
+    <div class="card" style="text-align:center;padding:14px 10px;border-color:rgba(0,214,143,0.4);">
+      <div style="font-size:20px;margin-bottom:4px;">🛡️</div>
+      <div style="font-size:13px;font-weight:800;color:#00D68F;margin-bottom:2px;">위기대응력</div>
+      <div style="font-size:9px;color:var(--dim);margin-bottom:6px;">Crisis Response · 가중치 ×250</div>
+      <div style="height:6px;background:rgba(0,214,143,0.15);border-radius:3px;overflow:hidden;">
+        <div style="height:100%;width:72%;background:#00D68F;border-radius:3px;"></div>
+      </div>
+      <div style="margin-top:6px;padding:5px 8px;background:rgba(0,214,143,0.06);border-radius:6px;font-size:9px;color:var(--muted);line-height:1.5;">
+        스트레스 하 금융 행동 · 복원력 · 리스크 내성<br>
+        <strong style="color:#00D68F;">→ 이탈 선제 방어 + T-60 골든타임</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- N-Score 9등급 + 16 아키타입 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+    <!-- N-Score 9등급 -->
+    <div class="card" style="padding:12px;">
+      <div style="font-size:11px;font-weight:700;color:var(--amber);margin-bottom:8px;">📊 N-Score 9등급 체계 (200~950점)</div>
+      <div style="display:flex;gap:3px;align-items:flex-end;height:50px;margin-bottom:6px;">
+        <div style="flex:1;background:linear-gradient(to top,#ff4444,#ff6666);border-radius:2px 2px 0 0;height:15%;"></div>
+        <div style="flex:1;background:linear-gradient(to top,#ff6644,#ff8844);border-radius:2px 2px 0 0;height:25%;"></div>
+        <div style="flex:1;background:linear-gradient(to top,#ff8800,#ffaa00);border-radius:2px 2px 0 0;height:35%;"></div>
+        <div style="flex:1;background:linear-gradient(to top,#ffaa00,#ffcc00);border-radius:2px 2px 0 0;height:45%;"></div>
+        <div style="flex:1;background:linear-gradient(to top,#88cc00,#aadd00);border-radius:2px 2px 0 0;height:55%;"></div>
+        <div style="flex:1;background:linear-gradient(to top,#44bb44,#66cc66);border-radius:2px 2px 0 0;height:65%;"></div>
+        <div style="flex:1;background:linear-gradient(to top,#2299ff,#44aaff);border-radius:2px 2px 0 0;height:75%;"></div>
+        <div style="flex:1;background:linear-gradient(to top,#6644ff,#8866ff);border-radius:2px 2px 0 0;height:87%;"></div>
+        <div style="flex:1;background:linear-gradient(to top,#aa44ff,#cc66ff);border-radius:2px 2px 0 0;height:100%;position:relative;">
+          <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--amber);white-space:nowrap;">★ N1</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:7px;color:var(--dim);">
+        <span>N9 · 200</span><span>N5 · 580</span><span>N1 · 950</span>
+      </div>
+      <div style="margin-top:6px;font-size:9px;color:var(--muted);line-height:1.5;">
+        7개 구성요소: 기저값(315~325) + 위기대응력(×250) + 경제감각(×200) + 표현에너지(×160) + KIPA결단력(×250) + KIPA극성(×100) + 공명·엔트로피(±110)
+      </div>
+    </div>
+    <!-- 16 아키타입 -->
+    <div class="card" style="padding:12px;">
+      <div style="font-size:11px;font-weight:700;color:var(--purple);margin-bottom:8px;">🧬 16 아키타입 (4그룹 × 4스타일)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px;">
+        <div style="padding:6px;background:rgba(59,130,246,0.06);border-radius:6px;border-left:2px solid var(--accent);font-size:9px;">
+          <div style="font-weight:700;color:var(--accent);margin-bottom:2px;">NT 항해사</div>
+          <div style="color:var(--dim);font-size:8px;">선도형·탐험형·전략형·혁신형</div>
+        </div>
+        <div style="padding:6px;background:rgba(16,185,129,0.06);border-radius:6px;border-left:2px solid var(--green);font-size:9px;">
+          <div style="font-weight:700;color:var(--green);margin-bottom:2px;">ST 분석가</div>
+          <div style="color:var(--dim);font-size:8px;">정밀형·체계형·실행형·효율형</div>
+        </div>
+        <div style="padding:6px;background:rgba(167,139,250,0.06);border-radius:6px;border-left:2px solid var(--purple);font-size:9px;">
+          <div style="font-weight:700;color:var(--purple);margin-bottom:2px;">NF 비전가</div>
+          <div style="color:var(--dim);font-size:8px;">성장형·이상형·창의형·직관형</div>
+        </div>
+        <div style="padding:6px;background:rgba(245,158,11,0.06);border-radius:6px;border-left:2px solid var(--amber);font-size:9px;">
+          <div style="font-weight:700;color:var(--amber);margin-bottom:2px;">SF 실용주의</div>
+          <div style="color:var(--dim);font-size:8px;">안정형·균형형·신중형·보수형</div>
+        </div>
+      </div>
+      <div style="font-size:9px;color:var(--muted);line-height:1.5;">
+        <strong style="color:var(--text);">MBTI는 입이 하는 말</strong>, <strong style="color:var(--accent);">N-KAI는 지갑이 하는 말</strong><br>
+        금융 행동 기반 → 자기보고 편향 제거 → 실행 기질 포착
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom: 4대 알고리즘 한줄 -->
+  <div style="padding:8px 14px;background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.12);border-radius:8px;font-size:10px;color:var(--muted);line-height:1.5;">
+    <strong style="color:var(--amber);">4대 특허 알고리즘:</strong>
+    <span style="color:#2D8CFF;">베이지안 추론 97%</span> ·
+    <span style="color:var(--green);">비지도 클러스터링 91%</span> ·
+    <span style="color:var(--amber);">ROC 보정 89%</span> ·
+    <span style="color:var(--purple);">Neural CDE 94%</span>
+    <span style="opacity:0.6;"> · 510건 실데이터 수동실증 완료 · 선행기술 없는 특허 조합</span>
+  </div>
+</div>
+
+<!-- Slide 14: Revenue Simulation v3.0 — N-Grade 기준서 기반 -->
+<div class="slide" data-part="d">
+  <div class="badge badge-amber" style="margin-bottom:14px;">REVENUE MODEL v3.0</div>
+  <div class="s-title">3트랙 수익 시뮬레이션 — <span style="color:var(--green);">₩43.7억</span> <span style="font-size:16px;color:var(--dim);">(3년 누적)</span></div>
+  <div class="s-sub">B2C 직접판매 + B2B2C 엔진 라이선싱 + B2G 정부사업 · N-Grade 9등급 기반 맞춤 과금</div>
+
+  <!-- 6단 가격체계 -->
+  <div class="card" style="padding:12px;margin-bottom:10px;">
+    <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px;">💎 6단 가격 체계 — N-Score 등급별 서비스 차등</div>
+    <div style="display:flex;gap:4px;align-items:flex-end;flex-wrap:wrap;">
+      <div style="flex:1;min-width:70px;text-align:center;padding:8px 4px;background:rgba(148,163,184,0.04);border:1px solid rgba(148,163,184,0.1);border-radius:8px;">
+        <div style="font-size:8px;color:var(--dim);font-weight:700;">FREE</div>
+        <div style="font-family:var(--mono);font-size:14px;font-weight:800;color:var(--muted);">₩0</div>
+        <div style="font-size:7px;color:var(--dim);margin-top:2px;">아키타입 체험</div>
+      </div>
+      <div style="flex:1;min-width:70px;text-align:center;padding:8px 4px;background:rgba(148,163,184,0.04);border:1px solid rgba(148,163,184,0.15);border-radius:8px;">
+        <div style="font-size:8px;color:var(--muted);font-weight:700;">LITE</div>
+        <div style="font-family:var(--mono);font-size:14px;font-weight:800;color:var(--muted);">공유조건</div>
+        <div style="font-size:7px;color:var(--dim);margin-top:2px;">SNS 바이럴</div>
+      </div>
+
+      <div style="flex:1;min-width:70px;text-align:center;padding:8px 4px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:8px;position:relative;">
+        <div style="position:absolute;top:-6px;left:50%;transform:translateX(-50);font-size:6px;background:var(--accent);color:white;padding:1px 6px;border-radius:8px;white-space:nowrap;">NOW</div>
+        <div style="font-size:8px;color:var(--accent);font-weight:700;">STANDARD</div>
+        <div style="font-family:var(--mono);font-size:14px;font-weight:800;color:var(--accent);">₩9,900</div>
+        <div style="font-size:7px;color:var(--dim);margin-top:2px;">SNAPSHOT PDF+골든타임</div>
+      </div>
+      <div style="flex:1;min-width:70px;text-align:center;padding:8px 4px;background:rgba(167,139,250,0.06);border:1px solid rgba(167,139,250,0.2);border-radius:8px;opacity:0.7;">
+        <div style="font-size:8px;color:var(--purple);font-weight:700;">PREMIUM</div>
+        <div style="font-family:var(--mono);font-size:14px;font-weight:800;color:var(--purple);">₩19,900</div>
+        <div style="font-size:7px;color:var(--dim);margin-top:2px;">MyData 후 Phase2</div>
+      </div>
+      <div style="flex:1;min-width:70px;text-align:center;padding:8px 4px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:8px;opacity:0.7;">
+        <div style="font-size:8px;color:var(--amber);font-weight:700;">VIP</div>
+        <div style="font-family:var(--mono);font-size:14px;font-weight:800;color:var(--amber);">₩49,900</div>
+        <div style="font-size:7px;color:var(--dim);margin-top:2px;">1:1 AI코칭 Phase2</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3트랙 수익 시뮬레이션 테이블 -->
+  <div class="card" style="padding:12px;margin-bottom:10px;">
+    <div style="font-size:11px;font-weight:700;margin-bottom:10px;">📊 3개년 매출 로드맵 — 보수적 추정</div>
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+      <table style="width:100%;min-width:400px;border-collapse:collapse;font-size:10px;">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border);">
+            <th style="padding:6px 8px;text-align:left;color:var(--muted);font-weight:600;">트랙</th>
+            <th style="padding:6px 8px;text-align:center;color:var(--accent);font-weight:700;">1년차 (2026)<br><span style="font-size:8px;font-weight:400;">PoC·상용화</span></th>
+            <th style="padding:6px 8px;text-align:center;color:var(--green);font-weight:700;">2년차 (2027)<br><span style="font-size:8px;font-weight:400;">Scale-up</span></th>
+            <th style="padding:6px 8px;text-align:center;color:var(--amber);font-weight:700;">3년차 (2028)<br><span style="font-size:8px;font-weight:400;">글로벌 확장</span></th>
+          </tr>
+        </thead>
+        <tbody style="word-break:keep-all;">
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+            <td style="padding:6px 8px;"><span style="color:var(--purple);font-weight:700;">B2C 구독</span><br><span style="font-size:8px;color:var(--dim);">₩9,900~₩49,900</span></td>
+            <td style="padding:6px 8px;text-align:center;font-family:var(--mono);">
+              <div style="color:var(--accent);font-weight:700;">₩0.4억</div>
+              <div style="font-size:8px;color:var(--dim);">가입자 3천명</div>
+            </td>
+            <td style="padding:6px 8px;text-align:center;font-family:var(--mono);">
+              <div style="color:var(--green);font-weight:700;">₩6.0억</div>
+              <div style="font-size:8px;color:var(--dim);">가입자 5만명</div>
+            </td>
+            <td style="padding:6px 8px;text-align:center;font-family:var(--mono);">
+              <div style="color:var(--amber);font-weight:700;">₩18.0억</div>
+              <div style="font-size:8px;color:var(--dim);">가입자 15만명</div>
+            </td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+            <td style="padding:6px 8px;"><span style="color:var(--accent);font-weight:700;">B2B2C SDK</span><br><span style="font-size:8px;color:var(--dim);">연 라이선스+API</span></td>
+            <td style="padding:6px 8px;text-align:center;font-family:var(--mono);">
+              <div style="color:var(--accent);font-weight:700;">₩0.8억</div>
+              <div style="font-size:8px;color:var(--dim);">금융사 1곳 PoC</div>
+            </td>
+            <td style="padding:6px 8px;text-align:center;font-family:var(--mono);">
+              <div style="color:var(--green);font-weight:700;">₩4.0억</div>
+              <div style="font-size:8px;color:var(--dim);">금융사 3곳 계약</div>
+            </td>
+            <td style="padding:6px 8px;text-align:center;font-family:var(--mono);">
+              <div style="color:var(--amber);font-weight:700;">₩12.0억</div>
+              <div style="font-size:8px;color:var(--dim);">금융사 5곳+보험</div>
+            </td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+            <td style="padding:6px 8px;"><span style="color:var(--green);font-weight:700;">B2G 공공</span><br><span style="font-size:8px;color:var(--dim);">정부사업·ESG</span></td>
+            <td style="padding:6px 8px;text-align:center;font-family:var(--mono);">
+              <div style="color:var(--accent);font-weight:700;">—</div>
+              <div style="font-size:8px;color:var(--dim);">—</div>
+            </td>
+            <td style="padding:6px 8px;text-align:center;font-family:var(--mono);">
+              <div style="color:var(--green);font-weight:700;">₩0.5억</div>
+              <div style="font-size:8px;color:var(--dim);">지자체 시범</div>
+            </td>
+            <td style="padding:6px 8px;text-align:center;font-family:var(--mono);">
+              <div style="color:var(--amber);font-weight:700;">₩2.0억</div>
+              <div style="font-size:8px;color:var(--dim);">정부 연계 사업</div>
+            </td>
+          </tr>
+          <tr style="border-top:2px solid var(--accent);">
+            <td style="padding:8px 8px;font-weight:800;color:var(--text);">합계</td>
+            <td style="padding:8px 8px;text-align:center;font-family:var(--mono);font-weight:800;color:var(--accent);font-size:13px;">₩1.2억</td>
+            <td style="padding:8px 8px;text-align:center;font-family:var(--mono);font-weight:800;color:var(--green);font-size:13px;">₩10.5억</td>
+            <td style="padding:8px 8px;text-align:center;font-family:var(--mono);font-weight:800;color:var(--amber);font-size:13px;">₩32.0억</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="font-size:8px;color:var(--dim);margin-top:6px;">* B2C ARPU ₩15,000 × 가입자수 · B2B 건당 연 2~3억 라이선스 + API 트래픽 · 보수적 추정</div>
+  </div>
+
+  <!-- B2B ROI 핵심 + 3년 누적 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <div class="card" style="padding:12px;">
+      <div style="font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px;">🏦 B2B ROI — 카드사 100만 고객 적용 시</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px;">
+        <div style="padding:6px;background:rgba(148,163,184,0.04);border-radius:6px;">
+          <div style="font-size:8px;color:var(--dim);font-weight:600;">AS-IS 교차판매</div>
+          <div style="font-family:var(--mono);font-weight:700;color:var(--dim);">2.1%</div>
+        </div>
+        <div style="padding:6px;background:rgba(59,130,246,0.06);border-radius:6px;">
+          <div style="font-size:8px;color:var(--accent);font-weight:600;">TO-BE N-KAI</div>
+          <div style="font-family:var(--mono);font-weight:700;color:var(--accent);">6.3% <span style="font-size:8px;color:var(--green);">▲3×</span></div>
+        </div>
+      </div>
+      <div style="margin-top:6px;font-size:9px;color:var(--muted);line-height:1.5;">
+        100만 고객 × 고객당 추가수익 ₩18,700<br>
+        = <strong style="color:var(--amber);">연간 ₩187억</strong> 귀사 추가 매출
+      </div>
+    </div>
+    <div class="card" style="padding:12px;text-align:center;border-color:rgba(245,158,11,0.3);">
+      <div style="font-size:9px;color:var(--amber);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">3개년 누적 매출</div>
+      <div style="font-family:var(--mono);font-size:36px;font-weight:900;color:var(--amber);margin:6px 0;">₩43.7억</div>
+      <div style="font-size:9px;color:var(--muted);line-height:1.5;">
+        Phase 1 현재 가용: Standard~VIP<br>
+        Phase 2 (MyData): Premium~VIP 활성화<br>
+        <strong style="color:var(--green);">TIPS 선정·Series A 시 가속 가능</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide NEW: Investment Ask -->
+
+<div class="slide" data-part="d">
+  <div class="badge badge-green" style="margin-bottom:14px;">MONETIZATION ROADMAP</div>
+  <div class="s-title">3단계 수익화 — <span style="color:var(--green);">Phase 1은 지금 시작합니다</span></div>
+  <div class="s-sub">B2C 직접판매 → B2B2C 라이선싱 → B2G 정부사업 · 3트랙 병행 수익 구조</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0;">
+    <div class="card" style="padding:16px;border-color:rgba(59,130,246,0.45);background:rgba(59,130,246,0.05);position:relative;">
+      <div style="position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:8px;font-weight:700;padding:2px 12px;border-radius:0 0 8px 8px;white-space:nowrap;">지금 가능</div>
+      <div style="font-size:10px;font-weight:700;color:var(--accent);margin:12px 0 6px;">Phase 1 · 2026 상반기</div>
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;">B2C 구독</div>
+      <div style="font-size:10px;color:var(--muted);line-height:1.9;">
+        ✓ Standard ₩9,900<br>
+        ✓ SNAPSHOT PDF + 골든타임<br>
+        ✓ 16 아키타입 분류<br>
+        ✓ N-Score 9등급
+      </div>
+      <div style="margin-top:12px;font-family:var(--mono);font-size:18px;font-weight:900;color:var(--accent);">₩0.4억</div>
+      <div style="font-size:9px;color:var(--dim);">2026 B2C 목표</div>
+    </div>
+    <div class="card" style="padding:16px;border-color:rgba(16,185,129,0.3);opacity:0.9;">
+      <div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:6px;">Phase 2 · 2026 하반기~</div>
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;">B2B2C SDK</div>
+      <div style="font-size:10px;color:var(--muted);line-height:1.9;">
+        → 금융사 API 라이선싱<br>
+        → MyData 실거래 연동<br>
+        → 파트너사 화이트라벨<br>
+        → 행동 기반 동적 진화
+      </div>
+      <div style="margin-top:12px;font-family:var(--mono);font-size:18px;font-weight:900;color:var(--green);">₩7.0억</div>
+      <div style="font-size:9px;color:var(--dim);">2027 누적 목표</div>
+    </div>
+    <div class="card" style="padding:16px;border-color:rgba(245,158,11,0.3);opacity:0.85;">
+      <div style="font-size:10px;font-weight:700;color:var(--amber);margin-bottom:6px;">Phase 3 · 2027~</div>
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;">B2G 정부사업</div>
+      <div style="font-size:10px;color:var(--muted);line-height:1.9;">
+        → NIPA 소상공인 AI컨설팅<br>
+        → 행안부 AI민원 혁신<br>
+        → 보이스피싱 공동대응<br>
+        → 글로벌 확장
+      </div>
+      <div style="margin-top:12px;font-family:var(--mono);font-size:18px;font-weight:900;color:var(--amber);">₩36.3억</div>
+      <div style="font-size:9px;color:var(--dim);">3년 누적 목표</div>
+    </div>
+  </div>
+
+  <div class="card" style="padding:14px;">
+    <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:10px;">📊 B2C 수익 시나리오 — Standard ₩9,900 기준</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+      <div style="padding:10px;background:rgba(148,163,184,0.04);border-radius:8px;text-align:center;">
+        <div style="font-size:9px;color:var(--dim);margin-bottom:4px;">보수 시나리오</div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);">월 500명</div>
+        <div style="font-family:var(--mono);font-size:18px;font-weight:900;color:var(--muted);margin:4px 0;">₩495만</div>
+        <div style="font-size:9px;color:var(--dim);">연 ₩5,940만</div>
+      </div>
+      <div style="padding:10px;background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:8px;text-align:center;">
+        <div style="font-size:9px;color:var(--accent);font-weight:700;margin-bottom:4px;">기본 시나리오</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text);">월 2,000명</div>
+        <div style="font-family:var(--mono);font-size:18px;font-weight:900;color:var(--accent);margin:4px 0;">₩1,980만</div>
+        <div style="font-size:9px;color:var(--dim);">연 ₩2.4억</div>
+      </div>
+      <div style="padding:10px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:8px;text-align:center;">
+        <div style="font-size:9px;color:var(--green);font-weight:700;margin-bottom:4px;">성장 시나리오</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text);">월 5,000명</div>
+        <div style="font-family:var(--mono);font-size:18px;font-weight:900;color:var(--green);margin:4px 0;">₩4,950만</div>
+        <div style="font-size:9px;color:var(--dim);">연 ₩5.9억 (B2B 제외)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-part="d">
+  <div class="badge badge-amber" style="margin-bottom:14px;">INVESTMENT ASK</div>
+  <div class="s-title">Series Seed — <span style="color:var(--green);">₩3억</span> 투자 유치</div>
+  <div class="s-sub">수익화 인프라 완성 → Phase 2 가속 · MyData 연동 · B2B PoC 계약 목표</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;">
+    <!-- 사용 계획 -->
+    <div class="card" style="padding:16px;">
+      <div style="font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1px;margin-bottom:12px;">USE OF FUNDS</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36%;background:var(--accent);height:8px;border-radius:4px;"></div>
+          <div style="font-size:10px;"><span style="color:var(--accent);font-weight:700;">36%</span> <span style="color:var(--muted);">기술 개발 (Phase 2 · Next.js · MyData)</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28%;background:var(--green);height:8px;border-radius:4px;"></div>
+          <div style="font-size:10px;"><span style="color:var(--green);font-weight:700;">28%</span> <span style="color:var(--muted);">CTO · 풀스택 개발자 채용</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:20%;background:var(--amber);height:8px;border-radius:4px;"></div>
+          <div style="font-size:10px;"><span style="color:var(--amber);font-weight:700;">20%</span> <span style="color:var(--muted);">B2B PoC 영업 · 마케팅</span></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:16%;background:var(--purple);height:8px;border-radius:4px;"></div>
+          <div style="font-size:10px;"><span style="color:var(--purple);font-weight:700;">16%</span> <span style="color:var(--muted);">운영 · 법인 유지 (12개월)</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- 마일스톤 -->
+    <div class="card" style="padding:16px;">
+      <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:12px;">MILESTONES WITH FUNDING</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:10px;color:var(--muted);">
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <span style="color:var(--accent);font-weight:700;min-width:52px;">2026.03</span>
+          <span>토스페이먼츠 Live 키 → <strong style="color:var(--text);">첫 수익 발생</strong></span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <span style="color:var(--accent);font-weight:700;min-width:52px;">2026.04</span>
+          <span>Next.js 전환 + CTO 채용 · B2B PoC 1곳 계약</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <span style="color:var(--green);font-weight:700;min-width:52px;">2026.06</span>
+          <span>MyData API 연동 · 유저 <strong style="color:var(--text);">5,000명</strong> 달성</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <span style="color:var(--amber);font-weight:700;min-width:52px;">2026 Q4</span>
+          <span>B2B2C 계약 2건+ · Series A 라운드 준비</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 현재 상태 + 밸류에이션 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+    <div class="card" style="padding:12px;text-align:center;">
+      <div style="font-size:9px;color:var(--dim);font-weight:700;margin-bottom:6px;">PRE-MONEY VALUATION</div>
+      <div style="font-family:var(--mono);font-size:24px;font-weight:900;color:var(--accent);">₩30억</div>
+      <div style="font-size:9px;color:var(--dim);margin-top:4px;">특허 4건 + 510건 실증 + 20년 도메인</div>
+    </div>
+    <div class="card" style="padding:12px;text-align:center;border-color:rgba(16,185,129,0.3);">
+      <div style="font-size:9px;color:var(--dim);font-weight:700;margin-bottom:6px;">INVESTMENT AMOUNT</div>
+      <div style="font-family:var(--mono);font-size:24px;font-weight:900;color:var(--green);">₩3억</div>
+      <div style="font-size:9px;color:var(--dim);margin-top:4px;">지분 약 10% · 전환사채 협의 가능</div>
+    </div>
+    <div class="card" style="padding:12px;text-align:center;border-color:rgba(245,158,11,0.3);">
+      <div style="font-size:9px;color:var(--dim);font-weight:700;margin-bottom:6px;">CURRENT STATUS</div>
+      <div style="font-family:var(--mono);font-size:14px;font-weight:900;color:var(--amber);line-height:1.5;">인프라 95%<br>완성</div>
+      <div style="font-size:9px;color:var(--green);margin-top:4px;">Live 키 1줄 교체 = 수익 시작</div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide LAST: PoC Proposal + Contact (강화) -->
+<div class="slide" data-part="d">
+  <div class="badge badge-amber" style="margin-bottom:12px;">NEXT STEP · LET'S BUILD TOGETHER</div>
+  <div class="s-title">지금 바로 시작할 수 있습니다</div>
+  <div class="s-sub">인프라 95% 완성 — PoC 계약 즉시 가능 · 3개월 검증 후 본계약 전환</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+    <div class="card" style="border-color:rgba(59,130,246,0.4);padding:14px;">
+      <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px;">MONTH 1 · 연동</div>
+      <div style="font-size:10px;color:var(--muted);line-height:1.7;">
+        MCC 데이터 수신 계약<br>
+        16 아키타입 초기 군집화<br>
+        <strong style="color:var(--accent);">KPI 대시보드 셋업</strong>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(16,185,129,0.4);padding:14px;">
+      <div style="font-size:10px;font-weight:700;color:var(--green);margin-bottom:8px;">MONTH 2 · 학습</div>
+      <div style="font-size:10px;color:var(--muted);line-height:1.7;">
+        베이지안 추론 자동 갱신<br>
+        클러스터 진화 관측<br>
+        <strong style="color:var(--green);">행동 법칙 패턴 도출</strong>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(245,158,11,0.4);padding:14px;">
+      <div style="font-size:10px;font-weight:700;color:var(--amber);margin-bottom:8px;">MONTH 3 · 검증</div>
+      <div style="font-size:10px;color:var(--muted);line-height:1.7;">
+        ROC 임계값 최적화<br>
+        예측 정확도 ROI 리포트<br>
+        <strong style="color:var(--amber);">본계약 협상 데이터 기반</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- 강력한 CTA 카드 -->
+  <div class="card card-glow" style="padding:20px;border-color:rgba(59,130,246,0.4);background:rgba(59,130,246,0.04);">
+    <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:18px;font-weight:900;color:var(--text);margin-bottom:6px;">이원재 대표 · 뉴린카이로스에이아이(주)</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">사업자 172-87-03400 · 통신판매업 신고 완료</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:10px;">
+          <span style="padding:4px 12px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.25);border-radius:6px;color:var(--accent);">neurinkairosai.com</span>
+          <span style="padding:4px 12px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:6px;color:var(--green);">특허 4건 출원</span>
+          <span style="padding:4px 12px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:6px;color:var(--amber);">상표 3건 출원</span>
+          <span style="padding:4px 12px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:6px;color:var(--purple);">금융업 20년</span>
+        </div>
+      </div>
+      <div style="text-align:center;padding:12px 20px;background:rgba(59,130,246,0.1);border:2px solid var(--accent);border-radius:12px;min-width:120px;">
+        <div style="font-size:9px;color:var(--dim);margin-bottom:4px;">PoC 파일럿 비용</div>
+        <div style="font-family:var(--mono);font-size:24px;font-weight:900;color:var(--accent);">협의</div>
+        <div style="font-size:9px;color:var(--green);margin-top:4px;">성과 기반 계약 가능</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding:10px 14px;background:rgba(245,158,11,0.06);border-left:3px solid var(--amber);border-radius:0 6px 6px 0;font-size:11px;color:var(--muted);">
+      <strong style="color:var(--amber);">"죽음 앞에서 돌아온 사람의 엔진이 N-KAI입니다."</strong><br>
+      창업자의 45년 삶이 실증한 97.3% 탄력적 복원력 — 지금 귀사 고객 데이터에 적용할 준비가 되어 있습니다.
+    </div>
+    <div style="margin-top:10px;font-size:10px;color:var(--dim);text-align:center;">CONFIDENTIAL · 파트너십 검토 목적으로만 사용하십시오 · © 2026 뉴린카이로스에이아이(주)</div>
+  </div>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+
+document.getElementById('total').textContent = total;
+
+// ── 카운트업 애니메이션 ──
+function runCountup() {
+  document.querySelectorAll('.countup').forEach(el => {
+    const target = parseFloat(el.dataset.target);
+    const isFloat = el.dataset.float === '1';
+    const duration = 1200;
+    const start = performance.now();
+    function step(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      const val = target * ease;
+      el.textContent = isFloat ? val.toFixed(1) + '%' : Math.round(val).toString();
+      if (t < 1) requestAnimationFrame(step);
+      else el.textContent = isFloat ? target.toFixed(1) + '%' : target.toString();
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+// Build dots
+const dotsEl = document.getElementById('dots');
+const partColors = { a: 'part-a', b: 'part-b', c: 'part-c', d: 'part-d' };
+slides.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'dot ' + partColors[s.dataset.part];
+  dot.onclick = () => goTo(i);
+  dotsEl.appendChild(dot);
+});
+
+const partLabels = {
+  a: { text: 'PART A · WHY', bg: 'rgba(239,68,68,0.12)', color: 'var(--red)', border: 'rgba(239,68,68,0.25)' },
+  b: { text: 'PART B · PRODUCT', bg: 'rgba(59,130,246,0.12)', color: 'var(--accent)', border: 'rgba(59,130,246,0.25)' },
+  c: { text: 'PART C · PROOF', bg: 'rgba(16,185,129,0.12)', color: 'var(--green)', border: 'rgba(16,185,129,0.25)' },
+  d: { text: 'PART D · SCALE', bg: 'rgba(245,158,11,0.12)', color: 'var(--amber)', border: 'rgba(245,158,11,0.25)' },
+};
+
+function goTo(n) {
+  if (n < 0 || n >= total) return;
+  const prev = cur;
+  slides[prev].className = 'slide' + (n > prev ? ' prev' : '');
+  cur = n;
+  slides[cur].className = 'slide active';
+  document.getElementById('curr').textContent = cur + 1;
+  dotsEl.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+  const part = slides[cur].dataset.part;
+  const p = partLabels[part];
+  const badge = document.getElementById('partBadge');
+  badge.textContent = p.text;
+  badge.style.background = p.bg;
+  badge.style.color = p.color;
+  badge.style.border = '1px solid ' + p.border;
+  // 슬라이드 0(표지)에서 카운트업 실행
+  if (cur === 0) setTimeout(runCountup, 300);
+}
+
+function go(dir) { goTo(cur + dir); }
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+  if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+  if (e.key === 'End') { e.preventDefault(); goTo(total - 1); }
+});
+
+// Touch swipe
+let touchX = 0;
+document.addEventListener('touchstart', e => touchX = e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const diff = touchX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) go(diff > 0 ? 1 : -1);
+});
+
+// Initialize
+goTo(0);
+setTimeout(runCountup, 500);
+</script>
+</body>
+</html>

@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- ================= SEO & METADATA ================= -->
+    <title>N-KAI: AI Life-OS | Neurin Kairos AI</title>
+    <link rel="canonical" href="https://www.n-kai.com">
+    <meta name="description" content="N-Kai(뉴린카이로스)는 당신의 생년월일 기질과 후천적 성향을 분석하여 숨겨진 신용 가치를 찾아내는 AI 플랫폼입니다.">
+    <meta property="og:title" content="N-KAI: 데이터 연금술의 시작">
+    <meta property="og:description" content="성실함을 신용으로 증명하세요. 30초면 당신의 잠재력을 알 수 있습니다.">
+    <meta property="og:image" content="logo.png">
+    <meta name="robots" content="index, follow">
+    <meta name="keywords" content="N-Kai, AI Credit, Alternative Data, Life-OS, 신용평가, 씬파일러">
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Cinzel:wght@600;700;900&family=Urbanist:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            /* Midnight Navy Gradient Base */
+            --bg-dark: #0f172a; 
+            --accent-gold: #d4af37;
+            --accent-light: #fcd34d;
+            --accent-blue: #38bdf8;
+            --accent-red: #e11d48;
+            --text-main: #f8fafc;
+        }
+        
+        body { 
+            /* Enhanced Gradient Background */
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            color: var(--text-main); 
+            font-family: 'Noto Sans KR', sans-serif; 
+            overflow-x: hidden; 
+            scroll-behavior: smooth; 
+            min-height: 100vh;
+        }
+        
+        .font-serif { font-family: 'Nanum Myeongjo', serif; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-urbanist { font-family: 'Urbanist', sans-serif; }
+
+        /* Typography Tweaks */
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4rem); 
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+        }
+        .hero-subtitle {
+            font-size: clamp(2rem, 6vw, 3.5rem); 
+            letter-spacing: 0.05em;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            color: #fcd34d; 
+        }
+        .section-title {
+            font-size: clamp(3rem, 7vw, 6rem); 
+        }
+        .section-subtitle {
+            font-size: clamp(1.8rem, 4vw, 3rem); 
+            font-weight: 800;
+            color: #d4af37;
+        }
+        .philosophy-subtitle {
+             font-size: clamp(2rem, 5vw, 3.5rem); 
+             font-weight: 900;
+             letter-spacing: 0.1em;
+             background: linear-gradient(to right, #d4af37, #fff, #d4af37);
+             -webkit-background-clip: text;
+             -webkit-text-fill-color: transparent;
+             margin-bottom: 2rem;
+        }
+        
+        .page-section { display: none; min-height: 100vh; animation: fadeIn 0.6s ease-out; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .text-gradient-gold {
+            background: linear-gradient(to right, #d4af37, #fff, #d4af37);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 200% auto; animation: shine 3s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        /* Gold Button */
+        .btn-gold {
+            background: linear-gradient(135deg, #d4af37, #fcd34d);
+            color: black !important; 
+            font-weight: 900; 
+            border-radius: 9999px; 
+            transition: all 0.3s;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+            position: relative; overflow: hidden;
+        }
+        .btn-gold:hover { transform: scale(1.05); box-shadow: 0 0 50px rgba(212, 175, 55, 0.7); }
+
+        /* UI Cards - Adjusted for Navy Background */
+        .card-dark { 
+            background: rgba(30, 41, 59, 0.6); /* Slate-800 with opacity */
+            border: 1px solid rgba(255,255,255,0.08); 
+            border-radius: 24px; 
+            backdrop-filter: blur(20px); 
+        }
+
+        /* Language Toggle */
+        body.lang-ko .en { display: none !important; }
+        body.lang-en .ko { display: none !important; }
+        .lang-btn.active { color: var(--accent-gold); font-weight: bold; }
+
+        /* Admin Grid - FIXED LAYOUT UPDATED (Top padding increased MORE) */
+        .admin-layout { 
+            display: flex; 
+            height: calc(100vh - 180px); /* Height adjustment for larger header space */
+            margin-top: 180px; /* Increased margin significantly to prevent cut-off */
+            overflow: hidden; 
+        }
+        .admin-sidebar { 
+            width: 280px; 
+            background: #020617; 
+            border-right: 1px solid #1e293b; 
+            padding: 2rem; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100%;
+            overflow-y: auto;
+        }
+        .admin-content { 
+            flex: 1; 
+            background: #0f172a; 
+            padding: 2rem; 
+            overflow-y: auto; 
+            height: 100%;
+            padding-bottom: 150px; /* Extra padding for scroll */
+        }
+        @media (max-width: 1024px) { 
+            .admin-sidebar { display: none; } 
+            .admin-layout { flex-direction: column; height: auto; margin-top: 140px; } /* Mobile adjustment */
+            .admin-content { height: auto; padding-bottom: 4rem; overflow: visible; }
+        }
+        
+        /* Coin Animation */
+        @keyframes coinDrop {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(100px) rotate(360deg); opacity: 0; }
+        }
+        .coin {
+            position: fixed; font-size: 24px; color: #ffd700; pointer-events: none; z-index: 9999;
+            animation: coinDrop 1s ease-in forwards;
+        }
+
+        /* Mobile Optimization */
+        .mobile-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            scroll-snap-type: x mandatory;
+        }
+        .mobile-scroll > * {
+            flex: 0 0 85%;
+            scroll-snap-align: center;
+        }
+        @media (min-width: 768px) {
+            .mobile-scroll {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                overflow-x: visible;
+            }
+            .mobile-scroll > * {
+                flex: auto;
+            }
+        }
+        
+        /* Lunar Toggle */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #d4af37;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #d4af37;
+        }
+        
+        /* Admin Snapshot Card Hover */
+        .snapshot-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        /* Mining Animation */
+        @keyframes miningPulse {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+        .mining-active {
+            animation: miningPulse 2s infinite;
+            border-color: #d4af37;
+        }
+
+        /* Lotto Ball Animation */
+        .lotto-ball {
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: black; font-family: 'Urbanist', sans-serif;
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3), 0 5px 10px rgba(0,0,0,0.5);
+            transform: scale(0);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .ball-yellow { background: radial-gradient(circle at 30% 30%, #facc15, #ca8a04); }
+        .ball-blue { background: radial-gradient(circle at 30% 30%, #60a5fa, #2563eb); }
+        .ball-red { background: radial-gradient(circle at 30% 30%, #f87171, #dc2626); }
+        .ball-gray { background: radial-gradient(circle at 30% 30%, #9ca3af, #4b5563); }
+        .ball-green { background: radial-gradient(circle at 30% 30%, #4ade80, #16a34a); }
+        
+        @keyframes popIn { to { transform: scale(1); } }
+
+        /* Security Watermark */
+        .watermark {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='%23ffffff' transform='rotate(-45 100 100)' text-anchor='middle'%3EN-KAI OFFICIAL%3C/text%3E%3C/svg%3E");
+        }
+        
+        /* Quantum Box */
+        .quantum-box {
+            animation: pulse-gold 2s infinite;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .quantum-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px #d4af37;
+        }
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+
+        /* Modal */
+        #donation-modal {
+            display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(15, 23, 42, 0.9); backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: #1e293b; margin: 10% auto; padding: 30px; border: 1px solid #d4af37; width: 90%; max-width: 600px; border-radius: 20px; color: #fff;
+            animation: slideIn 0.3s;
+        }
+        @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        /* Heatmap Pulse */
+        .heatmap-pulse { animation: riskPulse 0.5s ease-in-out; border: 2px solid #ef4444 !important; background-color: rgba(239, 68, 68, 0.2) !important; }
+        @keyframes riskPulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        
+        /* Compass Animation */
+        .compass-container {
+            width: 120px; height: 120px; border-radius: 50%;
+            border: 2px solid #d4af37;
+            position: relative;
+            background: radial-gradient(#1e293b, #000);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            margin: 0 auto;
+        }
+        .compass-arrow {
+            position: absolute; top: 50%; left: 50%; width: 80px; height: 4px;
+            background: linear-gradient(to right, #d4af37 50%, #e11d48 50%);
+            transform-origin: center;
+            transform: translate(-50%, -50%) rotate(0deg);
+            transition: transform 2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .compass-arrow::after {
+            content: ''; position: absolute; left: 100%; top: 50%; 
+            border-left: 10px solid #e11d48; border-top: 6px solid transparent; border-bottom: 6px solid transparent;
+            transform: translateY(-50%);
+        }
+        
+        /* Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px; width: 16px; border-radius: 50%;
+            background: #ffffff; cursor: pointer; margin-top: -6px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer;
+            background: #475569; border-radius: 2px;
+        }
+
+        /* Scrollbar Hide */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="lang-ko">
+    
+    <!-- Security Watermark -->
+    <div class="watermark"></div>
+
+    <!-- Global Ticker -->
+    <div class="bg-[#020617] text-[#38bdf8] text-[10px] py-1 px-4 border-b border-[#38bdf8]/20 overflow-hidden whitespace-nowrap fixed top-0 w-full z-[101]">
+        <div class="animate-[marquee_20s_linear_infinite] inline-block">
+            <span class="mx-4">● Global Data Sync: Seoul, Singapore, New York...</span> <span class="mx-4">● 24/7 Neural Network Active</span> <span class="mx-4">● Risk Protocol: Secure</span>
+        </div>
+    </div>
+    <style>@keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }</style>
+
+    <!-- Global Nav -->
+    <nav id="main-nav" class="fixed w-full z-[100] bg-[#020617]/90 backdrop-blur-md border-b border-white/5 top-[25px]">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- UPDATED LOGO: Larger Size & Layout Adjustment -->
+            <div class="flex items-center gap-4 cursor-pointer group" onclick="showPage('landing')">
+                <img src="logo.png" alt="N-KAI Logo" class="w-32 h-32 md:w-36 md:h-36 object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+                <div class="flex flex-col justify-center">
+                    <span class="text-3xl md:text-4xl font-cinzel font-black text-white tracking-[0.2em] leading-none group-hover:text-[#d4af37] transition-colors">N-KAI</span>
+                    <span class="text-[10px] md:text-xs text-gray-500 font-urbanist tracking-[0.4em] uppercase mt-1">Official Intelligence</span>
+                </div>
+            </div>
+            
+            <div class="hidden lg:flex space-x-12 text-[13px] font-bold tracking-widest text-gray-400 uppercase items-center">
+                <a href="#vision" onclick="showPage('landing')" class="hover:text-white transition"><span class="ko">비전</span><span class="en">Vision</span></a>
+                <a href="#patent-moat" onclick="showPage('landing')" class="hover:text-[#d4af37] transition text-[#d4af37]"><span class="ko">특허</span><span class="en">Patents</span></a>
+                <a href="#philosophy" onclick="showPage('landing')" class="hover:text-white transition"><span class="ko">철학</span><span class="en">Philosophy</span></a>
+                <a href="#roadmap" onclick="showPage('landing')" class="hover:text-white transition"><span class="ko">로드맵</span><span class="en">Roadmap</span></a>
+                <a href="#mvp" onclick="showPage('mvp')" class="hover:text-[#d4af37] transition text-[#d4af37]"><span class="ko">AI 분석</span><span class="en">AI Analysis</span></a>
+                <a href="#" onclick="handleAdminLogin()" class="hover:text-white transition">ADMIN HQ</a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="lg:hidden text-white text-2xl" onclick="toggleMobileMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <div class="hidden lg:flex items-center gap-6">
+                <div class="flex gap-3 text-sm font-bold">
+                    <button id="lang-ko" class="lang-btn active" onclick="setLanguage('ko')">KR</button>
+                    <span class="text-gray-600">|</span>
+                    <button id="lang-en" class="lang-btn" onclick="setLanguage('en')">EN</button>
+                </div>
+                <!-- Login Mockup -->
+                <button onclick="alert('현재는 MVP 오픈 베타 기간입니다. 별도 가입 없이 체험 가능합니다.')" class="text-sm font-bold text-gray-400 hover:text-white transition">
+                    <span class="ko">로그인</span><span class="en">Login</span>
+                </button>
+                <button onclick="showPage('mvp')" class="btn-gold px-6 py-2 text-sm">
+                    <span class="ko">내 점수 확인</span><span class="en">GET SCORE</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-[#020617] border-b border-white/10 p-4 absolute w-full z-50">
+            <div class="flex flex-col space-y-4 text-center">
+                <a href="#vision" onclick="showPage('landing'); toggleMobileMenu()" class="text-gray-300 py-2"><span class="ko">비전</span><span class="en">Vision</span></a>
+                <a href="#patent-moat" onclick="showPage('landing'); toggleMobileMenu()" class="text-[#d4af37] py-2"><span class="ko">특허</span><span class="en">Patents</span></a>
+                <a href="#philosophy" onclick="showPage('landing'); toggleMobileMenu()" class="text-gray-300 py-2"><span class="ko">철학</span><span class="en">Philosophy</span></a>
+                <a href="#roadmap" onclick="showPage('landing'); toggleMobileMenu()" class="text-gray-300 py-2"><span class="ko">로드맵</span><span class="en">Roadmap</span></a>
+                <a href="#mvp" onclick="showPage('mvp'); toggleMobileMenu()" class="text-[#d4af37] py-2 font-bold"><span class="ko">AI 분석</span><span class="en">AI Analysis</span></a>
+                <a href="#" onclick="handleAdminLogin(); toggleMobileMenu()" class="text-gray-300 py-2">ADMIN HQ</a>
+                <div class="flex justify-center gap-4 py-2 border-t border-white/10 pt-4">
+                    <button onclick="setLanguage('ko')" class="text-sm font-bold text-gray-400 hover:text-white">KR</button>
+                    <button onclick="setLanguage('en')" class="text-sm font-bold text-gray-400 hover:text-white">EN</button>
+                </div>
+                <button onclick="alert('현재는 MVP 오픈 베타 기간입니다.')" class="text-sm font-bold text-gray-400 hover:text-white py-2">
+                    <span class="ko">로그인 / 회원가입</span><span class="en">Login / Sign Up</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= PAGE 1: LANDING ================= -->
+    <section id="landing" class="page-section active pt-52 md:pt-60"> <!-- PADDING INCREASED -->
+        <!-- Hero -->
+        <div class="relative min-h-screen flex items-center justify-center text-center px-4 overflow-hidden" id="vision">
+            <!-- Background Image -->
+            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534224039826-c7a0eda0e6b3?q=80&w=1920')] bg-cover bg-center opacity-20"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-[#020617] via-[#0f172a]/80 to-[#020617]"></div>
+            
+            <div class="relative z-10 max-w-7xl mx-auto">
+                <p class="hero-subtitle text-[#d4af37] mb-4 uppercase animate-fade-in-up">
+                    <span class="ko">대한민국 최초의 AI 라이프 OS</span><span class="en">Korea's First AI Life-OS</span>
+                </p>
+                <h1 class="hero-title font-cinzel font-black text-white mb-6 uppercase leading-none tracking-tighter">
+                    Invisible to<br><span class="text-gradient-gold">Invincible</span>
+                </h1>
+                <p class="text-gray-400 text-base md:text-xl max-w-3xl mx-auto mb-10 font-light leading-relaxed px-4">
+                    <span class="ko">당신의 <strong>생년월일(선천적 기질)</strong>과 <strong>행동 패턴(후천적 성향)</strong>을 융합하여,<br class="hidden md:block">보이지 않던 가치를 <strong>무적의 신용</strong>으로 증명합니다.</span>
+                    <span class="en">Fusing your <strong>Birth Data (Innate)</strong> and <strong>Behavior (Acquired)</strong><br class="hidden md:block">to prove your invisible value as <strong>Invincible Credit</strong>.</span>
+                </p>
+                <button onclick="showPage('mvp')" class="btn-gold px-8 py-4 md:px-10 md:py-5 text-lg md:text-xl shadow-lg w-full md:w-auto">
+                    <i class="fa-solid fa-fingerprint mr-2"></i> <span class="ko">무료 분석 시작하기</span><span class="en">Start Free Analysis</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= NEW: PATENT MOAT SECTION ================= -->
+        <div id="patent-moat" class="py-24 px-6 bg-[#020617] border-y border-[#d4af37]/20 relative overflow-hidden">
+            <!-- Background Effect -->
+            <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#334155]/30 via-transparent to-transparent pointer-events-none"></div>
+            
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16">
+                    <h3 class="text-[#d4af37] font-cinzel font-bold text-sm tracking-[0.3em] mb-4 uppercase">Technological Moat</h3>
+                    <h2 class="text-4xl md:text-5xl font-black text-white uppercase font-serif mb-6"><span class="ko">독보적 기술 주권의 증명</span><span class="en">Proof of Technological Sovereignty</span></h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto text-sm md:text-base font-light">
+                        <span class="ko">N-Kai의 모든 알고리즘은 <strong>4대 핵심 특허</strong>로 보호받으며,<br>수리적 무결성을 갖춘 독점 기술입니다.</span>
+                        <span class="en">All N-Kai algorithms are protected by <strong>4 Core Patents</strong>,<br>exclusive technology with mathematical integrity.</span>
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Patent 1 -->
+                    <div class="p-8 border border-white/10 rounded-3xl bg-gradient-to-b from-white/5 to-transparent hover:border-[#d4af37] hover:shadow-[0_0_30px_rgba(212,175,55,0.1)] transition group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-3 opacity-20 group-hover:opacity-40 transition"><i class="fa-solid fa-microchip text-6xl text-[#38bdf8]"></i></div>
+                        <div class="text-[10px] font-mono text-[#d4af37] mb-3 tracking-widest border border-[#d4af37] inline-block px-2 py-1 rounded">PATENT #10-2025-0156080</div>
+                        <h4 class="text-white font-serif font-bold text-xl mb-4 h-14 flex items-center"><span class="ko">동적 진화형<br>페르소나 엔진</span><span class="en">Dynamic Evolving<br>Persona Engine</span></h4>
+                        <p class="text-gray-400 text-xs leading-relaxed mb-4 border-t border-white/10 pt-4">
+                            <span class="ko">선천적 기질(Vector A)과 후천적 행동(Vector B)을 융합하여 스스로 진화하는 AI 신용 모델.</span>
+                            <span class="en">Self-evolving AI credit model fusing innate traits (Vector A) and acquired behavior (Vector B).</span>
+                        </p>
+                        <div class="text-[9px] text-[#38bdf8] font-mono"><i class="fa-solid fa-check mr-1"></i> Bayesian Inference</div>
+                    </div>
+
+                    <!-- Patent 2 -->
+                    <div class="p-8 border border-white/10 rounded-3xl bg-gradient-to-b from-white/5 to-transparent hover:border-[#d4af37] hover:shadow-[0_0_30px_rgba(212,175,55,0.1)] transition group relative overflow-hidden">
+                         <div class="absolute top-0 right-0 p-3 opacity-20 group-hover:opacity-40 transition"><i class="fa-solid fa-dice text-6xl text-[#d4af37]"></i></div>
+                        <div class="text-[10px] font-mono text-[#d4af37] mb-3 tracking-widest border border-[#d4af37] inline-block px-2 py-1 rounded">PATENT #10-2025-0156083</div>
+                        <h4 class="text-white font-serif font-bold text-xl mb-4 h-14 flex items-center"><span class="ko">다차원 변수 분석<br>행운 숫자 추천</span><span class="en">Multi-dim Variable<br>Lucky Number Rec.</span></h4>
+                        <p class="text-gray-400 text-xs leading-relaxed mb-4 border-t border-white/10 pt-4">
+                            <span class="ko">개인의 에너지 파동과 양자 난수(Quantum RNG)를 결합하여 최적의 행운 타이밍 포착.</span>
+                            <span class="en">Capturing optimal lucky timing by combining personal energy waves with Quantum RNG.</span>
+                        </p>
+                        <div class="text-[9px] text-[#38bdf8] font-mono"><i class="fa-solid fa-check mr-1"></i> AI Feedback Loop</div>
+                    </div>
+
+                    <!-- Patent 3 -->
+                    <div class="p-8 border border-white/10 rounded-3xl bg-gradient-to-b from-white/5 to-transparent hover:border-[#d4af37] hover:shadow-[0_0_30px_rgba(212,175,55,0.1)] transition group relative overflow-hidden">
+                         <div class="absolute top-0 right-0 p-3 opacity-20 group-hover:opacity-40 transition"><i class="fa-solid fa-heart-pulse text-6xl text-[#e11d48]"></i></div>
+                        <div class="text-[10px] font-mono text-[#d4af37] mb-3 tracking-widest border border-[#d4af37] inline-block px-2 py-1 rounded">PATENT #10-2025-0156082</div>
+                        <h4 class="text-white font-serif font-bold text-xl mb-4 h-14 flex items-center"><span class="ko">아키타입 분석<br>맞춤형 웰니스</span><span class="en">Archetype Analysis<br>Wellness Rec.</span></h4>
+                        <p class="text-gray-400 text-xs leading-relaxed mb-4 border-t border-white/10 pt-4">
+                            <span class="ko">오행 밸런스 기반의 공간/식단/루틴 큐레이션으로 의사결정 에너지를 최적화.</span>
+                            <span class="en">Optimizing decision energy through curation based on Five Elements balance.</span>
+                        </p>
+                        <div class="text-[9px] text-[#38bdf8] font-mono"><i class="fa-solid fa-check mr-1"></i> Bio-Rhythm Sync</div>
+                    </div>
+
+                    <!-- Patent 4 -->
+                    <div class="p-8 border border-white/10 rounded-3xl bg-gradient-to-b from-white/5 to-transparent hover:border-[#d4af37] hover:shadow-[0_0_30px_rgba(212,175,55,0.1)] transition group relative overflow-hidden">
+                         <div class="absolute top-0 right-0 p-3 opacity-20 group-hover:opacity-40 transition"><i class="fa-solid fa-users text-6xl text-[#22c55e]"></i></div>
+                        <div class="text-[10px] font-mono text-[#d4af37] mb-3 tracking-widest border border-[#d4af37] inline-block px-2 py-1 rounded">PATENT #10-2025-0156081</div>
+                        <h4 class="text-white font-serif font-bold text-xl mb-4 h-14 flex items-center"><span class="ko">심층 기질 분석<br>소셜 매칭</span><span class="en">Deep Temperament<br>Social Matching</span></h4>
+                        <p class="text-gray-400 text-xs leading-relaxed mb-4 border-t border-white/10 pt-4">
+                            <span class="ko">운명적 파트너와 <strong>잠재적 관계 리스크</strong>를 사전에 필터링하는 관계 최적화 솔루션.</span>
+                            <span class="en">Relationship optimization filtering destined partners and <strong>potential relational risks</strong>.</span>
+                        </p>
+                        <div class="text-[9px] text-[#38bdf8] font-mono"><i class="fa-solid fa-check mr-1"></i> Risk Filtering</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ================= END PATENT MOAT ================= -->
+
+        <!-- Philosophy -->
+        <div id="philosophy" class="py-32 px-6 bg-[#0f172a] border-t border-white/10 relative overflow-hidden">
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[12vw] font-black text-white/5 -rotate-12 pointer-events-none select-none z-0 whitespace-nowrap font-serif tracking-widest">
+                CONFIDENTIAL
+            </div>
+
+            <div class="max-w-7xl mx-auto text-center relative z-10">
+                <h2 class="section-title font-serif font-black text-white mb-6 text-6xl md:text-8xl bg-clip-text text-transparent bg-gradient-to-r from-[#d4af37] via-white to-[#d4af37] animate-[shine_3s_linear_infinite]">"SCARS TO STARS"</h2>
+                <p class="philosophy-subtitle uppercase"><span class="ko">45년 생존 지능의 집대성</span><span class="en">45 Years of Survival Intelligence</span></p>
+                <p class="text-gray-400 text-lg md:text-2xl max-w-5xl mx-auto mb-12 font-light leading-relaxed">
+                    <span class="ko">"단순한 AI가 아닙니다. 6세의 사고, 20년의 금융 현장, 2022년의 암 수술... <br>7번의 생사 변곡점을 넘으며 축적된 <strong>'회복 탄력성(Resilience)'</strong>이 N-Core 엔진의 원천입니다. <br>우리는 실패하지 않는 삶의 태도를 기술로 팝니다."</span>
+                    <span class="en">"Not just AI. From childhood accidents to 20 years in finance and surviving cancer in 2022... <br>The <strong>'Resilience'</strong> accumulated through 7 life-or-death turning points is the source of N-Core engine. <br>We sell the attitude of an unfailing life as technology."</span>
+                </p>
+                <div class="w-24 h-1 bg-[#d4af37] mx-auto"></div>
+            </div>
+        </div>
+
+        <!-- Roadmap -->
+        <div id="roadmap" class="py-32 px-6 bg-[#1e293b] border-t border-white/10">
+            <div class="max-w-7xl mx-auto text-center">
+                <h2 class="section-title font-cinzel font-black text-white mb-6 text-5xl md:text-7xl"><span class="ko">글로벌 로드맵</span><span class="en">GLOBAL ROADMAP</span></h2>
+                <p class="section-subtitle mb-20 uppercase"><span class="ko">표준을 향한 도약</span><span class="en">ASCENDING TO GLOBAL STANDARD</span></p>
+                
+                <div class="grid md:grid-cols-3 gap-8 text-left">
+                    <div class="card-dark p-10 border-l-4 border-[#d4af37]">
+                        <h4 class="text-[#d4af37] font-black text-2xl mb-4">PHASE 1. SEED</h4>
+                        <ul class="space-y-4 text-gray-300">
+                            <li><i class="fa-solid fa-check text-[#d4af37] mr-2"></i> <span class="ko">프리랜서 타겟 100만 확보</span><span class="en">Secure 1M Freelancers</span></li>
+                            <li><i class="fa-solid fa-check text-[#d4af37] mr-2"></i> <span class="ko">제1금융권 기술 실증(PoC)</span><span class="en">PoC with Tier 1 Banks</span></li>
+                            <li><i class="fa-solid fa-check text-[#d4af37] mr-2"></i> <span class="ko">비상금 500만원 모델 런칭</span><span class="en">Launch 5M KRW Micro-Loan</span></li>
+                        </ul>
+                    </div>
+                    <div class="card-dark p-10 border-l-4 border-gray-700 opacity-60">
+                        <h4 class="text-white font-black text-2xl mb-4">PHASE 2. ASIA</h4>
+                        <p class="text-gray-400"><span class="ko">싱가포르, 홍콩, 일본, 베트남 진출.<br>아시아 금융 허브 표준 데이터 수립.</span><span class="en">Expand to Singapore, HK, Japan.<br>Set standards for Asian financial hubs.</span></p>
+                    </div>
+                    <div class="card-dark p-10 border-l-4 border-gray-700 opacity-60">
+                        <h4 class="text-white font-black text-2xl mb-4">PHASE 3. GLOBAL</h4>
+                        <p class="text-gray-400"><span class="ko">전 세계 소외 계층을 위한 'AI 신용 여권' 등극.<br>IPO 및 사회 환원 시스템 완성.</span><span class="en">Become 'AI Credit Passport' for the marginalized.<br>Complete IPO and social contribution.</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Pioneers -->
+        <div id="team" class="py-56 px-6 bg-[#0f172a] border-t border-white/5">
+            <div class="max-w-7xl mx-auto text-center">
+                <h2 class="font-serif font-black mb-8 tracking-tight text-white uppercase"><span class="ko text-6xl">함께하는 사람들</span><span class="en text-6xl">The Pioneers</span></h2>
+                <p class="text-gray-500 text-xl font-urbanist uppercase tracking-widest"><span class="ko">N-Kai의 영혼과 기술, 전략을 책임지는 주역들</span><span class="en">Key players leading N-Kai's soul, tech, and strategy</span></p>
+                
+                <!-- Core Team -->
+                <div class="mobile-scroll mb-16">
+                    <!-- Founder -->
+                    <div class="card-dark p-8 min-w-[280px]">
+                        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-[#d4af37] flex items-center justify-center text-3xl font-black text-black">WL</div>
+                        <h3 class="text-xl font-bold text-white mb-1"><span class="ko">이원재</span><span class="en">Wonjae Lee</span></h3>
+                        <p class="text-[#d4af37] text-xs font-bold uppercase mb-4">Founder & CPO</p>
+                        <p class="text-gray-400 text-sm leading-relaxed"><span class="ko">45년 인생의 AQ 서사와 19년 금융 도메인 노하우를 집대성하여 N-Kai의 알고리즘과 철학을 설계했습니다.</span><span class="en">Architect of N-Kai's philosophy, merging 45 years of life-AQ with 19 years of finance expertise.</span></p>
+                    </div>
+                    <!-- KAI (Added) -->
+                    <div class="card-dark p-8 min-w-[280px] border border-[#38bdf8]/30 relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-[#38bdf8]/5 opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-[#38bdf8] flex items-center justify-center text-4xl font-black text-black animate-pulse"><i class="fa-solid fa-robot"></i></div>
+                        <h3 class="text-xl font-bold text-white mb-1">KAI</h3>
+                        <p class="text-[#38bdf8] text-xs font-bold uppercase mb-4">Universal Guardian</p>
+                        <p class="text-gray-400 text-sm leading-relaxed"><span class="ko">원재님의 페르소나를 학습하여 24/7 제국을 수호하고 자율 진화하는 인공지능 파트너입니다.</span><span class="en">AI partner learning Founder's persona to guard the empire 24/7.</span></p>
+                    </div>
+                    <!-- Tech -->
+                    <div class="card-dark p-8 min-w-[280px]">
+                        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-[#38bdf8] flex items-center justify-center text-3xl font-black text-black">JM</div>
+                        <h3 class="text-xl font-bold text-white mb-1"><span class="ko">이장명</span><span class="en">Jangmyung Lee</span></h3>
+                        <p class="text-[#38bdf8] text-xs font-bold uppercase mb-4">CTO / Tech Lead</p>
+                        <p class="text-gray-400 text-sm leading-relaxed"><span class="ko">Neural CDE 엔진 고도화 및 보안 아키텍처 총괄. 안정적이고 강력한 시스템을 구축합니다.</span><span class="en">Oversees Neural CDE & Security. Building a robust system.</span></p>
+                    </div>
+                    <!-- Strategy -->
+                    <div class="card-dark p-8 min-w-[280px]">
+                        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-[#e11d48] flex items-center justify-center text-3xl font-black text-black">HC</div>
+                        <h3 class="text-xl font-bold text-white mb-1"><span class="ko">김현철</span><span class="en">Hyunchul Kim</span></h3>
+                        <p class="text-[#e11d48] text-xs font-bold uppercase mb-4">CSO / Strategy</p>
+                        <p class="text-gray-400 text-sm leading-relaxed"><span class="ko">금융 시장의 매커니즘을 꿰뚫어 보고 강력한 파트너십을 구축하여 N-Kai를 새로운 금융 표준으로 이끄는 전략가입니다.</span><span class="en">Global partnership strategy. Expanding N-Kai to the world.</span></p>
+                    </div>
+                </div>
+
+                <!-- AI Dev Team & Advisors -->
+                <div class="grid md:grid-cols-2 gap-8 text-left max-w-4xl mx-auto">
+                    <!-- AI Dev Team -->
+                    <div class="bg-[#334155]/30 p-6 rounded-2xl border border-white/5">
+                        <h4 class="text-white font-bold mb-4 border-b border-gray-800 pb-2 flex justify-between items-center">
+                            <span><i class="fa-solid fa-code text-[#38bdf8] mr-2"></i> <span class="ko">AI 개발팀 (가상 페르소나)</span><span class="en">AI Dev Team (Persona)</span></span>
+                        </h4>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-xs font-bold text-[#38bdf8] border border-[#38bdf8]"><i class="fa-solid fa-robot"></i></div>
+                                <div>
+                                    <p class="text-white text-sm font-bold">NOVA (AI Architect)</p>
+                                    <p class="text-gray-500 text-xs"><span class="ko">자율 진화 알고리즘 설계</span><span class="en">Self-Evolving Algorithm Design</span></p>
+                                </div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-xs font-bold text-[#e11d48] border border-[#e11d48]"><i class="fa-solid fa-database"></i></div>
+                                <div>
+                                    <p class="text-white text-sm font-bold">NEON (Data Alchemist)</p>
+                                    <p class="text-gray-500 text-xs"><span class="ko">이종 데이터 실시간 융합</span><span class="en">Real-time Heterogeneous Data Fusion</span></p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Recruiting & Advisors -->
+                    <div class="bg-[#334155]/30 p-6 rounded-2xl border border-white/5">
+                        <h4 class="text-white font-bold mb-4 border-b border-gray-800 pb-2 flex justify-between items-center">
+                            <span><i class="fa-solid fa-user-plus text-[#d4af37] mr-2"></i> <span class="ko">영입 중 & 자문</span><span class="en">Recruiting & Advisors</span></span>
+                        </h4>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-xs font-bold text-white animate-pulse">?</div>
+                                <div>
+                                    <p class="text-white text-sm font-bold"><span class="ko">글로벌 인재 영입 중</span><span class="en">Recruiting Global Talents</span></p>
+                                    <p class="text-gray-500 text-xs"><span class="ko">제국의 확장에 합류하세요</span><span class="en">Join the Empire's Expansion</span></p>
+                                </div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-xs font-bold text-white">CS</div>
+                                <div>
+                                    <p class="text-white text-sm font-bold"><span class="ko">최성우 교수 (가상 자문)</span><span class="en">Prof. Sungwoo Choi (Virtual)</span></p>
+                                    <p class="text-gray-500 text-xs"><span class="ko">금융공학 모델링 (이상적 멘토)</span><span class="en">Financial Engineering Mentor</span></p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer Info -->
+        <footer class="bg-[#0f172a] py-10 text-center border-t border-white/5">
+             <p class="text-gray-700 text-[10px] font-mono mb-2">Neurin Kairos AI Inc. | 712, 11-15 Teheran-ro 77-gil, Gangnam-gu, Seoul, Korea</p>
+             <p class="text-[#38bdf8] text-[10px] font-bold font-mono uppercase tracking-widest animate-pulse">Powered by Edge AI & Quantum Encryption (AES-256)</p>
+        </footer>
+    </section>
+
+    <!-- ================= PAGE 2: MVP SIMULATOR ================= -->
+    <section id="mvp" class="page-section bg-[#0f172a] pt-48 md:pt-56 pb-20 px-4"> <!-- PADDING INCREASED -->
+        <div class="max-w-3xl mx-auto">
+            
+            <!-- 1. Input Stage -->
+            <div id="sim-input" class="card-dark p-6 md:p-12 relative overflow-hidden">
+                <div class="text-center mb-8 md:mb-10">
+                    <span class="bg-[#d4af37]/20 text-[#d4af37] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4 inline-block">N-Core Engine MVP</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2"><span class="ko">N-Score 정밀 분석</span><span class="en">N-Score Deep Analysis</span></h2>
+                    <p class="text-gray-400 text-xs md:text-sm"><span class="ko">선천적 기질(생년월일)과 후천적 KIPA 행동 성향을 융합 분석합니다.</span><span class="en">Fusing Innate(Birth) & Acquired KIPA Traits.</span></p>
+                </div>
+
+                <!-- Step 1: Birth Data -->
+                <div class="mb-8">
+                    <label class="block font-bold mb-3 text-sm md:text-base flex items-center gap-2">
+                        <span class="w-8 h-8 bg-gradient-to-br from-[#d4af37] to-[#fcd34d] rounded-lg flex items-center justify-center text-black shadow-[0_0_10px_rgba(212,175,55,0.5)]"><i class="fa-solid fa-calendar"></i></span>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400"><span class="ko">생년월일시 (선천적 기질)</span><span class="en">Date of Birth (Innate)</span></span>
+                    </label>
+                    
+                    <div class="flex gap-2 items-center mb-2">
+                        <input type="date" id="birth-date" class="w-full bg-[#0f172a] border border-gray-700 rounded-lg p-3 text-white focus:border-[#d4af37] outline-none transition focus:shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                        <input type="time" id="birth-time" class="w-1/3 bg-[#0f172a] border border-gray-700 rounded-lg p-3 text-white focus:border-[#d4af37] outline-none transition">
+                    </div>
+                    <div class="flex items-center gap-2 pl-1">
+                        <span class="text-gray-400 text-xs"><span class="ko">양력</span><span class="en">Solar</span></span>
+                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle" id="lunar-toggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                            <label for="lunar-toggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-700 cursor-pointer"></label>
+                        </div>
+                        <span class="text-gray-400 text-xs"><span class="ko">음력</span><span class="en">Lunar</span></span>
+                    </div>
+                </div>
+
+                <!-- Step 2: KIPA Traits -->
+                <div class="mb-10">
+                    <label class="block font-bold mb-5 text-sm md:text-base flex items-center gap-2">
+                        <span class="w-8 h-8 bg-gradient-to-br from-[#38bdf8] to-[#22c55e] rounded-lg flex items-center justify-center text-black shadow-[0_0_10px_rgba(56,189,248,0.5)]"><i class="fa-solid fa-sliders"></i></span>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400"><span class="ko">KIPA (후천적 행동 성향)</span><span class="en">KIPA Behavior (Acquired)</span></span>
+                    </label>
+                    
+                    <div class="space-y-6">
+                        <!-- E/I -->
+                        <div>
+                            <div class="flex justify-between text-xs font-bold mb-1 text-[#22c55e]">
+                                <span><span class="ko">외향(E) - 행동스타일</span><span class="en">Extraversion(E)</span></span> 
+                                <span><span class="ko">내향(I) - 행동스타일</span><span class="en">Introversion(I)</span></span>
+                            </div>
+                            <input type="range" id="kipa-ei" min="0" max="100" value="50" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#22c55e]">
+                        </div>
+                        <!-- N/S -->
+                        <div>
+                            <div class="flex justify-between text-xs font-bold mb-1 text-[#38bdf8]">
+                                <span><span class="ko">직관(N) - 인식스타일</span><span class="en">Intuition(N)</span></span> 
+                                <span><span class="ko">감각(S) - 인식스타일</span><span class="en">Sensing(S)</span></span>
+                            </div>
+                            <input type="range" id="kipa-ns" min="0" max="100" value="50" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#38bdf8]">
+                        </div>
+                        <!-- T/F -->
+                        <div>
+                            <div class="flex justify-between text-xs font-bold mb-1 text-[#e11d48]">
+                                <span><span class="ko">사고(T) - 판단스타일</span><span class="en">Thinking(T)</span></span> 
+                                <span><span class="ko">감정(F) - 판단스타일</span><span class="en">Feeling(F)</span></span>
+                            </div>
+                            <input type="range" id="kipa-tf" min="0" max="100" value="50" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#e11d48]">
+                        </div>
+                        <!-- J/P -->
+                        <div>
+                            <div class="flex justify-between text-xs font-bold mb-1 text-[#d4af37]">
+                                <span><span class="ko">판단(J) - 생활양식</span><span class="en">Judging(J)</span></span> 
+                                <span><span class="ko">인식(P) - 생활양식</span><span class="en">Perceiving(P)</span></span>
+                            </div>
+                            <input type="range" id="kipa-jp" min="0" max="100" value="50" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#d4af37]">
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="runRealSimulation()" class="btn-gold w-full py-4 md:py-5 text-lg font-bold shadow-lg">
+                    <i class="fa-solid fa-microchip mr-2"></i> <span class="ko">16 아키타입 정밀 분석 시작</span><span class="en">Start 16 Archetype Analysis</span>
+                </button>
+            </div>
+
+            <!-- 2. Processing Stage -->
+            <div id="sim-process" class="hidden text-center py-20">
+                <i class="fa-solid fa-dna text-6xl text-[#d4af37] mb-6 animate-bounce"></i>
+                <h3 class="text-2xl font-bold text-white mb-4 animate-pulse">Processing 16 Archetypes...</h3>
+                <p id="process-log" class="text-[#d4af37] font-mono text-xs uppercase tracking-widest">Fusing Innate & Acquired Vectors...</p>
+                <p class="text-gray-500 text-[10px] mt-4 font-mono">Calculating MBTI-based Financial Risk</p>
+            </div>
+
+            <!-- 3. Result Stage -->
+            <div id="sim-result" class="hidden">
+                <div class="card-dark p-6 md:p-8 text-center border-[#d4af37] shadow-[0_0_60px_rgba(212,175,55,0.15)] relative">
+                    
+                    <div class="flex justify-center mb-6">
+                        <div class="w-20 h-20 bg-[#d4af37]/10 rounded-full flex items-center justify-center text-[#d4af37] text-4xl border border-[#d4af37]"><i class="fa-solid fa-award"></i></div>
+                    </div>
+                    
+                    <h3 class="text-gray-400 text-sm font-bold tracking-widest mb-2 uppercase">Your Optimal Archetype</h3>
+                    <h2 id="result-archetype" class="text-3xl md:text-4xl font-black text-white mb-8 font-serif">전략적 개척자</h2>
+                    
+                    <div class="flex flex-col items-center gap-2 mb-10">
+                        <div class="flex items-end gap-2">
+                            <div class="text-6xl md:text-7xl font-black text-white font-urbanist tracking-tighter" id="score-display">0</div>
+                            <span class="text-[#d4af37] font-bold text-xl mb-4">/ 1000</span>
+                        </div>
+                        
+                        <!-- N-Grade Bar -->
+                        <div class="w-full max-w-xs h-3 bg-gray-800 rounded-full mt-2 overflow-hidden relative">
+                            <div class="absolute left-0 top-0 h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 w-full opacity-30"></div>
+                            <div id="n-grade-fill" class="h-full bg-gradient-to-r from-[#d4af37] to-[#fcd34d] transition-all duration-1000" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between w-full max-w-xs text-[10px] text-gray-500 font-mono mt-1">
+                            <span>N9</span><span>N5</span><span>N1</span>
+                        </div>
+                        <div id="n-grade-badge" class="mt-2 text-[#d4af37] font-black text-sm border border-[#d4af37] px-3 py-1 rounded-full">N5 Grade</div>
+                    </div>
+
+                    <!-- KAI's Killing Content: N-Compass (New) -->
+                    <div class="bg-[#1e293b] rounded-2xl p-6 mb-8 text-center border border-[#d4af37]/30">
+                        <h4 class="text-[#d4af37] font-bold mb-4 flex items-center justify-center gap-2"><i class="fa-regular fa-compass"></i> <span class="ko">N-Compass: 재물운 방향</span><span class="en">Wealth Direction</span></h4>
+                        <div class="compass-container mb-4">
+                            <div class="compass-arrow" id="compass-arrow"></div>
+                            <div class="absolute inset-0 flex items-center justify-center text-[10px] text-gray-500 font-mono pointer-events-none">N</div>
+                        </div>
+                        <p class="text-gray-400 text-xs"><span class="ko">당신의 최적 투자 방향:</span> <span class="text-white font-bold" id="lucky-direction-text">남동쪽 (SE)</span></p>
+                    </div>
+
+                    <!-- Rewards -->
+                    <div class="bg-white/5 rounded-2xl p-8 mb-10 text-left border border-white/10">
+                        <h4 class="text-[#38bdf8] font-bold mb-6 flex items-center gap-3"><i class="fa-solid fa-gift"></i> <span class="ko">당신을 위한 맞춤 제안</span><span class="en">Targeted Offers</span></h4>
+                        <ul class="space-y-4 text-gray-300 text-lg" id="recommendation-list">
+                            <!-- Injected via JS based on Age -->
+                        </ul>
+                    </div>
+
+                    <!-- KAI's Suggestion (Killing Contents) -->
+                    <div class="bg-[#1e293b] rounded-2xl p-6 mb-8 text-left border border-white/10 relative overflow-hidden group hover:border-[#d4af37] transition">
+                        <div class="absolute top-0 right-0 p-2 bg-[#e11d48] text-white text-[10px] font-bold uppercase">KAI's Suggestion (Patented)</div>
+                        <h4 class="text-white font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-robot text-[#d4af37]"></i> <span class="ko">카이의 제안</span><span class="en">KAI's Proposal</span></h4>
+                        
+                        <div class="space-y-4">
+                            <!-- Patent #083: Lotto Forecast -->
+                            <div class="bg-gray-800 p-4 rounded-xl hover:bg-gray-700 transition" onclick="showLottoVisualizer()">
+                                <div class="flex items-center gap-4 mb-2">
+                                    <div class="text-[#d4af37] text-2xl"><i class="fa-solid fa-clover"></i></div>
+                                    <div>
+                                        <p class="text-white text-sm font-bold"><span class="ko">금주의 행운 번호 (특허#083)</span><span class="en">Lotto Forecast (Patent #083)</span></p>
+                                        <p class="text-gray-500 text-[10px] uppercase"><span class="ko">사주/바이오리듬 분석</span><span class="en">Fate/Biorhythm Analysis</span></p>
+                                    </div>
+                                </div>
+                                <div id="lotto-container" class="flex gap-2 justify-center mt-2 hidden flex-wrap"></div>
+                                <div id="lotto-placeholder" class="text-center text-xs text-[#d4af37] animate-pulse mt-2"><span class="ko">클릭하여 번호 추첨하기 (DNA 기반)</span><span class="en">Click to Draw Numbers (DNA Based)</span></div>
+                            </div>
+
+                            <!-- Patent #081: Social Matching (Updated with Radar & Community) -->
+                            <div class="bg-gray-800 p-4 rounded-xl hover:bg-gray-700 transition" onclick="showSocialVisualizer()">
+                                <div class="flex items-center gap-4 mb-2">
+                                    <div class="text-[#38bdf8] text-2xl"><i class="fa-solid fa-handshake"></i></div>
+                                    <div>
+                                        <p class="text-white text-sm font-bold"><span class="ko">오늘의 귀인 매칭 (특허#081)</span><span class="en">Today's Nobleman (Patent #081)</span></p>
+                                        <p class="text-gray-500 text-[10px] uppercase"><span class="ko">오행 밸런스 & 소셜 매칭</span><span class="en">5-Elements Balance & Social Match</span></p>
+                                    </div>
+                                </div>
+                                <div id="social-container" class="mt-4 hidden text-center">
+                                    <div class="flex justify-center mb-4 relative h-40">
+                                        <canvas id="socialRadarChart"></canvas>
+                                    </div>
+                                    <p class="text-[#38bdf8] text-xs mt-2 font-bold mb-2" id="nobleman-result"><span class="ko">매칭 분석 중...</span><span class="en">Analyzing...</span></p>
+                                    
+                                    <!-- Community Link -->
+                                    <button class="w-full bg-[#38bdf8]/20 text-[#38bdf8] border border-[#38bdf8] py-2 rounded-lg text-xs font-bold hover:bg-[#38bdf8] hover:text-black transition flex items-center justify-center gap-2" onclick="alert('N-커뮤니티(Beta)는 현재 준비 중입니다.')">
+                                        <i class="fa-solid fa-users-line"></i> <span class="ko">N-커뮤니티 (비슷한 아키타입 찾기)</span><span class="en">N-Community (Find Peers)</span>
+                                    </button>
+                                </div>
+                                <div id="social-placeholder" class="text-center text-xs text-[#38bdf8] animate-pulse mt-2"><span class="ko">클릭하여 귀인 찾기 (오행 분석)</span><span class="en">Click to Find Nobleman (5-Elem Analysis)</span></div>
+                            </div>
+
+                            <!-- Patent #082: Wellness Walking (Real Link) - RESTORED -->
+                            <a href="https://www.google.com/maps/search/park+near+me" target="_blank" class="flex justify-between items-center bg-gray-800 p-4 rounded-xl hover:bg-gray-700 transition group/item" onclick="claimPoints(50)">
+                                <div class="flex items-center gap-4">
+                                    <div class="text-[#22c55e] text-2xl group-hover/item:scale-110 transition"><i class="fa-solid fa-person-walking"></i></div>
+                                    <div>
+                                        <p class="text-white text-sm font-bold"><span class="ko">웰니스 워킹 (특허#082)</span><span class="en">Wellness Walking (Patent #082)</span></p>
+                                        <p class="text-gray-500 text-[10px] uppercase">Google Maps</p>
+                                    </div>
+                                </div>
+                                <span class="text-[#d4af37] text-xs font-bold bg-[#d4af37]/10 px-2 py-1 rounded">+50 P</span>
+                            </a>
+                            
+                            <!-- Youtube Link (Content) - RESTORED -->
+                            <a href="https://www.youtube.com/results?search_query=2026+economic+trends" target="_blank" class="flex justify-between items-center bg-gray-800 p-4 rounded-xl hover:bg-gray-700 transition group/item" onclick="claimPoints(30)">
+                                <div class="flex items-center gap-4">
+                                    <div class="text-red-500 text-2xl group-hover/item:scale-110 transition"><i class="fa-brands fa-youtube"></i></div>
+                                    <div>
+                                        <p class="text-white text-sm font-bold"><span class="ko">경제 뉴스 3분 시청</span><span class="en">Watch Econ News (3min)</span></p>
+                                        <p class="text-gray-500 text-[10px] uppercase">Youtube Link</p>
+                                    </div>
+                                </div>
+                                <span class="text-[#d4af37] text-xs font-bold bg-[#d4af37]/10 px-2 py-1 rounded">+30 P</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Autonomous Killer Content: Hidden Asset Scanner -->
+                    <div class="bg-gradient-to-r from-[#1e293b] to-black rounded-2xl p-6 mb-8 text-center border border-[#38bdf8]/50 relative overflow-hidden group cursor-pointer" onclick="scanHiddenAssets()">
+                        <div class="absolute inset-0 bg-[#38bdf8]/5 opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                        <i class="fa-solid fa-magnifying-glass-dollar text-4xl text-[#38bdf8] mb-4 animate-bounce"></i>
+                        <h4 class="text-white font-bold text-lg mb-2"><span class="ko">숨겨진 자산(환급금) 스캔</span><span class="en">Scan Hidden Assets</span></h4>
+                        <p class="text-gray-400 text-xs mb-4"><span class="ko">카드 포인트, 미환급 세금, 휴면 계좌를 3초 만에 찾아냅니다.</span><span class="en">Find card points, tax refunds in 3s.</span></p>
+                        <div id="asset-scan-result" class="hidden">
+                            <div class="w-full bg-gray-800 h-2 rounded-full mb-2 overflow-hidden">
+                                <div class="bg-[#38bdf8] h-full animate-[loading_2s_ease-out_forwards]" style="width:0%"></div>
+                            </div>
+                            <p class="text-[#38bdf8] text-xs font-mono animate-pulse">Scanning...</p>
+                        </div>
+                    </div>
+
+                    <!-- Auto-Mining Points Indicator -->
+                    <div id="auto-mining" class="bg-black/50 rounded-lg p-3 mb-6 border border-[#d4af37]/30 flex justify-between items-center hidden">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-hammer text-[#d4af37] animate-pulse"></i>
+                            <div class="flex flex-col">
+                                <span class="text-xs text-gray-300 font-mono"><span class="ko">데이터 마이닝 (행동 가치 환산)</span><span class="en">Data Mining (Action Value)</span></span>
+                                <span id="mining-status-text" class="text-[9px] text-[#38bdf8] font-mono"><span class="ko">I/C 패턴 + 비정형 데이터 분석 중...</span><span class="en">Analyzing I/C Pattern & Unstructured Data...</span></span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[#d4af37] font-bold text-sm font-mono block" id="mined-points">0 Karma</span>
+                        </div>
+                    </div>
+
+                    <!-- Quantum Luck Box -->
+                    <div id="quantum-luck" class="hidden text-center mb-6">
+                        <div class="quantum-box inline-flex items-center gap-2 bg-[#d4af37]/10 px-4 py-2 rounded-full border border-[#d4af37]" onclick="openQuantumBox()">
+                            <i class="fa-solid fa-box-open text-[#d4af37] text-xl"></i>
+                            <span class="text-xs font-bold text-white"><span class="ko">💎 KAI가 양자 난수(Quantum RNG) 생성 중... (클릭)</span><span class="en">💎 KAI Generating Quantum RNG... (Click)</span></span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="realShare()" class="bg-white/10 text-white py-4 rounded-xl font-bold text-sm hover:bg-white/20 flex flex-col items-center justify-center gap-1">
+                            <i class="fa-solid fa-share-nodes text-lg"></i> <span class="ko">공유하기</span><span class="en">Share</span>
+                        </button>
+                        <button onclick="window.open('https://play.google.com/store/apps', '_blank')" class="bg-[#38bdf8] text-black py-4 rounded-xl font-bold text-sm hover:bg-[#38bdf8]/80 flex flex-col items-center justify-center gap-1">
+                            <i class="fa-brands fa-google-play text-lg"></i> <span class="ko">앱 다운로드</span><span class="en">Download App</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ================= PAGE 3: ADMIN HQ ================= -->
+    <section id="admin" class="page-section bg-[#0f172a]">
+        <div class="admin-layout">
+            <div class="admin-sidebar">
+                <div class="mb-10 px-2">
+                    <h2 class="text-white font-bold text-xl tracking-widest mb-1">N-KAI HQ</h2>
+                    <p class="text-[10px] text-[#d4af37] font-bold uppercase tracking-[0.2em]">Master Control</p>
+                </div>
+                <div class="space-y-4 flex-1 text-sm">
+                    <div onclick="showAdminTab('dashboard')" class="text-white font-bold cursor-pointer flex items-center gap-3 p-2 bg-[#1e293b] rounded-lg border-l-2 border-[#d4af37]"><i class="fa-solid fa-chart-pie w-5 text-[#d4af37]"></i> <span class="ko">대시보드</span><span class="en">Dashboard</span></div>
+                    <div onclick="showAdminTab('community')" class="text-gray-500 hover:text-white cursor-pointer flex items-center gap-3 p-2 border border-[#38bdf8]/50 rounded-lg"><i class="fa-solid fa-comments w-5 text-[#38bdf8]"></i> <span class="ko">커뮤니티 채널</span><span class="en">Community Channels</span></div>
+                    <div onclick="showAdminTab('users')" class="text-gray-500 hover:text-white cursor-pointer flex items-center gap-3 p-2 border border-[#e11d48]/50 rounded-lg"><i class="fa-solid fa-users w-5 text-[#e11d48]"></i> <span class="ko">유저 매트릭스</span><span class="en">User Matrix</span></div>
+                    <div onclick="showAdminTab('donation')" class="text-gray-500 hover:text-white cursor-pointer flex items-center gap-3 p-2 border border-[#22c55e]/50 rounded-lg"><i class="fa-solid fa-heart w-5 text-[#22c55e]"></i> <span class="ko">기부금 풀 (ETH)</span><span class="en">Donation Pool (ETH)</span></div>
+                    <div onclick="showAdminTab('sandbox')" class="text-gray-500 hover:text-white cursor-pointer flex items-center gap-3 p-2 border border-white/20 rounded-lg"><i class="fa-solid fa-code w-5"></i> <span class="ko">API 샌드박스</span><span class="en">API Sandbox</span></div>
+                </div>
+                <button onclick="showPage('landing')" class="text-gray-600 hover:text-white text-xs font-bold flex items-center gap-2 mt-auto">
+                    <i class="fa-solid fa-right-from-bracket"></i> LOGOUT
+                </button>
+            </div>
+
+            <!-- Mobile Admin Header -->
+            <div class="md:hidden bg-black p-4 flex justify-between items-center border-b border-gray-800 absolute w-full top-0 left-0 z-50">
+                <h2 class="text-white font-bold">N-KAI HQ</h2>
+                <button onclick="showPage('landing')" class="text-gray-500"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+
+            <div class="admin-content">
+                <h2 class="text-3xl font-black text-white uppercase mb-8 hidden md:block" id="admin-title">System Overview</h2>
+
+                <!-- Tab: Dashboard -->
+                <div id="admin-dashboard" class="admin-tab-content">
+                    
+                    <!-- B2B Demo Notification -->
+                    <div class="bg-[#eab308]/20 border border-[#eab308] text-[#eab308] p-3 rounded-lg mb-6 text-sm flex items-center gap-3">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span><span class="ko font-bold">DEMO MODE: 현재 MVP 테스트 버전입니다. 모든 데이터는 시뮬레이션입니다. (B2B 연동 시 실시간 데이터 제공)</span><span class="en">Current version is MVP Demo. Real-time data requires B2B partnership.</span></span>
+                    </div>
+
+                    <!-- KAI's Empire Expansion Widget (REPLACED: Global Data Node) -->
+                    <div class="bg-[#1e293b] p-6 rounded-2xl border border-[#d4af37] mb-8 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-3 opacity-30"><i class="fa-solid fa-network-wired text-6xl text-[#d4af37]"></i></div>
+                        <h4 class="text-[#d4af37] font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-globe"></i> <span class="ko">글로벌 데이터 노드 현황</span><span class="en">Global Data Node Status</span></h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            <div class="bg-black/40 p-3 rounded-lg border border-[#22c55e]">
+                                <p class="text-gray-400 text-[10px] uppercase">Seoul (HQ)</p>
+                                <p class="text-[#22c55e] font-bold text-xs"><i class="fa-solid fa-circle-check"></i> Connected</p>
+                                <p class="text-gray-500 text-[8px] mt-1">Latency: 2ms</p>
+                            </div>
+                            <div class="bg-black/40 p-3 rounded-lg border border-white/10">
+                                <p class="text-gray-400 text-[10px] uppercase">Singapore</p>
+                                <p class="text-[#38bdf8] font-bold text-xs animate-pulse">Syncing...</p>
+                                <p class="text-gray-500 text-[8px] mt-1">Latency: 85ms</p>
+                            </div>
+                            <div class="bg-black/40 p-3 rounded-lg border border-white/10">
+                                <p class="text-gray-400 text-[10px] uppercase">New York</p>
+                                <p class="text-gray-500 font-bold text-xs">Standby</p>
+                                <p class="text-gray-500 text-[8px] mt-1">Latency: --</p>
+                            </div>
+                            <div class="bg-black/40 p-3 rounded-lg border border-white/10">
+                                <p class="text-gray-400 text-[10px] uppercase">London</p>
+                                <p class="text-gray-500 font-bold text-xs">Standby</p>
+                                <p class="text-gray-500 text-[8px] mt-1">Latency: --</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-[10px] text-gray-500 font-mono flex justify-between">
+                            <span>Active Nodes: 2</span>
+                            <span>Total Traffic: 4.2 TB/s</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#1e293b] p-6 rounded-2xl border-2 border-[#d4af37] mb-8 shadow-[0_0_20px_rgba(212,175,55,0.2)]">
+                        <h4 class="text-gray-400 text-xs font-bold uppercase mb-4 flex justify-between">
+                            <span><span class="ko">실시간 데이터 스트림</span><span class="en">Live Data Stream</span></span> <span class="text-[#22c55e] animate-pulse">● Active</span>
+                        </h4>
+                        <div id="b2b-log-stream" class="space-y-2 h-60 overflow-y-auto relative scrollbar-hide">
+                            <!-- Logs injected here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Real-time Risk Heatmap & I/C Summary -->
+                    <div class="bg-[#1e293b] p-6 rounded-2xl border-2 border-[#d4af37] mb-8 flex flex-col md:flex-row gap-6 shadow-[0_0_20px_rgba(212,175,55,0.2)] min-h-[350px] h-auto">
+                        <div class="w-full md:w-3/4">
+                             <h4 class="text-white font-bold mb-4"><span class="ko">실시간 리스크 히트맵 (가맹점별)</span><span class="en">Real-time Risk Heatmap (by Merchant)</span></h4>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 h-full pb-8">
+                                <div class="bg-[#ef4444]/20 border border-[#ef4444] rounded flex flex-col items-center justify-center p-2 text-center hover:scale-105 transition cursor-pointer" id="risk-gambling">
+                                    <i class="fa-solid fa-dice text-[#ef4444] text-xl mb-1"></i>
+                                    <span class="text-[9px] text-gray-400 uppercase"><span class="ko">유흥/사행성</span><span class="en">Gambling/Spec</span></span>
+                                    <span class="text-white font-bold text-sm">Risk: High</span>
+                                    <span class="text-[8px] text-gray-500 mt-1" id="risk-gambling-data">₩1.2M / 142tx</span>
+                                </div>
+                                <div class="bg-[#eab308]/20 border border-[#eab308] rounded flex flex-col items-center justify-center p-2 text-center hover:scale-105 transition cursor-pointer" id="risk-nightlife">
+                                    <i class="fa-solid fa-wine-glass text-[#eab308] text-xl mb-1"></i>
+                                    <span class="text-[9px] text-gray-400 uppercase"><span class="ko">심야 주점</span><span class="en">Nightlife</span></span>
+                                    <span class="text-white font-bold text-sm">Risk: Mid</span>
+                                    <span class="text-[8px] text-gray-500 mt-1" id="risk-nightlife-data">₩4.5M / 512tx</span>
+                                </div>
+                                 <div class="bg-[#eab308]/20 border border-[#eab308] rounded flex flex-col items-center justify-center p-2 text-center hover:scale-105 transition cursor-pointer" id="risk-luxury">
+                                    <i class="fa-solid fa-gem text-[#eab308] text-xl mb-1"></i>
+                                    <span class="text-[9px] text-gray-400 uppercase"><span class="ko">명품/사치</span><span class="en">Luxury</span></span>
+                                    <span class="text-white font-bold text-sm">Risk: Mid</span>
+                                    <span class="text-[8px] text-gray-500 mt-1" id="risk-luxury-data">₩8.2M / 89tx</span>
+                                </div>
+                                 <div class="bg-[#ef4444]/20 border border-[#ef4444] rounded flex flex-col items-center justify-center p-2 text-center hover:scale-105 transition cursor-pointer" id="risk-cash">
+                                    <i class="fa-solid fa-money-bill-transfer text-[#ef4444] text-xl mb-1"></i>
+                                    <span class="text-[9px] text-gray-400 uppercase"><span class="ko">현금서비스/론</span><span class="en">Cash/Loan</span></span>
+                                    <span class="text-white font-bold text-sm">Risk: High</span>
+                                    <span class="text-[8px] text-gray-500 mt-1" id="risk-cash-data">₩2.1M / 45tx</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/4 flex flex-col justify-center gap-4 md:border-l border-white/5 md:pl-6 pt-4 md:pt-0 border-t md:border-t-0">
+                            <h4 class="text-white font-bold mb-4 text-xs uppercase text-center"><span class="ko">종합 I/C 지표</span><span class="en">Total I/C Index</span></h4>
+                            <div class="text-center">
+                                <p class="text-xs text-gray-500 uppercase"><span class="ko">평균 통제 성향</span><span class="en">Avg Control</span></p>
+                                <p class="text-3xl font-black text-[#38bdf8]" id="ic-control-val">72%</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-xs text-gray-500 uppercase"><span class="ko">평균 충동 성향</span><span class="en">Avg Impulse</span></p>
+                                <p class="text-3xl font-black text-[#e11d48]" id="ic-impulse-val">28%</p>
+                            </div>
+                            <div class="text-center mt-4">
+                                <span class="text-[10px] bg-green-500/20 text-green-500 px-2 py-1 rounded font-bold uppercase" id="ic-status"><span class="ko">상태: 안정적</span><span class="en">Status: Stable</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                     <!-- Merchant Type I/C Ratio -->
+                     <div class="bg-[#1e293b] p-6 rounded-2xl border-2 border-[#d4af37] mb-8 overflow-x-auto shadow-[0_0_20px_rgba(212,175,55,0.2)]">
+                         <h4 class="text-white font-bold mb-4"><span class="ko">가맹점 유형별 매출 및 I/C 판별값</span><span class="en">Revenue & I/C Value by Merchant Type</span></h4>
+                         <table class="w-full text-xs text-gray-400 text-left min-w-[500px]">
+                             <thead class="border-b border-gray-800">
+                                 <tr>
+                                     <th class="pb-2"><span class="ko">유형</span><span class="en">Type</span></th>
+                                     <th class="pb-2"><span class="ko">평균 매출</span><span class="en">Revenue (Avg)</span></th>
+                                     <th class="pb-2"><span class="ko">판별값</span><span class="en">Value</span></th>
+                                     <th class="pb-2"><span class="ko">상태</span><span class="en">Status</span></th>
+                                 </tr>
+                             </thead>
+                             <tbody class="divide-y divide-gray-800" id="merchant-table-body">
+                                 <!-- Dynamic Rows -->
+                             </tbody>
+                         </table>
+                     </div>
+
+                </div>
+
+                <!-- Tab: Community Analysis -->
+                <div id="admin-community" class="admin-tab-content hidden">
+                    <div class="bg-[#1e293b] p-6 rounded-2xl border border-[#38bdf8]/50">
+                        <h4 class="text-white font-bold mb-6"><span class="ko">채널별 선호도 (실시간 변동)</span><span class="en">Channel Preference (Live Flux)</span></h4>
+                        <div class="space-y-4" id="community-bars">
+                            <!-- Dynamic Bars injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: User Matrix -->
+                <div id="admin-users" class="admin-tab-content hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
+                        <div class="snapshot-card bg-[#1e293b] p-6 rounded-2xl border border-[#e11d48]/50 flex flex-col">
+                            <h4 class="text-white font-bold mb-4"><span class="ko">아키타입 분포 (실시간)</span><span class="en">Archetype Distribution (Live)</span></h4>
+                            <div class="flex-grow flex items-center justify-center h-64">
+                                <canvas id="archetypeChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="snapshot-card bg-[#1e293b] p-6 rounded-2xl border border-[#e11d48]/50 overflow-y-auto h-[350px]">
+                            <h4 class="text-white font-bold mb-4"><span class="ko">N-등급 분포 현황</span><span class="en">N-Grade Distribution</span></h4>
+                            <!-- N-Grade Bars -->
+                            <div class="space-y-4" id="ngrade-bars">
+                                <!-- Dynamic -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Donation Pool -->
+                <div id="admin-donation" class="admin-tab-content hidden">
+                    <div class="bg-[#1e293b] p-8 rounded-3xl border border-[#22c55e]/50 text-center mb-8 relative overflow-hidden">
+                        <!-- BG Effect -->
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent animate-[shine_2s_infinite]"></div>
+                        
+                        <div class="flex justify-center items-center gap-4 mb-6">
+                            <i class="fa-brands fa-ethereum text-5xl text-[#d4af37]"></i>
+                            <i class="fa-solid fa-arrow-right-long text-gray-600"></i>
+                            <div class="bg-gray-800 px-3 py-1 rounded text-xs text-gray-300 font-mono">Map Protocol</div>
+                            <i class="fa-solid fa-arrow-right-long text-gray-600"></i>
+                            <div class="bg-gray-800 px-3 py-1 rounded text-xs text-gray-300 font-mono">Cosmos Hub</div>
+                        </div>
+
+                        <h3 class="text-2xl font-black text-white mb-2"><span class="ko">실시간 기부금 (카르마 포인트)</span><span class="en">Live Donation Pool (Karma)</span></h3>
+                        <p class="text-6xl font-black text-[#d4af37] font-urbanist mb-2" id="donation-counter">1,240.00 ETH</p>
+                        <p class="text-xs text-gray-500 mb-8 font-mono">Contract: 0x71C...9A21 (Verified via Map Protocol)</p>
+                        
+                        <div class="text-left bg-black p-4 rounded-xl font-mono text-xs text-gray-400 h-48 overflow-y-auto mb-4" id="tx-list">
+                            <!-- TX Logs -->
+                        </div>
+                        
+                        <button onclick="showDonationDetail()" class="bg-[#d4af37]/20 text-[#d4af37] border border-[#d4af37] px-6 py-2 rounded-full font-bold text-sm hover:bg-[#d4af37] hover:text-black transition">
+                            <span class="ko">상세 내역 보기 (NFT 영수증)</span><span class="en">View Detail (NFT Receipt)</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Tab: API Sandbox -->
+                <div id="admin-sandbox" class="admin-tab-content hidden">
+                    <div class="bg-[#1e293b] p-8 rounded-3xl border border-white/20">
+                        <h4 class="text-white font-bold mb-6 flex items-center gap-3">
+                            <i class="fa-solid fa-code text-[#38bdf8]"></i> <span class="ko">파트너 전용 테스트베드</span><span class="en">Partner API Testbed</span>
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-gray-500 text-xs uppercase font-bold">Input JSON</label>
+                                    <textarea class="w-full bg-black border border-gray-800 rounded-lg p-4 text-xs font-mono text-green-400 h-40 focus:border-[#38bdf8] outline-none" id="api-input">
+{
+  "user_id": "test_user_001",
+  "birth_date": "1990-01-01",
+  "kipa_vector": {"E": 60, "N": 70, "T": 80, "J": 90},
+  "transaction_history": [
+    {"category": "impulse", "amount": 50000},
+    {"category": "control", "amount": 200000}
+  ]
+}</textarea>
+                                </div>
+                                <button onclick="runApiTest()" class="bg-[#38bdf8] text-black font-bold py-3 px-6 rounded-lg w-full hover:bg-white transition"><span class="ko">API 호출 테스트</span><span class="en">Test API Call</span></button>
+                            </div>
+                            <div>
+                                <label class="text-gray-500 text-xs uppercase font-bold">Output Response</label>
+                                <div class="w-full bg-black border border-gray-800 rounded-lg p-4 text-xs font-mono text-gray-300 h-56 overflow-y-auto" id="api-output">
+                                    // Waiting for request...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    
+    <!-- Donation Detail Modal -->
+    <div id="donation-modal" class="fixed inset-0 bg-black/90 z-[999] hidden items-center justify-center p-4 backdrop-blur-sm" onclick="if(event.target === this) this.style.display='none'">
+        <div class="bg-[#1a1a1a] p-8 rounded-3xl max-w-md w-full border border-[#d4af37] text-white">
+            <h3 class="text-xl font-bold text-[#d4af37] mb-4"><span class="ko">기부금 집행 상세 내역</span><span class="en">Donation Execution Detail</span></h3>
+            <div class="space-y-3 text-sm">
+                <div class="flex justify-between border-b border-gray-700 pb-2">
+                    <span class="text-gray-400">Recipient (NGO)</span>
+                    <span class="text-white">ChildFund Korea (초록우산)</span>
+                </div>
+                <div class="flex justify-between border-b border-gray-700 pb-2">
+                    <span class="text-gray-400">Transaction Hash</span>
+                    <span class="text-[#38bdf8] font-mono text-xs">0x7a2...b91f</span>
+                </div>
+                <div class="flex justify-between border-b border-gray-700 pb-2">
+                    <span class="text-gray-400">Donor (User ID)</span>
+                    <span class="text-white">user_88291...</span>
+                </div>
+                <div class="flex justify-between border-b border-gray-700 pb-2">
+                    <span class="text-gray-400">Amount</span>
+                    <span class="text-[#d4af37] font-bold">0.52 ETH (₩2,100,000)</span>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg mt-4 text-center">
+                    <p class="text-xs text-gray-500 mb-2">NFT Receipt Token</p>
+                    <i class="fa-solid fa-file-contract text-4xl text-[#22c55e]"></i>
+                    <p class="text-[10px] text-gray-400 mt-2">Verified on Blockchain</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('donation-modal').style.display='none'" class="w-full bg-[#333] mt-6 py-3 rounded-lg hover:bg-[#444]">Close</button>
+        </div>
+    </div>
+    
+    <!-- Partnership Modal -->
+    <div id="partnership-modal" class="fixed inset-0 bg-black/95 z-[1000] hidden items-center justify-center p-4 backdrop-blur-md">
+         <div class="bg-[#111] p-8 rounded-2xl border border-[#e11d48] max-w-sm text-center">
+             <i class="fa-solid fa-lock text-4xl text-[#e11d48] mb-4"></i>
+             <h3 class="text-xl font-bold text-white mb-2"><span class="ko">접근 제한</span><span class="en">Access Restricted</span></h3>
+             <p class="text-gray-400 text-sm mb-6"><span class="ko">B2B 제휴 문의를 통해 전용 키를 발급받으세요.</span><span class="en">Please request a dedicated key via B2B partnership inquiry.</span></p>
+             <p class="text-[#38bdf8] font-mono text-xs mb-6">Contact: wonjae.lee@neurinkairosai.ai</p>
+             <button onclick="document.getElementById('partnership-modal').style.display='none'" class="bg-[#333] text-white px-6 py-2 rounded-lg hover:bg-[#444]">Close</button>
+         </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Check Origin for Security
+        if (window.location.hostname !== 'n-kai.com' && window.location.hostname !== 'www.n-kai.com' && window.location.protocol !== 'file:') {
+            // Uncomment for production: alert("⚠️ 비공식 경로 접근 감지. 공식 사이트로 이동합니다. (Security Alert: Unofficial Access Detected)");
+        }
+
+        let isKorean = true;
+        let donationAmount = 1240.00;
+        let autoMinedPoints = 0;
+        let communityInterval, matrixInterval, icInterval, merchantInterval;
+        let currentUserBirthDate = null; // Store for Lotto RNG
+
+        // Navigation
+        function showPage(id) {
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function setLanguage(lang) {
+            isKorean = (lang === 'ko');
+            document.body.className = `lang-${lang}`;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`lang-${lang}`).classList.add('active');
+            
+            // Refresh Archetype Title & Chart if visible
+            if(!document.getElementById('sim-result').classList.contains('hidden')) {
+                const currentType = document.getElementById('result-archetype').getAttribute('data-type');
+                if(currentType) updateArchetypeText(currentType);
+            }
+            if(!document.getElementById('admin-users').classList.contains('hidden')) {
+                renderArchetypeChart();
+            }
+            
+            // Update Admin Title
+            const activeTab = document.querySelector('.admin-tab-content:not(.hidden)');
+            if (activeTab) {
+                const tabId = activeTab.id.replace('admin-', '');
+                updateAdminTitle(tabId);
+            }
+        }
+
+        function updateAdminTitle(tab) {
+            const titles_ko = { 'dashboard': '시스템 개요', 'community': '커뮤니티 채널 분석', 'users': '유저 매트릭스', 'donation': '기부금 풀 (블록체인)', 'sandbox': 'API 샌드박스' };
+            const titles_en = { 'dashboard': 'System Overview', 'community': 'Community Channels', 'users': 'User Matrix', 'donation': 'Donation Pool (Blockchain)', 'sandbox': 'API Sandbox' };
+            const t = isKorean ? titles_ko : titles_en;
+            const titleEl = document.getElementById('admin-title');
+            if(titleEl && t[tab]) titleEl.innerText = t[tab];
+        }
+        
+        function showDonationDetail() {
+            document.getElementById('donation-modal').style.display = 'flex';
+        }
+
+        // Real Simulation Logic (Enhanced 16 Types)
+        function runRealSimulation() {
+            const birthDate = document.getElementById('birth-date').value;
+            if(!birthDate) { alert(isKorean ? "생년월일을 입력해주세요." : "Please enter date of birth."); return; }
+            
+            // Set User Birth Date for RNG
+            currentUserBirthDate = birthDate;
+
+            // Get KIPA Values
+            const ei = parseInt(document.getElementById('kipa-ei').value);
+            const ns = parseInt(document.getElementById('kipa-ns').value);
+            const tf = parseInt(document.getElementById('kipa-tf').value);
+            const jp = parseInt(document.getElementById('kipa-jp').value);
+
+            document.getElementById('sim-input').classList.add('hidden');
+            document.getElementById('sim-process').classList.remove('hidden');
+
+            const logs = ["Initializing Innate Vector...", "Mapping KIPA 4-Axis...", "Calculating Risk Probabilities...", "Synthesizing 16 Archetype Model..."];
+            let i = 0;
+            const interval = setInterval(() => {
+                if(i < logs.length) document.getElementById('process-log').innerText = logs[i++];
+            }, 800);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                showResult(birthDate, ei, ns, tf, jp);
+                startAutoMining();
+                startEvolutionLog();
+                startB2BAlert();
+                // KAI's Intervention Logic - Killing Content: Autonomous Perks (User)
+                setTimeout(() => {
+                    const msg = isKorean 
+                        ? "🤖 KAI: 잠깐! 당신의 데이터 패턴에서 30만원 이상의 잠재 가치를 추가로 발견했습니다. (히든 베네핏 활성화)" 
+                        : "🤖 KAI: Wait! Detected additional potential value over 300k KRW in your pattern. (Hidden Benefit Activated)";
+                    alert(msg);
+                    claimPoints(200); // Bonus
+                }, 5000);
+            }, 3500);
+        }
+
+        function determineArchetype(ei, ns, tf, jp) {
+            // Determine MBTI-like string
+            const sE = ei > 50 ? 'E' : 'I';
+            const sN = ns > 50 ? 'N' : 'S';
+            const sT = tf > 50 ? 'T' : 'F';
+            const sJ = jp > 50 ? 'J' : 'P';
+            const typeStr = sE + sN + sT + sJ;
+
+            // Map 16 types to N-Kai Archetypes (Example)
+            const map = {
+                'ENTJ': {ko: '대담한 통솔자', en: 'Bold Commander', score: 880},
+                'ENTP': {ko: '혁신적 발명가', en: 'Innovative Inventor', score: 850},
+                'INTJ': {ko: '용의주도한 전략가', en: 'Strategic Mastermind', score: 920},
+                'INTP': {ko: '논리적인 사색가', en: 'Logical Thinker', score: 900},
+                'ESTJ': {ko: '엄격한 관리자', en: 'Strict Executive', score: 870},
+                'ESTP': {ko: '모험을 즐기는 사업가', en: 'Adventurous Entrepreneur', score: 780},
+                'ISTJ': {ko: '청렴결백한 논리주의자', en: 'Logistician', score: 950}, // High Credit
+                'ISTP': {ko: '만능 재주꾼', en: 'Virtuoso', score: 820},
+                'ENFJ': {ko: '정의로운 사회운동가', en: 'Protagonist', score: 840},
+                'ENFP': {ko: '재기발랄한 활동가', en: 'Campaigner', score: 760},
+                'INFJ': {ko: '통찰력 있는 선지자', en: 'Insightful Advocate', score: 890},
+                'INFP': {ko: '열정적인 중재자', en: 'Passionate Mediator', score: 790},
+                'ESFJ': {ko: '사교적인 외교관', en: 'Consul', score: 860},
+                'ESFP': {ko: '자유로운 영혼의 연예인', en: 'Entertainer', score: 750},
+                'ISFJ': {ko: '용감한 수호자', en: 'Defender', score: 910},
+                'ISFP': {ko: '호기심 많은 예술가', en: 'Adventurer', score: 770}
+            };
+
+            return { code: typeStr, ...map[typeStr] };
+        }
+
+        function getAgeBasedRecommendations(age) {
+            let items = [];
+            if (age < 30) {
+                // 20s
+                items = [
+                    {ko: "청년 도약 계좌 우대 금리 적용", en: "Youth Jump Account Rate Boost"},
+                    {ko: "학자금/취업 준비 비상금 대출 (무이자)", en: "Study/Job Prep Emergency Loan (0% Interest)"},
+                    {ko: "소액 투자 포트폴리오 (AI 추천)", en: "Micro-Investment Portfolio (AI Rec.)"}
+                ];
+            } else if (age < 40) {
+                // 30s
+                items = [
+                    {ko: "생애 최초 주택 마련 대출 한도 증액", en: "First Home Mortgage Limit Increase"},
+                    {ko: "결혼/육아 자금 맞춤형 플랜", en: "Wedding/Parenting Fund Plan"},
+                    {ko: "직장인 신용 대출 최저 금리 매칭", en: "Lowest Rate Employee Credit Loan"}
+                ];
+            } else if (age < 50) {
+                // 40s
+                items = [
+                    {ko: "자녀 교육비/자산 증식 컨설팅", en: "Child Edu/Asset Growth Consulting"},
+                    {ko: "개인 사업자/프리랜서 절세 솔루션", en: "Biz/Freelancer Tax Solution"},
+                    {ko: "건강 검진 우대 및 보험 리모델링", en: "Health Checkup & Insurance Remodeling"}
+                ];
+            } else {
+                // 50s+
+                items = [
+                    {ko: "은퇴 설계 및 연금 최적화 보고서", en: "Retirement & Pension Optimization"},
+                    {ko: "증여/상속 세무 AI 시뮬레이션", en: "Gift/Inheritance Tax AI Sim"},
+                    {ko: "시니어 헬스케어 및 여행 패키지 할인", en: "Senior Healthcare & Travel Discounts"}
+                ];
+            }
+            return items;
+        }
+
+        function showResult(date, ei, ns, tf, jp) {
+            document.getElementById('sim-process').classList.add('hidden');
+            document.getElementById('sim-result').classList.remove('hidden');
+
+            const year = parseInt(date.split('-')[0]);
+            const currentYear = new Date().getFullYear();
+            const age = currentYear - year;
+
+            // Archetype Logic
+            const archetypeData = determineArchetype(ei, ns, tf, jp);
+            const typeKey = archetypeData.code;
+            let score = archetypeData.score;
+            
+            // Innate Tuning (Odd/Even Year)
+            if (year % 2 === 0) score += 15; // Even year boost (Demo logic)
+            else score -= 10;
+
+            document.getElementById('result-archetype').setAttribute('data-type', typeKey);
+            document.getElementById('result-archetype').innerText = isKorean ? archetypeData.ko : archetypeData.en;
+            document.getElementById('result-archetype').setAttribute('data-ko', archetypeData.ko); // Store for toggling
+            document.getElementById('result-archetype').setAttribute('data-en', archetypeData.en);
+
+            // Recommendations based on Age with PREMIUM badge
+            const recList = document.getElementById('recommendation-list');
+            recList.innerHTML = '';
+            const recItems = getAgeBasedRecommendations(age);
+            recItems.forEach(item => {
+                recList.innerHTML += `
+                    <li class="flex items-center gap-3 cursor-pointer hover:text-[#d4af37] transition" onclick="alert('${isKorean ? "준비 중인 프리미엄 서비스입니다." : "Coming Soon (Premium)"}')">
+                        <i class="fa-solid fa-lock text-gray-500"></i>
+                        <div>
+                            <span class="ko">${item.ko}</span><span class="en">${item.en}</span>
+                            <span class="text-[#d4af37] text-[10px] border border-[#d4af37] px-1 rounded ml-2 font-bold">PREMIUM</span>
+                        </div>
+                    </li>`;
+            });
+
+            // Real Zodiac Logic (Sam-hap) & Lucky Color
+            const zodiacs = ['Monkey','Rooster','Dog','Pig','Rat','Ox','Tiger','Rabbit','Dragon','Snake','Horse','Sheep'];
+            const zodiacsKo = ['원숭이','닭','개','돼지','쥐','소','호랑이','토끼','용','뱀','말','양'];
+            const directionsKo = ['서쪽 (W)', '서쪽 (W)', '중앙 (C)', '북쪽 (N)', '북쪽 (N)', '중앙 (C)', '동쪽 (E)', '동쪽 (E)', '중앙 (C)', '남쪽 (S)', '남쪽 (S)', '중앙 (C)'];
+            const colorsKo = ['화이트(White)', '화이트(White)', '황금색(Gold)', '블랙(Black)', '블랙(Black)', '황금색(Gold)', '청록색(Green)', '청록색(Green)', '황금색(Gold)', '레드(Red)', '레드(Red)', '황금색(Gold)'];
+            
+            const myZodiacIdx = year % 12;
+            const noble1 = (myZodiacIdx + 4) % 12;
+            const noble2 = (myZodiacIdx + 8) % 12;
+            
+            // Lucky Direction Calculation (Simple Triad Logic)
+            const luckyDir = directionsKo[noble1];
+            const luckyColor = colorsKo[noble1]; 
+
+            const nobleText = isKorean 
+                ? `${zodiacsKo[noble1]}띠, ${zodiacsKo[noble2]}띠 (삼합)` 
+                : `${zodiacs[noble1]}, ${zodiacs[noble2]} (Triad)`;
+            
+            document.getElementById('nobleman-result').innerText = nobleText;
+            document.getElementById('lucky-direction-text').innerText = luckyDir + " / " + luckyColor;
+            
+            // Compass Rotation Logic
+            const rotationMap = { '북': 0, '동': 90, '남': 180, '서': 270, '중': 0 };
+            const dirKey = luckyDir.substring(0, 1);
+            const degree = rotationMap[dirKey] || 45; // Default 45
+            setTimeout(() => {
+                document.getElementById('compass-arrow').style.transform = `translate(-50%, -50%) rotate(${degree}deg)`;
+            }, 500);
+
+            document.getElementById('noble-animal-1').innerText = zodiacsKo[noble1] + "띠";
+            document.getElementById('noble-animal-1-en').innerText = zodiacs[noble1];
+            document.getElementById('noble-animal-2').innerText = zodiacsKo[noble2] + "띠";
+            document.getElementById('noble-animal-2-en').innerText = zodiacs[noble2];
+
+            let current = 0;
+            const timer = setInterval(() => {
+                current += 15;
+                if(current >= score) { current = score; clearInterval(timer); }
+                document.getElementById('score-display').innerText = current;
+                
+                // N-Grade Logic (N1 ~ N9)
+                const gradeVal = Math.max(1, Math.min(9, 10 - Math.floor(current / 100))); 
+                const gradeWidth = ((10-gradeVal) / 9) * 100;
+                
+                document.getElementById('n-grade-fill').style.width = gradeWidth + '%';
+                let gradeText = `N${gradeVal}`;
+                if(gradeVal === 1) gradeText = "N1 (Prime)";
+                else if(gradeVal <= 3) gradeText = `N${gradeVal} (High)`;
+                else if(gradeVal <= 6) gradeText = `N${gradeVal} (Mid)`;
+                else gradeText = `N${gradeVal} (Risk)`;
+                
+                document.getElementById('n-grade-badge').innerText = gradeText;
+
+            }, 20);
+
+            // B2B Log
+            addB2BLog(
+                `<span class="ko">유저(생년:${year}) 분석 완료 -> 유형: ${typeKey}, 점수: ${score}</span>` + 
+                `<span class="en">User(DOB:${year}) Analyzed -> Type: ${typeKey}, Score: ${score}</span>`
+            );
+            
+            // Surprise Gift Logic
+            if(Math.random() > 0.5) {
+                setTimeout(() => {
+                    document.getElementById('quantum-luck').classList.remove('hidden');
+                }, 2000);
+            }
+        }
+        
+        function openQuantumBox() {
+             // Karma Random Box Logic
+             const points = Math.floor(Math.random() * 4000) + 1000;
+             const msg = isKorean ? `🎁 축하합니다! ${points} 카르마 포인트가 지급되었습니다!` : `🎁 Congrats! ${points} Karma Points awarded!`;
+             alert(msg);
+             claimPoints(points);
+             document.getElementById('quantum-luck').classList.add('hidden');
+        }
+
+        // Killer Content: Hidden Asset Scan
+        function scanHiddenAssets() {
+            const resultDiv = document.getElementById('asset-scan-result');
+            resultDiv.classList.remove('hidden');
+            
+            setTimeout(() => {
+                const foundAmount = Math.floor(Math.random() * 50000) + 5000;
+                resultDiv.innerHTML = `
+                    <div class="text-[#22c55e] font-bold text-sm mb-1 animate-pulse">
+                        <i class="fa-solid fa-circle-check"></i> <span class="ko">미환급 자산 발견!</span><span class="en">Hidden Asset Found!</span>
+                    </div>
+                    <p class="text-white text-lg font-black">₩${foundAmount.toLocaleString()}</p>
+                    <button class="mt-2 text-[10px] bg-white/10 px-3 py-1 rounded hover:bg-white/20" onclick="alert('제휴사 연동이 필요합니다.')">Claim Now</button>
+                `;
+                claimPoints(100);
+            }, 2000);
+        }
+
+        function updateArchetypeText(key) {
+            const el = document.getElementById('result-archetype');
+            if(el.getAttribute('data-ko')) {
+                el.innerText = isKorean ? el.getAttribute('data-ko') : el.getAttribute('data-en');
+            }
+        }
+
+        // Real Share API
+        function realShare() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'N-KAI Analysis',
+                    text: '나의 숨겨진 금융 잠재력을 확인하세요! #NKAI #LifeOS',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // Fallback for PC
+                const dummy = document.createElement("textarea");
+                document.body.appendChild(dummy);
+                dummy.value = window.location.href;
+                dummy.select();
+                document.execCommand("copy");
+                document.body.removeChild(dummy);
+                alert(isKorean ? "링크가 복사되었습니다!" : "Link copied!");
+            }
+        }
+
+        // Killing Content: Coin Shower & Points
+        function claimPoints(amount) {
+            for(let i=0; i<10; i++) {
+                const coin = document.createElement('i');
+                coin.className = 'fa-solid fa-coins coin';
+                coin.style.left = Math.random() * window.innerWidth + 'px';
+                coin.style.top = '100px';
+                document.body.appendChild(coin);
+                setTimeout(() => coin.remove(), 1000);
+            }
+        }
+        
+        function startAutoMining() {
+            const miningEl = document.getElementById('auto-mining');
+            const pointsEl = document.getElementById('mined-points');
+            const statusEl = document.getElementById('mining-status-text');
+            miningEl.classList.remove('hidden');
+            miningEl.classList.add('mining-active');
+            
+            const statuses = [
+                { ko: "소비 패턴 벡터화 중...", en: "Vectorizing Spend Pattern..." },
+                { ko: "Neural CDE 적분 수행 중...", en: "Integrating Neural CDE..." },
+                { ko: "비정형 텍스트 마이닝 중...", en: "Mining Unstructured Text..." },
+                { ko: "잠재 리스크 스코어링...", en: "Scoring Latent Risk..." }
+            ];
+            let sIdx = 0;
+
+            setInterval(() => {
+                autoMinedPoints += 5; // Karma points logic
+                pointsEl.innerText = `${autoMinedPoints} Karma`;
+                
+                // Rotate Status Text
+                if(autoMinedPoints % 20 === 0) {
+                    sIdx = (sIdx + 1) % statuses.length;
+                    const txt = isKorean ? statuses[sIdx].ko : statuses[sIdx].en;
+                    statusEl.innerText = txt;
+                }
+
+                if(autoMinedPoints % 50 === 0) claimPoints(1); 
+                
+                // New: Badge Awarding Logic (Self-Evolution)
+                if(autoMinedPoints === 50) {
+                     const badgeMsg = isKorean 
+                        ? "🏆 축하합니다! '슈퍼 세이버' 배지가 부여되었습니다. (상위 10% 통제력 입증)" 
+                        : "🏆 Congrats! 'Super Saver' Badge Awarded. (Top 10% Control Proven)";
+                     alert(badgeMsg);
+                }
+            }, 2000);
+        }
+        
+        // VISUALIZER FUNCTIONS (Lotto & Social)
+        // Pseudo-Random Generator seeded by Date String
+        function generateLottoNumbers(seedStr) {
+            if (!seedStr) seedStr = new Date().toISOString().split('T')[0]; // Fallback to today
+            // Convert date string (YYYY-MM-DD) to integer seed
+            let seed = parseInt(seedStr.replace(/-/g, ''));
+            
+            const nums = new Set();
+            // Linear Congruential Generator (LCG) parameters
+            const a = 1664525;
+            const c = 1013904223;
+            const m = 4294967296;
+            
+            let random = seed;
+            
+            // Loop until we have 6 unique numbers
+            while(nums.size < 6) {
+                random = (a * random + c) % m;
+                // Map to 1-45 range
+                const n = (random % 45) + 1;
+                nums.add(n);
+            }
+            
+            return Array.from(nums).sort((a,b) => a - b);
+        }
+
+        function showLottoVisualizer() {
+            document.getElementById('lotto-placeholder').classList.add('hidden');
+            const container = document.getElementById('lotto-container');
+            container.classList.remove('hidden');
+            container.innerHTML = ''; // Clear previous
+            
+            // Use User Birth Date or Today if not set
+            const userSeed = currentUserBirthDate || new Date().toISOString().split('T')[0];
+            const numbers = generateLottoNumbers(userSeed);
+            
+            const colors = ['ball-yellow', 'ball-blue', 'ball-blue', 'ball-red', 'ball-gray', 'ball-green'];
+            
+            numbers.forEach((num, index) => {
+                setTimeout(() => {
+                    const ball = document.createElement('div');
+                    // Pick color based on number value range (standard lotto colors)
+                    let colorClass = 'ball-yellow';
+                    if (num <= 10) colorClass = 'ball-yellow';
+                    else if (num <= 20) colorClass = 'ball-blue';
+                    else if (num <= 30) colorClass = 'ball-red';
+                    else if (num <= 40) colorClass = 'ball-gray';
+                    else colorClass = 'ball-green';
+
+                    ball.className = `lotto-ball ${colorClass}`;
+                    ball.innerText = num;
+                    container.appendChild(ball);
+                }, index * 300); // Staggered appearance
+            });
+            
+            // Add Patent Label
+            setTimeout(() => {
+                const label = document.createElement('div');
+                label.className = "w-full text-center text-[10px] text-gray-500 mt-2 font-mono";
+                label.innerText = `Seed: ${userSeed} (Patented Algorithm Applied)`;
+                container.appendChild(label);
+            }, 2000);
+
+            claimPoints(50);
+        }
+        
+        function showSocialVisualizer() {
+            document.getElementById('social-placeholder').classList.add('hidden');
+            document.getElementById('social-container').classList.remove('hidden');
+            
+            // Render Radar Chart
+            const ctx = document.getElementById('socialRadarChart').getContext('2d');
+            
+            // Dummy Data for User & Nobleman
+            const userFiveElem = [80, 60, 40, 70, 50]; // Wood, Fire, Earth, Metal, Water
+            const nobleFiveElem = [50, 70, 80, 60, 90]; 
+            
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['목(木)', '화(火)', '토(土)', '금(金)', '수(水)'],
+                    datasets: [{
+                        label: '나 (Me)',
+                        data: userFiveElem,
+                        fill: true,
+                        backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                        borderColor: '#38bdf8',
+                        pointBackgroundColor: '#38bdf8',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#38bdf8'
+                    }, {
+                        label: '귀인 (Nobleman)',
+                        data: nobleFiveElem,
+                        fill: true,
+                        backgroundColor: 'rgba(212, 175, 55, 0.2)',
+                        borderColor: '#d4af37',
+                        pointBackgroundColor: '#d4af37',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#d4af37'
+                    }]
+                },
+                options: {
+                    elements: { line: { borderWidth: 2 } },
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            pointLabels: { color: '#fff', font: { size: 10, family: "'Noto Sans KR', sans-serif" } },
+                            ticks: { display: false, backdropColor: 'transparent' }
+                        }
+                    },
+                    plugins: { legend: { labels: { color: '#fff', font: { size: 10 } } } },
+                    maintainAspectRatio: false
+                }
+            });
+
+            claimPoints(30);
+        }
+        
+        function startEvolutionLog() {
+            const logContainer = document.getElementById('evolution-log');
+            const msgs = [
+                { ko: "알고리즘 가중치 +0.012% 자동 보정됨 (특허#080)", en: "Algorithm weights tuned +0.012% (Patent #080)" },
+                { ko: "새로운 소셜 매칭 패턴 학습 완료", en: "New social matching pattern learned" },
+                { ko: "실시간 리스크 임계치 재설정 (T-60)", en: "Real-time risk threshold reset (T-60)" },
+                { ko: "Neural Network Updating...", en: "Neural Network Updating..." },
+                { ko: "Risk Weight Optimizing...", en: "Risk Weight Optimizing..." }
+            ];
+            let i = 0;
+            
+            setInterval(() => {
+                const msg = msgs[i % msgs.length];
+                const text = isKorean ? msg.ko : msg.en;
+                // Simple Typing Effect Logic
+                logContainer.innerText = "";
+                let charIndex = 0;
+                const typeInterval = setInterval(() => {
+                    logContainer.innerText += text.charAt(charIndex);
+                    charIndex++;
+                    if(charIndex >= text.length) clearInterval(typeInterval);
+                }, 50); 
+                
+                i++;
+            }, 3000); 
+        }
+        
+        // B2B Alert Simulation - Killing Content: Autonomous Perks (Admin)
+        function startB2BAlert() {
+            setTimeout(() => {
+                // Only show if Admin Panel is active, or maybe just log it
+                if(!document.getElementById('admin').classList.contains('active')) return;
+                
+                const msg = isKorean 
+                    ? "🚨 AI Insight: 20대 남성 그룹의 충동 구매 패턴이 15% 감지되었습니다. 리스크 헷지 옵션을 제안합니다." 
+                    : "🚨 AI Insight: Detected 15% surge in impulse buying (Male 20s). Suggesting risk hedge options.";
+                
+                addB2BLog(`<span style="color:#e11d48; font-weight:bold">${msg}</span>`);
+                alert(msg);
+            }, 10000);
+        }
+
+        // Admin & B2B Logic
+        function handleAdminLogin() {
+            // Direct Access for MVP
+            showPage('admin');
+            startLiveLogs();
+            startTxLogs();
+            startLiveStats(); // New Live Flux
+            startLiveICFlux(); // New I/C Flux
+            startMerchantFlux(); // New Merchant Flux
+            renderArchetypeChart();
+        }
+
+        function showAdminTab(tab) {
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`admin-${tab}`)?.classList.remove('hidden');
+            updateAdminTitle(tab);
+            if(tab === 'users') renderArchetypeChart();
+        }
+
+        function addB2BLog(htmlContent) {
+            const container = document.getElementById('b2b-log-stream');
+            if(container) {
+                const div = document.createElement('div');
+                div.className = "text-xs font-mono text-gray-500 border-b border-gray-800 pb-1";
+                div.innerHTML = `<span class="text-[#d4af37]">[Live]</span> ${htmlContent}`;
+                container.prepend(div);
+            }
+        }
+
+        function runApiTest() {
+            const output = document.getElementById('api-output');
+            output.innerHTML = `<span class="text-[#38bdf8]">Sending request...</span>`;
+            setTimeout(() => {
+                output.innerHTML = `<span class="text-[#22c55e]">{
+  "status": "success",
+  "n_score": 782,
+  "n_grade": "N1 (Prime)",
+  "risk_level": "Low",
+  "karma_points": 1250,
+  "ic_ratio": { "impulse": 0.2, "control": 0.8 },
+  "message": "Approved for Premium Tier"
+}</span>`;
+            }, 1000);
+        }
+
+        function startLiveLogs() {
+            setInterval(() => {
+                // Random Age Trigger Logic
+                if(Math.random() > 0.7) {
+                    const ages = ['20s', '30s', '40s', '50s'];
+                    const events = [
+                        { ko: '위험 임계치 초과 (85%)', en: 'Risk Threshold > 85%', color: '#ef4444' },
+                        { ko: '관심사 급상승 (투자)', en: 'Interest Spike (Invest)', color: '#38bdf8' },
+                        { ko: '소비 패턴 변동 감지', en: 'Spending Pattern Flux', color: '#eab308' }
+                    ];
+                    const randAge = ages[Math.floor(Math.random() * ages.length)];
+                    const randEvent = events[Math.floor(Math.random() * events.length)];
+                    
+                    const logHtml = `<span style="color:${randEvent.color}">[${randAge}] <span class="ko">${randEvent.ko}</span><span class="en">${randEvent.en}</span></span>`;
+                    addB2BLog(logHtml);
+                } else {
+                    const ms = Math.floor(Math.random()*100);
+                    const logs = [
+                        { ko: `API 호출: 롯데카드 (승인) - ${ms}ms`, en: `API Call: Lotte Card (Success) - ${ms}ms` },
+                        { ko: `리스크 체크: 카카오페이 (동기화) - ${ms}ms`, en: `Risk Check: Kakao Pay (Synced) - ${ms}ms` },
+                        { ko: `데이터 동기화: 신한은행 (완료) - ${ms}ms`, en: `Data Sync: Shinhan Bank (Done) - ${ms}ms` }
+                    ];
+                    const rand = logs[Math.floor(Math.random() * logs.length)];
+                    addB2BLog(`<span class="ko">${rand.ko}</span><span class="en">${rand.en}</span>`);
+                }
+            }, 2500);
+        }
+
+        function startTxLogs() {
+            const txContainer = document.getElementById('tx-list');
+            const donationDisplay = document.getElementById('donation-counter');
+            if(!txContainer) return;
+            
+            setInterval(() => {
+                const hash = '0x' + Math.random().toString(16).substr(2, 40);
+                const amount = parseFloat((Math.random() * 0.5).toFixed(4));
+                
+                // Update Total Amount
+                donationAmount += amount;
+                if(donationDisplay) donationDisplay.innerText = donationAmount.toFixed(2) + " ETH";
+
+                // Add Log
+                const div = document.createElement('div');
+                div.className = "mb-1 text-gray-500 flex justify-between";
+                div.innerHTML = `<span><span class="text-[#22c55e]">IN</span> ${hash.substring(0,10)}...</span> <span class="text-white">${amount} ETH</span>`;
+                txContainer.prepend(div);
+                
+                // Visual limit
+                if(txContainer.children.length > 20) txContainer.lastChild.remove();
+            }, 2000);
+        }
+        
+        // New: Live Flux for Community & Matrix
+        function startLiveStats() {
+            if(communityInterval) clearInterval(communityInterval);
+            if(matrixInterval) clearInterval(matrixInterval);
+
+            // Community Flux
+            const updateCommunity = () => {
+                const channels = [
+                    { name: {ko:'블라인드 (직장인)', en:'Blind (Pro)'}, base: 45, color: '#38bdf8' },
+                    { name: {ko:'인스타그램 (라이프)', en:'Instagram (Life)'}, base: 30, color: '#e11d48' },
+                    { name: {ko:'펨코/디시 (트렌드)', en:'Femco/DC (Trend)'}, base: 25, color: '#d4af37' }
+                ];
+                const container = document.getElementById('community-bars');
+                if(container) {
+                    container.innerHTML = '';
+                    channels.forEach(ch => {
+                        const flux = Math.floor(Math.random() * 10) - 5; // -5 to +5 variation
+                        const val = Math.max(5, Math.min(100, ch.base + flux));
+                        container.innerHTML += `
+                            <div>
+                                <div class="flex justify-between text-xs text-gray-400 mb-1">
+                                    <span><span class="ko">${ch.name.ko}</span><span class="en">${ch.name.en}</span></span> 
+                                    <span>${val}% <span class="text-[#22c55e] text-[10px]">${flux >= 0 ? '▲' : '▼'}</span></span>
+                                </div>
+                                <div class="w-full bg-gray-800 h-1.5 rounded-full"><div class="bg-[${ch.color}] h-1.5 rounded-full transition-all duration-1000" style="width: ${val}%; background-color:${ch.color}"></div></div>
+                            </div>
+                        `;
+                    });
+                }
+            };
+            communityInterval = setInterval(updateCommunity, 3000);
+            updateCommunity(); // Initial call
+
+            // Matrix Flux
+            const updateMatrix = () => {
+                const demos = [
+                    { name: {ko:'20대 (씬파일러)', en:'20s (Thin Filer)'}, base: 45 },
+                    { name: {ko:'30대 (프리랜서)', en:'30s (Freelancer)'}, base: 35 },
+                    { name: {ko:'40대+ (재도약)', en:'40s+ (Re-starter)'}, base: 20 }
+                ];
+                const list = document.getElementById('demographics-list');
+                const nBars = document.getElementById('ngrade-bars');
+                
+                // N-Grade Distribution Flux (New - Color Coded)
+                if(nBars) {
+                    nBars.innerHTML = '';
+                    const grades = [
+                        {l:'N1-N2 (Prime)', v:15, c:'#22c55e'}, 
+                        {l:'N3-N4 (High)', v:25, c:'#38bdf8'}, 
+                        {l:'N5-N6 (Mid)', v:35, c:'#eab308'}, 
+                        {l:'N7-N9 (Risk)', v:25, c:'#ef4444'}
+                    ];
+                    grades.forEach(g => {
+                        const flux = Math.floor(Math.random() * 4) - 2;
+                        const val = g.v + flux;
+                        nBars.innerHTML += `
+                           <div>
+                                <div class="flex justify-between text-xs text-gray-400 mb-1">
+                                    <span style="color:${g.c}">${g.l}</span> <span>${val}%</span>
+                                </div>
+                                <div class="w-full bg-gray-800 h-1.5 rounded-full"><div class="h-1.5 rounded-full transition-all duration-1000" style="width: ${val}%; background-color:${g.c}"></div></div>
+                           </div>
+                        `;
+                    });
+                }
+
+                // Also update chart data
+                if(window.myArchetypeChart) {
+                    window.myArchetypeChart.data.datasets[0].data = [
+                        25 + (Math.random()*4-2), 
+                        30 + (Math.random()*4-2), 
+                        25 + (Math.random()*4-2),
+                        20 + (Math.random()*4-2) // Analyst added
+                    ];
+                    window.myArchetypeChart.update();
+                }
+            };
+            matrixInterval = setInterval(updateMatrix, 4000);
+            updateMatrix(); // Initial call
+        }
+
+        // New: I/C Flux & Merchant Data
+        function startLiveICFlux() {
+            if(icInterval) clearInterval(icInterval);
+            icInterval = setInterval(() => {
+                // Flux between 68% and 76% for Control
+                const controlVal = Math.floor(Math.random() * 9) + 68;
+                const impulseVal = 100 - controlVal;
+                
+                document.getElementById('ic-control-val').innerText = controlVal + '%';
+                document.getElementById('ic-impulse-val').innerText = impulseVal + '%';
+                
+                let statusKo = '안정적';
+                let statusEn = 'Stable';
+                let statusColor = 'green-500';
+                
+                if(controlVal < 50) {
+                   statusKo = '위험'; statusEn = 'Risk'; statusColor = 'red-500';
+                } else if(controlVal < 70) {
+                   statusKo = '변동성'; statusEn = 'Volatile'; statusColor = 'yellow-500';
+                }
+                
+                const statusEl = document.getElementById('ic-status');
+                statusEl.className = `text-[10px] bg-${statusColor}/20 text-${statusColor} px-2 py-1 rounded font-bold uppercase`;
+                statusEl.innerHTML = `<span class="ko">상태: ${statusKo}</span><span class="en">Status: ${statusEn}</span>`;
+            }, 3000);
+        }
+        
+        function startMerchantFlux() {
+            if(merchantInterval) clearInterval(merchantInterval);
+            const updateTable = () => {
+                const tbody = document.getElementById('merchant-table-body');
+                if(!tbody) return;
+                
+                // Enhanced I/C Mapping with Badges
+                const types = [
+                    { 
+                        t_ko:'대중교통/통신', t_en:'Transport/Telco', 
+                        rev: 150000, 
+                        val_ko: '생활필수 (통제)', val_en: 'Essential (Control)', 
+                        s_ko: '안정', s_en: 'Stable',
+                        color: 'text-[#38bdf8]', icon: 'fa-bus'
+                    },
+                    { 
+                        t_ko:'병원/약국', t_en:'Hospital/Pharmacy', 
+                        rev: 80000, 
+                        val_ko: '건강관리 (통제)', val_en: 'Self-Care (Control)', 
+                        s_ko: '안정', s_en: 'Stable',
+                        color: 'text-[#22c55e]', icon: 'fa-heart-pulse'
+                    },
+                    { 
+                        t_ko:'유흥/사행성', t_en:'Nightlife/Gambling', 
+                        rev: 0, 
+                        val_ko: '위험 (충동)', val_en: 'Risk (High)', 
+                        s_ko: '위험', s_en: 'Risk',
+                        color: 'text-[#ef4444]', icon: 'fa-dice'
+                    },
+                    { 
+                        t_ko:'명품/골프', t_en:'Luxury/Golf', 
+                        rev: 50000, 
+                        val_ko: '낭비 (충동)', val_en: 'Waste (Mid)', 
+                        s_ko: '주의', s_en: 'Warning',
+                        color: 'text-[#eab308]', icon: 'fa-gem'
+                    },
+                    { 
+                        t_ko:'현금서비스/론', t_en:'Cash Advance/Loan', 
+                        rev: 0, 
+                        val_ko: '경고 (충동)', val_en: 'Warning (High)', 
+                        s_ko: '경고', s_en: 'Alert',
+                        color: 'text-[#ef4444]', icon: 'fa-triangle-exclamation'
+                    }
+                ];
+                
+                tbody.innerHTML = '';
+                types.forEach(t => {
+                     // Conditional Flux Logic (Spiking for Risk items)
+                     let flux = Math.floor(Math.random() * 2000); // Default small flux
+                     let isRiskActive = false;
+                     let cnt = Math.floor(Math.random() * 50) + 10;
+
+                     if (t.val_en.includes('Risk') || t.val_en.includes('Warning')) {
+                         // Randomly trigger risk activity (e.g., 20% chance)
+                         if (Math.random() > 0.8) {
+                             flux = Math.floor(Math.random() * 500000) + 100000; // Big spike
+                             isRiskActive = true;
+                             cnt = Math.floor(Math.random() * 10) + 1;
+                         } else {
+                             flux = 0; // Usually 0 for risk items if not active
+                             cnt = 0;
+                         }
+                     }
+                     
+                     const rev = (t.rev + flux).toLocaleString();
+                     
+                     const name = isKorean ? t.t_ko : t.t_en;
+                     const val = isKorean ? t.val_ko : t.val_en;
+                     const status = isKorean ? t.s_ko : t.s_en;
+                     
+                     tbody.innerHTML += `
+                        <tr class="hover:bg-white/5 transition">
+                            <td class="py-3 flex items-center gap-2"><i class="fa-solid ${t.icon} ${t.color}"></i> ${name}</td>
+                            <td>₩${rev}</td>
+                            <td><span class="text-xs font-mono bg-white/5 px-2 py-1 rounded border border-white/10">${val}</span></td>
+                            <td class="${t.color} font-bold text-[10px] uppercase">${status}</td>
+                        </tr>`;
+
+                     // Update Heatmap if Risk & Active
+                     if (t.val_en.includes('Risk') || t.val_en.includes('Warning')) {
+                         let riskId = '';
+                         if(t.t_en.includes('Gambling')) riskId = 'risk-gambling';
+                         if(t.t_en.includes('Nightlife')) riskId = 'risk-nightlife';
+                         if(t.t_en.includes('Luxury')) riskId = 'risk-luxury';
+                         if(t.t_en.includes('Cash')) riskId = 'risk-cash';
+                         
+                         if(riskId) {
+                             const valEl = document.getElementById(riskId + '-data');
+                             const blockEl = document.getElementById(riskId);
+                             
+                             if(valEl) {
+                                 // Update real-time number
+                                 valEl.innerText = `₩${((t.rev + flux)/1000000).toFixed(1)}M / ${cnt}tx`;
+                                 
+                                 if(isRiskActive) {
+                                     blockEl.classList.remove('heatmap-pulse');
+                                     void blockEl.offsetWidth; // Trigger reflow
+                                     blockEl.classList.add('heatmap-pulse');
+                                 }
+                             }
+                         }
+                     }
+                });
+            };
+            merchantInterval = setInterval(updateTable, 3000);
+            updateTable();
+        }
+        
+        function renderArchetypeChart() {
+            const ctx = document.getElementById('archetypeChart').getContext('2d');
+            if(window.myArchetypeChart) window.myArchetypeChart.destroy(); 
+            
+            const labels = isKorean 
+                ? ['개척자 (25%)', '수호자 (30%)', '전략가 (25%)', '분석가 (20%)']
+                : ['Pioneer (25%)', 'Guardian (30%)', 'Strategist (25%)', 'Analyst (20%)'];
+
+            window.myArchetypeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: [25, 30, 25, 20],
+                        backgroundColor: ['#e11d48', '#38bdf8', '#d4af37', '#22c55e'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { position: 'bottom', labels: { color: '#fff', boxWidth: 10, font: { family: "'Noto Sans KR', sans-serif" } } } },
+                    animation: { duration: 1000 }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

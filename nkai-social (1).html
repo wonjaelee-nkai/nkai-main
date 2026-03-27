@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>N-KAI · Social Content Studio v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg:#07060E;--card:#0E0C18;--accent:#A855F7;--accent-glow:rgba(168,85,247,.25);
+  --gold:#F59E0B;--gold-glow:rgba(245,158,11,.15);
+  --eco:#2D8CFF;--exp:#5AA8FF;--cri:#00D68F;
+  --text:#F4F4FB;--bright:#FFF;--sub:#8B8DA3;--sub-l:#B0B2C3;
+  --border:rgba(168,85,247,.12);--border-l:rgba(255,255,255,.06);
+  --risk:#EF4444;--prime:#00D68F;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#040410;font-family:'Noto Sans KR',sans-serif;color:var(--text);min-height:100vh}
+.mono{font-family:'Orbitron',monospace}
+
+/* ── Keyframes ── */
+@keyframes orbFloat{0%{transform:translateY(0) rotate(0deg)}100%{transform:translateY(-12px) rotate(4deg)}}
+@keyframes orbPulse{0%{opacity:.3}100%{opacity:.7}}
+@keyframes dotPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes bgPulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes loadBar{0%{width:0}50%{width:80%}100%{width:100%}}
+@keyframes ctaPulse{0%,100%{transform:scale(1);box-shadow:0 4px 24px rgba(168,85,247,.3)}50%{transform:scale(1.02);box-shadow:0 6px 32px rgba(168,85,247,.5)}}
+@keyframes cardReveal{from{transform:scale(.85) translateY(6px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+@keyframes slideUp{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes particleDrift{0%{transform:translateY(0) translateX(0)}100%{transform:translateY(-8px) translateX(4px)}}
+@keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes markerSlide{from{left:0%}to{left:var(--target)}}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(168,85,247,.2);border-radius:4px}
+
+/* ── Header ── */
+.studio-header{text-align:center;padding:28px 0 0}
+.studio-header .tag{font-size:9px;letter-spacing:5px;color:var(--accent);font-weight:700}
+.studio-header h1{font-size:20px;font-weight:900;margin-top:6px}
+.studio-header .desc{font-size:11px;color:var(--sub);margin-top:4px}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:20px auto;padding:0 12px;max-width:600px}
+.tab-btn{padding:6px 12px;border-radius:20px;border:none;background:rgba(255,255,255,.04);color:var(--sub);font-size:10px;font-weight:600;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .25s}
+.tab-btn.active{background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;box-shadow:0 2px 12px rgba(168,85,247,.3)}
+
+/* ── Preview area ── */
+.preview-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;padding-bottom:12px}
+.preview-box{padding:20px;border-radius:16px;background:rgba(255,255,255,.015);border:1px solid var(--border);box-shadow:0 12px 48px rgba(0,0,0,.4)}
+.preview-desc{font-size:10px;color:var(--sub);text-align:center;line-height:1.6}
+
+/* ── Capture bar ── */
+.capture-bar{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.capture-btn{padding:8px 20px;border-radius:20px;border:none;background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;box-shadow:0 2px 16px rgba(168,85,247,.3);transition:transform .2s}
+.capture-btn:hover{transform:scale(1.04)}
+.capture-btn:active{transform:scale(.97)}
+.capture-btn.secondary{background:rgba(255,255,255,.06);box-shadow:none}
+.capture-btn.secondary:hover{background:rgba(255,255,255,.1)}
+.capture-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);padding:10px 24px;border-radius:20px;background:rgba(0,214,143,.9);color:#fff;font-size:12px;font-weight:700;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999}
+.capture-toast.show{opacity:1}
+
+/* ── Template Common ── */
+.tpl{position:relative;overflow:hidden;display:none}
+.tpl.active{display:flex}
+
+/* Particles */
+.particles{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.particle{position:absolute;border-radius:50%;animation:particleDrift var(--dur) ease-in-out var(--delay) infinite alternate}
+
+/* Orb */
+.orb{border-radius:50%;filter:blur(2px);animation:orbFloat 5s ease-in-out var(--delay,0s) infinite alternate;position:relative}
+.orb-glow{position:absolute;inset:-8px;border-radius:50%;filter:blur(16px);animation:orbPulse 3.5s ease-in-out calc(var(--delay,0s) + .5s) infinite alternate}
+
+/* Grid bg */
+.grid-bg{position:absolute;inset:0;opacity:.03;background-image:linear-gradient(rgba(168,85,247,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(168,85,247,.4) 1px,transparent 1px);background-size:40px 40px}
+.dot-bg{position:absolute;inset:0;opacity:.025;background-image:radial-gradient(circle at 2px 2px,rgba(168,85,247,.5) 1px,transparent 0);background-size:20px 20px}
+
+/* Metric bar */
+.metric-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.metric-icon{font-size:14px;width:20px;text-align:center}
+.metric-label{font-size:10px;color:var(--sub);width:52px;font-weight:500}
+.metric-track{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.04);overflow:hidden;position:relative}
+.metric-fill{height:100%;border-radius:3px;width:0;transition:width 1.4s cubic-bezier(.16,1,.3,1)}
+.metric-val{font-size:12px;font-weight:700;width:28px;text-align:right}
+
+/* CTA button */
+.cta-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;border-radius:24px;background:linear-gradient(135deg,#A855F7,#7C3AED);font-size:13px;font-weight:700;color:#fff;box-shadow:0 4px 28px rgba(168,85,247,.4),inset 0 1px 0 rgba(255,255,255,.15);animation:ctaPulse 2.5s ease-in-out infinite;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif}
+
+/* ── Guide ── */
+.guide{max-width:440px;margin:24px auto 0;padding:16px 20px;border-radius:12px;background:rgba(168,85,247,.03);border:1px solid var(--border)}
+.guide-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.guide-body{font-size:10px;color:var(--sub);line-height:2}
+.guide-body strong{color:var(--text)}
+.guide-patch{margin-top:12px;padding:10px 12px;border-radius:8px;background:rgba(0,214,143,.04);border:1px solid rgba(0,214,143,.1)}
+.guide-patch-title{font-size:10px;font-weight:700;color:var(--cri);margin-bottom:4px}
+.guide-patch-body{font-size:9px;color:var(--sub);line-height:1.9}
+.guide-patch-body strong{color:var(--text)}
+.hl-accent{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div class="studio-header">
+  <div class="tag mono">N-KAI · SOCIAL CONTENT · v2</div>
+  <h1>소셜 미디어 콘텐츠</h1>
+  <div class="desc">인스타그램 · 틱톡 · 릴스 · 카카오톡</div>
+</div>
+
+<!-- ═══ TABS ═══ -->
+<div class="tabs" id="tabs"></div>
+
+<!-- ═══ PREVIEW ═══ -->
+<div class="preview-wrap">
+  <div class="preview-box" id="previewBox"></div>
+  <div class="preview-desc" id="previewDesc"></div>
+  <div class="capture-bar">
+    <button class="capture-btn" onclick="capturePNG()">📸 PNG 캡처 저장</button>
+    <button class="capture-btn secondary" onclick="capture2x()">📸 2x 고해상도</button>
+  </div>
+</div>
+
+<!-- ═══ GUIDE ═══ -->
+<div class="guide">
+  <div class="guide-title">📱 콘텐츠 활용 가이드</div>
+  <div class="guide-body">
+    <strong>1. 피드 티저</strong> → 프로필 첫 고정. "당신의 금융 DNA는?" 호기심 유발<br>
+    <strong>2. 결과 공유</strong> → 분석 완료 후 유저가 캡처·공유. N-Score 게이지바가 핵심<br>
+    <strong>3. 릴스/틱톡</strong> → 훅→분석→결과→CTA 4단계 15초. 탭하면 리플레이<br>
+    <strong>4. 16유형 그리드</strong> → 캐러셀 2장째. "나는 어디?" 탐색 욕구 자극<br>
+    <strong>5. 퀴즈 스토리</strong> → 선택지 클릭 시 유형 힌트. 인스타 투표 스티커와 연동<br>
+    <strong>6. N-Score 카드</strong> → <span class="hl-accent">신규</span> 카카오톡/SNS 공유 시 자동 생성 미니카드
+  </div>
+  <div class="guide-patch">
+    <div class="guide-patch-title">✅ v2 개선사항</div>
+    <div class="guide-patch-body">
+      · 결밀도→<strong>정밀도</strong> 오타 수정<br>
+      · 시주(확장)→<strong>출생시간 반영</strong> 용어 교체<br>
+      · 게이지바 <strong>▼ 위치 마커</strong> 추가<br>
+      · N-Score 카운트업 애니메이션 + 파티클 배경<br>
+      · 퀴즈 선택 시 유형 힌트 인터랙션 추가<br>
+      · 릴스 탭-리플레이 기능 추가<br>
+      · <strong class="hl-accent">N-Score 공유 미니카드</strong> 신규 템플릿
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="capture-toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   CONFIG & DATA
+   ═══════════════════════════════════════════ */
+const B = {
+  bg:'#07060E',card:'#0E0C18',accent:'#A855F7',accentGlow:'rgba(168,85,247,.25)',
+  gold:'#F59E0B',eco:'#2D8CFF',exp:'#5AA8FF',cri:'#00D68F',
+  text:'#F4F4FB',bright:'#FFF',sub:'#8B8DA3',subL:'#B0B2C3',
+  border:'rgba(168,85,247,.12)',borderL:'rgba(255,255,255,.06)',
+  risk:'#EF4444',prime:'#00D68F'
+};
+
+const GRADES = {
+  N1:{label:'Prime',color:B.prime,glow:'rgba(0,214,143,.3)'},
+  N2:{label:'High',color:'#34D399',glow:'rgba(52,211,153,.3)'},
+  N3:{label:'Upper Mid',color:'#60A5FA',glow:'rgba(96,165,250,.3)'},
+  N4:{label:'Mid Plus',color:'#818CF8',glow:'rgba(129,140,248,.3)'},
+  N5:{label:'Balanced',color:B.accent,glow:B.accentGlow},
+  N6:{label:'Mid',color:'#F59E0B',glow:'rgba(245,158,11,.3)'},
+  N7:{label:'Lower Mid',color:'#FB923C',glow:'rgba(251,146,60,.3)'},
+  N8:{label:'Caution',color:'#F87171',glow:'rgba(248,113,113,.3)'},
+  N9:{label:'Risk',color:B.risk,glow:'rgba(239,68,68,.3)'}
+};
+
+const TEMPLATES = [
+  {name:'피드: 티저',desc:'인스타 정사각 피드 · 프로필 첫 고정 게시물'},
+  {name:'스토리: 결과',desc:'인스타/틱톡 스토리 · 분석 후 유저 공유용'},
+  {name:'릴스: 훅',desc:'틱톡/릴스 15초 시퀀스 · 탭하여 리플레이'},
+  {name:'피드: 16유형',desc:'캐러셀/그리드 · 호버로 하이라이트'},
+  {name:'스토리: 퀴즈',desc:'참여 유도형 · 선택 시 유형 힌트 표시'},
+  {name:'공유: N-Score',desc:'카카오톡/SNS 공유 시 자동 생성 미니카드'},
+];
+
+const TYPES_16 = [
+  {code:'ISTJ',name:'냉철한 전략가',group:'분석가',color:B.eco},
+  {code:'ISFJ',name:'꾸준한 수호자',group:'실용주의',color:B.cri},
+  {code:'INFJ',name:'통찰의 설계자',group:'비전가',color:B.accent},
+  {code:'INTJ',name:'원칙의 건축가',group:'항해사',color:B.gold},
+  {code:'ISTP',name:'정밀한 관찰자',group:'분석가',color:B.eco},
+  {code:'ISFP',name:'감성 큐레이터',group:'실용주의',color:B.cri},
+  {code:'INFP',name:'이상적 탐험가',group:'비전가',color:B.accent},
+  {code:'INTP',name:'논리의 해체자',group:'항해사',color:B.gold},
+  {code:'ESTP',name:'본능의 트레이더',group:'분석가',color:B.eco},
+  {code:'ESFP',name:'기회의 서퍼',group:'실용주의',color:B.cri},
+  {code:'ENFP',name:'영감의 연금술사',group:'비전가',color:B.accent},
+  {code:'ENTP',name:'파괴적 개척자',group:'항해사',color:B.gold},
+  {code:'ESTJ',name:'체계의 사령관',group:'분석가',color:B.eco},
+  {code:'ESFJ',name:'신뢰의 매니저',group:'실용주의',color:B.cri},
+  {code:'ENFJ',name:'이상적 전도사',group:'비전가',color:B.accent},
+  {code:'ENTJ',name:'제국의 총사령관',group:'항해사',color:B.gold},
+];
+
+let activeTab = 0;
+let reelsTimers = [];
+
+/* ═══════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════ */
+function makeParticles(count, color) {
+  let h = '';
+  for (let i = 0; i < count; i++) {
+    const x = (Math.random()*100).toFixed(1);
+    const y = (Math.random()*100).toFixed(1);
+    const s = (1+Math.random()*2).toFixed(1);
+    const dur = (3+Math.random()*4).toFixed(1);
+    const del = (Math.random()*3).toFixed(1);
+    const op = (0.1+Math.random()*0.2).toFixed(2);
+    h += `<div class="particle" style="left:${x}%;top:${y}%;width:${s}px;height:${s}px;background:${color};opacity:${op};--dur:${dur}s;--delay:${del}s"></div>`;
+  }
+  return `<div class="particles">${h}</div>`;
+}
+
+function makeOrb(size, c1, c2, delay=0) {
+  return `<div class="orb" style="width:${size}px;height:${size}px;--delay:${delay}s;background:radial-gradient(circle at 38% 38%,${c1}cc,${c2}88,transparent 70%)">
+    <div class="orb-glow" style="background:radial-gradient(circle at 38% 38%,${c1}30,transparent 65%);--delay:${delay}s"></div>
+  </div>`;
+}
+
+function makeMetricBar(icon, label, value, color, idx) {
+  return `<div class="metric-row">
+    <span class="metric-icon">${icon}</span>
+    <span class="metric-label">${label}</span>
+    <div class="metric-track"><div class="metric-fill" data-val="${value}" data-delay="${idx}" style="background:linear-gradient(90deg,${color}cc,${color});box-shadow:0 0 14px ${color}50,inset 0 1px 0 rgba(255,255,255,.15)"></div></div>
+    <span class="metric-val mono" data-countto="${value}" data-delay="${idx}" style="color:${color}">0</span>
+  </div>`;
+}
+
+function animateMetrics(container) {
+  container.querySelectorAll('.metric-fill').forEach(el => {
+    const v = el.dataset.val;
+    const d = parseInt(el.dataset.delay) || 0;
+    setTimeout(() => { el.style.width = v + '%'; }, 400 + d * 250);
+  });
+  container.querySelectorAll('.metric-val[data-countto]').forEach(el => {
+    const target = parseInt(el.dataset.countto);
+    const d = parseInt(el.dataset.delay) || 0;
+    setTimeout(() => {
+      let cur = 0;
+      const step = Math.ceil(target / 30);
+      const iv = setInterval(() => {
+        cur += step;
+        if (cur >= target) { cur = target; clearInterval(iv); }
+        el.textContent = cur;
+      }, 30);
+    }, 400 + d * 250);
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* ═══════════════════════════════════════════
+   TEMPLATE BUILDERS
+   ═══════════════════════════════════════════ */
+
+// ── T1: 피드 티저 (380x380) ──
+function buildT1() {
+  const dots = Array.from({length:16}).map((_,i) => {
+    const colors = [B.eco, B.cri, B.accent, B.gold];
+    const c = colors[i%4];
+    const op = (0.25 + (i%4)*0.18).toFixed(2);
+    return `<div style="width:14px;height:14px;border-radius:3px;background:${c};opacity:${op};animation:dotPop .35s ease ${(0.04*i).toFixed(2)}s both;box-shadow:0 0 6px ${c}30"></div>`;
+  }).join('');
+
+  return `<div id="tpl1" style="width:380px;height:380px;background:${B.bg};border-radius:8px;overflow:hidden;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center">
+    <div class="grid-bg"></div>
+    ${makeParticles(15, B.accent)}
+    <div style="position:absolute;top:-40px;right:-30px;opacity:.12">${makeOrb(180,'#A855F7','#2D8CFF')}</div>
+    <div style="position:absolute;bottom:-50px;left:-30px;opacity:.08">${makeOrb(140,'#00D68F','#5AA8FF',1.5)}</div>
+    <div id="t1content" style="position:relative;z-index:2;text-align:center;opacity:0;transform:translateY(24px);transition:all .9s cubic-bezier(.16,1,.3,1)">
+      <div class="mono" style="font-size:9px;letter-spacing:5px;color:${B.accent};font-weight:700;margin-bottom:18px;text-transform:uppercase">N-KAI · Financial DNA Engine</div>
+      <div style="font-size:28px;font-weight:900;line-height:1.35;margin-bottom:6px">당신의<br><span style="background:linear-gradient(135deg,#A855F7 0%,#2D8CFF 50%,#00D68F 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:36px;font-weight:900">금융 DNA</span>는?</div>
+      <div style="font-size:11.5px;color:${B.sub};line-height:1.7;margin-bottom:22px"><span style="color:${B.subL}">선천적 기질</span> × <span style="color:${B.subL}">행동 성향</span> 융합 엔진<br>AI가 읽는 16가지 금융 페르소나</div>
+      <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:5px;max-width:200px;margin:0 auto 22px">${dots}</div>
+      <button class="cta-btn" style="font-size:13px">무료 분석 시작하기 →</button>
+    </div>
+    <div style="position:absolute;bottom:12px;font-size:8px;color:rgba(255,255,255,.18);letter-spacing:3px" class="mono">neurinkairosai.com</div>
+  </div>`;
+}
+
+// ── T2: 스토리 결과 (280x580) ──
+function buildT2() {
+  const g = GRADES.N5;
+  const score = 632, max = 1000, low = 581, high = 683;
+  const pct = ((score/max)*100).toFixed(1);
+
+  return `<div id="tpl2" style="width:280px;height:580px;background:${B.bg};border-radius:12px;overflow:hidden;position:relative;display:flex;flex-direction:column">
+    <div style="position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.15),transparent 70%);filter:blur(20px)"></div>
+    ${makeParticles(10, B.accent)}
+    <!-- Header -->
+    <div style="padding:14px 18px 0;position:relative;z-index:2">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span class="mono" style="font-size:9px;color:${B.accent};letter-spacing:2px;font-weight:700">N-KAI</span>
+        <span class="mono" style="font-size:8px;color:${B.sub};letter-spacing:1px">FINANCIAL DNA ANALYSIS</span>
+      </div>
+      <!-- Archetype -->
+      <div id="t2arch" style="text-align:center;opacity:0;transform:scale(.85);transition:all .6s cubic-bezier(.16,1,.3,1) .2s">
+        <div style="margin-bottom:6px;display:flex;justify-content:center">${makeOrb(52,'#A855F7','#7C3AED')}</div>
+        <div class="mono" style="font-size:28px;font-weight:900;color:${B.bright};letter-spacing:3px;text-shadow:0 0 24px rgba(168,85,247,.4)">ENFJ</div>
+        <div style="display:inline-block;padding:2px 10px;border-radius:4px;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.25);font-size:9px;color:${B.accent};font-weight:600;margin-top:4px">비전가형 · 이상적 전도사</div>
+      </div>
+    </div>
+    <!-- Metrics -->
+    <div id="t2metrics" style="margin:12px 16px 0;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid ${B.borderL};opacity:0;transform:translateY(12px);transition:all .6s cubic-bezier(.16,1,.3,1) .5s">
+      ${makeMetricBar('💰','경제감각',80,B.eco,0)}
+      ${makeMetricBar('⚡','표현에너지',95,B.exp,1)}
+      ${makeMetricBar('🛡️','위기대응력',82,B.cri,2)}
+    </div>
+    <!-- N-Score Gauge -->
+    <div id="t2gauge" style="margin:10px 16px 0;padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid ${B.borderL};opacity:0;transition:opacity .6s .7s">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px">
+        <div style="display:flex;align-items:baseline;gap:6px">
+          <span class="mono" style="font-size:36px;font-weight:900;color:${B.bright};line-height:1">${score}</span>
+          <span class="mono" style="font-size:12px;color:${B.sub}">/ ${max}</span>
+        </div>
+        <div class="mono" style="font-size:14px;font-weight:800;color:${g.color}">N5 ${g.label}</div>
+      </div>
+      <div style="position:relative;height:18px;margin-bottom:6px">
+        <div style="position:absolute;top:6px;left:0;right:0;height:6px;border-radius:3px;background:linear-gradient(90deg,#EF4444 0%,#F59E0B 30%,#A855F7 55%,#60A5FA 75%,#00D68F 100%);opacity:.7"></div>
+        <div style="position:absolute;top:6px;left:0;right:0;height:6px;border-radius:3px;background:linear-gradient(180deg,rgba(255,255,255,.08) 0%,transparent 100%)"></div>
+        <div id="t2marker" style="position:absolute;left:0%;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;transition:left 1.5s cubic-bezier(.16,1,.3,1)">
+          <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid ${g.color};filter:drop-shadow(0 0 4px ${g.glow})"></div>
+          <div style="width:2px;height:8px;border-radius:1px;background:${g.color};box-shadow:0 0 8px ${g.glow}"></div>
+        </div>
+      </div>
+      <div class="mono" style="display:flex;justify-content:space-between;font-size:8px;color:${B.sub}">
+        <span>N9 Risk</span><span>N5 Mid</span><span>N1 Prime</span>
+      </div>
+      <div style="margin-top:8px;text-align:center;font-size:10px;color:${B.sub}">95% 신뢰구간: <span class="mono" style="color:${B.subL};font-weight:600">${low} ~ ${high}</span></div>
+    </div>
+    <!-- Stats row -->
+    <div id="t2stats" style="margin:8px 16px 0;display:flex;gap:8px;opacity:0;transition:opacity .6s .9s">
+      <div style="flex:1;padding:8px 10px;border-radius:8px;background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.12);text-align:center">
+        <div style="font-size:8px;color:${B.sub};margin-bottom:3px">정밀도</div>
+        <div class="mono" style="font-size:18px;font-weight:800;color:${B.accent}">94%</div>
+        <div style="font-size:7px;color:${B.sub};margin-top:2px">출생시간 반영</div>
+      </div>
+      <div style="flex:1;padding:8px 10px;border-radius:8px;background:rgba(0,214,143,.06);border:1px solid rgba(0,214,143,.12);text-align:center">
+        <div style="font-size:8px;color:${B.sub};margin-bottom:3px">RANKING</div>
+        <div class="mono" style="font-size:18px;font-weight:800;color:${B.prime}">37%</div>
+        <div style="font-size:7px;color:${B.sub};margin-top:2px">전체 분석자 중 상위</div>
+      </div>
+    </div>
+    <!-- CTA -->
+    <div style="margin-top:auto;padding:0 16px 14px;text-align:center">
+      <div style="padding:10px 0;border-radius:8px;background:linear-gradient(135deg,#A855F7,#7C3AED);font-size:12px;font-weight:700;color:#fff;box-shadow:0 4px 20px rgba(168,85,247,.3),inset 0 1px 0 rgba(255,255,255,.1)">나도 금융 DNA 분석받기 →</div>
+      <div class="mono" style="font-size:7px;color:rgba(255,255,255,.18);margin-top:5px;letter-spacing:1px">neurinkairosai.com</div>
+    </div>
+  </div>`;
+}
+
+// ── T3: 릴스 훅 (280x500) ──
+function buildT3() {
+  return `<div id="tpl3" style="width:280px;height:500px;background:${B.bg};border-radius:12px;overflow:hidden;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer" onclick="reelsReplay()">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(168,85,247,.06),transparent 65%);animation:bgPulse 3s ease-in-out infinite"></div>
+    ${makeParticles(12, B.gold)}
+    <!-- Step 1: Hook -->
+    <div class="reels-step" data-step="1" style="position:absolute;text-align:center;z-index:2;padding:0 24px;opacity:0;transform:scale(.85);transition:all .5s cubic-bezier(.16,1,.3,1)">
+      <div style="font-size:24px;font-weight:900;line-height:1.5">나는 정말<br><span style="color:${B.gold};font-size:30px;text-shadow:0 0 20px rgba(245,158,11,.3)">워런 버핏</span>과<br>같은 유형일까?</div>
+    </div>
+    <!-- Step 2: Analyzing -->
+    <div class="reels-step" data-step="2" style="position:absolute;text-align:center;z-index:2;opacity:0;transform:scale(.9);transition:all .5s cubic-bezier(.16,1,.3,1)">
+      <div style="margin-bottom:14px;display:flex;justify-content:center">${makeOrb(72,'#A855F7','#2D8CFF')}</div>
+      <div class="mono" style="font-size:10px;color:${B.accent};letter-spacing:4px;margin-bottom:6px;font-weight:700">ANALYZING</div>
+      <div style="font-size:12px;color:${B.sub};line-height:1.6">선천적 기질 × 행동 성향<br>AI 융합 분석 중</div>
+      <div style="width:140px;height:3px;border-radius:2px;margin:14px auto 0;background:rgba(255,255,255,.04);overflow:hidden"><div style="height:100%;border-radius:2px;background:linear-gradient(90deg,${B.accent},${B.eco});animation:loadBar 1.2s ease-in-out infinite"></div></div>
+    </div>
+    <!-- Step 3: Result -->
+    <div class="reels-step" data-step="3" style="position:absolute;text-align:center;z-index:2;opacity:0;transform:scale(.7);transition:all .6s cubic-bezier(.16,1,.3,1)">
+      <div class="mono" style="font-size:42px;font-weight:900;background:linear-gradient(135deg,#F59E0B,#A855F7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;letter-spacing:3px">ISTJ</div>
+      <div class="mono" style="font-size:9px;padding:3px 14px;border-radius:4px;background:rgba(45,140,255,.12);color:${B.eco};display:inline-block;margin-bottom:8px;font-weight:600;letter-spacing:1px">분석가형</div>
+      <div style="font-size:20px;font-weight:800;color:${B.bright}">"냉철한 전략가"</div>
+      <div style="font-size:11px;color:${B.gold};margin-top:8px;font-weight:600">⭐ 워런 버핏 · 벤저민 그레이엄</div>
+    </div>
+    <!-- Step 4: CTA -->
+    <div class="reels-step" data-step="4" style="position:absolute;text-align:center;z-index:2;padding:0 20px;opacity:0;transform:translateY(24px);transition:all .6s cubic-bezier(.16,1,.3,1)">
+      <div style="font-size:21px;font-weight:900;line-height:1.45;margin-bottom:4px">당신의<br><span style="background:linear-gradient(135deg,#A855F7,#00D68F);-webkit-background-clip:text;-webkit-text-fill-color:transparent">금융 DNA</span>는<br>누구와 같을까?</div>
+      <div style="margin-top:18px;padding:12px 28px;border-radius:24px;background:linear-gradient(135deg,#A855F7,#7C3AED);font-size:14px;font-weight:700;color:#fff;box-shadow:0 4px 30px rgba(168,85,247,.45),inset 0 1px 0 rgba(255,255,255,.12);animation:ctaPulse 2s ease-in-out infinite;display:inline-block">지금 무료 분석 →</div>
+      <div class="mono" style="font-size:8px;color:${B.sub};margin-top:10px;letter-spacing:2px">neurinkairosai.com</div>
+    </div>
+    <div style="position:absolute;bottom:10px;font-size:8px;color:rgba(255,255,255,.12)">탭하여 다시 보기</div>
+  </div>`;
+}
+
+// ── T4: 16유형 그리드 (380x380) ──
+function buildT4() {
+  const groups = [
+    {name:'분석가',color:B.eco},{name:'실용주의',color:B.cri},
+    {name:'비전가',color:B.accent},{name:'항해사',color:B.gold}
+  ];
+  const legend = groups.map(g => `<div style="display:flex;align-items:center;gap:3px"><div style="width:5px;height:5px;border-radius:50%;background:${g.color}"></div><span style="font-size:7px;color:${B.sub}">${g.name}</span></div>`).join('');
+
+  const cards = TYPES_16.map((t,i) => `<div class="type-card" data-idx="${i}" style="background:rgba(255,255,255,.02);border:1px solid ${t.color}18;border-radius:6px;padding:7px 4px;text-align:center;animation:cardReveal .35s ease ${(i*0.035).toFixed(3)}s both;cursor:default;transition:all .2s"
+    onmouseenter="this.style.background='${t.color}12';this.style.borderColor='${t.color}40';this.style.transform='scale(1.04)';this.querySelector('.tc-code').style.color='${B.bright}'"
+    onmouseleave="this.style.background='rgba(255,255,255,.02)';this.style.borderColor='${t.color}18';this.style.transform='scale(1)';this.querySelector('.tc-code').style.color='${B.text}'">
+    <div style="width:5px;height:5px;border-radius:50%;margin:0 auto 3px;background:${t.color};box-shadow:0 0 6px ${t.color}50"></div>
+    <div class="mono tc-code" style="font-size:10px;font-weight:800;color:${B.text};transition:color .2s">${t.code}</div>
+    <div style="font-size:7.5px;color:${B.sub};margin-top:2px;line-height:1.2">${t.name}</div>
+    <div style="font-size:6.5px;color:${t.color};margin-top:2px;font-weight:600">${t.group}</div>
+  </div>`).join('');
+
+  return `<div id="tpl4" style="width:380px;height:380px;background:${B.bg};border-radius:8px;overflow:hidden;position:relative;padding:16px">
+    <div class="dot-bg"></div>
+    <div style="text-align:center;margin-bottom:10px;position:relative;z-index:2">
+      <div class="mono" style="font-size:8px;color:${B.accent};letter-spacing:4px;margin-bottom:4px;font-weight:700">N-KAI ARCHETYPES</div>
+      <div style="font-size:15px;font-weight:800;color:${B.bright}">16가지 금융 DNA 유형</div>
+      <div style="display:flex;justify-content:center;gap:12px;margin-top:6px">${legend}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;position:relative;z-index:2">${cards}</div>
+    <div style="text-align:center;margin-top:8px;position:relative;z-index:2">
+      <span style="font-size:10px;color:${B.accent};font-weight:600">당신은 어떤 유형? → neurinkairosai.com</span>
+    </div>
+  </div>`;
+}
+
+// ── T5: 퀴즈 스토리 (280x500) ──
+function buildT5() {
+  const opts = [
+    {emoji:'📈',text:'바로 투자한다',color:B.eco,type:'항해사형 · Risk Seeker'},
+    {emoji:'🏦',text:'일단 저축한다',color:B.cri,type:'실용주의 · Stable Planner'},
+    {emoji:'🎁',text:'나를 위해 쓴다',color:B.exp,type:'비전가형 · Emotional Creator'},
+    {emoji:'📊',text:'계획을 세운다',color:B.accent,type:'분석가형 · Rational Investor'},
+  ];
+  const optHTML = opts.map((o,i) => `<div class="quiz-opt" data-idx="${i}" onclick="selectQuiz(this,${i})" style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid ${o.color}15;font-size:13px;font-weight:600;animation:slideUp .4s ease ${(0.08*i+0.2).toFixed(2)}s both;cursor:pointer;transition:all .25s">
+    <span style="font-size:17px">${o.emoji}</span>
+    <div style="flex:1"><div>${o.text}</div><div class="quiz-hint" style="font-size:9px;color:${o.color};margin-top:3px;font-weight:500;display:none;animation:slideUp .3s ease both">→ ${o.type}</div></div>
+    <div class="quiz-check" style="width:18px;height:18px;border-radius:50%;background:${o.color};display:none;align-items:center;justify-content:center;font-size:10px;color:#fff;font-weight:800;animation:dotPop .3s ease both">✓</div>
+  </div>`).join('');
+
+  return `<div id="tpl5" style="width:280px;height:500px;background:${B.bg};border-radius:12px;overflow:hidden;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center">
+    <div style="position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(168,85,247,.08),transparent)"></div>
+    ${makeParticles(8, B.accent)}
+    <div style="position:relative;z-index:2;text-align:center;padding:0 20px;width:100%">
+      <div class="mono" style="font-size:8px;color:${B.accent};letter-spacing:4px;margin-bottom:18px;font-weight:700">N-KAI · FINANCIAL DNA QUIZ</div>
+      <div style="font-size:21px;font-weight:900;color:${B.bright};line-height:1.45;margin-bottom:22px">예상치 못한<br><span style="color:${B.eco};text-shadow:0 0 16px rgba(45,140,255,.25)">100만원</span>이<br>생겼다면?</div>
+      <div style="display:flex;flex-direction:column;gap:8px;width:100%">${optHTML}</div>
+      <div style="margin-top:18px;font-size:10px;color:${B.sub};line-height:1.5">당신의 선택이 금융 DNA를 말해줍니다</div>
+      <div style="margin-top:10px;padding:10px 22px;border-radius:22px;background:linear-gradient(135deg,#A855F7,#7C3AED);font-size:12px;font-weight:700;color:#fff;display:inline-block;box-shadow:0 4px 20px rgba(168,85,247,.35),inset 0 1px 0 rgba(255,255,255,.1)">내 금융 DNA 확인하기 →</div>
+    </div>
+  </div>`;
+}
+
+// ── T6: N-Score 미니카드 (380x200) ──
+function buildT6() {
+  const g = GRADES.N5;
+  const score = 86, size = 72, r = (size/2)-8;
+  const c = 2*Math.PI*r;
+  const offset = c - (score/100)*c;
+
+  return `<div id="tpl6" style="width:380px;height:200px;background:${B.bg};border-radius:12px;overflow:hidden;position:relative;display:flex;border:1px solid ${B.border}">
+    <div style="position:absolute;left:0;top:0;bottom:0;width:40%;background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(45,140,255,.04))"></div>
+    ${makeParticles(8, B.accent)}
+    <!-- Left: Score+Type -->
+    <div id="t6left" style="flex:0 0 45%;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;z-index:2;padding:16px 0;opacity:0;transform:translateX(-16px);transition:all .7s cubic-bezier(.16,1,.3,1)">
+      <div style="position:relative;width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center">
+        <svg width="${size}" height="${size}" style="position:absolute;transform:rotate(-90deg)">
+          <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="4"/>
+          <circle id="t6ring" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${g.color}" stroke-width="4" stroke-dasharray="${c}" stroke-dashoffset="${c}" stroke-linecap="round" style="transition:stroke-dashoffset 1.8s cubic-bezier(.16,1,.3,1);filter:drop-shadow(0 0 6px ${g.glow})"/>
+        </svg>
+        <div style="text-align:center;z-index:1">
+          <div id="t6score" class="mono" style="font-size:${size*0.26}px;font-weight:800;color:${B.bright};line-height:1">0</div>
+          <div class="mono" style="font-size:${size*0.1}px;color:${g.color};font-weight:700;margin-top:2px">N5</div>
+        </div>
+      </div>
+      <div class="mono" style="font-size:18px;font-weight:900;color:${B.bright};margin-top:6px;letter-spacing:2px">ENFJ</div>
+      <div style="font-size:8px;color:${B.accent};font-weight:600;margin-top:2px">비전가형 · 이상적 전도사</div>
+    </div>
+    <!-- Divider -->
+    <div style="width:1px;align-self:center;height:70%;background:linear-gradient(180deg,transparent,rgba(168,85,247,.2),transparent)"></div>
+    <!-- Right: Metrics -->
+    <div id="t6right" style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:12px 18px;position:relative;z-index:2;opacity:0;transform:translateX(16px);transition:all .7s cubic-bezier(.16,1,.3,1) .15s">
+      ${makeMetricBar('💰','경제감각',80,B.eco,0)}
+      ${makeMetricBar('⚡','표현에너지',95,B.exp,1)}
+      ${makeMetricBar('🛡️','위기대응력',82,B.cri,2)}
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding:6px 8px;border-radius:6px;background:rgba(0,214,143,.06)">
+        <span style="font-size:8px;color:${B.sub}">상위</span>
+        <span class="mono" style="font-size:16px;font-weight:800;color:${B.prime}">37%</span>
+      </div>
+      <div style="text-align:center;margin-top:6px;font-size:8px;color:${B.accent};font-weight:600">나도 분석받기 → neurinkairosai.com</div>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════
+   ANIMATION TRIGGERS
+   ═══════════════════════════════════════════ */
+function animateT1() {
+  setTimeout(() => {
+    const el = document.getElementById('t1content');
+    if (el) { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }
+  }, 100);
+}
+
+function animateT2() {
+  const arch = document.getElementById('t2arch');
+  const met = document.getElementById('t2metrics');
+  const gauge = document.getElementById('t2gauge');
+  const stats = document.getElementById('t2stats');
+  const marker = document.getElementById('t2marker');
+  setTimeout(() => { if(arch){arch.style.opacity='1';arch.style.transform='scale(1)';} }, 200);
+  setTimeout(() => { if(met){met.style.opacity='1';met.style.transform='translateY(0)';} animateMetrics(met); }, 500);
+  setTimeout(() => { if(gauge) gauge.style.opacity='1'; }, 700);
+  setTimeout(() => { if(marker) marker.style.left='63.2%'; }, 900);
+  setTimeout(() => { if(stats) stats.style.opacity='1'; }, 900);
+}
+
+function animateT3() {
+  reelsTimers.forEach(clearTimeout);
+  reelsTimers = [];
+  document.querySelectorAll('.reels-step').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = el.dataset.step === '4' ? 'translateY(24px)' : 'scale(.85)';
+  });
+  const show = (step) => {
+    document.querySelectorAll('.reels-step').forEach(el => {
+      const s = parseInt(el.dataset.step);
+      const active = s === step;
+      el.style.opacity = active ? '1' : '0';
+      if (step === 4 && s === 4) el.style.transform = 'translateY(0)';
+      else el.style.transform = active ? 'scale(1)' : 'scale(.85)';
+    });
+  };
+  reelsTimers.push(setTimeout(() => show(1), 400));
+  reelsTimers.push(setTimeout(() => show(2), 1400));
+  reelsTimers.push(setTimeout(() => show(3), 2600));
+  reelsTimers.push(setTimeout(() => show(4), 3800));
+}
+
+function animateT6() {
+  const left = document.getElementById('t6left');
+  const right = document.getElementById('t6right');
+  const ring = document.getElementById('t6ring');
+  const scoreEl = document.getElementById('t6score');
+  setTimeout(() => { if(left){left.style.opacity='1';left.style.transform='translateX(0)';} }, 200);
+  setTimeout(() => { if(right){right.style.opacity='1';right.style.transform='translateX(0)';} animateMetrics(right); }, 350);
+  setTimeout(() => {
+    if(ring) ring.style.strokeDashoffset = (2*Math.PI*28 - (86/100)*2*Math.PI*28);
+    if(scoreEl) {
+      let v = 0;
+      const iv = setInterval(() => { v+=2; if(v>=86){v=86;clearInterval(iv);} scoreEl.textContent=v; }, 25);
+    }
+  }, 500);
+}
+
+/* ═══════════════════════════════════════════
+   TAB SWITCHING
+   ═══════════════════════════════════════════ */
+function switchTab(idx) {
+  activeTab = idx;
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  document.getElementById('previewDesc').textContent = TEMPLATES[idx].desc;
+
+  const box = document.getElementById('previewBox');
+  const builders = [buildT1, buildT2, buildT3, buildT4, buildT5, buildT6];
+  box.innerHTML = builders[idx]();
+
+  const animators = [animateT1, animateT2, animateT3, null, null, animateT6];
+  if (animators[idx]) setTimeout(animators[idx], 50);
+}
+
+function reelsReplay() { animateT3(); }
+
+function selectQuiz(el, idx) {
+  document.querySelectorAll('.quiz-opt').forEach(o => {
+    o.style.background = 'rgba(255,255,255,.03)';
+    o.style.transform = 'scale(1)';
+    o.querySelector('.quiz-hint').style.display = 'none';
+    o.querySelector('.quiz-check').style.display = 'none';
+  });
+  const opt = [{color:B.eco},{color:B.cri},{color:B.exp},{color:B.accent}][idx];
+  el.style.background = opt.color + '15';
+  el.style.borderColor = opt.color + '50';
+  el.style.transform = 'scale(1.02)';
+  el.querySelector('.quiz-hint').style.display = 'block';
+  el.querySelector('.quiz-check').style.display = 'flex';
+}
+
+/* ═══════════════════════════════════════════
+   CAPTURE
+   ═══════════════════════════════════════════ */
+function capturePNG(scale) {
+  scale = scale || 1;
+  const box = document.getElementById('previewBox');
+  const target = box.firstElementChild;
+  if (!target) return;
+
+  if (typeof html2canvas === 'undefined') {
+    showToast('⚠️ html2canvas 로딩 중... 잠시 후 재시도');
+    return;
+  }
+
+  html2canvas(target, {
+    scale: scale,
+    backgroundColor: B.bg,
+    useCORS: true,
+    logging: false,
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = `nkai-social-${TEMPLATES[activeTab].name.replace(/[:\s]/g,'_')}-${scale}x.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    showToast(`✅ PNG ${scale}x 저장 완료!`);
+  }).catch(e => {
+    showToast('⚠️ 캡처 실패: ' + e.message);
+  });
+}
+
+function capture2x() { capturePNG(2); }
+
+/* ═══════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════ */
+(function init() {
+  const tabsEl = document.getElementById('tabs');
+  TEMPLATES.forEach((t,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (i===0 ? ' active' : '');
+    btn.textContent = t.name;
+    btn.onclick = () => switchTab(i);
+    tabsEl.appendChild(btn);
+  });
+  switchTab(0);
+})();
+</script>
+</body>
+</html>

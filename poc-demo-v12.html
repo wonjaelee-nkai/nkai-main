@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-KAI Living Profile SDK — 엔진 라이브 데모</title>
+<style>
+:root {
+  --bg: #080d18;
+  --surface: #0d1526;
+  --surface2: #111c30;
+  --border: rgba(59,130,246,0.12);
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --dim: #475569;
+  --accent: #3b82f6;
+  --green: #10b981;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --purple: #a855f7;
+  --indigo: #818cf8;
+  --mono: 'Fira Code', 'JetBrains Mono', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; overflow-x: hidden; }
+
+/* ── TOP ENGINE BAR ── */
+.engine-bar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(8,13,24,0.97);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  padding: 0 20px;
+  height: 52px;
+  display: flex; align-items: center; gap: 16px;
+}
+.eb-logo { font-size: 15px; font-weight: 900; color: var(--text); letter-spacing: -0.5px; white-space: nowrap; }
+.eb-logo span { color: var(--accent); }
+.eb-status { display: flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); }
+.eb-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse-dot 1.2s infinite; }
+.eb-engines { display: flex; gap: 8px; flex: 1; }
+.eb-eng { display: flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; background: var(--surface); border: 1px solid var(--border); transition: all 0.3s; }
+.eb-eng.firing { border-color: var(--amber); background: rgba(245,158,11,0.08); }
+.eb-eng-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--dim); transition: all 0.3s; }
+.eb-eng.firing .eb-eng-dot { background: var(--amber); animation: pulse-dot 0.4s infinite; }
+.eb-eng-name { font-size: 9px; color: var(--muted); font-weight: 600; }
+.eb-nscore { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 8px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); white-space: nowrap; }
+.eb-nscore-val { font-family: var(--mono); font-size: 20px; font-weight: 900; color: var(--accent); transition: all 0.4s; }
+.eb-tx { font-size: 10px; color: var(--muted); white-space: nowrap; }
+.eb-tx strong { color: var(--green); font-family: var(--mono); }
+
+/* ── SDK PIPELINE STRIP ── */
+.pipeline-strip {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex; align-items: center; gap: 0; overflow-x: auto;
+}
+.pip-step { display: flex; align-items: center; gap: 0; }
+.pip-node {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 14px; border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg); cursor: pointer;
+  transition: all 0.3s; position: relative;
+}
+.pip-node.active { border-color: var(--accent); background: rgba(59,130,246,0.1); }
+.pip-node.done { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.06); }
+.pip-node.active .pip-num { background: var(--accent); color: #fff; }
+.pip-node.done .pip-num { background: var(--green); color: #fff; }
+.pip-num { width: 20px; height: 20px; border-radius: 50%; background: var(--surface2); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; color: var(--dim); flex-shrink: 0; }
+.pip-info { }
+.pip-label { font-size: 10px; font-weight: 700; color: var(--muted); }
+.pip-node.active .pip-label { color: var(--accent); }
+.pip-node.done .pip-label { color: var(--green); }
+.pip-sub { font-size: 9px; color: var(--dim); margin-top: 1px; }
+.pip-arrow { font-size: 12px; color: var(--dim); padding: 0 8px; }
+.pip-latency { font-size: 8px; color: var(--green); font-family: var(--mono); position: absolute; top: -8px; right: 6px; background: rgba(16,185,129,0.1); padding: 1px 5px; border-radius: 3px; display: none; }
+.pip-node.done .pip-latency { display: block; }
+
+/* ── LAYOUT ── */
+.layout { display: grid; grid-template-columns: 220px 1fr 240px; gap: 0; min-height: calc(100vh - 120px); }
+
+/* ── LEFT ENGINE PANEL ── */
+.engine-panel {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 16px 14px;
+  display: flex; flex-direction: column; gap: 12px;
+  position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto;
+}
+.ep-title { font-size: 9px; font-weight: 700; color: var(--dim); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 2px; }
+.engine-card {
+  padding: 10px 12px; border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg); transition: all 0.3s;
+}
+.engine-card.firing { border-color: var(--amber); box-shadow: 0 0 10px rgba(245,158,11,0.15); }
+.ec-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.ec-name { font-size: 10px; font-weight: 700; }
+.ec-badge { font-size: 8px; padding: 2px 6px; border-radius: 10px; background: rgba(71,85,105,0.3); color: var(--dim); transition: all 0.3s; }
+.engine-card.firing .ec-badge { background: rgba(245,158,11,0.2); color: var(--amber); }
+.ec-bar { height: 3px; background: rgba(71,85,105,0.2); border-radius: 2px; overflow: hidden; margin-bottom: 6px; }
+.ec-fill { height: 100%; width: 15%; border-radius: 2px; transition: width 0.6s ease; }
+.ec-val { font-family: var(--mono); font-size: 11px; font-weight: 700; }
+
+/* TX FEED */
+.tx-panel { }
+.tx-item-mini {
+  padding: 6px 8px; border-radius: 5px; margin-bottom: 4px;
+  background: rgba(15,23,42,0.6); border: 1px solid rgba(59,130,246,0.07);
+  animation: fadeIn 0.3s ease;
+}
+.tx-row { display: flex; align-items: center; justify-content: space-between; }
+.tx-name-mini { font-size: 9px; color: var(--text); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+.tx-amt-mini { font-size: 9px; color: var(--muted); font-family: var(--mono); flex-shrink: 0; }
+.tx-cat-mini { font-size: 8px; margin-top: 2px; }
+
+/* ── CENTER STAGE ── */
+.stage-area { padding: 20px; }
+.stage-view { display: none; }
+.stage-view.active { display: block; animation: fadeIn 0.4s ease; }
+
+/* Stage panels */
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+.panel-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.api-call-label {
+  font-size: 8px; font-family: var(--mono); padding: 3px 8px; border-radius: 4px;
+  background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2); color: var(--indigo);
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.api-call-label::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--indigo); animation: pulse-dot 1.5s infinite; }
+
+/* S1 */
+.pillar-row { display: flex; gap: 8px; justify-content: center; margin: 12px 0; }
+.pillar { padding: 10px 14px; border-radius: 8px; background: var(--bg); border: 1px solid var(--border); text-align: center; min-width: 68px; transition: all 0.4s; }
+.pillar.lit { border-color: rgba(168,85,247,0.5); background: rgba(168,85,247,0.08); box-shadow: 0 0 10px rgba(168,85,247,0.12); }
+.pillar-cn { font-size: 24px; font-weight: 900; color: var(--dim); transition: color 0.4s; line-height: 1.2; }
+.pillar.lit .pillar-cn { color: var(--purple); }
+.pillar-label { font-size: 9px; color: var(--dim); margin-top: 4px; }
+.pillar-icon { font-size: 11px; margin-top: 3px; opacity: 0; transition: opacity 0.4s; letter-spacing: 1px; }
+.pillar.lit .pillar-icon { opacity: 1; }
+/* 오행 전용 카드 */
+.ohang-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 14px; }
+.ohang-card { padding: 8px 4px; border-radius: 8px; text-align: center; border: 1px solid var(--border); background: var(--bg); transition: all 0.5s; opacity: 0.35; }
+.ohang-card.active { opacity: 1; }
+.ohang-card.dominant { transform: scale(1.1); box-shadow:0 6px 24px rgba(0,0,0,0.4),0 0 12px rgba(59,130,246,0.15); }
+.ohang-icon { font-size: 18px; display: block; margin-bottom: 3px; }
+.ohang-name { font-size: 9px; font-weight: 700; }
+.ohang-pct { font-family: var(--mono); font-size: 13px; font-weight: 900; margin-top: 2px; transition: all 0.5s; }
+.energy-bars { display: flex; flex-direction: column; gap: 6px; }
+.e-row { display: flex; align-items: center; gap: 8px; }
+.e-name { font-size: 10px; width: 28px; text-align: right; }
+.e-bar { flex: 1; height: 6px; background: rgba(71,85,105,0.2); border-radius: 3px; overflow: hidden; }
+.e-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; width: 0; }
+.e-val { font-size: 10px; font-family: var(--mono); width: 28px; color: var(--muted); }
+
+/* S2 KIPA */
+.kipa-q { padding: 8px 12px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border); margin-bottom: 6px; display: flex; align-items: center; gap: 10px; opacity: 0; transition: opacity 0.3s; }
+.kipa-q.answered { opacity: 1; border-color: rgba(16,185,129,0.3); }
+.kipa-q-text { font-size: 10px; color: var(--muted); flex: 1; }
+.kipa-q-ans { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: rgba(16,185,129,0.1); color: var(--green); flex-shrink: 0; }
+.kipa-progress { height: 4px; background: rgba(71,85,105,0.2); border-radius: 2px; overflow: hidden; margin-bottom: 10px; }
+.kipa-prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--green)); border-radius: 2px; transition: width 0.4s ease; width: 0; }
+
+/* S3 */
+.nscore-big { text-align: center; padding: 16px; }
+.nscore-num { font-family: var(--mono); font-size: 64px; font-weight: 900; color: var(--accent); line-height: 1; transition: all 0.5s; }
+.nscore-label { font-size: 11px; color: var(--muted); margin-top: 6px; }
+.cluster-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.cluster-cell { padding: 8px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border); text-align: center; transition: all 0.5s; }
+.cluster-cell.active { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.06); }
+.cc-name { font-size: 9px; font-weight: 700; color: var(--muted); }
+.cc-pct { font-size: 14px; font-weight: 900; color: var(--dim); font-family: var(--mono); transition: all 0.5s; }
+.cluster-cell.active .cc-pct { color: var(--green); }
+.month-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.month-pill { font-size: 9px; padding: 3px 10px; border-radius: 10px; border: 1px solid var(--border); color: var(--dim); cursor: pointer; transition: all 0.2s; }
+.month-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.month-pill.done { background: rgba(16,185,129,0.1); color: var(--green); border-color: rgba(16,185,129,0.3); }
+
+/* S4 Living Profile */
+.lp-hero { text-align: center; padding: 20px; background: linear-gradient(135deg, rgba(59,130,246,0.06), rgba(16,185,129,0.04)); border-radius: 12px; border: 1px solid rgba(59,130,246,0.2); margin-bottom: 14px; }
+.lp-archetype { font-size: 22px; font-weight: 900; color: var(--text); margin-bottom: 4px; }
+.lp-grade { font-size: 12px; color: var(--accent); margin-bottom: 12px; }
+.lp-scores { display: flex; gap: 16px; justify-content: center; }
+.lp-score-item { text-align: center; }
+.lp-score-val { font-family: var(--mono); font-size: 24px; font-weight: 900; }
+.lp-score-lbl { font-size: 9px; color: var(--muted); margin-top: 2px; }
+.insight-list { display: flex; flex-direction: column; gap: 8px; }
+.insight-item { padding: 10px 14px; border-radius: 8px; border-left: 3px solid var(--accent); background: rgba(59,130,246,0.04); }
+.insight-tag { font-size: 8px; font-weight: 700; color: var(--accent); letter-spacing: 1px; margin-bottom: 4px; }
+.insight-text { font-size: 11px; color: var(--muted); line-height: 1.6; }
+.golden-time { padding: 14px; border-radius: 8px; background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.2); text-align: center; }
+
+/* ── RIGHT PANEL: API LOG + SDK ── */
+.right-panel {
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  padding: 14px 12px;
+  position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.rp-title { font-size: 9px; font-weight: 700; color: var(--dim); letter-spacing: 1.5px; text-transform: uppercase; }
+/* API Log */
+.api-log { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: var(--mono); font-size: 9px; max-height: 220px; overflow-y: auto; }
+.log-line { margin-bottom: 4px; display: flex; gap: 6px; animation: fadeIn 0.3s ease; }
+.log-ts { color: var(--dim); flex-shrink: 0; }
+.log-method { flex-shrink: 0; }
+.log-method.post { color: #60a5fa; }
+.log-method.get { color: #34d399; }
+.log-method.res { color: #a3e635; }
+.log-path { color: #c084fc; }
+.log-ms { color: var(--amber); }
+/* SDK code */
+.sdk-code { background: var(--bg); border: 1px solid rgba(99,102,241,0.2); border-radius: 8px; padding: 12px; font-family: var(--mono); font-size: 9px; line-height: 1.8; }
+/* N-Score mini chart */
+.score-sparkline { display: flex; align-items: flex-end; gap: 3px; height: 40px; }
+.spark-bar { flex: 1; border-radius: 2px 2px 0 0; transition: height 0.5s ease; min-height: 3px; }
+.score-labels { display: flex; justify-content: space-between; font-size: 8px; color: var(--dim); margin-top: 4px; }
+
+/* ── ANIMATIONS ── */
+@keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+@keyframes glow { 0%,100%{box-shadow:0 0 6px rgba(59,130,246,0.3)} 50%{box-shadow:0 0 14px rgba(59,130,246,0.6)} }
+.glow { animation: glow 2s ease-in-out infinite; }
+
+/* ── NRA BADGE ── */
+.nra-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 10px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); font-size: 9px; font-weight: 700; color: var(--green); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .engine-panel, .right-panel { display: none; }
+  .eb-engines { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ TOP ENGINE STATUS BAR ══════════════ -->
+<div class="engine-bar">
+  <div class="eb-logo">N-KAI <span>SDK</span></div>
+  <div class="eb-status">
+    <div class="eb-dot"></div>
+    <span style="font-size:10px;color:var(--green);font-weight:700;">LIVE ENGINE</span>
+  </div>
+  <div class="eb-engines" id="ebEngines">
+    <div class="eb-eng" id="ebBayes"><div class="eb-eng-dot"></div><span class="eb-eng-name">BAYESIAN</span></div>
+    <div class="eb-eng" id="ebROC"><div class="eb-eng-dot"></div><span class="eb-eng-name">ROC</span></div>
+    <div class="eb-eng" id="ebCluster"><div class="eb-eng-dot"></div><span class="eb-eng-name">CLUSTER</span></div>
+    <div class="eb-eng" id="ebCDE"><div class="eb-eng-dot"></div><span class="eb-eng-name">Neural CDE</span></div>
+  </div>
+  <div class="eb-nscore">
+    <div style="font-size:9px;color:var(--muted);">N-Score</div>
+    <div class="eb-nscore-val" id="ebNScore">—</div>
+    <div class="nra-badge" id="ebNRA" style="display:none;">NRA 97.3%</div>
+  </div>
+  <div class="eb-tx">실증 <strong id="ebTxCount">0</strong> / 510건</div>
+</div>
+
+<!-- ══════════════ SDK PIPELINE STRIP ══════════════ -->
+<div class="pipeline-strip">
+  <div class="pip-step">
+    <div class="pip-node active" id="pip1" onclick="goStage(1)">
+      <div class="pip-latency" id="pip1-lat">124ms</div>
+      <div class="pip-num">1</div>
+      <div class="pip-info">
+        <div class="pip-label">POST /birth/analyze</div>
+        <div class="pip-sub">선천 기질 → 8원소 벡터</div>
+      </div>
+    </div>
+  </div>
+  <div class="pip-arrow">→</div>
+  <div class="pip-step">
+    <div class="pip-node" id="pip2" onclick="goStage(2)">
+      <div class="pip-latency" id="pip2-lat">89ms</div>
+      <div class="pip-num">2</div>
+      <div class="pip-info">
+        <div class="pip-label">POST /kipa/fuse</div>
+        <div class="pip-sub">선천×후천 융합 → 아키타입</div>
+      </div>
+    </div>
+  </div>
+  <div class="pip-arrow">→</div>
+  <div class="pip-step">
+    <div class="pip-node" id="pip3" onclick="goStage(3)">
+      <div class="pip-latency" id="pip3-lat">2.3s</div>
+      <div class="pip-num">3</div>
+      <div class="pip-info">
+        <div class="pip-label">STREAM /mcc/evolve</div>
+        <div class="pip-sub">실거래 510건 → 동적 진화</div>
+      </div>
+    </div>
+  </div>
+  <div class="pip-arrow">→</div>
+  <div class="pip-step">
+    <div class="pip-node" id="pip4" onclick="goStage(4)">
+      <div class="pip-latency" id="pip4-lat">41ms</div>
+      <div class="pip-num">4</div>
+      <div class="pip-info">
+        <div class="pip-label">GET /profile/living</div>
+        <div class="pip-sub">Living Profile 완성</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+    <button onclick="autoRunAll()" id="btnAutoRun" style="font-size:10px;padding:5px 14px;border-radius:6px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.1);color:var(--green);cursor:pointer;font-weight:700;">▶ AUTO RUN</button>
+    <button onclick="resetAll()" style="font-size:10px;padding:5px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;">↺</button>
+  </div>
+</div>
+
+<!-- ══════════════ 3-COLUMN LAYOUT ══════════════ -->
+<div class="layout">
+
+<!-- ── LEFT: ENGINE PANEL ── -->
+<div class="engine-panel">
+  <div class="ep-title">4대 알고리즘 엔진</div>
+
+  <div class="engine-card" id="ec-bayes">
+    <div class="ec-header">
+      <span class="ec-name" style="color:#60a5fa;">① 베이지안 추론</span>
+      <span class="ec-badge" id="ecb-badge">대기</span>
+    </div>
+    <div style="font-size:8px;color:var(--dim);margin-bottom:6px;">사후확률 P(H|D) 업데이트</div>
+    <div class="ec-bar"><div class="ec-fill" id="ecb-fill" style="background:linear-gradient(90deg,#3b82f6,#818cf8);"></div></div>
+    <div class="ec-val" style="color:#60a5fa;" id="ecb-val">P = 0.95</div>
+  </div>
+
+  <div class="engine-card" id="ec-roc">
+    <div class="ec-header">
+      <span class="ec-name" style="color:#f59e0b;">② ROC 임계값</span>
+      <span class="ec-badge" id="ecr-badge">대기</span>
+    </div>
+    <div style="font-size:8px;color:var(--dim);margin-bottom:6px;">이상감지 θ 동적 조정</div>
+    <div class="ec-bar"><div class="ec-fill" id="ecr-fill" style="background:linear-gradient(90deg,#f59e0b,#fbbf24);"></div></div>
+    <div class="ec-val" style="color:#f59e0b;" id="ecr-val">θ = 0.65</div>
+  </div>
+
+  <div class="engine-card" id="ec-cluster">
+    <div class="ec-header">
+      <span class="ec-name" style="color:#a855f7;">③ 비지도 군집화</span>
+      <span class="ec-badge" id="ecc-badge">대기</span>
+    </div>
+    <div style="font-size:8px;color:var(--dim);margin-bottom:6px;">행동 클러스터 자율 진화</div>
+    <div class="ec-bar"><div class="ec-fill" id="ecc-fill" style="background:linear-gradient(90deg,#a855f7,#c084fc);"></div></div>
+    <div class="ec-val" style="color:#a855f7;" id="ecc-val">C = 8군집</div>
+  </div>
+
+  <div class="engine-card" id="ec-cde">
+    <div class="ec-header">
+      <span class="ec-name" style="color:#10b981;">④ Neural CDE</span>
+      <span class="ec-badge" id="ece-badge">대기</span>
+    </div>
+    <div style="font-size:8px;color:var(--dim);margin-bottom:6px;">시계열 궤적 시뮬레이션</div>
+    <div class="ec-bar"><div class="ec-fill" id="ece-fill" style="background:linear-gradient(90deg,#10b981,#34d399);"></div></div>
+    <div class="ec-val" style="color:#10b981;" id="ece-val">NRA = 97.3%</div>
+  </div>
+
+  <div style="border-top:1px solid var(--border);padding-top:10px;">
+    <div class="ep-title" style="margin-bottom:8px;">실시간 거래 피드</div>
+    <div id="leftTxFeed"></div>
+  </div>
+</div>
+
+<!-- ── CENTER: STAGE VIEWS ── -->
+<div class="stage-area">
+
+<!-- STAGE 1 -->
+<div class="stage-view active" id="sv1">
+  <div class="panel">
+    <div class="panel-title">
+      🧬 선천적 기질 분석
+      <span class="api-call-label" id="s1ApiLabel">POST /birth/analyze</span>
+    </div>
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="font-family:var(--mono);font-size:24px;font-weight:700;color:var(--text);">1982. 01. 18 — 亥時</div>
+      <div style="font-size:10px;color:var(--dim);margin-top:4px;">4차원 시간좌표 → 8원소 기질벡터 변환 중...</div>
+    </div>
+    <div class="pillar-row" id="pillarsRow">
+      <!-- 년주: 辛(金)酉(金) -->
+      <div class="pillar" id="p1">
+        <div class="pillar-cn" style="color:#94a3b8;">辛</div>
+        <div style="font-size:9px;color:#94a3b8;margin:1px 0;">🪙金</div>
+        <div class="pillar-cn" style="font-size:15px;color:#94a3b8;">酉</div>
+        <div style="font-size:9px;color:#94a3b8;">🪙金</div>
+        <div class="pillar-label">년주</div>
+        <div class="pillar-icon" style="color:#94a3b8;">⚙️⚙️</div>
+      </div>
+      <!-- 월주: 辛(金)丑(土) -->
+      <div class="pillar" id="p2">
+        <div class="pillar-cn" style="color:#94a3b8;">辛</div>
+        <div style="font-size:9px;color:#94a3b8;margin:1px 0;">🪙金</div>
+        <div class="pillar-cn" style="font-size:15px;color:#d97706;">丑</div>
+        <div style="font-size:9px;color:#d97706;">🌏土</div>
+        <div class="pillar-label">월주</div>
+        <div class="pillar-icon" style="color:#94a3b8;">⚙️⛰️</div>
+      </div>
+      <!-- 일주: 辛(金)丑(土) -->
+      <div class="pillar" id="p3">
+        <div class="pillar-cn" style="color:#94a3b8;">辛</div>
+        <div style="font-size:9px;color:#94a3b8;margin:1px 0;">🪙金</div>
+        <div class="pillar-cn" style="font-size:15px;color:#d97706;">丑</div>
+        <div style="font-size:9px;color:#d97706;">🌏土</div>
+        <div class="pillar-label">일주</div>
+        <div class="pillar-icon" style="color:#94a3b8;">⚙️⛰️</div>
+      </div>
+      <!-- 시주: 己(土)亥(水) -->
+      <div class="pillar" id="p4">
+        <div class="pillar-cn" style="color:#d97706;">己</div>
+        <div style="font-size:9px;color:#d97706;margin:1px 0;">🌏土</div>
+        <div class="pillar-cn" style="font-size:15px;color:#3b82f6;">亥</div>
+        <div style="font-size:9px;color:#3b82f6;">💧水</div>
+        <div class="pillar-label">시주</div>
+        <div class="pillar-icon" style="color:#d97706;">⛰️🌊</div>
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">⚙️ 8원소 에너지 벡터 산출</div>
+    <!-- 오행 5각 카드 그리드 -->
+    <div class="ohang-grid" id="ohangGrid">
+      <div class="ohang-card" id="oc-metal" style="border-color:rgba(148,163,184,0.3);background:rgba(148,163,184,0.04);">
+        <span class="ohang-icon">🪙</span>
+        <div class="ohang-name" style="color:#94a3b8;">金</div>
+        <div class="ohang-pct" style="color:#94a3b8;" id="ohp-metal">0%</div>
+      </div>
+      <div class="ohang-card" id="oc-earth" style="border-color:rgba(217,119,6,0.3);background:rgba(217,119,6,0.04);">
+        <span class="ohang-icon">🌏</span>
+        <div class="ohang-name" style="color:#d97706;">土</div>
+        <div class="ohang-pct" style="color:#d97706;" id="ohp-earth">0%</div>
+      </div>
+      <div class="ohang-card" id="oc-water" style="border-color:rgba(59,130,246,0.3);background:rgba(59,130,246,0.04);">
+        <span class="ohang-icon">💧</span>
+        <div class="ohang-name" style="color:#3b82f6;">水</div>
+        <div class="ohang-pct" style="color:#3b82f6;" id="ohp-water">0%</div>
+      </div>
+      <div class="ohang-card" id="oc-wood" style="border-color:rgba(22,163,74,0.3);background:rgba(22,163,74,0.04);">
+        <span class="ohang-icon">🌿</span>
+        <div class="ohang-name" style="color:#16a34a;">木</div>
+        <div class="ohang-pct" style="color:#16a34a;" id="ohp-wood">0%</div>
+      </div>
+      <div class="ohang-card" id="oc-fire" style="border-color:rgba(239,68,68,0.2);background:rgba(239,68,68,0.03);">
+        <span class="ohang-icon">🔥</span>
+        <div class="ohang-name" style="color:#ef4444;">火</div>
+        <div class="ohang-pct" style="color:#ef4444;" id="ohp-fire">0%</div>
+      </div>
+    </div>
+    <!-- 기존 바 형식도 유지 (보조) -->
+    <div class="energy-bars" id="energyBars" style="margin-top:12px;">
+      <div class="e-row"><span class="e-name" style="color:#94a3b8;">🪙金</span><div class="e-bar"><div class="e-fill" id="e-metal" style="background:#94a3b8;" data-w="55"></div></div><span class="e-val" id="ev-metal">0%</span></div>
+      <div class="e-row"><span class="e-name" style="color:#d97706;">🌏土</span><div class="e-bar"><div class="e-fill" id="e-earth" style="background:#d97706;" data-w="28"></div></div><span class="e-val" id="ev-earth">0%</span></div>
+      <div class="e-row"><span class="e-name" style="color:#3b82f6;">💧水</span><div class="e-bar"><div class="e-fill" id="e-water" style="background:#3b82f6;" data-w="14"></div></div><span class="e-val" id="ev-water">0%</span></div>
+      <div class="e-row"><span class="e-name" style="color:#16a34a;">🌿木</span><div class="e-bar"><div class="e-fill" id="e-wood" style="background:#16a34a;" data-w="3"></div></div><span class="e-val" id="ev-wood">0%</span></div>
+      <div class="e-row"><span class="e-name" style="color:#ef4444;">🔥火</span><div class="e-bar"><div class="e-fill" id="e-fire" style="background:#ef4444;" data-w="0"></div></div><span class="e-val" id="ev-fire">0%</span></div>
+    </div>
+    <div id="s1Result" style="display:none;margin-top:14px;padding:12px;background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.2);border-radius:8px;text-align:center;">
+      <div style="font-size:10px;color:var(--muted);">코어 에너지</div>
+      <div style="font-size:20px;font-weight:900;color:#a855f7;margin:4px 0;">⚙️ 辛金 극강 · 金 55%</div>
+      <div style="font-size:10px;color:var(--dim);">木(재성) 0% — 가치 창출형 · 직접 수익 추구보다 인정이 먼저</div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:8px;">
+    <button onclick="goStage(2)" id="s1NextBtn" style="font-size:11px;padding:10px 28px;border-radius:8px;border:1px solid rgba(59,130,246,0.4);background:rgba(59,130,246,0.1);color:var(--accent);cursor:pointer;font-weight:700;display:none;">다음: KIPA 융합 → POST /kipa/fuse ▶</button>
+  </div>
+</div>
+
+<!-- STAGE 2 -->
+<div class="stage-view" id="sv2">
+  <div class="panel">
+    <div class="panel-title">
+      📋 KIPA 16문항 — 후천 성향 벡터
+      <span class="api-call-label">POST /kipa/fuse</span>
+    </div>
+    <div class="kipa-progress"><div class="kipa-prog-fill" id="kipaProg"></div></div>
+    <div id="kipaQList"></div>
+  </div>
+  <div class="panel" id="s2FusePanel" style="display:none;">
+    <div class="panel-title">🔗 선천 × 후천 수리 융합 <span class="api-call-label">FUSING...</span></div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;padding:12px 0;flex-wrap:wrap;">
+      <div style="text-align:center;padding:12px 18px;background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);border-radius:8px;">
+        <div style="font-size:9px;color:var(--dim);">선천 벡터</div>
+        <div style="font-family:var(--mono);font-size:14px;font-weight:700;color:#a855f7;margin-top:4px;">V_core</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:2px;">🪙金55% · 🌏土28%</div>
+      </div>
+      <div style="font-size:20px;color:var(--accent);">⊗</div>
+      <div style="text-align:center;padding:12px 18px;background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:8px;">
+        <div style="font-size:9px;color:var(--dim);">후천 벡터</div>
+        <div style="font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent);margin-top:4px;">V_kipa</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:2px;">ISTJ · θ=0.68</div>
+      </div>
+      <div style="font-size:20px;color:var(--green);">→</div>
+      <div id="s2FuseResult" style="text-align:center;padding:12px 18px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:8px;opacity:0;transition:opacity 0.5s;">
+        <div style="font-size:9px;color:var(--dim);">융합 아키타입</div>
+        <div style="font-family:var(--mono);font-size:14px;font-weight:900;color:var(--green);margin-top:4px;">전략적 분석가</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:2px;">Dead Profile · Score: —</div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:8px;">
+    <button onclick="goStage(3)" id="s2NextBtn" style="font-size:11px;padding:10px 28px;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.1);color:var(--green);cursor:pointer;font-weight:700;display:none;">실거래 주입 시작 → STREAM /mcc/evolve ▶</button>
+  </div>
+</div>
+
+<!-- STAGE 3 -->
+<div class="stage-view" id="sv3">
+  <div class="panel">
+    <div class="panel-title">
+      📡 MCC 실거래 스트림 — 동적 진화 중
+      <span class="api-call-label" id="s3ApiLabel">STREAM /mcc/evolve</span>
+    </div>
+    <!-- N-Score 빅 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;">
+      <div class="nscore-big">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">N-Score · 실시간</div>
+        <div class="nscore-num" id="s3NScore">—</div>
+        <div class="nscore-label" id="s3Grade">데이터 주입 중...</div>
+        <div style="margin-top:10px;" id="s3NRABadge" style="display:none;">
+          <div class="nra-badge">NRA(서사복원율) 97.3%</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--dim);margin-bottom:6px;">6개월 N-Score 궤적</div>
+        <div class="score-sparkline" id="sparkline">
+          <div class="spark-bar" style="background:var(--dim);height:10%;" title="9월"></div>
+          <div class="spark-bar" style="background:var(--dim);height:10%;" title="10월"></div>
+          <div class="spark-bar" style="background:var(--dim);height:10%;" title="11월"></div>
+          <div class="spark-bar" style="background:var(--amber);height:0%;" title="12월"></div>
+          <div class="spark-bar" style="background:var(--accent);height:0%;" title="1월"></div>
+          <div class="spark-bar" style="background:var(--green);height:0%;" title="2월"></div>
+        </div>
+        <div class="score-labels"><span>9월</span><span>10월</span><span>11월</span><span>12월</span><span>1월</span><span>2월</span></div>
+      </div>
+    </div>
+    <!-- 월 진행 -->
+    <div class="month-pills" id="monthPills" style="margin-top:14px;">
+      <div class="month-pill" data-m="0">9월<br><span style="font-size:7px;">Pre-PoC</span></div>
+      <div class="month-pill" data-m="1">10월<br><span style="font-size:7px;">카드교체</span></div>
+      <div class="month-pill" data-m="2">11월<br><span style="font-size:7px;">전환기</span></div>
+      <div class="month-pill" data-m="3">12월<br><span style="font-size:7px;">Phase1</span></div>
+      <div class="month-pill" data-m="4">1월<br><span style="font-size:7px;">루틴형성</span></div>
+      <div class="month-pill" data-m="5">2월<br><span style="font-size:7px;">수렴</span></div>
+    </div>
+  </div>
+  <!-- 클러스터 -->
+  <div class="panel">
+    <div class="panel-title">🗺️ 소비 DNA 클러스터 — 실시간 재편</div>
+    <div class="cluster-grid" id="clusterGrid">
+      <div class="cluster-cell" id="cc0"><div class="cc-name">C1 건강식</div><div class="cc-pct" id="cv0">0%</div></div>
+      <div class="cluster-cell" id="cc1"><div class="cc-name">C2 운동</div><div class="cc-pct" id="cv1">0%</div></div>
+      <div class="cluster-cell" id="cc2"><div class="cc-name">C3 카페</div><div class="cc-pct" id="cv2">0%</div></div>
+      <div class="cluster-cell" id="cc3"><div class="cc-name">C4 배달</div><div class="cc-pct" id="cv3">0%</div></div>
+      <div class="cluster-cell" id="cc4"><div class="cc-name">C5 편의점</div><div class="cc-pct" id="cv4">0%</div></div>
+      <div class="cluster-cell" id="cc5" style="border-color:rgba(239,68,68,0.3);"><div class="cc-name" style="color:#ef4444;">C6 유흥</div><div class="cc-pct" id="cv5" style="color:#ef4444;">45%</div></div>
+      <div class="cluster-cell" id="cc6"><div class="cc-name">C7 생활</div><div class="cc-pct" id="cv6">0%</div></div>
+      <div class="cluster-cell" id="cc7"><div class="cc-name">C8 보험</div><div class="cc-pct" id="cv7">3%</div></div>
+    </div>
+    <div id="s3Insight" style="margin-top:10px;font-size:10px;color:var(--dim);padding:8px;background:rgba(15,23,42,0.5);border-radius:6px;min-height:30px;"></div>
+  </div>
+  <div style="text-align:center;">
+    <button onclick="goStage(4)" id="s3NextBtn" style="font-size:11px;padding:10px 28px;border-radius:8px;border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.1);color:var(--green);cursor:pointer;font-weight:700;display:none;">Living Profile 완성 → GET /profile/living ▶</button>
+  </div>
+</div>
+
+<!-- STAGE 4 -->
+<div class="stage-view" id="sv4">
+
+  <!-- DNA 지문 확정 헤더 -->
+  <div class="panel" style="border-color:rgba(59,130,246,0.3);background:linear-gradient(135deg,rgba(59,130,246,0.05),rgba(15,23,42,0));">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+      <div>
+        <div style="font-size:9px;font-weight:700;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">🧬 LIVING PROFILE — DNA 지문 확정</div>
+        <div style="font-size:22px;font-weight:900;color:var(--text);">실행형 건강전략가</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:2px;">ST 분석가 그룹 · N3 Grade · 특허 P25KAI001KR Claim 3</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:9px;color:var(--dim);margin-bottom:3px;">N-Score</div>
+        <div style="font-family:var(--mono);font-size:44px;font-weight:900;color:var(--accent);line-height:1;" id="s4Score">74</div>
+        <div class="nra-badge" style="margin-top:4px;">NRA 97.3%</div>
+      </div>
+    </div>
+    <!-- 3대 인자 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
+      <div style="padding:10px;background:rgba(45,140,255,0.06);border:1px solid rgba(45,140,255,0.2);border-radius:8px;text-align:center;">
+        <div style="font-size:9px;color:var(--dim);">💰 경제감각</div>
+        <div style="font-family:var(--mono);font-size:20px;font-weight:900;color:#2D8CFF;margin:4px 0;">78</div>
+        <div style="font-size:8px;color:var(--dim);">재물 핸들링 능력</div>
+      </div>
+      <div style="padding:10px;background:rgba(90,168,255,0.06);border:1px solid rgba(90,168,255,0.2);border-radius:8px;text-align:center;">
+        <div style="font-size:9px;color:var(--dim);">⚡ 표현에너지</div>
+        <div style="font-family:var(--mono);font-size:20px;font-weight:900;color:#5AA8FF;margin:4px 0;">65</div>
+        <div style="font-size:8px;color:var(--dim);">기회 창출력</div>
+      </div>
+      <div style="padding:10px;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.2);border-radius:8px;text-align:center;">
+        <div style="font-size:9px;color:var(--dim);">🛡️ 위기대응력</div>
+        <div style="font-family:var(--mono);font-size:20px;font-weight:900;color:var(--green);margin:4px 0;">79</div>
+        <div style="font-size:8px;color:var(--dim);">리스크 내성</div>
+      </div>
+    </div>
+    <!-- DNA 핵심 지문 -->
+    <div style="background:rgba(15,23,42,0.7);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">
+      <div style="font-size:9px;font-weight:700;color:var(--dim);letter-spacing:1px;margin-bottom:8px;">📌 확정 DNA 지문 — 불변 기준점</div>
+      <div style="display:flex;flex-direction:column;gap:5px;">
+        <div style="display:flex;align-items:center;gap:8px;font-size:10px;">
+          <span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span>
+          <span style="color:var(--muted);">C6 유흥 <strong style="color:var(--dim);text-decoration:line-through;">45%</strong> → <strong style="color:var(--green);">0%</strong> 완전 소멸 (100일)</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:10px;">
+          <span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span>
+          <span style="color:var(--muted);">C1 건강식 <strong style="color:var(--green);">2.4배</strong> 성장 · 5극 식습관 DNA 확정</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:10px;">
+          <span style="color:var(--amber);font-weight:700;flex-shrink:0;">◆</span>
+          <span style="color:var(--muted);">C8 보험 <strong style="color:var(--accent);">18% 고정</strong> · 현대해상 286,000원 법칙 L5</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:10px;">
+          <span style="color:var(--accent);font-weight:700;flex-shrink:0;">◆</span>
+          <span style="color:var(--muted);">골든타임 <strong style="color:var(--amber);">화~목 오후 2~5시</strong> · 의사결정 정확도 87%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI 실시간 알람/인사이트 엔진 -->
+  <div class="panel" style="border-color:rgba(245,158,11,0.25);">
+    <div class="panel-title" style="justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        🤖 AI 실시간 알람 엔진
+        <span class="api-call-label" id="alarmApiLabel">GET /alert/stream</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:5px;">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-dot 1.2s infinite;"></div>
+        <span style="font-size:9px;color:var(--green);font-weight:700;" id="alarmStatus">수신 중</span>
+      </div>
+    </div>
+    <div id="alarmFeed" style="display:flex;flex-direction:column;gap:7px;min-height:80px;">
+      <div style="text-align:center;padding:16px;font-size:11px;color:var(--dim);">DNA 지문 로딩 중... AI 알람 엔진 초기화</div>
+    </div>
+  </div>
+
+  <!-- SDK 연동 -->
+  <div style="padding:12px 14px;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.15);border-radius:10px;">
+    <div style="font-size:9px;font-weight:700;color:var(--indigo);margin-bottom:8px;">💻 파트너 앱에서 AI 알람 수신 — 2줄</div>
+    <div class="sdk-code">
+<span style="color:#64748b;">// 거래 발생 → DNA 대조 → 즉시 알람 push</span>
+engine<span style="color:#94a3b8;">.</span><span style="color:#60a5fa;">on</span><span style="color:#94a3b8;">(</span><span style="color:#fcd34d;">'alert'</span><span style="color:#94a3b8;">,</span> <span style="color:#a5b4fc;">alert</span> <span style="color:#818cf8;">=&gt;</span> <span style="color:#86efac;">notify</span><span style="color:#94a3b8;">(</span><span style="color:#a5b4fc;">alert</span><span style="color:#94a3b8;">.</span><span style="color:#60a5fa;">message</span><span style="color:#94a3b8;">,</span> <span style="color:#a5b4fc;">alert</span><span style="color:#94a3b8;">.</span><span style="color:#60a5fa;">priority</span><span style="color:#94a3b8;">));</span>
+engine<span style="color:#94a3b8;">.</span><span style="color:#60a5fa;">on</span><span style="color:#94a3b8;">(</span><span style="color:#fcd34d;">'insight'</span><span style="color:#94a3b8;">,</span> <span style="color:#a5b4fc;">ins</span> <span style="color:#818cf8;">=&gt;</span> <span style="color:#86efac;">renderCard</span><span style="color:#94a3b8;">(</span><span style="color:#a5b4fc;">ins</span><span style="color:#94a3b8;">.</span><span style="color:#60a5fa;">type</span><span style="color:#94a3b8;">,</span> <span style="color:#a5b4fc;">ins</span><span style="color:#94a3b8;">.</span><span style="color:#60a5fa;">text</span><span style="color:#94a3b8;">));</span>
+<span style="color:#64748b;">// → "골든타임 진입" · "루틴 이탈 경고" · "지출 예측" 실시간 수신</span>
+    </div>
+  </div>
+
+</div>
+
+</div><!-- /stage-area -->
+
+<!-- ── RIGHT: API LOG + SDK ── -->
+<div class="right-panel">
+  <!-- API 로그 (컴팩트) -->
+  <div class="rp-title">API 로그</div>
+  <div class="api-log" id="apiLog" style="max-height:120px;">
+    <div class="log-line"><span class="log-ts">00:00:00</span><span class="log-method get">SYS</span><span class="log-path"> engine_init</span></div>
+    <div class="log-line"><span class="log-ts">--:--:--</span><span style="color:var(--green);">✓</span><span style="color:var(--dim);"> 4대 알고리즘 대기 중</span></div>
+  </div>
+
+  <!-- AI 알람 피드 — 메인 -->
+  <div class="rp-title" style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;">
+    <span>🤖 AI 알람 피드</span>
+    <span style="font-size:8px;color:var(--green);font-weight:700;">● LIVE</span>
+  </div>
+  <div id="rightAlarmFeed" style="display:flex;flex-direction:column;gap:5px;flex:1;overflow-y:auto;">
+    <div style="text-align:center;padding:12px;font-size:10px;color:var(--dim);">DNA 지문 기반 AI 알람 대기 중...</div>
+  </div>
+
+  <!-- N-Score 궤적 -->
+  <div class="rp-title" style="margin-top:4px;">N-Score 궤적</div>
+  <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;">
+    <div class="score-sparkline" id="rightSparkline">
+      <div class="spark-bar" style="background:var(--dim);height:8%;" title="9월"></div>
+      <div class="spark-bar" style="background:var(--dim);height:8%;" title="10월"></div>
+      <div class="spark-bar" style="background:var(--dim);height:8%;" title="11월"></div>
+      <div class="spark-bar" style="background:var(--amber);height:0%;" title="12월"></div>
+      <div class="spark-bar" style="background:var(--accent);height:0%;" title="1월"></div>
+      <div class="spark-bar" style="background:var(--green);height:0%;" title="2월"></div>
+    </div>
+    <div class="score-labels"><span>9월</span><span>10월</span><span>11월</span><span>12월</span><span>1월</span><span>2월</span></div>
+  </div>
+
+  <div style="margin-top:auto;padding-top:8px;border-top:1px solid var(--border);">
+    <div style="font-size:8px;color:var(--dim);line-height:1.6;">
+      특허 P25KAI001KR<br>
+      창업자 이원재 실증 510건<br>
+      NRA(서사복원율) 97.3%<br>
+      © 2026 뉴린카이로스에이아이(주)
+    </div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+
+<script>
+// ══════════════════════════════════════════════════
+// N-KAI SDK ENGINE DEMO — CORE ENGINE v10
+// ══════════════════════════════════════════════════
+
+// ── STATE ──
+let currentStage = 1;
+let globalTxCount = 0;
+let globalNScore = null;
+let autoRunTimer = null;
+let isAutoRun = false;
+
+// ── ENGINE CONFIG ──
+const ENGINES = {
+  bayes:   { eb:'ebBayes',   ec:'ec-bayes',   fill:'ecb-fill', badge:'ecb-badge', val:'ecb-val',   color:'rgba(59,130,246,0.15)',  valFn:()=>`P = ${(0.90+Math.random()*0.08).toFixed(2)}` },
+  roc:     { eb:'ebROC',     ec:'ec-roc',     fill:'ecr-fill', badge:'ecr-badge', val:'ecr-val',   color:'rgba(245,158,11,0.15)',  valFn:()=>`θ = ${(0.60+Math.random()*0.10).toFixed(2)}` },
+  cluster: { eb:'ebCluster', ec:'ec-cluster', fill:'ecc-fill', badge:'ecc-badge', val:'ecc-val',   color:'rgba(168,85,247,0.15)', valFn:()=>`C = ${7+Math.floor(Math.random()*3)}군집` },
+  cde:     { eb:'ebCDE',     ec:'ec-cde',     fill:'ece-fill', badge:'ece-badge', val:'ece-val',   color:'rgba(16,185,129,0.15)', valFn:()=>`NRA = ${(96+Math.random()*2).toFixed(1)}%` },
+};
+
+function fireEngine(key, duration=1600) {
+  const e = ENGINES[key]; if(!e) return;
+  const pct = 55 + Math.random()*40;
+  // top bar
+  const eb = document.getElementById(e.eb);
+  if(eb) { eb.classList.add('firing'); setTimeout(()=>eb.classList.remove('firing'), duration); }
+  // left panel card
+  const ec = document.getElementById(e.ec);
+  if(ec) { ec.classList.add('firing'); setTimeout(()=>ec.classList.remove('firing'), duration); }
+  // bar
+  const fill = document.getElementById(e.fill);
+  if(fill) { fill.style.width=pct+'%'; setTimeout(()=>fill.style.width='15%', duration); }
+  // badge
+  const badge = document.getElementById(e.badge);
+  if(badge) { badge.textContent='🔥 FIRING'; setTimeout(()=>badge.textContent='대기', duration); }
+  // val
+  const val = document.getElementById(e.val);
+  if(val) val.textContent = e.valFn();
+}
+
+// ── TRANSACTION DATA ──
+const TX_DATA = [
+  {n:'배민(강된장비빔밥)', a:'9,800', c:'C1·건강식', e:'cluster', color:'#10b981'},
+  {n:'현대해상보험', a:'286,000', c:'C8·보험', e:'bayes', color:'#60a5fa'},
+  {n:'배민(포케볼)', a:'13,500', c:'C1·건강식', e:'cluster', color:'#10b981'},
+  {n:'쿠팡로켓', a:'37,800', c:'C7·생활', e:'roc', color:'#f59e0b'},
+  {n:'백억커피', a:'2,500', c:'C3·카페', e:'cluster', color:'#a855f7'},
+  {n:'올리브영', a:'18,500', c:'C9·헬스케어', e:'bayes', color:'#a855f7'},
+  {n:'배민(베이글세트)', a:'8,500', c:'C1·건강식', e:'cde', color:'#10b981'},
+  {n:'패스트파이브', a:'110', c:'C11·사무', e:'roc', color:'#60a5fa'},
+  {n:'마켓컬리', a:'45,600', c:'C6·식재료', e:'cluster', color:'#f59e0b'},
+  {n:'배민(새우아보카도)', a:'14,800', c:'C1·건강식', e:'cde', color:'#10b981'},
+  {n:'연세세브란스병원', a:'15,000', c:'C9·의료', e:'bayes', color:'#a855f7'},
+  {n:'쿠팡(계란+그릭요거트)', a:'22,400', c:'C6·식재료', e:'cluster', color:'#f59e0b'},
+];
+let txIdx = 0;
+
+function pushGlobalTx() {
+  const tx = TX_DATA[txIdx % TX_DATA.length];
+  txIdx++;
+  globalTxCount++;
+  // top bar counter
+  const ctr = document.getElementById('ebTxCount');
+  if(ctr) ctr.textContent = Math.min(globalTxCount * 3, 510).toString();
+  // engine fire
+  fireEngine(tx.e);
+  // left panel feed
+  const feed = document.getElementById('leftTxFeed');
+  if(feed) {
+    const d = document.createElement('div');
+    d.className = 'tx-item-mini';
+    const now = new Date();
+    const ts = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+    d.innerHTML = `<div class="tx-row"><span class="tx-name-mini">${tx.n}</span><span class="tx-amt-mini">₩${tx.a}</span></div><div class="tx-cat-mini" style="color:${tx.color};">${tx.c} · ${ts}</div>`;
+    feed.insertBefore(d, feed.firstChild);
+    while(feed.children.length > 8) feed.removeChild(feed.lastChild);
+  }
+  // API log
+  addLog('POST', '/mcc/stream', Math.floor(8+Math.random()*20)+'ms', tx.c);
+}
+
+// ── API LOG ──
+function addLog(method, path, ms, note='') {
+  const log = document.getElementById('apiLog'); if(!log) return;
+  const now = new Date();
+  const ts = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  const methodColor = method==='POST'?'post':method==='STREAM'?'post':'get';
+  line.innerHTML = `<span class="log-ts">${ts}</span><span class="log-method ${methodColor}">${method}</span><span class="log-path"> ${path}</span>${ms?`<span class="log-ms"> ${ms}</span>`:''}${note?`<span style="color:var(--dim);"> ${note}</span>`:''}`;
+  log.insertBefore(line, log.firstChild);
+  while(log.children.length > 20) log.removeChild(log.lastChild);
+}
+
+// ── STAGE NAVIGATION ──
+function goStage(n) {
+  // 잠금 체크
+  if(n>currentStage+1 && !isAutoRun) { addLog('ERR','stage_skip','—','순서대로 진행하세요'); return; }
+  currentStage = n;
+  // views
+  [1,2,3,4].forEach(i => {
+    const v = document.getElementById('sv'+i);
+    if(v) v.classList.toggle('active', i===n);
+  });
+  // pipeline
+  ['pip1','pip2','pip3','pip4'].forEach((id,i)=>{
+    const el = document.getElementById(id); if(!el) return;
+    el.classList.remove('active','done');
+    if(i+1 < n) el.classList.add('done');
+    else if(i+1 === n) el.classList.add('active');
+  });
+  // stage-specific init
+  if(n===1) initStage1();
+  if(n===2) initStage2();
+  if(n===3) initStage3();
+  if(n===4) initStage4();
+  addLog(n===3?'STREAM':'POST', ['/birth/analyze','/kipa/fuse','/mcc/evolve','/profile/living'][n-1], Math.floor(60+Math.random()*200)+'ms');
+}
+
+// ── STAGE 1: BIRTH ANALYSIS ──
+function initStage1() {
+  fireEngine('bayes'); fireEngine('cde');
+  addLog('POST','/birth/analyze','—','사주 분석 시작');
+  const pillars = ['p1','p2','p3','p4'];
+  pillars.forEach((id,i) => setTimeout(()=>{
+    const el = document.getElementById(id);
+    if(el) el.classList.add('lit');
+    fireEngine(['cde','bayes','cluster','roc'][i]);
+  }, 400+i*500));
+  const energies = [
+    {id:'e-metal', vid:'ev-metal', w:55, delay:2200},
+    {id:'e-earth',  vid:'ev-earth',  w:28, delay:2500},
+    {id:'e-water',  vid:'ev-water',  w:14, delay:2800},
+    {id:'e-wood',   vid:'ev-wood',   w:3,  delay:3100},
+    {id:'e-fire',   vid:'ev-fire',   w:0,  delay:3400},
+  ];
+  energies.forEach(en => setTimeout(()=>{
+    const fill = document.getElementById(en.id);
+    const val  = document.getElementById(en.vid);
+    if(fill) fill.style.width = en.w+'%';
+    if(val)  val.textContent  = en.w+'%';
+    // 오행 카드 업데이트
+    const cardMap = {'e-metal':'oc-metal','e-earth':'oc-earth','e-water':'oc-water','e-wood':'oc-wood','e-fire':'oc-fire'};
+    const pctMap  = {'e-metal':'ohp-metal','e-earth':'ohp-earth','e-water':'ohp-water','e-wood':'ohp-wood','e-fire':'ohp-fire'};
+    const card = document.getElementById(cardMap[en.id]);
+    const pctEl = document.getElementById(pctMap[en.id]);
+    if(card) {
+      card.classList.add('active');
+      if(en.w >= 40) card.classList.add('dominant');
+    }
+    if(pctEl) pctEl.textContent = en.w+'%';
+    if(en.w>0) fireEngine('cluster');
+  }, en.delay));
+  setTimeout(()=>{
+    const r = document.getElementById('s1Result'); if(r) r.style.display='block';
+    const btn = document.getElementById('s1NextBtn'); if(btn) btn.style.display='inline-block';
+    document.getElementById('pip1-lat').textContent = '124ms';
+    addLog('RES','/birth/analyze','124ms','🪙金55% 확정');
+    if(isAutoRun) setTimeout(()=>goStage(2), 800);
+  }, 4200);
+}
+
+// ── STAGE 2: KIPA ──
+const KIPA_QS = [
+  {q:'새로운 아이디어를 즉각 실행하는가?', a:'J형 68%'},
+  {q:'감정보다 논리로 결정하는가?', a:'T형 72%'},
+  {q:'계획을 꼼꼼히 세우는가?', a:'J형 확정'},
+  {q:'외부 자극보다 내면 분석을 선호?', a:'I형 55%'},
+  {q:'직관보다 데이터를 신뢰하는가?', a:'S형 보정'},
+];
+function initStage2() {
+  const list = document.getElementById('kipaQList');
+  if(!list) return;
+  list.innerHTML = '';
+  KIPA_QS.forEach((q,i)=>{
+    const d = document.createElement('div');
+    d.className='kipa-q'; d.id='kq'+i;
+    d.innerHTML=`<div class="kipa-q-text">${q.q}</div><div class="kipa-q-ans">${q.a}</div>`;
+    list.appendChild(d);
+    setTimeout(()=>{
+      d.classList.add('answered');
+      const pct = (i+1)/KIPA_QS.length*100;
+      const prog = document.getElementById('kipaProg'); if(prog) prog.style.width=pct+'%';
+      fireEngine(['bayes','roc','cluster','cde','bayes'][i]);
+      addLog('POST',`/kipa/q${i+1}`, Math.floor(20+Math.random()*40)+'ms', q.a);
+    }, 500+i*600);
+  });
+  setTimeout(()=>{
+    const fp = document.getElementById('s2FusePanel'); if(fp) fp.style.display='block';
+    fireEngine('bayes'); fireEngine('cde');
+    setTimeout(()=>{
+      const fr = document.getElementById('s2FuseResult'); if(fr) fr.style.opacity='1';
+      document.getElementById('pip2-lat').textContent='89ms';
+      addLog('RES','/kipa/fuse','89ms','전략적 분석가 확정');
+      const btn = document.getElementById('s2NextBtn'); if(btn) btn.style.display='inline-block';
+      if(isAutoRun) setTimeout(()=>goStage(3), 800);
+    }, 600);
+  }, 500+KIPA_QS.length*600+400);
+}
+
+// ── STAGE 3: MCC EVOLVE ──
+const MONTH_DATA = [
+  {m:'9월',  score:null, clusters:[0,0,0,0,3,45,0,3],  insight:'Pre-PoC — Dead Profile 상태 · 유흥 지배', engine:'roc'},
+  {m:'10월', score:null, clusters:[0,0,0,0,4,30,5,3],  insight:'카드 교체 이벤트 → 행동 리셋 감지', engine:'bayes'},
+  {m:'11월', score:null, clusters:[5,0,0,8,4,14,8,0],  insight:'전환기 — 배달↑ 유흥 감소 중', engine:'cluster'},
+  {m:'12월', score:52,   clusters:[10,0,3,15,3,12,11,14], insight:'Phase 1 돌입 · N-Score 52 첫 산출', engine:'cde'},
+  {m:'1월',  score:65,   clusters:[35,5,10,10,1,0,0,18],  insight:'비빔밥 루틴 정착 · 유흥 소멸 · N-Score 65', engine:'bayes'},
+  {m:'2월',  score:74,   clusters:[40,15,12,8,4,0,0,18],  insight:'수렴 완료 · 5극 체제 확정 · N-Score 74 ▲', engine:'cde'},
+];
+let s3Month = -1;
+let s3Timer = null;
+const SPARK_PCTS = [0, 0, 0, 55, 70, 80];
+
+function initStage3() {
+  s3Month = -1;
+  clearInterval(s3Timer);
+  s3Timer = setInterval(advanceMonth3, 1800);
+  advanceMonth3();
+}
+function advanceMonth3() {
+  s3Month++;
+  if(s3Month >= MONTH_DATA.length) {
+    clearInterval(s3Timer);
+    const btn = document.getElementById('s3NextBtn'); if(btn) btn.style.display='inline-block';
+    document.getElementById('pip3-lat').textContent='2.3s';
+    document.getElementById('ebNRA').style.display='inline-flex';
+    addLog('RES','/mcc/evolve','2.3s','510건 수렴 · N-Score 74');
+    if(isAutoRun) setTimeout(()=>goStage(4), 1000);
+    return;
+  }
+  const d = MONTH_DATA[s3Month];
+  // pills
+  document.querySelectorAll('.month-pill').forEach((el,i)=>{
+    el.classList.toggle('active', i===s3Month);
+    if(i<s3Month) el.classList.add('done');
+  });
+  // clusters
+  d.clusters.forEach((v,i)=>{
+    const cc = document.getElementById('cc'+i); const cv = document.getElementById('cv'+i);
+    if(cc && cv) {
+      cv.textContent = v+'%';
+      cc.classList.toggle('active', v>10 && i!==5);
+      if(i===5) cc.style.borderColor = v>0 ? 'rgba(239,68,68,0.3)' : 'rgba(59,130,246,0.12)';
+    }
+  });
+  // N-Score
+  const ns = document.getElementById('s3NScore');
+  const gr = document.getElementById('s3Grade');
+  if(ns && gr) {
+    if(d.score) {
+      ns.textContent = d.score;
+      ns.style.color = d.score>=70?'#10b981':d.score>=60?'#3b82f6':'#f59e0b';
+      gr.textContent = d.score>=70?'N3 Grade · B+':d.score>=60?'N4 Grade · B':'N5 Grade · C+';
+      globalNScore = d.score;
+      const eb = document.getElementById('ebNScore'); if(eb) eb.textContent = d.score;
+    } else { ns.textContent='—'; gr.textContent='데이터 주입 중...'; }
+  }
+  // sparkline
+  updateSparklines(s3Month);
+  // insight
+  const ins = document.getElementById('s3Insight'); if(ins) ins.textContent = d.insight;
+  // engine
+  fireEngine(d.engine);
+  addLog('STREAM','/mcc/evolve', Math.floor(180+Math.random()*200)+'ms', d.m);
+}
+
+function updateSparklines(idx) {
+  const sparks = [document.getElementById('sparkline'), document.getElementById('rightSparkline')];
+  sparks.forEach(s=>{
+    if(!s) return;
+    const bars = s.querySelectorAll('.spark-bar');
+    bars.forEach((b,i)=>{
+      if(i<=idx) {
+        const pct = SPARK_PCTS[i];
+        b.style.height = (pct>0?pct:8)+'%';
+        b.style.background = pct>=70?'#10b981':pct>=55?'#3b82f6':pct>0?'#f59e0b':'#475569';
+      }
+    });
+  });
+}
+
+// ── AI 알람 데이터 ──
+const AI_ALARMS = [
+  // type: golden(골든타임) / routine(루틴) / warn(경고) / predict(예측) / insight(인사이트) / risk(리스크)
+  { type:'golden',  priority:'HIGH',   icon:'⏰', title:'골든타임 진입',        msg:'화요일 오후 2시 — DNA 지문 기반 재정 의사결정 최적 시간대. 정확도 87%.', color:'#f59e0b', border:'rgba(245,158,11,0.3)', bg:'rgba(245,158,11,0.05)', engine:'cde' },
+  { type:'routine', priority:'INFO',   icon:'✅', title:'비빔밥 루틴 확인',      msg:'강된장비빔밥 7일 연속 감지. C1 건강식 유지 중. N-Score +1 예측.', color:'#10b981', border:'rgba(16,185,129,0.25)', bg:'rgba(16,185,129,0.04)', engine:'cluster' },
+  { type:'predict', priority:'INFO',   icon:'🎯', title:'이번 주 소비 예측',     msg:'포케볼 21% · 베이글 9% · 보험 납부(286,000원) D-3. 예상 지출 ₩64,000.', color:'#3b82f6', border:'rgba(59,130,246,0.25)', bg:'rgba(59,130,246,0.04)', engine:'bayes' },
+  { type:'insight', priority:'INFO',   icon:'💡', title:'패턴 인사이트',         msg:'수요일 배달 주문 집중(68%). C4→C1 전환 완료. 루틴 안정성 94%.', color:'#818cf8', border:'rgba(129,140,248,0.25)', bg:'rgba(129,140,248,0.04)', engine:'cde' },
+  { type:'warn',    priority:'MEDIUM', icon:'⚠️', title:'지출 이탈 경고',        msg:'편의점 3회 연속 감지. 루틴 이탈 가능성 28% — DNA 기준점 대비 +12%.', color:'#f59e0b', border:'rgba(245,158,11,0.3)', bg:'rgba(245,158,11,0.04)', engine:'roc' },
+  { type:'routine', priority:'INFO',   icon:'✅', title:'모닝루틴 유지',         msg:'물 + 삶은계란 + 그릭요거트 패턴 지속. 생존기반 루틴 안정 (Posterior 0.99).', color:'#10b981', border:'rgba(16,185,129,0.25)', bg:'rgba(16,185,129,0.04)', engine:'bayes' },
+  { type:'risk',    priority:'LOW',    icon:'🛡️', title:'이상거래 모니터링',     msg:'ROC θ=0.65 기준 이상 없음. 위기대응력 0.79 — 현재 안전 범위.', color:'#60a5fa', border:'rgba(96,165,250,0.2)', bg:'rgba(96,165,250,0.03)', engine:'roc' },
+  { type:'predict', priority:'HIGH',   icon:'💰', title:'골든타임 알림 예약',    msg:'목요일 오후 3시 재정 의사결정 예약됨. DNA 기반 최적 시간 확정.', color:'#f59e0b', border:'rgba(245,158,11,0.3)', bg:'rgba(245,158,11,0.05)', engine:'cde' },
+  { type:'insight', priority:'INFO',   icon:'🧬', title:'DNA 지문 안정성',       msg:'6개월 510건 학습 완료. 서사복원율(NRA) 97.3% 수렴 — 추가 학습 필요 없음.', color:'#a855f7', border:'rgba(168,85,247,0.2)', bg:'rgba(168,85,247,0.04)', engine:'cluster' },
+  { type:'predict', priority:'MEDIUM', icon:'📊', title:'다음 달 지출 예측',     msg:'예상 총 지출 ₩680,000~₩740,000. C1 건강식 40% · C8 보험 18% 패턴 유지.', color:'#3b82f6', border:'rgba(59,130,246,0.25)', bg:'rgba(59,130,246,0.04)', engine:'bayes' },
+];
+let alarmIdx = 0;
+let alarmTimer = null;
+
+function pushAlarm(targetFeedId) {
+  const alarm = AI_ALARMS[alarmIdx % AI_ALARMS.length];
+  alarmIdx++;
+  const feed = document.getElementById(targetFeedId); if(!feed) return;
+  // 초기화 메시지 제거
+  const placeholder = feed.querySelector('[style*="대기"]') || feed.querySelector('[style*="초기화"]');
+  if(placeholder) placeholder.remove();
+  const now = new Date();
+  const ts = now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+':'+now.getSeconds().toString().padStart(2,'0');
+  const d = document.createElement('div');
+  d.style.cssText = `padding:8px 10px;border-radius:7px;border:1px solid ${alarm.border};background:${alarm.bg};animation:fadeIn 0.35s ease;`;
+  d.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <div style="display:flex;align-items:center;gap:5px;">
+        <span style="font-size:12px;">${alarm.icon}</span>
+        <span style="font-size:10px;font-weight:700;color:${alarm.color};">${alarm.title}</span>
+      </div>
+      <span style="font-size:8px;color:var(--dim);font-family:var(--mono);">${ts}</span>
+    </div>
+    <div style="font-size:9px;color:var(--muted);line-height:1.55;">${alarm.msg}</div>
+    <div style="margin-top:4px;display:flex;align-items:center;gap:5px;">
+      <span style="font-size:8px;padding:1px 6px;border-radius:8px;background:rgba(71,85,105,0.3);color:var(--dim);">${alarm.type.toUpperCase()}</span>
+      <span style="font-size:8px;color:var(--dim);">${alarm.priority}</span>
+    </div>`;
+  feed.insertBefore(d, feed.firstChild);
+  while(feed.children.length > 6) feed.removeChild(feed.lastChild);
+  fireEngine(alarm.engine);
+  addLog('GET','/alert/stream','12ms', alarm.title);
+}
+
+function startAlarmStream() {
+  if(alarmTimer) clearInterval(alarmTimer);
+  // 즉시 2개 push
+  setTimeout(()=>{ pushAlarm('alarmFeed'); pushAlarm('rightAlarmFeed'); }, 400);
+  setTimeout(()=>{ pushAlarm('alarmFeed'); pushAlarm('rightAlarmFeed'); }, 1200);
+  // 이후 주기적 push
+  alarmTimer = setInterval(()=>{
+    pushAlarm('alarmFeed');
+    pushAlarm('rightAlarmFeed');
+  }, 3500);
+}
+
+// ── STAGE 4 ──
+function initStage4() {
+  addLog('GET','/profile/living','41ms','실행형 건강전략가 · DNA 지문 확정');
+  fireEngine('cde'); fireEngine('bayes');
+  setTimeout(()=>{ fireEngine('cluster'); fireEngine('roc'); }, 600);
+  const sc = document.getElementById('ebNScore'); if(sc) sc.textContent='74';
+  document.getElementById('pip4-lat').textContent='41ms';
+  // N-Score 카운트업
+  let n=52; const target=74;
+  const s4s = document.getElementById('s4Score');
+  const t = setInterval(()=>{ n+=2; if(n>=target){ n=target; clearInterval(t); } if(s4s) s4s.textContent=n; }, 80);
+  // AI 알람 스트림 시작
+  setTimeout(startAlarmStream, 1000);
+}
+
+// ── AUTO RUN ──
+function autoRunAll() {
+  isAutoRun = true;
+  resetAll();
+  document.getElementById('btnAutoRun').textContent='▶ 실행 중...';
+  document.getElementById('btnAutoRun').style.color='var(--amber)';
+  setTimeout(()=>{ goStage(1); }, 200);
+  // auto run 완료 후 버튼 복원
+  setTimeout(()=>{
+    document.getElementById('btnAutoRun').textContent='▶ AUTO RUN';
+    document.getElementById('btnAutoRun').style.color='var(--green)';
+    isAutoRun=false;
+  }, 16000);
+}
+
+function resetAll() {
+  clearInterval(s3Timer); s3Month=-1;
+  // 오행 카드 리셋
+  ['oc-metal','oc-earth','oc-water','oc-wood','oc-fire'].forEach(id=>{
+    const el=document.getElementById(id); if(el){el.classList.remove('active','dominant');}
+  });
+  ['ohp-metal','ohp-earth','ohp-water','ohp-wood','ohp-fire'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.textContent='0%';
+  });
+  alarmIdx=0;
+  const af1=document.getElementById('alarmFeed'); if(af1) af1.innerHTML='<div style="text-align:center;padding:16px;font-size:11px;color:var(--dim);">DNA 지문 로딩 중... AI 알람 엔진 초기화</div>';
+  const af2=document.getElementById('rightAlarmFeed'); if(af2) af2.innerHTML='<div style="text-align:center;padding:12px;font-size:10px;color:var(--dim);">DNA 지문 기반 AI 알람 대기 중...</div>';
+  globalTxCount=0; globalNScore=null;
+  // reset pipeline
+  ['pip1','pip2','pip3','pip4'].forEach((id,i)=>{
+    const el=document.getElementById(id); if(!el) return;
+    el.classList.remove('active','done');
+    if(i===0) el.classList.add('active');
+  });
+  // reset top bar
+  const eb=document.getElementById('ebNScore'); if(eb) eb.textContent='—';
+  const ec=document.getElementById('ebTxCount'); if(ec) ec.textContent='0';
+  const nr=document.getElementById('ebNRA'); if(nr) nr.style.display='none';
+  // reset stages
+  goStage(1);
+}
+
+// ── GLOBAL TX STREAM (always on) ──
+let globalTxTimer = setInterval(pushGlobalTx, 2500);
+setTimeout(pushGlobalTx, 600);
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(()=>initStage1(), 300);
+  addLog('SYS','engine_boot','—','N-KAI SDK v1.0 시작');
+});
+</script>
+</body>
+</html>

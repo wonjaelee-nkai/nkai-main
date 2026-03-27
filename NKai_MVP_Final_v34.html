@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>N-Kai Final v33 (Time Fix)</title>
+    <style>
+        /* SHINHAN WHITE THEME PREMIUM */
+        :root { 
+            --blue: #0046FF; --bg: #F7F8FA; --card: #FFFFFF; --text: #191F28; --sub: #8B95A1; 
+            --accent: #2962FF; --gold: #FFD700; --red: #FF4D4F; --green: #00E676; --kakao: #FEE500;
+        }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background: #eee; display: flex; justify-content: center; margin: 0; min-height: 100vh; color: var(--text); overflow-x: hidden; }
+        
+        .app { width: 375px; height: 812px; background: var(--bg); border-radius: 30px; overflow: hidden; position: relative; border: 8px solid #333; display: flex; flex-direction: column; box-shadow: 0 0 50px rgba(0,0,0,0.15); }
+        @media (max-width: 480px) { body { background: #fff; } .app { width: 100vw; height: 100vh; border: none; border-radius: 0; } }
+
+        /* Screens */
+        .screen { position: absolute; top:0; left:0; width:100%; height:100%; display: flex; flex-direction: column; transition: transform 0.4s ease-in-out; background: var(--bg); z-index: 10; overflow-y: auto; }
+        .screen.hidden { transform: translateX(100%); pointer-events: none; }
+        .screen.active { transform: translateX(0); z-index: 20; }
+
+        /* 1. INPUT SCREEN */
+        .input-container { flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center; background: white; }
+        .logo-txt { color: var(--blue); font-weight: 900; font-size: 24px; margin-bottom: 5px; }
+        .title-txt { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+        .desc-txt { font-size: 13px; color: var(--sub); line-height: 1.5; margin-bottom: 40px; }
+        
+        .form-label { display: block; text-align: left; font-weight: bold; margin-bottom: 8px; color: var(--text); font-size: 14px; }
+        .date-row { display: flex; gap: 8px; margin-bottom: 20px; }
+        
+        /* [iOS FIX] Input Stabilization */
+        select {
+            font-size: 16px !important; /* 아이폰 확대 방지 */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border-radius: 12px;
+            background: #F2F4F6;
+            color: var(--text);
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .date-select { flex: 1; padding: 14px; border: 1px solid #ddd; outline: none; }
+        .checkbox-wrapper { display: flex; align-items: center; gap: 8px; font-size: 14px; margin-bottom: 20px; justify-content: center; }
+        .btn-main { width: 100%; padding: 18px; background: var(--blue); color: white; border: none; border-radius: 16px; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 70, 255, 0.3); transition: 0.2s; }
+        .btn-main:active { transform: scale(0.98); }
+
+        /* 2. KIPA SURVEY */
+        .kipa-header { padding: 30px 20px; background: white; border-bottom: 1px solid #eee; }
+        .q-box { background: white; padding: 20px; margin: 15px 20px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .q-cat { font-size: 11px; color: var(--blue); font-weight: bold; margin-bottom: 8px; display: block; }
+        .q-text { font-size: 15px; font-weight: bold; margin-bottom: 15px; line-height: 1.4; }
+        .kipa-options { display: flex; gap: 4px; }
+        .kipa-btn { flex: 1; padding: 12px 2px; border-radius: 8px; border: 1px solid #E5E8EB; background: white; color: var(--sub); font-size: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; text-align: center; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
+        .kipa-btn.selected { background: var(--blue); color: white; border-color: var(--blue); box-shadow: 0 2px 5px rgba(0, 70, 255, 0.3); }
+
+        /* 3. FUSION & RESULT Styles (기존 유지) */
+        #fusionLayer { background: var(--blue); color: white; justify-content: center; align-items: center; display: none; flex-direction: column; z-index: 100; }
+        .fusion-ring { width: 140px; height: 140px; border: 2px solid rgba(255,255,255,0.1); border-radius: 50%; position: relative; display: flex; justify-content: center; align-items: center; animation: ring-pulse 2s infinite; }
+        .dna-helix { font-size: 50px; animation: float 2s infinite ease-in-out; }
+        .particle { position: absolute; width: 8px; height: 8px; background: white; border-radius: 50%; animation: orbit 2s linear infinite; }
+        @keyframes orbit { from { transform: rotate(0deg) translateX(70px) rotate(0deg); } to { transform: rotate(360deg) translateX(70px) rotate(-360deg); } }
+        @keyframes ring-pulse { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 70% { box-shadow: 0 0 0 20px rgba(255,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
+
+        .result-card { background: white; border-radius: 24px; padding: 30px 20px; text-align: center; margin: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .group-badge { background: #E8F3FF; color: var(--blue); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; display: inline-block; margin-bottom: 15px; }
+        .res-main { font-size: 28px; font-weight: 900; margin-bottom: 15px; color: var(--text); line-height: 1.2; }
+        .res-sub { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 25px; text-align: left; padding: 15px; background: #F9FAFB; border-radius: 12px; }
+        .bar-row { margin-bottom: 15px; text-align: left; }
+        .bar-label { display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; margin-bottom: 6px; }
+        .bar-bg { width: 100%; height: 10px; background: #F2F4F6; border-radius: 5px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 5px; width: 0%; transition: width 1.5s ease-out; }
+
+        /* 4. DASHBOARD Styles (기존 유지) */
+        .header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 50; }
+        .content-area { flex: 1; overflow-y: auto; padding-bottom: 130px; }
+        .avatar-area { text-align: center; padding: 25px; background: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); margin-bottom: 15px; }
+        .avatar-circle { width: 80px; height: 80px; border-radius: 50%; background: #f8f9fa; margin: 0 auto 10px; display: flex; justify-content: center; align-items: center; font-size: 36px; border: 3px solid var(--blue); }
+        .gauge-card { margin: 0 20px 15px; padding: 20px; background: white; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #eee; transition: border-color 0.3s; }
+        .score-val { font-size: 40px; font-weight: 900; color: var(--text); transition: color 0.3s; }
+        .badge { padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: bold; color: white; transition: background 0.3s; }
+        .fun-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 20px 15px; }
+        .fun-box { background: white; border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.03); min-height: 100px; display: flex; flex-direction: column; justify-content: center; border: 1px solid #eee; }
+        .lotto-row { display: flex; justify-content: center; gap: 4px; margin-top: 5px; }
+        .ball { width: 22px; height: 22px; border-radius: 50%; color: white; font-size: 10px; font-weight: bold; display: flex; align-items: center; justify-content: center; animation: pop 0.3s; }
+        @keyframes pop { from{transform:scale(0);} to{transform:scale(1);} }
+        .synergy-card { margin: 0 20px 15px; padding: 15px; background: linear-gradient(135deg, #1A237E, #000000); border-radius: 16px; display: flex; align-items: center; gap: 15px; cursor: pointer; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .viral-bar { display: flex; gap: 10px; padding: 0 20px 20px; }
+        .btn-viral { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; background: white; color: #333; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 5px; }
+        .btn-kakao { background: var(--kakao); border: none; color: #3c1e1e; }
+        .timeline { padding: 0 20px; }
+        .log-item { background: white; padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); animation: slideUp 0.3s; border-left: 4px solid #eee; }
+        @keyframes slideUp { from{transform:translateY(10px); opacity:0;} to{transform:translateY(0); opacity:1;} }
+        .btn-float { position: absolute; bottom: 30px; left: 20px; right: 20px; background: var(--blue); color: white; padding: 16px; border-radius: 25px; font-weight: bold; font-size: 16px; cursor: pointer; z-index: 100; box-shadow: 0 10px 20px rgba(0, 70, 255, 0.3); border: none; }
+        .gps-toast { position: fixed; bottom: 100px; left: 20px; right: 20px; background: rgba(0, 70, 255, 0.95); padding: 15px; border-radius: 15px; display: none; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(5px); animation: slideUp 0.5s; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="screen active" id="screenInput">
+    <div class="input-container">
+        <div class="logo-txt">N-Kai</div>
+        <div class="title-txt">금융 DNA 분석</div>
+        <div class="desc-txt">선천적 기질과 후천적 소비패턴을 분석하여<br>최적의 금융 솔루션을 제공합니다.</div>
+        
+        <label class="form-label">생년월일 (Date of Birth)</label>
+        <div class="date-row">
+            <select class="date-select" id="selYear"></select>
+            <select class="date-select" id="selMonth"></select>
+            <select class="date-select" id="selDay"></select>
+        </div>
+        
+        <label class="form-label">태어난 시간 (Time of Birth)</label>
+        <div class="date-row">
+            <select class="date-select" id="selHour" style="flex:1">
+                <option value="unknown">시 (Hour)</option>
+            </select>
+            <select class="date-select" id="selMin" style="flex:1">
+                <option value="00">분 (Min)</option>
+            </select>
+        </div>
+        
+        <div class="checkbox-wrapper">
+            <input type="checkbox" id="lunarChk"> <label for="lunarChk" style="margin-right:15px;">음력</label>
+            <input type="checkbox" id="yoonChk"> <label for="yoonChk">윤달</label>
+        </div>
+        
+        <button class="btn-main" onclick="goToKipa()">다음 단계 (성향 진단)</button>
+    </div>
+</div>
+
+<div class="screen hidden" id="screenKipa">
+    <div class="kipa-header">
+        <div style="font-size:20px; font-weight:800;">KIPA 투자 성향 진단</div>
+        <div style="font-size:13px; color:var(--sub); margin-top:5px;">5점 척도로 가장 가까운 것을 선택하세요.</div>
+    </div>
+    <div style="padding-bottom:100px;">
+        <div class="q-box">
+            <span class="q-cat">판단 (Judgment)</span>
+            <div class="q-text">Q1. 나는 데이터보다는<br>나의 직관을 더 믿는 편이다.</div>
+            <div class="kipa-options" id="q1-opts">
+                <div class="kipa-btn" onclick="selKipa(1, 1, this)">매우<br>그렇지 않다</div>
+                <div class="kipa-btn" onclick="selKipa(1, 2, this)">그렇지<br>않다</div>
+                <div class="kipa-btn" onclick="selKipa(1, 3, this)">보통이다</div>
+                <div class="kipa-btn" onclick="selKipa(1, 4, this)">그렇다</div>
+                <div class="kipa-btn" onclick="selKipa(1, 5, this)">매우<br>그렇다</div>
+            </div>
+        </div>
+        <div class="q-box">
+            <span class="q-cat">판단 (Judgment)</span>
+            <div class="q-text">Q2. 나는 안정적인 선택보다는<br>새로운 도전을 즐긴다.</div>
+            <div class="kipa-options" id="q2-opts">
+                <div class="kipa-btn" onclick="selKipa(2, 1, this)">매우<br>그렇지 않다</div>
+                <div class="kipa-btn" onclick="selKipa(2, 2, this)">그렇지<br>않다</div>
+                <div class="kipa-btn" onclick="selKipa(2, 3, this)">보통이다</div>
+                <div class="kipa-btn" onclick="selKipa(2, 4, this)">그렇다</div>
+                <div class="kipa-btn" onclick="selKipa(2, 5, this)">매우<br>그렇다</div>
+            </div>
+        </div>
+        <div class="q-box">
+            <span class="q-cat">행동 (Action)</span>
+            <div class="q-text">Q3. 나는 즉흥적인 행동보다는<br>계획에 따르는 것이 편하다.</div>
+            <div class="kipa-options" id="q3-opts">
+                <div class="kipa-btn" onclick="selKipa(3, 1, this)">매우<br>그렇지 않다</div>
+                <div class="kipa-btn" onclick="selKipa(3, 2, this)">그렇지<br>않다</div>
+                <div class="kipa-btn" onclick="selKipa(3, 3, this)">보통이다</div>
+                <div class="kipa-btn" onclick="selKipa(3, 4, this)">그렇다</div>
+                <div class="kipa-btn" onclick="selKipa(3, 5, this)">매우<br>그렇다</div>
+            </div>
+        </div>
+        <div class="q-box">
+            <span class="q-cat">행동 (Action)</span>
+            <div class="q-text">Q4. 나는 리더 역할보다는<br>실무적인 역할을 선호한다.</div>
+            <div class="kipa-options" id="q4-opts">
+                <div class="kipa-btn" onclick="selKipa(4, 1, this)">매우<br>그렇지 않다</div>
+                <div class="kipa-btn" onclick="selKipa(4, 2, this)">그렇지<br>않다</div>
+                <div class="kipa-btn" onclick="selKipa(4, 3, this)">보통이다</div>
+                <div class="kipa-btn" onclick="selKipa(4, 4, this)">그렇다</div>
+                <div class="kipa-btn" onclick="selKipa(4, 5, this)">매우<br>그렇다</div>
+            </div>
+        </div>
+        <div style="padding:0 20px;"><button class="btn-main" onclick="startFusion()">결과 분석 및 융합</button></div>
+    </div>
+</div>
+
+<div class="screen" id="fusionLayer">
+    <div class="fusion-ring">
+        <div class="particle"></div>
+        <div class="dna-helix">🧬</div>
+    </div>
+    <div style="font-size:22px; font-weight:900; margin-top:30px;">DATA FUSION</div>
+    <div style="font-size:14px; opacity:0.8; margin-top:10px;" id="fusionText">선천적 기질 로딩 중...</div>
+</div>
+
+<div class="screen hidden" id="screenResult">
+    <div style="flex:1; padding:20px; display:flex; flex-direction:column; justify-content:center;">
+        <div style="text-align:center; margin-bottom:20px; color:var(--sub); font-size:14px;">분석이 완료되었습니다.</div>
+        <div class="result-card">
+            <span class="group-badge" id="resGroup">--</span>
+            <div class="res-main" id="resTitle">--</div>
+            <div class="res-sub" id="resDesc">--</div>
+            <div style="height:1px; background:#eee; margin:20px 0;"></div>
+            <div style="text-align:left; font-size:12px; font-weight:bold; margin-bottom:10px;">🧠 3대 아키타입 구성비</div>
+            <div id="chartArea"></div>
+        </div>
+        <button class="btn-main" onclick="goToDashboard()">내 대시보드 확인</button>
+    </div>
+</div>
+
+<div class="screen hidden" id="screenMain">
+    <div class="header">
+        <span style="font-weight:900; color:var(--blue);">N-Kai</span>
+        <span style="font-size:12px; font-weight:bold; color:var(--blue); background:#E8F3FF; padding:4px 8px; border-radius:6px;" id="headerMode">L-Mode</span>
+    </div>
+    <div class="content-area">
+        <div class="avatar-area">
+            <div class="avatar-circle" id="dashEmoji">💎</div>
+            <div style="font-size:18px; font-weight:bold;" id="dashName">--</div>
+            <div style="font-size:12px; color:var(--sub); margin-top:5px;" id="dashDate">기질 + KIPA 융합 완료</div>
+        </div>
+        <div class="gauge-card" id="gaugeCard">
+            <div><div style="font-size:11px; color:var(--sub);">N-SCORE</div><div class="score-val" id="scoreVal">--</div></div>
+            <div style="text-align:right;">
+                <span class="badge" id="nGrade" style="background:#ccc;">Ready</span>
+                <div style="font-size:11px; margin-top:5px; color:var(--sub);" id="lMode">대기중</div>
+            </div>
+        </div>
+        <div class="fun-grid">
+            <div class="fun-box" onclick="runLotto()">
+                <div style="font-weight:bold; font-size:14px;">🎰 AI 로또</div>
+                <div class="lotto-row" id="lottoArea"><span style="font-size:10px; color:#ccc;">Tap</span></div>
+            </div>
+            <div class="fun-box" onclick="showTPO()">
+                <div style="font-weight:bold; font-size:14px;">🍀 행운 TPO</div>
+                <div style="font-size:10px; color:var(--sub); margin-top:5px;">Color: <span id="tpoColor" style="font-weight:bold; color:var(--blue);">White</span></div>
+                <div style="font-size:10px; color:var(--blue); font-weight:bold; margin-top:5px;">쿠폰 받기</div>
+            </div>
+        </div>
+        <div class="synergy-card" onclick="checkSynergy()">
+            <div style="font-size:24px;">💞</div>
+            <div style="flex:1;">
+                <div style="font-weight:bold; font-size:14px;">소비 궁합 (Synergy)</div>
+                <div style="font-size:11px; opacity:0.8;">친구와의 재물 파트너십</div>
+            </div>
+            <div style="font-size:12px; color:var(--gold);">Check ▶</div>
+        </div>
+        <div class="viral-bar">
+            <button class="btn-viral btn-kakao" onclick="alert('카카오톡 공유: 친구에게 내 N-Score와 궁합을 공유합니다.')">💬 Kakao Share</button>
+            <button class="btn-viral btn-pdf" onclick="alert('PDF 저장: 내 자산 분석 리포트가 저장되었습니다.')">📄 PDF Save</button>
+        </div>
+        <div class="timeline" id="timeline">
+            <div style="text-align:center; color:#ccc; font-size:12px; padding:20px;">진화를 시작하세요.</div>
+        </div>
+    </div>
+    <div class="gps-toast" id="gpsPopup">
+        <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:12px; opacity:0.8;"><span>📍 TPO Trigger</span><span>Just Now</span></div>
+        <div style="font-weight:bold; font-size:14px; margin-bottom:5px;">"행운의 기운이 필요합니다!"</div>
+        <div style="font-size:12px;">맞춤 가맹점 10% 할인 쿠폰 도착 🎫</div>
+        <div style="text-align:right; margin-top:10px;"><span style="background:white; color:blue; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer;" onclick="document.getElementById('gpsPopup').style.display='none'">닫기</span></div>
+    </div>
+    <button class="btn-float" onclick="runEvolution()">▶ 점진적 진화 (Evolution)</button>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', function() {
+        const selYear = document.getElementById('selYear');
+        const selMonth = document.getElementById('selMonth');
+        const selDay = document.getElementById('selDay');
+        const selHour = document.getElementById('selHour'); // [수정]
+        const selMin = document.getElementById('selMin');   // [수정]
+        
+        // 년/월/일 생성
+        if (selYear && selYear.options.length === 0) {
+            for(let i=2025; i>=1940; i--) { 
+                const opt=document.createElement('option'); opt.value=i; opt.innerText=i+"년"; 
+                if(i===1990) opt.selected=true; selYear.appendChild(opt); 
+            }
+        }
+        if (selMonth && selMonth.options.length === 0) {
+            for(let i=1; i<=12; i++) { 
+                const opt=document.createElement('option'); opt.value=i; opt.innerText=i+"월"; selMonth.appendChild(opt); 
+            }
+        }
+        if (selDay && selDay.options.length === 0) {
+            for(let i=1; i<=31; i++) { 
+                const opt=document.createElement('option'); opt.value=i; opt.innerText=i+"일"; 
+                if(i===1) opt.selected=true; selDay.appendChild(opt); 
+            }
+        }
+        
+        // [수정] 시간 (00~23)
+        if (selHour && selHour.options.length <= 1) {
+            for(let i=0; i<24; i++) {
+                const h = i < 10 ? '0'+i : i;
+                const opt = document.createElement('option');
+                opt.value = h; opt.innerText = h + "시";
+                if(i===14) opt.selected=true; 
+                selHour.appendChild(opt);
+            }
+        }
+        // [수정] 분 (00~59)
+        if (selMin && selMin.options.length <= 1) {
+            for(let i=0; i<60; i++) {
+                const m = i < 10 ? '0'+i : i;
+                const opt = document.createElement('option');
+                opt.value = m; opt.innerText = m + "분";
+                if(i===30) opt.selected=true; 
+                selMin.appendChild(opt);
+            }
+        }
+
+        document.querySelectorAll('select, input').forEach(el => {
+            el.addEventListener('touchstart', function(e) {}, {passive: true});
+        });
+    });
+
+    // 기존 데이터 로직 유지
+    const types = [
+        {id:0, name:"성장의 나무 (목)", emoji:"🌳", color:"Green", group:"비전가 그룹", type:"개척가형 (ENTP)", desc:"당신은 '나무(Wood)'의 성장성과 직관(N)을 가져서<br>새로운 길을 여는 **개척가형**입니다.", luck:"명예운(Honor)"},
+        {id:1, name:"열정의 불꽃 (화)", emoji:"🔥", color:"Red", group:"창조자 그룹", type:"창조자형 (ENFP)", desc:"당신은 '불(Fire)'의 에너지와 감성(F)을 가져서<br>트렌드를 주도하는 **창조자형**입니다.", luck:"인기운(Fame)"},
+        {id:2, name:"포용의 대지 (토)", emoji:"⛰️", color:"Yellow", group:"관리자 그룹", type:"관리자형 (ISFJ)", desc:"당신은 '땅(Earth)'의 포용력과 안정(S)을 가져서<br>자산을 꼼꼼히 관리하는 **관리자형**입니다.", luck:"문서운(Asset)"},
+        {id:3, name:"냉철한 보석 (금)", emoji:"💎", color:"White", group:"비전가 그룹", type:"전략가형 (ENTJ)", desc:"당신은 '금(Metal)'의 냉철함과 논리(T)를 가져서<br>목표를 달성하는 **리더형**입니다.", luck:"재물운(Wealth)"},
+        {id:4, name:"지혜의 물결 (수)", emoji:"🌊", color:"Black", group:"분석가 그룹", type:"분석가형 (INTP)", desc:"당신은 '물(Water)'의 유연함과 통찰을 가져서<br>투자를 설계하는 **분석가형**입니다.", luck:"지혜운(Idea)"}
+    ];
+
+    let mainType = null;
+    let subType = null;
+    let hiddenType = null;
+    let finalStats = [0, 0, 0];
+    let kipaScores = [3, 3, 3, 3];
+
+    function goToKipa() { document.getElementById('screenInput').classList.add('hidden'); document.getElementById('screenKipa').classList.remove('hidden'); document.getElementById('screenKipa').classList.add('active'); }
+    
+    function selKipa(qId, score, btn) { 
+        kipaScores[qId-1] = score; 
+        const c = document.getElementById('q'+qId+'-opts'); 
+        for(let b of c.getElementsByClassName('kipa-btn')) b.classList.remove('selected'); 
+        btn.classList.add('selected'); 
+    }
+
+    function startFusion() {
+        const y = parseInt(document.getElementById('selYear').value);
+        const m = parseInt(document.getElementById('selMonth').value);
+        const d = parseInt(document.getElementById('selDay').value);
+        const isLunar = document.getElementById('lunarChk').checked;
+        
+        let mainIdx = (y + m + d) % 5;
+        if(y===1982 && m===1 && d===18) mainIdx = 3; 
+        else if(y===1974 && m===7 && d===9) mainIdx = 1;
+        else if(y===1952 && m===9 && d===19) mainIdx = 4;
+        mainType = types[mainIdx];
+
+        const totalScore = kipaScores.reduce((a,b)=>a+b, 0);
+        let subIdx = 0;
+        if(totalScore >= 16) subIdx = 1;
+        else if(totalScore >= 13) subIdx = 0;
+        else if(totalScore >= 10) subIdx = 3;
+        else if(totalScore >= 7) subIdx = 2;
+        else subIdx = 4;
+        subType = types[subIdx];
+
+        let hiddenIdx = (mainIdx + subIdx + 1) % 5;
+        hiddenType = types[hiddenIdx];
+
+        if(mainIdx === subIdx) {
+            finalStats = [70, 20, 10];
+        } else {
+            finalStats = [50, 30, 20];
+        }
+
+        document.getElementById('screenKipa').classList.remove('active');
+        document.getElementById('fusionLayer').style.display = 'flex';
+
+        setTimeout(()=>{ document.getElementById('fusionText').innerText = "KIPA 심리 데이터 분석 중..."; }, 1500);
+        setTimeout(()=>{ document.getElementById('fusionText').innerText = "MCC 데이터 융합 중..."; }, 3000);
+        setTimeout(()=>{ 
+            document.getElementById('fusionLayer').style.display = 'none';
+            showResult(y, m, d, isLunar);
+        }, 4500);
+    }
+
+    function showResult(y, m, d, isLunar) {
+        const s = document.getElementById('screenResult');
+        s.classList.remove('hidden'); s.classList.add('active');
+        
+        document.getElementById('resGroup').innerText = "대분류: " + mainType.group;
+        document.getElementById('resTitle').innerText = mainType.type;
+        document.getElementById('resDesc').innerHTML = mainType.desc;
+        
+        let c1='var(--blue)', c2='var(--accent)', c3='var(--green)';
+        if(mainType.color==='Red') { c1='#FF4D4F'; c2='#FF9800'; }
+        if(mainType.color==='Green') { c1='#00E676'; c2='#00C853'; }
+
+        document.getElementById('chartArea').innerHTML = `
+            <div class="bar-row"><div class="bar-label"><span>1. Main (${mainType.type.split(' ')[0]})</span><span>${finalStats[0]}%</span></div><div class="bar-bg"><div class="bar-fill" style="width:${finalStats[0]}%; background:${c1};"></div></div></div>
+            <div class="bar-row"><div class="bar-label"><span>2. Sub (${subType.type.split(' ')[0]})</span><span>${finalStats[1]}%</span></div><div class="bar-bg"><div class="bar-fill" style="width:${finalStats[1]}%; background:${c2};"></div></div></div>
+            <div class="bar-row"><div class="bar-label"><span>3. Hidden (${hiddenType.type.split(' ')[0]})</span><span>${finalStats[2]}%</span></div><div class="bar-bg"><div class="bar-fill" style="width:${finalStats[2]}%; background:${c3};"></div></div></div>
+        `;
+        
+        document.getElementById('dashEmoji').innerText = mainType.emoji;
+        document.getElementById('dashName').innerText = mainType.name;
+        document.getElementById('tpoColor').innerText = mainType.color;
+        document.getElementById('dashDate').innerText = `${y}.${m}.${d} (${isLunar?'음력':'양력'}) 분석 완료`;
+    }
+
+    function goToDashboard() {
+        document.getElementById('screenResult').classList.remove('active');
+        document.getElementById('screenMain').classList.remove('hidden');
+        document.getElementById('screenMain').classList.add('active');
+    }
+
+    function runLotto() {
+        const area = document.getElementById('lottoArea'); area.innerHTML = '';
+        let nums = []; while(nums.length<6){ let n=Math.floor(Math.random()*45)+1; if(!nums.includes(n)) nums.push(n); }
+        nums.sort((a,b)=>a-b);
+        let i=0;
+        const intv = setInterval(()=>{
+            if(i>=6){clearInterval(intv);return;}
+            const n=nums[i];
+            let bg='#b0d840'; if(n<=10) bg='#fbc400'; else if(n<=20) bg='#69c8f2'; else if(n<=30) bg='#ff7272'; else if(n<=40) bg='#aaaaaa';
+            const b=document.createElement('div'); b.className='ball'; b.style.background=bg; b.innerText=n;
+            area.appendChild(b); i++;
+        }, 200);
+    }
+
+    function showTPO() { document.getElementById('gpsPopup').style.display='block'; }
+
+    function checkSynergy() {
+        const f = prompt("친구 이름 입력:", "홍길동");
+        if(f) alert(`[N-Kai 분석]\n나(${mainType.emoji}) + 친구(🌊) = 상생(Synergy)\n점수: 98점\n"서로의 재물을 키워주는 관계입니다."`);
+    }
+
+    function runEvolution() {
+        const list = document.getElementById('timeline'); list.innerHTML = '';
+        const evts = [
+            {t:'DNA 융합', d:'기질 분석 완료', s:70},
+            {t:'년운 도래', d:`2026년 ${mainType.luck} 진입`, s:82},
+            {t:'MCC 소비', d:'골프장 결제 감지', s:72},
+            {t:'TPO 트리거', d:'강남 진입 (혜택)', s:78}
+        ];
+        
+        let i=0;
+        const intv = setInterval(()=>{
+            if(i>=evts.length){clearInterval(intv);return;}
+            const e = evts[i];
+            const div = document.createElement('div'); div.className='log-item';
+            div.style.borderLeftColor = i%2===0 ? 'var(--blue)' : 'var(--green)';
+            div.innerHTML = `<div style="flex:1"><div style="font-weight:bold; font-size:14px;">${e.t}</div><div style="font-size:12px; color:var(--sub);">${e.d}</div></div><div style="font-weight:bold; font-size:16px;">${e.s}</div>`;
+            list.appendChild(div);
+            
+            document.querySelector('.content-area').scrollTop = 9999;
+            document.getElementById('scoreVal').innerText = e.s;
+            
+            let g='N3'; let bg='#ccc'; let m='L-S (Safe)'; let hc = 'var(--green)';
+            if(e.s>=80){ 
+                g='N1 (Prime)'; bg='var(--blue)'; m='L-W (Wealth)'; hc='var(--blue)';
+            } 
+            else if(e.s>=60){ 
+                g='N2 (Stable)'; bg='var(--green)'; m='L-S (Stable)'; hc='var(--green)';
+            } 
+            else { 
+                g='N4 (Risk)'; bg='var(--red)'; m='L-S (Lock)'; hc='var(--red)';
+            }
+            
+            const b = document.getElementById('nGrade'); 
+            b.innerText=g; b.style.background=bg;
+            document.getElementById('gaugeCard').style.borderColor = bg;
+            document.getElementById('scoreVal').style.color = bg;
+            document.getElementById('lMode').innerText = m;
+            
+            const hb = document.getElementById('headerMode');
+            hb.innerText = m;
+            hb.style.color = hc;
+            hb.style.background = bg === 'var(--blue)' ? '#E8F3FF' : (bg === 'var(--green)' ? '#E8F9F3' : '#FFF0EE');
+
+            i++;
+        }, 1200);
+    }
+</script>
+</body>
+</html>

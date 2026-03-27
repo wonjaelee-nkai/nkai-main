@@ -1,0 +1,5 @@
+User ID,Merchant,Amount,Trigger
+User_901,Casino (7995),5000000,Gambling
+User_882,Club (5813),2300000,Overspending
+User_110,Cash svc,1000000,Credit Risk
+User_334,Overseas,8500000,Fraud Check

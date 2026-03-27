@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- ================= SEO & METADATA ================= -->
+    <title>N-KAI: AI Life-OS | Neurin Kairos AI</title>
+    <link rel="canonical" href="https://www.n-kai.com">
+    <meta name="description" content="N-Kai(뉴린카이로스)는 당신의 생년월일 기질과 후천적 성향을 분석하여 숨겨진 신용 가치를 찾아내는 AI 플랫폼입니다.">
+    <meta property="og:title" content="N-KAI: 데이터 연금술의 시작">
+    <meta property="og:description" content="성실함을 신용으로 증명하세요. 30초면 당신의 잠재력을 알 수 있습니다.">
+    <meta property="og:image" content="logo.png.png">
+    <meta name="robots" content="index, follow">
+    <meta name="keywords" content="N-Kai, AI Credit, Alternative Data, Life-OS, 신용평가, 씬파일러">
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Cinzel:wght@600;700;900&family=Urbanist:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            /* Midnight Navy Gradient Base */
+            --bg-dark: #0f172a; 
+            --accent-gold: #d4af37;
+            --accent-light: #fcd34d;
+            --accent-blue: #38bdf8;
+            --accent-red: #e11d48;
+            --text-main: #f8fafc;
+        }
+        
+        body { 
+            /* Enhanced Gradient Background */
+            background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+            color: var(--text-main); 
+            font-family: 'Noto Sans KR', sans-serif; 
+            overflow-x: hidden; 
+            /* FORCE SCROLL: Crucial for Admin Dashboard visibility */
+            overflow-y: scroll; 
+            min-height: 100vh;
+        }
+        
+        .font-serif { font-family: 'Nanum Myeongjo', serif; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-urbanist { font-family: 'Urbanist', sans-serif; }
+
+        /* Typography Tweaks */
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4rem); 
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+        }
+        .hero-subtitle {
+            font-size: clamp(2rem, 6vw, 3.5rem); 
+            letter-spacing: 0.05em;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            color: #fcd34d; 
+        }
+        .section-title {
+            font-size: clamp(3rem, 7vw, 6rem); 
+        }
+        .section-subtitle {
+            font-size: clamp(1.8rem, 4vw, 3rem); 
+            font-weight: 800;
+            color: #d4af37;
+        }
+        .philosophy-subtitle {
+             font-size: clamp(2rem, 5vw, 3.5rem); 
+             font-weight: 900;
+             letter-spacing: 0.1em;
+             background: linear-gradient(to right, #d4af37, #fff, #d4af37);
+             -webkit-background-clip: text;
+             -webkit-text-fill-color: transparent;
+             margin-bottom: 2rem;
+        }
+        
+        .page-section { display: none; min-height: 100vh; animation: fadeIn 0.6s ease-out; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .text-gradient-gold {
+            background: linear-gradient(to right, #d4af37, #fff, #d4af37);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 200% auto; animation: shine 3s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        /* Gold Button - Z-Index Boost (Critical Fix) */
+        .btn-gold {
+            background: linear-gradient(135deg, #d4af37, #fcd34d);
+            color: black !important; 
+            font-weight: 900; 
+            border-radius: 9999px; 
+            transition: all 0.3s;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+            position: relative; overflow: hidden;
+            z-index: 9999 !important; /* Force top layer */
+            cursor: pointer;
+            pointer-events: auto; /* Ensure clickable */
+        }
+        .btn-gold:hover { transform: scale(1.05); box-shadow: 0 0 50px rgba(212, 175, 55, 0.7); }
+
+        /* UI Cards - Adjusted for Navy Background */
+        .card-dark { 
+            background: rgba(30, 41, 59, 0.6); 
+            border: 1px solid rgba(255,255,255,0.08); 
+            border-radius: 24px; 
+            backdrop-filter: blur(20px); 
+        }
+
+        /* Language Toggle */
+        body.lang-ko .en { display: none !important; }
+        body.lang-en .ko { display: none !important; }
+        .lang-btn.active { color: var(--accent-gold); font-weight: bold; }
+
+        /* Admin Grid - UNLIMITED HEIGHT FIX (NO CLIPPING) */
+        .admin-layout { 
+            display: flex; 
+            flex-direction: column;
+            min-height: 100vh; 
+            height: auto !important; /* CRITICAL: Allows content to push height */
+            overflow: visible !important; 
+        }
+        .admin-sidebar { 
+            width: 100%; 
+            background: #020617; 
+            border-bottom: 1px solid #1e293b; 
+            padding: 1rem; 
+            /* Ensure it doesn't hide on mobile unless intended */
+        }
+        .admin-content { 
+            flex: 1; 
+            background: #0f172a; 
+            padding: 2rem 1rem; 
+            height: auto !important; 
+            min-height: 100vh;
+            overflow: visible !important; 
+            padding-bottom: 100px; /* Extra padding for mobile scroll */
+        }
+
+        @media (min-width: 1024px) { 
+            .admin-layout { flex-direction: row; }
+            .admin-sidebar { 
+                width: 280px; 
+                min-height: 100vh; 
+                height: auto;
+                border-right: 1px solid #334155; 
+                border-bottom: none;
+                flex-direction: column;
+                padding: 2rem;
+            }
+            .admin-content { padding: 2rem; }
+            /* Desktop sidebar hides on mobile via logic if needed, here we ensure flex */
+        }
+        
+        /* Mobile specific hide for sidebar if not active */
+        @media (max-width: 1024px) {
+            .admin-sidebar { display: none; } 
+        }
+        
+        /* Coin Animation */
+        @keyframes coinDrop {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(100px) rotate(360deg); opacity: 0; }
+        }
+        .coin {
+            position: fixed; font-size: 24px; color: #ffd700; pointer-events: none; z-index: 9999;
+            animation: coinDrop 1s ease-in forwards;
+        }
+
+        /* Mobile Optimization */
+        .mobile-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            scroll-snap-type: x mandatory;
+        }
+        .mobile-scroll > * {
+            flex: 0 0 85%;
+            scroll-snap-align: center;
+        }
+        @media (min-width: 768px) {
+            .mobile-scroll {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                overflow-x: visible;
+            }
+            .mobile-scroll > * {
+                flex: auto;
+            }
+        }
+        
+        /* Lunar Toggle */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #d4af37;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #d4af37;
+        }
+        
+        /* Admin Snapshot Card Hover */
+        .snapshot-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        /* Mining Animation */
+        @keyframes miningPulse {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+        .mining-active {
+            animation: miningPulse 2s infinite;
+            border-color: #d4af37;
+        }
+
+        /* Lotto Ball Animation */
+        .lotto-ball {
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; color: black; font-family: 'Urbanist', sans-serif;
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3), 0 5px 10px rgba

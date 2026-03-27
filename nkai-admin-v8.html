@@ -1,0 +1,571 @@
+<!-- N-KAI ADMIN v8.0 — 바닐라 JS 변환본 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-KAI ADMIN v8.0</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;scrollbar-width:thin;scrollbar-color:#1A3A5C #071523}
+:root{--dark:#071523;--mid:#0D1B2A;--card:#0F2035;--border:#1A3A5C;--gold:#F0C674;--blue:#2D8CFF;--text:#E8EDF2;--sub:#7A8FA6;--green:#22C55E;--red:#EF4444;--purple:#A78BFA}
+body{min-height:100vh;background:var(--dark);color:var(--text);font-family:'Segoe UI','맑은 고딕',sans-serif;font-size:13px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+button:hover{opacity:.85}
+input:focus{border-color:var(--blue)!important}
+
+/* Sidebar */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:200px;background:var(--mid);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100}
+.sb-logo{padding:20px 20px 16px;border-bottom:1px solid var(--border)}
+.sb-logo-text{font-size:18px;font-weight:900;color:var(--gold);letter-spacing:2px}
+.sb-sub{font-size:9px;color:rgba(240,198,116,.5);letter-spacing:1.5px;margin-top:2px}
+.sb-nav{flex:1;padding:12px 0;overflow-y:auto}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;border-left:3px solid transparent;color:var(--sub);font-size:13px;font-weight:400;transition:.15s}
+.sb-item.active{background:rgba(45,140,255,.15);border-left-color:var(--blue);color:var(--blue);font-weight:700}
+.sb-footer{padding:16px 20px;border-top:1px solid var(--border);font-size:10px;color:var(--sub);line-height:1.6}
+.live-dot{width:7px;height:7px;border-radius:50%;transition:opacity .3s;display:inline-block}
+
+/* Main */
+.main{margin-left:200px;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:var(--mid);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.top-title{font-size:16px;font-weight:700}
+.live-tag{display:flex;align-items:center;gap:6px;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700}
+.content{padding:24px 28px}
+
+/* Grids */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:900px){.sidebar{width:60px}.sidebar .sb-logo span,.sidebar .sb-item span:last-child,.sidebar .sb-footer div,.sb-sub{display:none}.main{margin-left:60px}.grid4{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}.topbar{padding:10px 16px}.content{padding:16px}}
+@media(max-width:600px){.sidebar{display:none}.main{margin-left:0}.grid4{grid-template-columns:1fr}}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.kpi-label{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--sub);margin-bottom:6px}
+.kpi-val{font-size:28px;font-weight:900;margin-bottom:4px}
+.kpi-sub{font-size:11px;color:var(--sub)}
+
+/* Badge */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+
+/* MiniBar */
+.minibar{border-radius:4px;overflow:hidden;flex:1;background:rgba(255,255,255,.06)}
+.minibar-fill{height:100%;border-radius:4px;transition:.6s}
+
+/* Table */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{padding:10px 12px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1px;color:var(--sub);border-bottom:1px solid var(--border);background:rgba(0,0,0,.2)}
+.tbl td{padding:11px 12px;border-bottom:1px solid rgba(26,58,92,.4);font-size:12px}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:200}
+.modal-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;width:480px;max-width:90vw}
+
+/* Tab content */
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* Btn */
+.btn{border-radius:7px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;border:1px solid}
+.admin-input{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--text);font-size:12px;outline:none;width:200px}
+</style>
+</head>
+<body>
+
+<!-- ═══ N-KAI ADMIN 접근 제어 ═══ -->
+<div id="admin-gate" style="position:fixed;inset:0;z-index:99999;background:#071523;display:flex;align-items:center;justify-content:center;">
+  <div style="background:#0D1B2A;border:1px solid #1A3A5C;border-radius:20px;padding:40px 36px;width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+    <div style="font-size:28px;font-weight:900;color:#F0C674;letter-spacing:3px;margin-bottom:4px;">N·KAI</div>
+    <div style="font-size:10px;color:rgba(240,198,116,0.5);letter-spacing:2px;margin-bottom:28px;">ADMIN COMMAND CENTER</div>
+    <div style="font-size:12px;color:#7A8FA6;margin-bottom:12px;">관리자 전용 시스템</div>
+    <input id="admin-pw-input" type="password" placeholder="비밀번호 입력"
+      style="width:100%;padding:14px 16px;background:#071523;border:1px solid #1A3A5C;border-radius:12px;color:#E8EDF2;font-size:14px;outline:none;margin-bottom:12px;text-align:center;letter-spacing:4px;"
+      onkeydown="if(event.key==='Enter')checkAdminPw()"/>
+    <button onclick="checkAdminPw()"
+      style="width:100%;padding:14px;background:linear-gradient(135deg,#2D8CFF,#1a5fa8);color:white;font-weight:800;font-size:14px;border:none;border-radius:12px;cursor:pointer;letter-spacing:1px;">
+      ⚔️ 진입
+    </button>
+    <div id="admin-pw-error" style="color:#EF4444;font-size:11px;margin-top:10px;display:none;">
+      ❌ 접근 거부 — 비밀번호를 확인하십시오
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // 세션 내 인증 유지
+  if(sessionStorage.getItem('nkai_admin_auth')==='1'){
+    document.getElementById('admin-gate').style.display='none';
+  }
+  window.checkAdminPw = function(){
+    var pw = document.getElementById('admin-pw-input').value;
+    if(pw === 'nkai3827'){
+      sessionStorage.setItem('nkai_admin_auth','1');
+      document.getElementById('admin-gate').style.display='none';
+    } else {
+      document.getElementById('admin-pw-error').style.display='block';
+      document.getElementById('admin-pw-input').value='';
+      document.getElementById('admin-pw-input').focus();
+    }
+  };
+})();
+</script>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <div style="width:34px;height:34px;background:linear-gradient(135deg,var(--gold),#d4a853);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--dark);font-size:14px">N</div>
+      <div>
+        <div class="sb-logo-text"><span>N·KAI</span></div>
+        <div class="sb-sub">ADMIN 8.0</div>
+      </div>
+    </div>
+    <div id="sidebar-status" style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--gold)">
+      <div class="live-dot" style="background:var(--gold);opacity:.3"></div> <span>MOCK 데이터</span>
+    </div>
+  </div>
+  <div class="sb-nav" id="sb-nav"></div>
+  <div class="sb-footer">
+    <div style="color:var(--gold);font-weight:700;margin-bottom:4px">자동화 시스템 v8.0</div>
+    <div id="footer-gas">GAS ⚠️ 토스 ✅ Gmail ✅</div>
+    <div id="footer-update" style="margin-top:4px">데이터 로딩 중...</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="top-title" id="top-title">📊 운영 현황 대시보드</div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <div class="live-tag" id="live-tag"><div class="live-dot" id="top-dot"></div><span id="live-label">MOCK</span></div>
+      <div style="font-size:11px;color:var(--sub)" id="top-date"></div>
+    </div>
+  </div>
+  <div class="content" id="content">
+    <div id="loading-msg" style="text-align:center;padding:40px;color:var(--gold)">GAS 실데이터 로딩 중...</div>
+
+    <!-- OVERVIEW -->
+    <div class="tab-panel" id="tab-overview"></div>
+    <!-- SALES -->
+    <div class="tab-panel" id="tab-sales"></div>
+    <!-- FUNNEL -->
+    <div class="tab-panel" id="tab-funnel"></div>
+    <!-- USERS -->
+    <div class="tab-panel" id="tab-users"></div>
+    <!-- UTM -->
+    <div class="tab-panel" id="tab-utm"></div>
+    <!-- AI -->
+    <div class="tab-panel" id="tab-ai"></div>
+    <!-- SYSTEM -->
+    <div class="tab-panel" id="tab-system"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" style="display:none" onclick="closeModal()">
+  <div class="modal-box" id="modal-body" onclick="event.stopPropagation()"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// N-KAI ADMIN v8.0 — Vanilla JS
+// ══════════════════════════════════════════════
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzCvZ9Dwuh3RE7kX4AGSslRiUBIDukKLtWkP5bhGmBHrrpKs2JQh9E27BtvhM3b2bMe/exec";
+
+// ── State ──
+let currentTab = "overview";
+let dataSource = "mock";
+let lastUpdate = null;
+let pulse = false;
+let aiAnalysis = "";
+let aiLoading = false;
+let filterTier = "all";
+let searchQ = "";
+let selectedOrder = null;
+
+const MOCK_SALES = [
+  {id:"ORD-2403-001",date:"2026-03-07 14:32",name:"김민준",email:"min@test.com",tier:"standard",amount:9900,archetype:"ENTJ",nscore:720,status:"sent"},
+  {id:"ORD-2403-002",date:"2026-03-07 15:11",name:"이수연",email:"su@test.com",tier:"premium",amount:19900,archetype:"INFJ",nscore:810,status:"sent"},
+  {id:"ORD-2403-003",date:"2026-03-07 16:45",name:"박지훈",email:"ji@test.com",tier:"standard",amount:9900,archetype:"ISTP",nscore:650,status:"sent"},
+  {id:"ORD-2403-004",date:"2026-03-07 17:02",name:"최유리",email:"yu@test.com",tier:"standard",amount:9900,archetype:"ENFP",nscore:780,status:"pending"},
+];
+const MOCK_DASHBOARD = {total_users:0,total_payments:0,total_revenue:0,archetype_distribution:{},funnel_stats:{},daily_visits:{},kipa_averages:{energy:50,perception:50,judgment:50,lifestyle:50},device_stats:{},utm_stats:{}};
+
+let dashboard = {...MOCK_DASHBOARD};
+let sales = [...MOCK_SALES];
+
+const C = {dark:"#071523",mid:"#0D1B2A",card:"#0F2035",border:"#1A3A5C",gold:"#F0C674",blue:"#2D8CFF",text:"#E8EDF2",sub:"#7A8FA6",green:"#22C55E",red:"#EF4444",purple:"#A78BFA"};
+
+const TABS = [
+  {id:"overview",icon:"📊",label:"대시보드",title:"📊 운영 현황 대시보드"},
+  {id:"sales",icon:"💳",label:"결제 내역",title:"💳 결제 내역 관리"},
+  {id:"funnel",icon:"🎯",label:"전환 퍼널",title:"🎯 전환 퍼널 분석"},
+  {id:"users",icon:"👥",label:"고객 분석",title:"👥 고객 성향 분석"},
+  {id:"utm",icon:"📡",label:"유입 경로",title:"📡 UTM 유입 경로 분석"},
+  {id:"ai",icon:"🤖",label:"AI 인사이트",title:"🤖 AI 인사이트 엔진"},
+  {id:"system",icon:"⚙️",label:"시스템 상태",title:"⚙️ 자동화 시스템 상태"},
+];
+
+const ALL_16 = ["INTJ","INTP","ENTJ","ENTP","INFJ","INFP","ENFJ","ENFP","ISTJ","ISFJ","ESTJ","ESFJ","ISTP","ISFP","ESTP","ESFP"];
+const GRADE_COLORS = {N1:"#F0C674",N2:"#22C55E",N3:"#3B82F6",N4:"#8B5CF6",N5:"#06B6D4",N6:"#F97316",N7:"#EAB308",N8:"#EF4444",N9:"#9CA3AF"};
+const MOCK_GRADE = [{grade:"N1",count:3},{grade:"N2",count:8},{grade:"N3",count:15},{grade:"N4",count:22},{grade:"N5",count:18},{grade:"N6",count:12},{grade:"N7",count:9},{grade:"N8",count:6},{grade:"N9",count:7}];
+
+// ── Helpers ──
+function $(id){return document.getElementById(id)}
+function h(s){return s==null?"":String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function minibar(pct,color,height){height=height||8;return `<div class="minibar" style="height:${height}px"><div class="minibar-fill" style="width:${Math.min(100,pct)}%;background:${color};height:100%"></div></div>`}
+function badge(color,text){return `<span class="badge" style="background:${color}22;color:${color}">${h(text)}</span>`}
+function isLive(){return dataSource==="live"}
+
+// ── GAS Fetch ──
+async function fetchGAS(action){
+  try{
+    const res=await fetch(GAS_URL+"?action="+action,{method:"GET"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    return await res.json();
+  }catch(e){console.warn("[ADMIN] GAS fetch failed ("+action+"):",e.message);return null}
+}
+
+// ── Derived Data ──
+function getTotalRevenue(){return isLive()?(dashboard.total_revenue||0):sales.reduce((s,o)=>s+o.amount,0)}
+function getTotalPayments(){return isLive()?(dashboard.total_payments||0):sales.length}
+function getTotalUsers(){return isLive()?(dashboard.total_users||0):441}
+
+function getArchetypeDist(){
+  const raw=isLive()?(dashboard.archetype_distribution||{}):{ENTJ:18,INTJ:15,ENFP:14,INFJ:12,ISTP:10,ENTP:9,ISFJ:8,ENFJ:6,INTP:5,INFP:4,ISTJ:3,ESFJ:2,ISFP:2,ESTJ:1,ESTP:1,ESFP:0};
+  return ALL_16.map(t=>({type:t,count:raw[t]||0})).sort((a,b)=>b.count-a.count);
+}
+function getFunnelData(){
+  if(isLive()){
+    return Object.entries(dashboard.funnel_stats||{}).sort(([a],[b])=>a.localeCompare(b)).map(([step,data],i)=>({step:data.name||step,count:data.count||0,color:["#2D8CFF","#3B82F6","#6366F1","#F59E0B","#F0C674"][i]||"#2D8CFF"}));
+  }
+  return [{step:"홈페이지 방문",count:1240,color:"#2D8CFF"},{step:"무료 분석 시작",count:623,color:"#3B82F6"},{step:"무료 분석 완료",count:441,color:"#6366F1"},{step:"결제 페이지 진입",count:89,color:"#F59E0B"},{step:"결제 완료",count:52,color:"#F0C674"}];
+}
+function getDailyVisits(){
+  if(isLive()) return Object.entries(dashboard.daily_visits||{}).sort(([a],[b])=>b.localeCompare(a)).slice(0,7).map(([date,count])=>({date,count}));
+  return [{date:"2026-03-07",count:47},{date:"2026-03-06",count:38},{date:"2026-03-05",count:55},{date:"2026-03-04",count:29},{date:"2026-03-03",count:41},{date:"2026-03-02",count:33},{date:"2026-03-01",count:62}];
+}
+function getGradeDist(){
+  if(!isLive()) return MOCK_GRADE.map(g=>({...g,color:GRADE_COLORS[g.grade]}));
+  if(dashboard.nscore_distribution) return Object.entries(dashboard.nscore_distribution).map(([grade,count])=>({grade,count,color:GRADE_COLORS[grade]||"#9CA3AF"}));
+  const scores=Object.values(dashboard.user_nscores||{});
+  if(!scores.length) return MOCK_GRADE.map(g=>({...g,count:0,color:GRADE_COLORS[g.grade]}));
+  const bins={N1:0,N2:0,N3:0,N4:0,N5:0,N6:0,N7:0,N8:0,N9:0};
+  scores.forEach(s=>{if(s>=950)bins.N1++;else if(s>=800)bins.N2++;else if(s>=720)bins.N3++;else if(s>=650)bins.N4++;else if(s>=580)bins.N5++;else if(s>=510)bins.N6++;else if(s>=440)bins.N7++;else if(s>=370)bins.N8++;else bins.N9++});
+  return Object.entries(bins).map(([grade,count])=>({grade,count,color:GRADE_COLORS[grade]}));
+}
+
+// ── Sidebar ──
+function renderSidebar(){
+  const nav=$("sb-nav");
+  nav.innerHTML=TABS.map(t=>`<div class="sb-item ${currentTab===t.id?"active":""}" onclick="switchTab('${t.id}')"><span>${t.icon}</span><span>${t.label}</span></div>`).join("");
+  const st=$("sidebar-status");
+  const col=isLive()?C.green:C.gold;
+  st.style.color=col;
+  st.innerHTML=`<div class="live-dot" style="background:${col};opacity:${pulse?1:.3}"></div> ${isLive()?"실시간 운영 중":"MOCK 데이터"}`;
+  $("footer-gas").textContent="GAS "+(isLive()?"✅":"⚠️")+" 토스 ✅ Gmail ✅";
+  $("footer-update").textContent=lastUpdate?"갱신: "+lastUpdate:"데이터 로딩 중...";
+}
+
+// ── Topbar ──
+function renderTopbar(){
+  const t=TABS.find(x=>x.id===currentTab);
+  $("top-title").textContent=t?t.title:"";
+  const col=isLive()?C.green:C.gold;
+  const tag=$("live-tag");
+  tag.style.background=isLive()?"rgba(34,197,94,.1)":"rgba(240,198,116,.1)";
+  tag.style.border="1px solid "+(isLive()?"rgba(34,197,94,.3)":"rgba(240,198,116,.3)");
+  tag.style.color=col;
+  $("top-dot").style.background=col;
+  $("top-dot").style.opacity=pulse?1:.3;
+  $("live-label").textContent=isLive()?"LIVE":"MOCK";
+  $("top-date").textContent=new Date().toISOString().slice(0,10)+" · 뉴린카이로스에이아이(주)";
+}
+
+// ── Tab Switch ──
+function switchTab(id){
+  currentTab=id;
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  const panel=$("tab-"+id);
+  if(panel){panel.classList.add("active");renderTab(id)}
+  renderSidebar();renderTopbar();
+}
+
+// ── Tab Renderers ──
+function renderTab(id){
+  const fn={overview:renderOverview,sales:renderSales,funnel:renderFunnel,users:renderUsers,utm:renderUtm,ai:renderAi,system:renderSystem};
+  if(fn[id]) fn[id]();
+}
+
+function renderOverview(){
+  const el=$("tab-overview");
+  const totalUsers=getTotalUsers(),totalRevenue=getTotalRevenue(),totalPayments=getTotalPayments();
+  const funnel=getFunnelData(),convRate=funnel.length>=5?((funnel[4].count/Math.max(1,funnel[2].count))*100).toFixed(1):"0.0";
+  const avgNscore=isLive()?"-":Math.round(sales.reduce((s,o)=>s+o.nscore,0)/sales.length);
+  const daily=getDailyVisits(),maxD=Math.max(...daily.map(d=>d.count),1);
+  const arch=getArchetypeDist(),maxA=Math.max(...arch.map(a=>a.count),1);
+  const sentCount=sales.filter(o=>o.status==="sent").length;
+
+  let html=`<div style="margin-bottom:16px;padding:8px 14px;background:${isLive()?"rgba(34,197,94,.08)":"rgba(240,198,116,.08)"};border:1px solid ${isLive()?"rgba(34,197,94,.2)":"rgba(240,198,116,.2)"};border-radius:8px;font-size:11px;color:${isLive()?C.green:C.gold}">
+    ${isLive()?`✅ GAS 실데이터 연결됨 — 총 ${totalUsers}명 · 30초 자동 갱신 · 마지막 갱신: ${lastUpdate}`:"⚠️ GAS 연결 실패 — Mock 데이터 표시 중. 네트워크 확인 필요."}</div>`;
+
+  // KPI
+  const kpis=[{label:"총 유저 수",val:totalUsers.toLocaleString(),sub:"분석 완료 유저",color:C.blue},{label:"누적 매출",val:(totalRevenue/10000).toFixed(1)+"만원",sub:"결제 "+totalPayments+"건",color:C.gold},{label:"전환율 (무료→유료)",val:convRate+"%",sub:"분석완료 대비",color:C.green},{label:"평균 N-Score",val:avgNscore,sub:"전체 고객",color:C.purple}];
+  html+=`<div class="grid4">${kpis.map(k=>`<div class="kpi-card"><div class="kpi-label">${h(k.label)}</div><div class="kpi-val" style="color:${k.color}">${k.val}</div><div class="kpi-sub">${h(k.sub)}</div></div>`).join("")}</div>`;
+
+  // Daily + Recent Sales
+  html+=`<div class="grid2"><div class="card"><div class="card-title">📈 ${isLive()?"일별 방문 트렌드":"무료 분석 트렌드"} (7일)</div><div style="display:flex;flex-direction:column;gap:8px">`;
+  daily.forEach((d,i)=>{html+=`<div style="display:flex;align-items:center;gap:10px"><div style="font-size:11px;color:${C.sub};width:60px">${h(d.date.slice(5))}</div>${minibar((d.count/maxD)*100,i===0?C.gold:C.blue)}<div style="font-size:12px;font-weight:700;width:28px;text-align:right">${d.count}</div></div>`});
+  html+=`</div></div>`;
+
+  html+=`<div class="card"><div class="card-title">💳 최근 결제 <span style="margin-left:auto">${badge(C.green,sentCount+" 발송완료")}</span></div>`;
+  sales.slice(0,5).forEach(o=>{
+    html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(26,58,92,.3)">
+      <div style="width:36px;height:36px;background:linear-gradient(135deg,${C.card},${C.mid});border:1px solid ${C.border};border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:${C.gold}">${h((o.archetype||"??").slice(0,2))}</div>
+      <div style="flex:1"><div style="font-weight:700">${h(o.name)}</div><div style="font-size:10px;color:${C.sub}">${h((o.date||"").slice(11))} · ${h(o.archetype)} · N${Math.floor((o.nscore||0)/100)}</div></div>
+      <div style="text-align:right"><div style="font-weight:700;color:${o.tier==="premium"?C.purple:C.gold}">${((o.amount||0)/10000).toFixed(1)}만</div>${badge(o.status==="sent"?C.green:C.gold,o.status==="sent"?"✓ 발송":"대기")}</div></div>`;
+  });
+  html+=`</div></div>`;
+
+  // Archetype 16
+  html+=`<div class="card"><div class="card-title">🧬 아키타입 분포 ${isLive()?badge(C.green,"LIVE"):""}</div><div style="display:flex;flex-wrap:wrap;gap:10px">`;
+  arch.forEach(a=>{html+=`<div style="flex:0 0 calc(25% - 8px);background:rgba(255,255,255,.03);border:1px solid ${C.border};border-radius:8px;padding:12px 14px"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:700;color:${C.gold}">${h(a.type)}</span><span style="font-size:11px;color:${C.sub}">${a.count}명</span></div>${minibar((a.count/maxA)*100,C.blue,6)}</div>`});
+  html+=`</div></div>`;
+  el.innerHTML=html;
+}
+
+function renderSales(){
+  const el=$("tab-sales");
+  const filtered=sales.filter(o=>{
+    const tierOk=filterTier==="all"||o.tier===filterTier;
+    const sOk=!searchQ||o.name.includes(searchQ)||o.email.includes(searchQ)||o.id.includes(searchQ);
+    return tierOk&&sOk;
+  });
+
+  let html=`<div style="display:flex;gap:10px;margin-bottom:16px;align-items:center">
+    <input class="admin-input" placeholder="이름·이메일·주문번호 검색" value="${h(searchQ)}" oninput="searchQ=this.value;renderSales()">`;
+  ["all","standard","premium"].forEach(t=>{
+    const act=filterTier===t;
+    html+=`<button class="btn" style="padding:8px 14px;background:${act?C.blue:"transparent"};color:${act?"#fff":C.blue};border-color:${C.blue}" onclick="filterTier='${t}';renderSales()">${t==="all"?"전체":t==="standard"?"Standard":"Premium"}</button>`;
+  });
+  html+=`<div style="margin-left:auto;font-size:12px;color:${C.sub}">${filtered.length}건</div></div>`;
+
+  html+=`<div class="card"><table class="tbl"><thead><tr>`;
+  ["주문번호","일시","고객명","이메일","상품","아키타입","N-Score","금액","상태","액션"].forEach(h2=>{html+=`<th>${h2}</th>`});
+  html+=`</tr></thead><tbody>`;
+  filtered.forEach((o,i)=>{
+    html+=`<tr style="cursor:pointer" onclick='showOrder(${i})'>
+      <td style="color:${C.sub};font-size:11px">${h(o.id)}</td><td style="font-size:11px">${h(o.date)}</td>
+      <td style="font-weight:700">${h(o.name)}</td><td style="color:${C.sub}">${h(o.email)}</td>
+      <td>${badge(o.tier==="premium"?C.purple:C.gold,o.tier)}</td>
+      <td style="font-weight:700;color:${C.gold}">${h(o.archetype)}</td><td style="font-weight:700">${o.nscore}</td>
+      <td style="font-weight:700;color:${C.gold}">${(o.amount||0).toLocaleString()}원</td>
+      <td>${badge(o.status==="sent"?C.green:C.gold,o.status==="sent"?"✓ 발송":"대기")}</td>
+      <td><button class="btn" style="padding:4px 8px;font-size:11px;background:transparent;color:${C.blue};border-color:${C.blue}" onclick="event.stopPropagation();showOrder(${i})">상세</button></td></tr>`;
+  });
+  html+=`</tbody></table></div>`;
+  el.innerHTML=html;
+}
+
+function showOrder(idx){
+  const o=sales[idx];if(!o)return;
+  const rows=[["고객명",o.name],["이메일",o.email],["상품",o.tier],["아키타입",o.archetype],["N-Score",o.nscore],["결제금액",(o.amount||0).toLocaleString()+"원"],["결제일시",o.date],["PDF 발송",o.status==="sent"?"✅ 완료":"⏳ 대기"]];
+  let html=`<div style="display:flex;justify-content:space-between;margin-bottom:20px"><div style="font-size:15px;font-weight:900;color:${C.gold}">${h(o.id)}</div><button onclick="closeModal()" style="background:transparent;border:none;color:${C.sub};cursor:pointer;font-size:16px">✕</button></div>`;
+  rows.forEach(([k,v])=>{html+=`<div style="display:flex;padding:8px 0;border-bottom:1px solid rgba(26,58,92,.3)"><div style="width:100px;color:${C.sub};font-size:12px">${h(k)}</div><div style="flex:1;font-weight:700;font-size:13px">${h(v)}</div></div>`});
+  html+=`<div style="margin-top:16px;display:flex;gap:8px"><button class="btn" style="background:${C.green};color:#fff;border-color:${C.green}">📧 PDF 재발송</button><button class="btn" style="background:transparent;color:${C.blue};border-color:${C.blue}">🔍 AI 분석</button></div>`;
+  $("modal-body").innerHTML=html;$("modal").style.display="flex";
+}
+function closeModal(){$("modal").style.display="none"}
+
+function renderFunnel(){
+  const el=$("tab-funnel");
+  const funnel=getFunnelData();
+  const gd=getGradeDist();
+  const maxG=Math.max(...gd.map(g=>g.count),1);
+
+  let html=`<div class="card"><div class="card-title">🎯 전환 퍼널 — ${isLive()?"실시간":"Mock"} ${isLive()?badge(C.green,"LIVE"):""}</div><div style="display:flex;flex-direction:column;gap:10px">`;
+  funnel.forEach((f,i)=>{
+    const pct=i===0?100:Math.round((f.count/Math.max(1,funnel[0].count))*100);
+    const conv=i===0?100:Math.round((f.count/Math.max(1,funnel[i-1].count))*100);
+    html+=`<div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><div style="display:flex;align-items:center;gap:10px"><div style="width:24px;height:24px;background:${f.color};border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:${C.dark}">${i+1}</div><span style="font-weight:700">${h(f.step)}</span></div><div style="display:flex;gap:16px;align-items:center"><span style="font-weight:900;font-size:16px">${f.count.toLocaleString()}</span><span class="badge" style="background:${f.color}22;color:${f.color};min-width:50px;text-align:center">${pct}%</span>${i>0?`<span style="font-size:11px;color:${C.sub}">전환 ${conv}%</span>`:""}</div></div>${minibar(pct,f.color,12)}</div>`;
+  });
+  html+=`</div></div>`;
+
+  html+=`<div class="card"><div class="card-title">📊 N-Score 등급 분포 (9등급)</div><div style="display:flex;flex-direction:column;gap:10px">`;
+  gd.forEach(g=>{html+=`<div style="display:flex;align-items:center;gap:12px"><div style="width:32px;font-weight:900;color:${g.color}">${h(g.grade)}</div>${minibar((g.count/maxG)*100,g.color,14)}<div style="width:40px;text-align:right;font-weight:700">${g.count}명</div><div style="width:44px;text-align:right;font-size:11px;color:${C.sub}">${Math.round(g.count/100*100)}%</div></div>`});
+  html+=`</div></div>`;
+  el.innerHTML=html;
+}
+
+function renderUsers(){
+  const el=$("tab-users");
+  const arch=getArchetypeDist(),maxA=Math.max(...arch.map(a=>a.count),1);
+
+  // Tier distribution
+  const stdCount=isLive()?(dashboard.tier_distribution&&dashboard.tier_distribution.standard||0):sales.filter(o=>o.tier==="standard").length;
+  const prmCount=isLive()?(dashboard.tier_distribution&&dashboard.tier_distribution.premium||0):sales.filter(o=>o.tier==="premium").length;
+  const total=stdCount+prmCount||1;
+  const stdPct=Math.round(stdCount/total*100),prmPct=Math.round(prmCount/total*100);
+
+  let html=`<div class="grid2"><div class="card"><div class="card-title">🧬 상위 아키타입 TOP 5 ${isLive()?badge(C.green,"LIVE"):""}</div>`;
+  arch.slice(0,5).forEach((a,i)=>{html+=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><div style="width:20px;height:20px;background:rgba(240,198,116,.15);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:${C.gold}">${i+1}</div><div style="font-weight:700;color:${C.gold};width:40px">${h(a.type)}</div>${minibar((a.count/maxA)*100,C.blue,10)}<div style="font-weight:700;width:28px;text-align:right">${a.count}</div></div>`});
+  html+=`</div>`;
+
+  html+=`<div class="card"><div class="card-title">💰 상품별 구매 비율</div><div style="display:flex;flex-direction:column;gap:16px">`;
+  [{label:"Standard (9,900원)",pct:stdPct,count:stdCount,color:C.gold},{label:"Premium (19,900원)",pct:prmPct,count:prmCount,color:C.purple}].forEach(t=>{
+    html+=`<div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-weight:700;color:${t.color}">${h(t.label)}</span><span style="font-size:12px;color:${C.sub}">${t.count}건 · ${t.pct}%</span></div>${minibar(t.pct,t.color,16)}</div>`;
+  });
+  html+=`</div></div></div>`;
+
+  // KIPA
+  const kipa=dashboard.kipa_averages||{energy:50,perception:50,judgment:50,lifestyle:50};
+  html+=`<div class="card"><div class="card-title">🎯 KIPA 4축 평균 ${isLive()?badge(C.green,"LIVE"):""}</div><div style="display:flex;gap:16px">`;
+  [{label:"E/I 에너지원",val:kipa.energy||50,color:"#F0C674"},{label:"N/S 인지방식",val:kipa.perception||50,color:C.blue},{label:"T/F 판단기준",val:kipa.judgment||50,color:C.green},{label:"J/P 생활양식",val:kipa.lifestyle||50,color:C.purple}].forEach(k=>{
+    html+=`<div style="flex:1;background:rgba(255,255,255,.03);border:1px solid ${C.border};border-radius:10px;padding:16px 14px;text-align:center"><div style="font-size:10px;color:${C.sub};margin-bottom:8px;font-weight:700">${h(k.label)}</div><div style="font-size:32px;font-weight:900;color:${k.color};margin-bottom:8px">${k.val}</div>${minibar(k.val,k.color,6)}</div>`;
+  });
+  html+=`</div></div>`;
+
+  // Chemistry
+  const chem=dashboard.chemistry_stats;
+  html+=`<div class="card"><div class="card-title">💞 케미스트리 매칭 현황 ${isLive()?badge(C.green,"LIVE"):""}</div>`;
+  if(!chem){
+    html+=`<div style="text-align:center;padding:32px 0;color:${C.sub};font-size:12px">케미스트리 데이터 준비 중 — GAS chemistry_stats 엔드포인트 구현 후 자동 연결됩니다.</div>`;
+  }else{
+    html+=`<div style="display:flex;gap:14px;margin-bottom:18px">`;
+    [{label:"총 매칭 수",val:(chem.total_matches||0).toLocaleString(),color:C.blue},{label:"평균 케미 점수",val:chem.avg_score||"-",color:C.gold}].forEach(k=>{
+      html+=`<div style="flex:1;background:rgba(255,255,255,.03);border:1px solid ${C.border};border-radius:10px;padding:14px 16px;text-align:center"><div style="font-size:10px;color:${C.sub};margin-bottom:6px;font-weight:700">${h(k.label)}</div><div style="font-size:26px;font-weight:900;color:${k.color}">${k.val}</div></div>`;
+    });
+    html+=`</div>`;
+    if(chem.top_pairs&&chem.top_pairs.length){
+      html+=`<div style="font-size:11px;font-weight:700;color:${C.sub};margin-bottom:10px;letter-spacing:1px">TOP 궁합 쌍</div>`;
+      chem.top_pairs.forEach((p,i)=>{
+        const pair=p.pair||(p.type1+" × "+p.type2);
+        html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(26,58,92,.3)"><div style="width:20px;height:20px;background:rgba(240,198,116,.15);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:${C.gold}">${i+1}</div><div style="font-weight:700;color:${C.gold}">${h(pair)}</div><div style="flex:1"></div>${minibar(p.score||0,C.green,8)}<div style="font-weight:700;width:36px;text-align:right">${p.score||0}%</div></div>`;
+      });
+    }
+  }
+  html+=`</div>`;
+  el.innerHTML=html;
+}
+
+function renderUtm(){
+  const el=$("tab-utm");
+  const MOCK_UTM={direct:124,naver:89,instagram:67,kakao:45,google:31,facebook:18,etc:22};
+  const utmRaw=isLive()?(dashboard.utm_stats||{}):MOCK_UTM;
+  const SOURCE_MAP=[{key:"direct",label:"직접 유입",color:"#2D8CFF"},{key:"naver",label:"네이버",color:"#03C75A"},{key:"instagram",label:"인스타그램",color:"#E1306C"},{key:"kakao",label:"카카오",color:"#FEE500"},{key:"google",label:"구글",color:"#4285F4"},{key:"facebook",label:"페이스북",color:"#1877F2"},{key:"etc",label:"기타",color:"#9CA3AF"}];
+  const utmData=SOURCE_MAP.map(s=>({...s,count:utmRaw[s.key]||0})).sort((a,b)=>b.count-a.count);
+  const maxUtm=Math.max(...utmData.map(d=>d.count),1);
+  const totalUtm=utmData.reduce((s,d)=>s+d.count,0)||1;
+  const adPct=Math.round(((utmRaw.naver||0)+(utmRaw.google||0)+(utmRaw.facebook||0))/totalUtm*100);
+
+  let html=`<div style="margin-bottom:16px;padding:8px 14px;background:${isLive()?"rgba(34,197,94,.08)":"rgba(240,198,116,.08)"};border:1px solid ${isLive()?"rgba(34,197,94,.2)":"rgba(240,198,116,.2)"};border-radius:8px;font-size:11px;color:${isLive()?C.green:C.gold}">${isLive()?"✅ GAS utm_stats 실데이터 · 총 "+totalUtm+"건 유입":"⚠️ Mock 데이터 표시 중"}</div>`;
+
+  html+=`<div class="grid2"><div class="card"><div class="card-title">📡 소스별 유입량 ${isLive()?badge(C.green,"LIVE"):""}</div><div style="display:flex;flex-direction:column;gap:10px">`;
+  utmData.forEach(d=>{html+=`<div style="display:flex;align-items:center;gap:10px"><div style="width:80px;font-size:12px;font-weight:700;color:${d.color}">${h(d.label)}</div>${minibar((d.count/maxUtm)*100,d.color,14)}<div style="width:36px;text-align:right;font-weight:700">${d.count}</div><div style="width:40px;text-align:right;font-size:11px;color:${C.sub}">${Math.round(d.count/totalUtm*100)}%</div></div>`});
+  html+=`</div></div>`;
+
+  html+=`<div class="card"><div class="card-title">📊 유입 비율 요약</div><div style="display:flex;flex-direction:column;gap:14px">`;
+  [{label:"총 유입",val:totalUtm.toLocaleString()+"건",color:C.gold,size:18},{label:"최다 유입 소스",val:utmData[0].label+" ("+utmData[0].count+"건)",color:utmData[0].color,size:14},{label:"유료 광고 비율",val:adPct+"%",color:C.blue,size:14}].forEach(r=>{
+    html+=`<div style="display:flex;justify-content:space-between;padding:12px 14px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid ${C.border}"><span style="color:${C.sub};font-size:12px">${h(r.label)}</span><span style="font-weight:900;font-size:${r.size}px;color:${r.color}">${r.val}</span></div>`;
+  });
+  html+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">`;
+  utmData.forEach(d=>{html+=badge(d.color,d.label+" "+Math.round(d.count/totalUtm*100)+"%")});
+  html+=`</div></div></div></div>`;
+  el.innerHTML=html;
+}
+
+function renderAi(){
+  const el=$("tab-ai");
+  const totalUsers=getTotalUsers(),totalRevenue=getTotalRevenue(),totalPayments=getTotalPayments();
+  const funnel=getFunnelData(),convRate=funnel.length>=5?((funnel[4].count/Math.max(1,funnel[2].count))*100).toFixed(1):"0.0";
+  const arch=getArchetypeDist();
+
+  const prompts=[
+    {label:"📊 전체 매출 인사이트 분석",prompt:"N-KAI 플랫폼 운영 데이터를 분석해줘. 총 유저 "+totalUsers+"명, 총 매출 "+totalRevenue.toLocaleString()+"원, 결제 "+totalPayments+"건, 전환율 "+convRate+"%. 상위 아키타입: "+arch.slice(0,3).map(a=>a.type+"("+a.count+"명)").join(", ")+". 현재 비즈니스 상태 진단과 즉시 실행 가능한 개선안 3가지를 제시해줘."},
+    {label:"🎯 전환율 개선 전략",prompt:"N-KAI 서비스의 전환 퍼널: "+funnel.map(f=>f.step+" "+f.count).join(" → ")+". 전환율이 가장 낮은 병목 구간을 찾고 개선 전략 3가지를 구체적 수치와 함께 제시해줘."},
+    {label:"💰 수익화 확대 방안",prompt:"N-KAI의 현재 상품: Standard 9,900원, Premium 19,900원, VIP 49,900원. 총 매출 "+totalRevenue.toLocaleString()+"원, "+totalPayments+"건. 수익을 30% 이상 늘리기 위한 새로운 수익화 전략 3가지를 제시해줘."},
+    {label:"🧬 아키타입별 맞춤 마케팅",prompt:"N-KAI 고객 아키타입 분포: "+arch.slice(0,5).map(a=>a.type+" "+a.count+"명").join(", ")+". 각 아키타입의 금융 성향 특성에 맞는 맞춤 마케팅 메시지를 각각 2줄씩 작성해줘."},
+  ];
+
+  let html=`<div class="card" style="border-color:rgba(240,198,116,.3);background:rgba(240,198,116,.04)"><div class="card-title">🤖 AI 분석 엔진 — Claude Sonnet 직접 연동</div><div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px">`;
+  prompts.forEach((b,i)=>{html+=`<button class="btn" style="font-size:12px;padding:9px 14px;background:transparent;color:${C.gold};border-color:${C.gold}" onclick="runAi(${i})" ${aiLoading?"disabled":""}>${h(b.label)}</button>`});
+  html+=`</div><div id="ai-result" style="background:${C.dark};border-radius:10px;padding:18px 20px;min-height:200px;border:1px solid ${C.border};position:relative">`;
+  if(aiLoading) html+=`<div style="display:flex;align-items:center;gap:10px;color:${C.gold}"><div style="width:10px;height:10px;border-radius:50%;background:${C.gold};animation:pulse 1s infinite"></div> Claude Sonnet 분석 중...</div>`;
+  else if(aiAnalysis) html+=`<div style="font-size:13px;line-height:1.8;color:${C.text};white-space:pre-wrap">${h(aiAnalysis)}</div>`;
+  else html+=`<div style="color:${C.sub};text-align:center;padding-top:60px;font-size:12px">위 버튼을 클릭하면 Claude AI가 실시간 분석을 시작합니다</div>`;
+  html+=`</div></div>`;
+  el.innerHTML=html;
+
+  // Store prompts globally for onclick
+  window._aiPrompts=prompts;
+}
+
+async function runAi(idx){
+  const prompt=window._aiPrompts[idx].prompt;
+  aiLoading=true;aiAnalysis="";renderAi();
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})});
+    const data=await res.json();
+    aiAnalysis=(data.content&&data.content.find(b=>b.type==="text")||{}).text||"분석 실패";
+  }catch(e){aiAnalysis="⚠️ API 연결 오류. CLAUDE_API_KEY 확인 필요."}
+  aiLoading=false;renderAi();
+}
+
+function renderSystem(){
+  const el=$("tab-system");
+  const totalUsers=getTotalUsers(),totalRevenue=getTotalRevenue(),totalPayments=getTotalPayments();
+  const pipelines=[
+    {name:"GAS get_dashboard",status:isLive()?"정상":"연결 실패",latency:isLive()?"~2초":"N/A",color:isLive()?C.green:C.red,desc:"실데이터: 유저 "+totalUsers+"명 · 매출 "+totalRevenue.toLocaleString()+"원"},
+    {name:"토스페이먼츠 Webhook",status:"정상",latency:"~10초",color:C.green,desc:"결제 승인 → GAS confirmTossPayment()"},
+    {name:"Claude AI API",status:"정상",latency:"~15초",color:C.green,desc:"generateAIInterpretation() — full 모드"},
+    {name:"DriveApp PDF 변환",status:"정상",latency:"~20초",color:C.green,desc:"HTML → PDF (시스템폰트 안전)"},
+    {name:"Gmail 자동발송",status:"정상",latency:"~5초",color:C.green,desc:"GmailApp.sendEmail() — PDF 첨부"},
+    {name:"Google Sheets 로그",status:"정상",latency:"실시간",color:C.green,desc:"9개 시트 자동 기록 (v4.1)"},
+  ];
+
+  let html=`<div class="card"><div class="card-title">⚙️ 자동화 파이프라인 상태</div><div style="display:flex;flex-direction:column">`;
+  pipelines.forEach(s=>{
+    html+=`<div style="display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid rgba(26,58,92,.3)"><div style="width:12px;height:12px;border-radius:50%;background:${s.color};flex-shrink:0"></div><div style="flex:1"><div style="font-weight:700;margin-bottom:3px">${h(s.name)}</div><div style="font-size:11px;color:${C.sub}">${h(s.desc)}</div></div><div style="text-align:right">${badge(s.color,s.status)}<div style="font-size:10px;color:${C.sub};margin-top:4px">응답 ${h(s.latency)}</div></div></div>`;
+  });
+  html+=`</div></div>`;
+
+  const sheets=[
+    {name:"분석데이터",cols:"34열 (v4.1 KIPA 16Q)",rows:totalUsers},{name:"결제기록",cols:"주문번호·이메일·금액·상태·일시",rows:totalPayments},
+    {name:"PDF발송로그",cols:"발송완료여부·발송시각·수신확인",rows:"-"},{name:"퍼널트래킹",cols:"세션ID·퍼널단계·소요시간·이탈여부",rows:"-"},
+    {name:"세션트래킹",cols:"17열 (디바이스·UTM·리퍼러)",rows:"-"},
+  ];
+
+  html+=`<div class="grid2"><div class="card"><div class="card-title">📁 Google Sheets 연결 DB (9개 시트)</div>`;
+  sheets.forEach(s=>{html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(26,58,92,.3)"><span style="color:${C.green};font-size:16px">📊</span><div style="flex:1"><div style="font-weight:700">${h(s.name)}</div><div style="font-size:10px;color:${C.sub}">${h(s.cols)}</div></div><div style="text-align:right"><div style="font-weight:700;color:${C.gold}">${s.rows}행</div>${badge(isLive()?C.green:C.sub,isLive()?"연결됨":"대기")}</div></div>`});
+  html+=`</div>`;
+
+  html+=`<div class="card"><div class="card-title">📡 GAS 엔드포인트 (14개)</div><div style="display:flex;flex-direction:column;gap:6px">`;
+  [{method:"GET",actions:"get_dashboard · get_tickets · track_utm",count:7},{method:"POST",actions:"send_pdf_report · confirm_payment · track_funnel · track_session",count:7}].forEach(g=>{
+    html+=`<div style="background:rgba(255,255,255,.03);border-radius:8px;padding:10px 12px;border:1px solid ${C.border}"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">${badge(g.method==="GET"?C.blue:C.gold,g.method)}<span style="font-size:11px;color:${C.sub}">${g.count}개 패턴</span></div><div style="font-size:11px;color:${C.text}">${h(g.actions)}</div></div>`;
+  });
+  html+=`</div></div></div>`;
+  el.innerHTML=html;
+}
+
+// ── Init ──
+async function loadLiveData(){
+  $("loading-msg").style.display="block";
+  const [dashRes]=await Promise.all([fetchGAS("get_dashboard"),fetchGAS("get_tickets")]);
+  if(dashRes&&dashRes.success){dashboard=dashRes;dataSource="live";lastUpdate=new Date().toLocaleTimeString("ko-KR")}
+  else{dataSource="mock"}
+  $("loading-msg").style.display="none";
+  renderSidebar();renderTopbar();renderTab(currentTab);
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  $("tab-"+currentTab).classList.add("active");
+}
+
+document.addEventListener("DOMContentLoaded",function(){
+  renderSidebar();renderTopbar();
+  loadLiveData();
+  setInterval(loadLiveData,30000);
+  setInterval(function(){pulse=!pulse;renderSidebar();renderTopbar()},1500);
+});
+</script>
+</body>
+</html>

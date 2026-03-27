@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__notion__notion-fetch",
+      "mcp__notion__notion-search",
+      "mcp__notion__notion-create-pages",
+      "Bash(python:*)",
+      "Bash(ls:*)",
+      "Bash(wc:*)",
+      "Bash(rm:*)",
+      "Bash(xargs grep:*)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(node:*)",
+      "Bash(test:*)",
+      "Bash(npm install:*)",
+      "Bash(gsd init:*)",
+      "Bash(gh api:*)",
+      "Bash(where gh:*)",
+      "Bash(xcopy:*)",
+      "Bash(cp:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "notion"
+  ]
+}

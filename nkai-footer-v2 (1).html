@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-KAI Footer Redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0e1a;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  /* ── Demo context area ── */
+  .demo-context {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.15);
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  /* ── Footer ── */
+  .nkai-footer {
+    --blue-primary: #1B7FE0;
+    --blue-light: #3A9BF5;
+    --blue-glow: rgba(27, 127, 224, 0.15);
+    --dark-bg: #060a14;
+    --dark-surface: #0c1120;
+    --dark-border: rgba(255,255,255,0.06);
+    --text-primary: rgba(255,255,255,0.92);
+    --text-secondary: rgba(255,255,255,0.55);
+    --text-tertiary: rgba(255,255,255,0.30);
+
+    position: relative;
+    background: var(--dark-bg);
+    font-family: 'Noto Sans KR', 'Outfit', sans-serif;
+    overflow: hidden;
+  }
+
+  /* Top glow line */
+  .nkai-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue-primary), transparent);
+  }
+
+  /* Subtle radial glow */
+  .nkai-footer::after {
+    content: '';
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 500px;
+    height: 160px;
+    background: radial-gradient(ellipse, var(--blue-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .footer-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 32px 0;
+  }
+
+  /* ── Top Section: Logo + Nav ── */
+  .footer-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--dark-border);
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 280px;
+  }
+
+  .footer-logo-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .footer-logo-img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(27,127,224,0.25));
+  }
+
+  .footer-brand-name-kr {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+    line-height: 1;
+    margin-top: -4px;
+  }
+
+  .footer-nav-columns {
+    display: flex;
+    gap: 56px;
+    flex-wrap: wrap;
+  }
+
+  .footer-nav-col h4 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+  }
+
+  .footer-nav-col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-nav-col a {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.25s, transform 0.25s;
+    display: inline-block;
+  }
+
+  .footer-nav-col a:hover {
+    color: var(--blue-light);
+    transform: translateX(3px);
+  }
+
+  /* ── Middle Section: Company Info ── */
+  .footer-info {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--dark-border);
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px 40px;
+  }
+
+  .info-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+
+  .info-label {
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    min-width: 72px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  .info-value {
+    color: var(--text-secondary);
+  }
+
+  .info-value a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    transition: color 0.25s, border-color 0.25s;
+  }
+
+  .info-value a:hover {
+    color: var(--blue-light);
+    border-color: var(--blue-light);
+  }
+
+  /* ── Security Badge ── */
+  .footer-security {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--dark-border);
+  }
+
+  .security-icon {
+    width: 14px;
+    height: 14px;
+    opacity: 0.4;
+  }
+
+  .security-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 10.5px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+
+  /* ── Bottom Bar ── */
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 0 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-copyright {
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+    letter-spacing: 0.3px;
+  }
+
+  .footer-legal {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-legal a {
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    transition: color 0.25s;
+    position: relative;
+  }
+
+  .footer-legal a:hover {
+    color: var(--blue-light);
+  }
+
+  .footer-legal a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--blue-light);
+    transition: width 0.3s;
+  }
+
+  .footer-legal a:hover::after {
+    width: 100%;
+  }
+
+  /* ── Telecom notice badge ── */
+  .telecom-notice {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  .telecom-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #f59e0b;
+    animation: pulse-dot 2s infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; box-shadow: 0 0 6px rgba(245,158,11,0.5); }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .footer-inner { padding: 36px 20px 0; }
+    .footer-top { flex-direction: column; gap: 28px; }
+    .footer-nav-columns { gap: 32px; }
+    .info-grid { grid-template-columns: 1fr; gap: 8px; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-context">↑ Page Content Area ↑</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!--  N-KAI FOOTER v2.0                         -->
+<!-- ════════════════════════════════════════════ -->
+<footer class="nkai-footer">
+  <div class="footer-inner">
+
+    <!-- Top: Brand + Navigation -->
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo-row">
+          <img src="/mnt/user-data/uploads/Artboard_4_2x.png" alt="N-KAI - Neurin Kairos AI" class="footer-logo-img">
+        </div>
+        <div class="footer-brand-name-kr">뉴린카이로스에이아이 주식회사</div>
+        <div class="telecom-notice">
+          <span class="telecom-dot"></span>
+          통신판매업 신고번호 : 준비 중 (신고 완료 후 업데이트 예정)
+        </div>
+      </div>
+
+      <div class="footer-nav-columns">
+        <div class="footer-nav-col">
+          <h4>Service</h4>
+          <ul>
+            <li><a href="#">무료 분석</a></li>
+            <li><a href="#">프리미엄 리포트</a></li>
+            <li><a href="#">VIP 컨설팅</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">회사 소개</a></li>
+            <li><a href="#">특허 기술</a></li>
+            <li><a href="#">채용</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="mailto:support@neurinkairosai.com">고객 문의</a></li>
+            <li><a href="#">자주 묻는 질문</a></li>
+            <li><a href="mailto:info@neurinkairosai.com">제휴 문의</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle: Company Info -->
+    <div class="footer-info">
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">대표이사</span>
+          <span class="info-value">이원재</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">사업자등록</span>
+          <span class="info-value">172-87-03400</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">법인등록</span>
+          <span class="info-value">110111-0937039</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">개업일</span>
+          <span class="info-value">2025.09.11</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">소재지</span>
+          <span class="info-value">서울특별시 강남구 테헤란로77길 11-15, 712호(삼성동)</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">업종</span>
+          <span class="info-value">응용 소프트웨어 개발 및 공급 / 데이터베이스 수집 및 제공 / 소프트웨어 관련 컨설팅</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">이메일</span>
+          <span class="info-value">
+            <a href="mailto:info@neurinkairosai.com">info@neurinkairosai.com</a>
+          </span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">고객 문의</span>
+          <span class="info-value">
+            <a href="mailto:support@neurinkairosai.com">support@neurinkairosai.com</a>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Badge -->
+    <div class="footer-security">
+      <svg class="security-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: rgba(255,255,255,0.35);">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <span class="security-text">Powered by Edge AI &amp; AES-256 Encryption</span>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="footer-bottom">
+      <span class="footer-copyright">© 2025 Neurin Kairos AI Inc. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">개인정보처리방침</a>
+        <a href="#">이용약관</a>
+        <a href="#">환불정책</a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+</body>
+</html>

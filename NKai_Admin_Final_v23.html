@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>N-Kai Admin Master v22 (Integrated Fix)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* [기존 스타일 100% 유지] */
+        :root { --bg: #F4F7FC; --white: #ffffff; --text: #191F28; --shinhan-blue: #0046FF; --sky: #EBF1FF; --green: #00BA88; --red: #F44336; --grey: #8B95A1; --gold: #D97706; }
+        body { font-family: 'Pretendard', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        
+        .sidebar { width: 260px; background: var(--white); padding: 25px; display: flex; flex-direction: column; border-right: 1px solid #E5E8EB; }
+        .logo { font-size: 22px; font-weight: 900; color: var(--shinhan-blue); margin-bottom: 40px; display: flex; align-items: center; gap: 8px; }
+        .menu-item { padding: 14px; margin-bottom: 8px; border-radius: 12px; font-weight: 600; color: var(--grey); cursor: pointer; display: flex; flex-direction: column; gap: 2px; transition: 0.2s; }
+        .menu-item:hover, .menu-item.active { background: var(--sky); color: var(--shinhan-blue); }
+        .menu-sub { font-size: 11px; opacity: 0.8; font-weight: normal; }
+
+        .main { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        .top-header { display: flex; justify-content: space-between; align-items: center; }
+        .btn { padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+        .btn-primary { background: var(--shinhan-blue); color: white; box-shadow: 0 4px 10px rgba(0, 70, 255, 0.2); }
+        .btn-outline { background: white; border: 1px solid #D1D6DB; color: var(--text); }
+        
+        .filter-panel { background: var(--white); padding: 20px; border-radius: 16px; display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        select { padding: 10px; border-radius: 8px; border: 1px solid #D1D6DB; font-size: 13px; font-weight: 600; min-width: 140px; outline: none; }
+        .form-label { font-size: 12px; font-weight: bold; color: var(--grey); margin-bottom: 5px; display: block; }
+
+        .panel { background: var(--white); border-radius: 16px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); display: flex; flex-direction: column; position: relative; margin-bottom: 20px; }
+        .panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-weight: 800; font-size: 17px; color: var(--text); }
+
+        /* [수정] Canvas용 차트 박스 */
+        .chart-box { height: 300px; position: relative; border: 1px solid #F0F2F5; border-radius: 12px; padding: 10px; }
+
+        .roi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
+        .roi-box { background: #FAFBFC; padding: 20px; border-radius: 12px; text-align: center; border: 1px solid #E5E8EB; }
+        .roi-label { font-size: 12px; color: var(--grey); font-weight: 600; margin-bottom: 8px; }
+        .roi-val { font-size: 20px; font-weight: 900; color: var(--text); }
+        .roi-final { background: #E8F9F3; border: 1px solid var(--green); }
+        .roi-final .roi-val { color: var(--green); }
+
+        .funnel-section { margin-top: 30px; padding-top: 30px; border-top: 1px dashed #E5E8EB; }
+        .funnel-row { display: flex; align-items: center; margin-bottom: 15px; font-size: 13px; }
+        .funnel-label { width: 100px; font-weight: 600; color: var(--grey); }
+        .funnel-bar-bg { flex: 1; background: #F2F4F6; height: 28px; border-radius: 6px; overflow: hidden; margin: 0 15px; position: relative; }
+        .funnel-bar { height: 100%; background: var(--shinhan-blue); width: 0%; transition: width 1s ease-out; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: bold; }
+        .funnel-metric { width: 80px; text-align: right; font-weight: 900; color: var(--text); font-size: 14px; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { text-align: left; padding: 12px 5px; color: var(--grey); font-weight: 600; border-bottom: 1px solid #E5E8EB; }
+        td { padding: 15px 5px; border-bottom: 1px solid #F2F4F6; font-weight: 500; }
+        .badge { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; transition: 0.3s; }
+        .bg-safe { background: var(--sky); color: var(--shinhan-blue); }
+        .bg-risk { background: #FFF0EE; color: var(--red); }
+        .bg-ready { background: #F2F4F6; color: var(--grey); }
+        .bg-sent { background: #E8F9F3; color: var(--green); }
+        .golden-time { color: #D97706; font-weight: 800; display: flex; align-items: center; gap: 4px; }
+
+        .status-bar-bg { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-top: 5px; }
+        .status-bar-fill { height: 100%; background: var(--green); width: 0%; transition: width 1s; }
+
+        .loader-mask { position: absolute; inset: 0; background: rgba(255,255,255,0.8); display: none; justify-content: center; align-items: center; z-index: 10; border-radius: 12px; }
+        .spinner { width: 30px; height: 30px; border: 3px solid #e2e8f0; border-top-color: var(--indigo); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="logo">⚡ N-KAI <span style="font-size:12px; color:var(--grey); margin-left:5px;">PRO</span></div>
+    
+    <div class="menu-item active" onclick="switchTab('target', this)">
+        <span>🎯 Target Extract</span>
+        <span class="menu-sub">타겟 추출 및 트래픽</span>
+    </div>
+    <div class="menu-item" onclick="switchTab('roi', this)">
+        <span>💰 ROI Simulator</span>
+        <span class="menu-sub">수익성 및 퍼널 분석</span>
+    </div>
+    <div class="menu-item" onclick="switchTab('campaign', this)">
+        <span>📨 Campaign Mgr</span>
+        <span class="menu-sub">오퍼 발송 관리</span>
+    </div>
+</div>
+
+<div class="main">
+    <div class="top-header">
+        <div>
+            <div style="font-size:12px; font-weight:bold; color:var(--grey);">AI Marketing Intelligence</div>
+            <div style="font-size:26px; font-weight:800; color:var(--text);">Marketing Operations</div>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button class="btn btn-outline" onclick="downloadCSV()">📥 Excel Export (Real)</button>
+            <button class="btn btn-primary" onclick="triggerCMS()">🚀 CMS Offer Push</button>
+        </div>
+    </div>
+
+    <div class="filter-panel">
+        <div style="display:flex; gap:15px; flex-wrap:wrap;">
+            <div><span class="form-label">🎯 N-Grade</span><select id="selGrade"><option value="safe">N1~N2 (Safe)</option><option value="risk">N3~N4 (Risk)</option><option value="all">ALL</option></select></div>
+            <div><span class="form-label">📍 Region</span><select><option>ALL</option><option>Gangnam</option><option>Yeouido</option></select></div>
+            <div><span class="form-label">🎂 Age</span><select><option>ALL</option><option>MZ Gen</option><option>X Gen</option></select></div>
+            <div><span class="form-label">⚧ Gender</span><select><option>ALL</option><option>Male</option><option>Female</option></select></div>
+        </div>
+        <button class="btn btn-primary" style="margin-left:auto; height:40px; padding:0 25px;" onclick="runAnalysis()">🔍 Analyze</button>
+    </div>
+
+    <div id="target" class="tab-content active">
+        <div class="panel" style="margin-top:20px;">
+            <div class="panel-head">
+                <span>📈 User Traffic (실시간 트래픽)</span>
+                <span style="font-size:12px; color:var(--green); background:#E8F9F3; padding:4px 10px; border-radius:10px;">● Live</span>
+            </div>
+            <div class="chart-box">
+                <canvas id="trafficChart"></canvas>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-head"><span>📋 AI Recommended Targets</span><span style="font-size:12px; color:var(--shinhan-blue);">Deep Learning Completed</span></div>
+            <table>
+                <thead><tr><th><input type="checkbox" checked></th><th>User ID</th><th>N-Score</th><th>Trigger</th><th>Offer Strategy</th><th>🕒 Golden Time</th><th>Status</th></tr></thead>
+                <tbody id="targetTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="roi" class="tab-content">
+        <div class="panel">
+            <div class="panel-head">💰 Total Value Projection (예상 손익 구조)</div>
+            <div class="roi-grid">
+                <div class="roi-box"><div class="roi-label">1. Exp. Revenue (예상 매출)</div><div class="roi-val" style="color:var(--shinhan-blue);" id="valRev">0</div></div>
+                <div class="roi-box"><div class="roi-label">2. Cost (프로모션 비용)</div><div class="roi-val" style="color:var(--red);" id="valCost">0</div></div>
+                <div class="roi-box"><div class="roi-label">3. Risk Defense (방어 수익)</div><div class="roi-val" style="color:#D97706;" id="valRisk">0</div></div>
+                <div class="roi-box roi-final"><div class="roi-label">4. Net Profit (최종 순이익)</div><div class="roi-val" id="valProfit">0</div></div>
+            </div>
+
+            <div class="funnel-section">
+                <div class="panel-head" style="font-size:15px; margin-bottom:15px;">📉 Conversion Funnel (전환 분석)</div>
+                <div class="funnel-row">
+                    <div class="funnel-label">Target (노출)</div>
+                    <div class="funnel-bar-bg"><div class="funnel-bar" style="width:100%; background:#A6C8FF;">100%</div></div>
+                    <div class="funnel-metric" id="numImp">0</div>
+                </div>
+                <div class="funnel-row">
+                    <div class="funnel-label">Click (클릭)</div>
+                    <div class="funnel-bar-bg"><div class="funnel-bar" id="barClick" style="width:0%;">0%</div></div>
+                    <div class="funnel-metric" id="numClick">0</div>
+                </div>
+                <div class="funnel-row">
+                    <div class="funnel-label">Action (구매)</div>
+                    <div class="funnel-bar-bg"><div class="funnel-bar" id="barAction" style="width:0%; background:var(--green);">0%</div></div>
+                    <div class="funnel-metric" id="numAction">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="campaign" class="tab-content">
+        <div class="panel">
+            <div class="panel-head">📨 Campaign Management (진행 현황)</div>
+            <table>
+                <thead><tr><th>Campaign Name</th><th>Target Segment</th><th>Progress</th><th>Open Rate</th><th>Status</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Wealth_Builder_Q4</strong></td>
+                        <td>N1~N2 (Safe)</td>
+                        <td width="30%">
+                            <div style="font-size:11px; margin-bottom:2px;">Sending... 85%</div>
+                            <div class="status-bar-bg"><div class="status-bar-fill" style="width:85%;"></div></div>
+                        </td>
+                        <td>12.5%</td>
+                        <td><span class="badge bg-sent">Active</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Risk_Defense_Urgent</strong></td>
+                        <td>N3~N4 (Risk)</td>
+                        <td>
+                            <div style="font-size:11px; margin-bottom:2px;">Completed</div>
+                            <div class="status-bar-bg"><div class="status-bar-fill" style="width:100%;"></div></div>
+                        </td>
+                        <td>45.2%</td>
+                        <td><span class="badge bg-ready">Done</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Golden_Time_Push</strong></td>
+                        <td>ALL (Gangnam)</td>
+                        <td>
+                            <div style="font-size:11px; margin-bottom:2px;">Scheduled</div>
+                            <div class="status-bar-bg"><div class="status-bar-fill" style="width:0%;"></div></div>
+                        </td>
+                        <td>--</td>
+                        <td><span class="badge bg-ready">Pending</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // [수정됨] Chart.js 초기화 및 Y축 한글 라벨 적용
+    const ctx = document.getElementById('trafficChart').getContext('2d');
+    const trafficChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['09:00', '11:00', '13:00', '15:00', '17:00', '19:00', '21:00'],
+            datasets: [{
+                label: 'Real-time Traffic',
+                data: [42, 58, 45, 82, 91, 68, 85],
+                borderColor: '#0046FF',
+                backgroundColor: 'rgba(0, 70, 255, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4, // 곡선 효과
+                pointRadius: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { display: true, grid: { display: false } },
+                y: { 
+                    display: true, 
+                    position: 'right', // 오른쪽 배치
+                    grid: { borderDash: [5, 5] },
+                    // [핵심] Y축 한글 라벨
+                    title: {
+                        display: true,
+                        text: '동시 접속자 수 (Active Users)', 
+                        color: '#191F28',
+                        font: { size: 12, weight: 'bold' },
+                        padding: { bottom: 10 }
+                    }
+                }
+            }
+        }
+    });
+
+    // 실시간 업데이트 효과 (기존 SVG 로직을 Chart.js용으로 변경)
+    setInterval(() => {
+        const newData = trafficChart.data.datasets[0].data;
+        newData.shift();
+        newData.push(Math.floor(Math.random() * 60 + 30));
+        trafficChart.update();
+    }, 2000);
+
+    setTimeout(runAnalysis, 500);
+
+    let tableData = [];
+
+    function switchTab(tabId, el) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function runAnalysis() {
+        document.querySelectorAll('.loader-mask').forEach(l => l.style.display = 'flex');
+        setTimeout(() => {
+            document.querySelectorAll('.loader-mask').forEach(l => l.style.display = 'none');
+            
+            const grade = document.getElementById('selGrade').value;
+            const target = Math.floor(Math.random() * 3000) + 1500;
+            const clickRate = grade === 'risk' ? 0.28 : 0.45;
+            const actRate = grade === 'risk' ? 0.09 : 0.15;
+            
+            const clicks = Math.floor(target * clickRate);
+            const actions = Math.floor(target * actRate);
+            const rev = actions * 35000;
+            const cost = target * 1200;
+            const risk = grade === 'risk' ? (actions * 500000 * 0.1) : (actions * 10000); 
+            const net = rev - cost + risk;
+
+            document.getElementById('valRev').innerText = "₩ " + rev.toLocaleString();
+            document.getElementById('valCost').innerText = "- ₩ " + cost.toLocaleString();
+            document.getElementById('valRisk').innerText = "+ ₩ " + risk.toLocaleString();
+            document.getElementById('valProfit').innerText = "₩ " + net.toLocaleString();
+
+            document.getElementById('numImp').innerText = target.toLocaleString();
+            document.getElementById('numClick').innerText = clicks.toLocaleString();
+            document.getElementById('numAction').innerText = actions.toLocaleString();
+            
+            document.getElementById('barClick').style.width = (clickRate * 100) + "%";
+            document.getElementById('barClick').innerText = (clickRate * 100).toFixed(1) + "%";
+            document.getElementById('barAction').style.width = (actRate * 100) + "%";
+            document.getElementById('barAction').innerText = (actRate * 100).toFixed(1) + "%";
+
+            generateTable(grade);
+        }, 500);
+    }
+
+    function generateTable(grade) {
+        const tbody = document.getElementById('targetTable');
+        tbody.innerHTML = '';
+        tableData = [];
+
+        const safeOffers = ['The Black Edition', 'VIP Fund (8%)', 'Travel Premium', 'Cashback 5%', 'Hotel Voucher'];
+        const riskOffers = ['Limit Cut -20%', 'Debt Care Plan', 'L-S Lock Mode', 'Credit Consulting', 'Installment Convert'];
+        const safeTriggers = ['Wealth Luck', 'High Spending', 'Asset Increase', 'Salary In'];
+        const riskTriggers = ['Overspending', 'Late Payment', 'Loan Inquiry', 'Gambling Risk'];
+
+        for(let i=0; i<8; i++) {
+            const uid = Math.floor(Math.random()*9000)+1000;
+            let score, badge, offer, trigger;
+            
+            if(grade === 'risk') {
+                score = `N${Math.floor(Math.random()*2)+3} (Risk)`;
+                badge = 'bg-risk';
+                offer = riskOffers[Math.floor(Math.random() * riskOffers.length)];
+                trigger = riskTriggers[Math.floor(Math.random() * riskTriggers.length)];
+            } else {
+                score = `N${Math.floor(Math.random()*2)+1} (Prime)`;
+                badge = 'bg-safe';
+                offer = safeOffers[Math.floor(Math.random() * safeOffers.length)];
+                trigger = safeTriggers[Math.floor(Math.random() * safeTriggers.length)];
+            }
+            
+            const h = Math.floor(Math.random()*9)+9;
+            const m = Math.floor(Math.random()*60);
+            const time = `${h}:${m<10?'0'+m:m}`;
+
+            tableData.push({ id: `User_${uid}`, score: score, offer: offer, time: time });
+
+            tbody.innerHTML += `<tr>
+                <td><input type="checkbox" checked></td>
+                <td>User_${uid}</td>
+                <td><span class="badge ${badge}">${score}</span></td>
+                <td>${trigger}</td>
+                <td style="font-weight:bold;">${offer}</td>
+                <td><span class="golden-time">⚡ ${time}</span></td>
+                <td><span class="badge bg-ready">Ready</span></td>
+            </tr>`;
+        }
+    }
+
+    function triggerCMS() {
+        document.querySelectorAll('.bg-ready').forEach(b => { b.className = 'badge bg-sent'; b.innerText = 'Sent'; });
+        alert("🚀 CMS 전송 완료: 8건 발송 성공!");
+    }
+    
+    function downloadCSV() {
+        if(tableData.length === 0) return alert("데이터가 없습니다.");
+        let csvContent = "\uFEFFUser ID,N-Score,Offer Strategy,Golden Time\n"; 
+        tableData.forEach(row => { csvContent += `${row.id},${row.score},${row.offer},${row.time}\n`; });
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "nkai_target_list.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#0A0F1A" rx="80"/>
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F5DC7A"/><stop offset="100%" stop-color="#C9921A"/></linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#6BB4FF"/><stop offset="100%" stop-color="#1A5FCC"/></linearGradient>
+  </defs>
+  <!-- 상단 골드면 -->
+  <polygon points="256,100 412,178 256,256 100,178" fill="url(#g1)"/>
+  <!-- 좌측 블루면 -->
+  <polygon points="100,178 100,334 256,412 256,256" fill="url(#g2)" opacity="0.92"/>
+  <!-- 우측 다크면 -->
+  <polygon points="412,178 412,334 256,412 256,256" fill="#0A1628"/>
+  <!-- 엣지 라인 -->
+  <line x1="100" y1="178" x2="412" y2="178" stroke="rgba(255,255,255,0.18)" stroke-width="2"/>
+  <line x1="256" y1="100" x2="256" y2="256" stroke="rgba(255,255,255,0.14)" stroke-width="2"/>
+  <line x1="256" y1="256" x2="100" y2="178" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+  <line x1="256" y1="256" x2="412" y2="178" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+  <line x1="256" y1="256" x2="256" y2="412" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+  <line x1="100" y1="178" x2="100" y2="334" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+  <line x1="412" y1="178" x2="412" y2="334" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+  <line x1="100" y1="334" x2="256" y2="412" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+  <line x1="412" y1="334" x2="256" y2="412" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+  <!-- N 텍스트 -->
+  <text x="256" y="205" text-anchor="middle" dominant-baseline="central" font-family="Arial Black, sans-serif" font-weight="900" font-size="80" fill="#0A1628" opacity="0.85">N</text>
+</svg>

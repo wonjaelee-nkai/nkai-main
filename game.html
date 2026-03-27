@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>KaiBoom — N-KAI</title>
+<meta name="description" content="오행(五行) 매칭 퍼즐로 내 금융 DNA를 알아보자! N-KAI 카이붐 KaiBoom">
+<meta property="og:title" content="N-KAI 카이붐 KaiBoom 🌳🔥⛰️⚔️💧">
+<meta property="og:description" content="💥 오행 매칭 퍼즐로 오늘의 보스를 잡아라! 내 금융 페르소나를 게임으로 확인하세요.">
+<meta property="og:url" content="https://neurinkairosai.com/game.html">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧬</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tone@14.7.77/build/Tone.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#050810;overflow:hidden;touch-action:manipulation}
+body{position:fixed;inset:0;font-family:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;-webkit-tap-highlight-color:transparent;user-select:none;overscroll-behavior:none}
+#root{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:#050810}
+@keyframes float0{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+@keyframes float1{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px) translateX(10px)}}
+@keyframes float2{0%,100%{transform:translateY(0)}50%{transform:translateY(-25px)}}
+@keyframes pop{0%{transform:scale(1);opacity:1}50%{transform:scale(1.35)}100%{transform:scale(0);opacity:0}}
+@keyframes drop{from{transform:translateY(-40px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes synGlow{0%{box-shadow:0 0 0 transparent}50%{box-shadow:0 0 40px rgba(240,198,116,0.6)}100%{box-shadow:0 0 0 transparent}}
+@keyframes tPulse{0%,100%{color:#ef4444}50%{color:#fff}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes gradeR{from{opacity:0;transform:scale(0.5) rotate(-10deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes barG{from{width:0}}
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(201,168,76,0.3)}50%{box-shadow:0 0 40px rgba(201,168,76,0.6)}}
+@keyframes hPulse{0%,100%{transform:scale(1);box-shadow:none}50%{transform:scale(1.12);box-shadow:0 0 20px rgba(255,255,255,0.4)}}
+@keyframes cFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-50px) scale(1.3)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes rotIn{from{opacity:0;transform:rotate(-10deg) scale(0.8)}to{opacity:1;transform:rotate(0) scale(1)}}
+@keyframes heartBeat{0%,100%{transform:scale(1)}15%{transform:scale(1.3)}30%{transform:scale(1)}45%{transform:scale(1.15)}}
+@keyframes countUp{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+@keyframes heroGlow{0%,100%{text-shadow:0 0 20px rgba(201,168,76,0.6),0 0 60px rgba(201,168,76,0.2),0 4px 8px rgba(0,0,0,0.8)}50%{text-shadow:0 0 40px rgba(232,212,139,0.8),0 0 80px rgba(201,168,76,0.4),0 4px 8px rgba(0,0,0,0.8)}}
+@keyframes heroPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes feverBorder{0%,100%{border-color:rgba(240,198,116,0.6);box-shadow:0 0 20px rgba(240,198,116,0.3)}50%{border-color:rgba(239,68,68,0.6);box-shadow:0 0 30px rgba(239,68,68,0.4)}}
+@keyframes feverBg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes bossHit{0%{transform:translateX(0)}20%{transform:translateX(-3px)}40%{transform:translateX(3px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}100%{transform:translateX(0)}}
+@keyframes milestone{0%{opacity:0;transform:translateY(20px) scale(0.8)}30%{opacity:1;transform:translateY(0) scale(1.1)}50%{transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-30px) scale(0.9)}}
+@keyframes chemP{0%,100%{box-shadow:0 0 20px rgba(124,91,240,0.2)}50%{box-shadow:0 0 50px rgba(124,91,240,0.5)}}
+@keyframes vsFlash{0%{transform:scale(0) rotate(-180deg);opacity:0}50%{transform:scale(1.3) rotate(10deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes tapHere{0%,100%{transform:scale(1);opacity:0.6}50%{transform:scale(1.2);opacity:1}}
+@keyframes itemUse{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(2)}}
+@keyframes tapPulse{0%,100%{transform:scale(1)}40%{transform:scale(0.85)}60%{transform:scale(1.1)}}
+@keyframes fingerMove{0%{transform:translate(0,0)}30%{transform:translate(0,0)}50%{transform:translate(53px,0)}80%{transform:translate(53px,0)}100%{transform:translate(0,0)}}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// N-KAI KAIBOOM — Standalone Vanilla JS
+// © 2025 Neurin Kairos AI Inc. Neural CDE™
+// ═══════════════════════════════════════════
+
+const BOARD_SIZE = 6;
+const GAME_TIME = 45;
+const HINT_DELAY = 2500;
+const MAX_ENERGY = 5;
+const RECHARGE_SEC = 1800;
+
+// ─── Personal Best & Streak ───
+const pb = parseInt(localStorage.getItem("nkai_best")||"0");
+const streakDate = localStorage.getItem("nkai_streak_date")||"";
+const streakCount = parseInt(localStorage.getItem("nkai_streak")||"0");
+let personalBest = pb;
+let streak = streakCount;
+// ─── Game Stats ───
+let gameStats = JSON.parse(localStorage.getItem("nkai_stats")||'{"totalGames":0,"totalScore":0,"bestCombo":0,"bossWins":0}');
+function updateStats(score, combo) {
+  gameStats.totalGames++;
+  gameStats.totalScore += score;
+  if (combo > gameStats.bestCombo) gameStats.bestCombo = combo;
+  localStorage.setItem("nkai_stats", JSON.stringify(gameStats));
+}
+// ─── Today's Fortune (띠별 × 요일별 = 매일 다른 메시지) ───
+const FORTUNES = [
+  /*쥐*/ ["💰 재물운 활발! 공격적 매칭이 유리","🌟 직감이 빛나는 날! 첫 느낌을 믿으세요","🎯 집중하면 고득점! 한 원소에 올인","🍀 행운의 기운! 레인보우 아이템 적극 활용","⚡ 빠른 판단이 승리! 망설이지 마세요","🔮 숨겨진 상생 콤보가 보이는 날","🏆 최고 점수 갱신 찬스! 끝까지 집중"],
+  /*소*/ ["🐂 꾸준함이 승리! 콤보를 차근차근 쌓아가세요","✨ 안정적 플레이가 빛나는 날","💪 인내하면 후반 폭발! 초반 조급하지 마세요","☯️ 균형 잡힌 매칭이 고득점 비결","🛡️ 수비형 플레이 추천! 시간 아이템 아끼세요","🌿 자연스러운 흐름을 타면 상생 연속 콤보!","📈 서서히 올라가는 점수가 결국 1등"],
+  /*호랑이*/ ["🐅 도전 에너지 폭발! 보스전 추천일","⚡ 용맹한 매칭! 폭탄 활용이 핵심","🔥 과감한 플레이가 보상받는 날","💥 범위 파괴로 밀어붙이세요! 대량 매칭 찬스","🎯 약점 공격 정확도 UP! 보스전에서 빛납니다","⚔️ 전투 본능 ON! 연속 콤보가 쉽게 터지는 날","🏆 승리의 기운! 오늘 보스 3단계 클리어 가능"],
+  /*토끼*/ ["🐇 민첩한 판단력 UP! 빠른 매칭이 고득점","🌸 부드러운 에너지! 상생 흐름을 타세요","⏰ 타이밍이 중요한 날! 클럭 아이템 아끼세요","💫 직감과 속도의 조화! 자연스러운 매칭이 핵심","🎯 눈에 보이는 대로 터치! 오늘은 직감이 정답","🍀 작은 매칭도 큰 콤보로! 연쇄 반응 기대","✨ 우아한 플레이로 S등급 도전!"],
+  /*용*/ ["🐉 대운의 기운! 최고 점수 갱신 찬스!","💪 파워풀한 하루! 범위 파괴로 밀어붙이세요","👑 왕의 에너지! 뭘 해도 잘 되는 기운","⚡ 폭발적 매칭력! 5콤보 이상 기대","🔥 불꽃 같은 집중! 보스전에서 전설 칭호 노려보세요","🌟 행운+실력! 오늘 순위 대폭 상승 가능","💎 레전드급 플레이가 기대되는 최강의 날"],
+  /*뱀*/ ["🐍 직감이 예리한 날! 상생 콤보 적중률 UP","🧠 지혜의 날! 레인보우 활용이 열쇠","🔮 숨겨진 패턴이 보이는 날! 관찰 후 매칭","💫 전략적 플레이가 보상받습니다","🎯 정밀한 한 수가 대량 콤보로! 신중하게","✨ 통찰력 MAX! 약점 원소를 정확히 노리세요","🌙 조용하지만 강력한 에너지! 후반 역전 가능"],
+  /*말*/ ["🐴 질주 본능 ON! 스피드 매칭이 고득점","🍀 행운의 바람! 부스트 원소에 집중하세요","⚡ 빠르게 연속 터치! 속도가 점수인 날","🔥 뜨거운 에너지! 한계를 넘어서 보세요","💨 바람처럼 매칭! 시간이 넉넉하게 느껴지는 날","🏃 달리는 것처럼 매칭! 멈추지 마세요","🏆 속도+정확도 밸런스가 완벽한 날"],
+  /*양*/ ["🐑 평화로운 에너지! 꾸준한 플레이가 보상","☯️ 조화의 날! 5원소 균형 매칭이 보너스","🌿 자연스러운 흐름! 억지로 하지 마세요","✨ 부드러운 매칭이 큰 콤보로! 여유를 가지세요","💫 오행의 조화가 느껴지는 날! 상생 적극 활용","🎵 리듬감 있는 매칭! 음악처럼 자연스럽게","🌈 모든 원소가 반짝이는 날! 골고루 매칭 추천"],
+  /*원숭이*/ ["🐒 재치 만점! 예상 못한 콤보 터질 수도!","🎪 장난기 넘치는 에너지! 궁합대결이 잘 맞는 날","🧠 기발한 매칭 루트 발견! 남들과 다른 전략으로","💡 아이디어 폭발! 아이템 조합 활용이 핵심","⚡ 번뜩이는 영감! 순간적 판단이 대박으로","🎯 트릭 매칭! 의외의 위치에서 콤보 발견","🌟 창의력이 빛나는 날! 새로운 매칭 패턴 도전"],
+  /*닭*/ ["🐓 날카로운 집중력! 정밀한 매칭이 빛납니다","🎯 정확성의 날! 약점 공략이 핵심","⏰ 시간 관리 능력 UP! 효율적 매칭이 고득점","💎 꼼꼼함이 무기! 놓치는 매칭 없이 클리어","⚔️ 전투적 집중! 보스전에서 약점 정밀 타격","🔍 관찰력 MAX! 보드 전체를 보고 최적 매칭","🏆 완벽주의의 날! 실수 없는 플레이로 S등급"],
+  /*개*/ ["🐕 충성스러운 에너지! 미션 클리어하기 좋은 날","🎁 인내의 보상! 끝까지 포기하지 마세요","💪 꾸준함이 이기는 날! 콤보 꾸준히 쌓아가세요","🛡️ 방어적 플레이 추천! 아이템 아껴서 후반에","🌟 신뢰의 에너지! 첫 직감을 믿고 밀어붙이세요","☯️ 균형과 인내! 급하지 않게 하나씩 클리어","🏆 끈기의 승리! 마지막 10초에 역전 드라마"],
+  /*돼지*/ ["🐖 행운이 넘치는 날! 뭘 해도 잘 되는 기운","🌈 복의 날! 레인보우가 자주 나올 수도?!","💰 풍요의 에너지! 매칭할수록 점수 폭발","🍀 대박 찬스! 연속 상생 콤보 기대","✨ 행복 에너지 충만! 가볍게 즐기면 고득점","🎉 축제 같은 날! 궁합대결로 친구와 함께","💎 보석이 반짝이는 날! 어디서든 매칭 발견"],
+];
+function getTodayFortune() {
+  const d = new Date();
+  const dayOfWeek = d.getDay(); // 0~6 (요일별 rotation)
+  const zodiacIdx = playerZodiac ? playerZodiac.id : d.getDate() % 12;
+  return FORTUNES[zodiacIdx][dayOfWeek];
+}
+(function initStreak(){
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now()-86400000).toDateString();
+  if(streakDate===today) return;
+  if(streakDate===yesterday){/* streak continues, updated on play */}
+  else if(streakDate!==today){streak=0;localStorage.setItem("nkai_streak","0");}
+})();
+function recordPlay(){
+  const today=new Date().toDateString();
+  if(localStorage.getItem("nkai_streak_date")!==today){
+    const yesterday=new Date(Date.now()-86400000).toDateString();
+    streak=localStorage.getItem("nkai_streak_date")===yesterday?streak+1:1;
+    localStorage.setItem("nkai_streak",streak);
+    localStorage.setItem("nkai_streak_date",today);
+  }
+}
+function updateBest(score){
+  if(score>personalBest){personalBest=score;localStorage.setItem("nkai_best",score);return true;}
+  return false;
+}
+
+// ═══════════════════════════════════════════════
+// ─── KaiBoom Analytics Engine (서버 수집 + 로컬) ───
+// ═══════════════════════════════════════════════
+// ★ GAS 배포 후 아래 URL 교체 필수!
+const KB_GAS_URL = "https://script.google.com/macros/s/AKfycbzzDGGrT_DR0qtMWVyfL6YHId9doaHzubs3RWeBcVDhudZQ3udmhzBFa9o_q7I95ofu/exec";
+
+const KBAnalytics = (function(){
+  const STORAGE_KEY = "nkai_kb_analytics";
+  // ─── 익명 유저 ID (디바이스별 고유) ───
+  let uid = localStorage.getItem("nkai_uid");
+  if (!uid) { uid = 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8); localStorage.setItem("nkai_uid", uid); }
+
+  // ─── 서버 전송 (fire-and-forget) ───
+  const sendQueue = [];
+  let sending = false;
+  function sendToServer(eventType, payload) {
+    const row = {
+      uid, ts: new Date().toISOString(),
+      event: eventType,
+      screen: currentScreen || '',
+      ...payload,
+      ua: navigator.userAgent.slice(0,120),
+      lang: navigator.language || 'ko',
+      ref: document.referrer.slice(0,200),
+    };
+    sendQueue.push(row);
+    flushQueue();
+  }
+  function flushQueue() {
+    if (sending || sendQueue.length === 0) return;
+    if (KB_GAS_URL.includes('YOUR_DEPLOYMENT')) return; // GAS 미배포 시 스킵
+    sending = true;
+    const batch = sendQueue.splice(0, 20); // 최대 20개씩
+    const url = KB_GAS_URL + '?sheet=KaiBoom_Events';
+    fetch(url, {
+      method: 'POST', mode: 'no-cors',
+      headers: {'Content-Type':'text/plain'},
+      body: JSON.stringify(batch),
+    }).catch(()=>{}).finally(()=>{
+      sending = false;
+      if (sendQueue.length > 0) setTimeout(flushQueue, 1000);
+    });
+  }
+  // 페이지 떠날 때 남은 큐 전송
+  window.addEventListener('beforeunload', ()=>{
+    if (sendQueue.length > 0 && !KB_GAS_URL.includes('YOUR_DEPLOYMENT')) {
+      navigator.sendBeacon(KB_GAS_URL + '?sheet=KaiBoom_Events', JSON.stringify(sendQueue));
+    }
+  });
+
+  // ─── 로컬 저장 (개인 대시보드용) ───
+  let data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") || {
+    firstVisit: new Date().toISOString(),
+    totalSessions: 0,
+    screens: {},
+    clicks: {},
+    funnels: {},
+    modes: {solo:0, bossRush:0, chemistry:0, tutorial:0},
+    features: {zodiacSet:0, archetypeSet:0, archetypeChanges:0, shareClicks:0, nkaiCTA:0, missionClicks:0, selfReport:0, leaderboardViews:0, fortuneViews:0},
+    retention: {},
+    peakHours: {},
+    dailyActive: [],
+    conversions: {menuToPlay:0, playToResult:0, resultToNKAI:0, archetypeToNKAI:0, bossDefeatToNKAI:0},
+  };
+
+  let screenEnterTime = Date.now();
+  let currentScreen = "menu";
+  let sessionStart = Date.now();
+
+  function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+  // Session init
+  function initSession() {
+    const today = new Date().toISOString().slice(0,10);
+    const hour = new Date().getHours().toString();
+    data.totalSessions++;
+    data.peakHours[hour] = (data.peakHours[hour]||0) + 1;
+    if (!data.retention[today]) data.retention[today] = {visits:0, plays:0};
+    data.retention[today].visits++;
+    if (!data.dailyActive.includes(today)) {
+      data.dailyActive.push(today);
+      if (data.dailyActive.length > 30) data.dailyActive.shift();
+    }
+    save();
+    sendToServer('session_start', {hour, today});
+  }
+
+  function screenView(name) {
+    const now = Date.now();
+    const dwellMs = now - screenEnterTime;
+    if (currentScreen) {
+      if (!data.screens[currentScreen]) data.screens[currentScreen] = {views:0, totalMs:0};
+      data.screens[currentScreen].totalMs += dwellMs;
+      // 화면 이탈 시 체류시간 전송 (2초 이상만)
+      if (dwellMs > 2000) sendToServer('screen_dwell', {screen: currentScreen, dwell_sec: Math.round(dwellMs/1000)});
+    }
+    currentScreen = name;
+    screenEnterTime = now;
+    if (!data.screens[name]) data.screens[name] = {views:0, totalMs:0};
+    data.screens[name].views++;
+    save();
+    sendToServer('screen_view', {screen: name});
+  }
+
+  function click(buttonId) {
+    if (!data.clicks[buttonId]) data.clicks[buttonId] = {count:0, firstAt:new Date().toISOString()};
+    data.clicks[buttonId].count++;
+    data.clicks[buttonId].lastAt = new Date().toISOString();
+    save();
+    sendToServer('click', {button: buttonId});
+  }
+
+  function gameStart(mode) {
+    if (data.modes[mode] !== undefined) data.modes[mode]++;
+    const today = new Date().toISOString().slice(0,10);
+    if (data.retention[today]) data.retention[today].plays++;
+    data.conversions.menuToPlay++;
+    save();
+    sendToServer('game_start', {mode, zodiac: playerZodiac?.name||'', archetype: playerArchetype?.code||''});
+  }
+
+  function gameEnd(mode, score, combo, duration) {
+    data.conversions.playToResult++;
+    save();
+    sendToServer('game_end', {mode, score, max_combo: combo, duration_sec: duration});
+  }
+
+  function feature(name) {
+    if (data.features[name] !== undefined) data.features[name]++;
+    save();
+    sendToServer('feature', {name});
+  }
+
+  function conversion(name) {
+    if (data.conversions[name] !== undefined) data.conversions[name]++;
+    save();
+    sendToServer('conversion', {funnel: name});
+  }
+
+  // Get summary for display
+  function getSummary() {
+    const totalPlays = Object.values(data.modes).reduce((a,b)=>a+b,0);
+    const dau = data.dailyActive.length;
+    const avgSession = data.totalSessions > 0 ? Math.round(Object.values(data.screens).reduce((a,s)=>a+s.totalMs,0) / data.totalSessions / 1000) : 0;
+
+    const screenRank = Object.entries(data.screens)
+      .map(([k,v])=>({name:k, views:v.views, avgSec: v.views>0?Math.round(v.totalMs/v.views/1000):0}))
+      .sort((a,b)=>b.views-a.views);
+
+    const clickRank = Object.entries(data.clicks)
+      .map(([k,v])=>({name:k, count:v.count}))
+      .sort((a,b)=>b.count-a.count);
+
+    // Peak hour
+    const peakHour = Object.entries(data.peakHours).sort((a,b)=>b[1]-a[1])[0];
+
+    // Funnel conversion rates
+    const funnelRates = {
+      menuToPlay: data.conversions.menuToPlay,
+      playToResult: data.conversions.playToResult,
+      resultToNKAI: data.conversions.resultToNKAI,
+      playToNKAI: data.conversions.menuToPlay > 0 ? Math.round(data.conversions.resultToNKAI / data.conversions.menuToPlay * 100) : 0,
+    };
+
+    return { ...data, totalPlays, dau, avgSession, screenRank, clickRank, peakHour, funnelRates };
+  }
+
+  function reset() { localStorage.removeItem(STORAGE_KEY); location.reload(); }
+
+  initSession();
+  return { screenView, click, gameStart, feature, conversion, getSummary, reset, data };
+})();
+
+// ─── Daily Challenge ───
+const DAILY_CHALLENGES=[
+  {id:"combo3",desc:"3콤보 이상 달성",emoji:"🔗",check:s=>s.maxCombo>=3},
+  {id:"water5",desc:"💧水 보석 5개 이상 매칭",emoji:"💧",check:s=>s.elementCounts[4]>=5},
+  {id:"fire5",desc:"🔥火 보석 5개 이상 매칭",emoji:"🔥",check:s=>s.elementCounts[1]>=5},
+  {id:"score1500",desc:"1,500점 이상 (보스 격파!)",emoji:"⚔️",check:s=>s.score>=1500},
+  {id:"match30",desc:"총 30개 이상 매칭",emoji:"💎",check:s=>s.totalMatches>=30},
+  {id:"wood7",desc:"🌳木 보석 7개 이상 매칭",emoji:"🌳",check:s=>s.elementCounts[0]>=7},
+  {id:"combo5",desc:"5콤보 달성!",emoji:"⚡",check:s=>s.maxCombo>=5},
+];
+function getDailyChallenge(){return DAILY_CHALLENGES[new Date().getDate()%DAILY_CHALLENGES.length];}
+let dailyChallengeCleared=localStorage.getItem("nkai_challenge_date")===new Date().toDateString();
+
+const ELEMENTS = [
+  {id:0,emoji:"🌳",name:"木",color:"#22c55e",shadow:"rgba(34,197,94,0.4)",note:"C4"},
+  {id:1,emoji:"🔥",name:"火",color:"#ef4444",shadow:"rgba(239,68,68,0.4)",note:"E4"},
+  {id:2,emoji:"⛰️",name:"土",color:"#eab308",shadow:"rgba(234,179,8,0.4)",note:"G4"},
+  {id:3,emoji:"⚔️",name:"金",color:"#a3a3a3",shadow:"rgba(163,163,163,0.4)",note:"B4"},
+  {id:4,emoji:"💧",name:"水",color:"#3b82f6",shadow:"rgba(59,130,246,0.4)",note:"D5"},
+];
+const SYN_MAP = {0:1,1:2,2:3,3:4,4:0};
+const CHEM_TITLES = [
+  {min:90,title:"운명적 파트너",emoji:"💎",color:"#f0c674",desc:"금융 DNA가 완벽히 공명"},
+  {min:75,title:"최강 시너지",emoji:"🔥",color:"#ef4444",desc:"함께하면 수익률 폭발"},
+  {min:60,title:"좋은 밸런스",emoji:"✨",color:"#a855f7",desc:"서로의 약점을 보완"},
+  {min:40,title:"성장형 궁합",emoji:"🌱",color:"#22c55e",desc:"함께 성장할 잠재력"},
+  {min:20,title:"도전적 조합",emoji:"⚡",color:"#eab308",desc:"마찰이 혁신을 만든다"},
+  {min:0,title:"극과 극",emoji:"🌊",color:"#3b82f6",desc:"정반대 에너지의 가능성"},
+];
+const ARCHETYPES = [
+  {group:"항해사",icon:"🧭",color:"#22c55e",skill:"트렌드 파악",gameSkill:"힌트 속도 2배",effect:"hintSpeed",code:"NT"},
+  {group:"분석가",icon:"🔬",color:"#3b82f6",skill:"데이터 분석",gameSkill:"시간 +5초",effect:"timeBonus",code:"ST"},
+  {group:"실용주의자",icon:"🛡️",color:"#a855f7",skill:"리스크 관리",gameSkill:"콤보 점수 +20%",effect:"comboBoost",code:"SF"},
+  {group:"비전가",icon:"🔮",color:"#ef4444",skill:"가치 발굴",gameSkill:"상생 보너스 ×3",effect:"synergyBoost",code:"NF"},
+];
+
+// ─── 12지 띠 (Chinese Zodiac) ───
+const ZODIAC = [
+  {id:0,name:"쥐",emoji:"🐀",element:4,color:"#3b82f6",trait:"재물운",gameBonus:"💧水 매칭 +50%"},
+  {id:1,name:"소",emoji:"🐂",element:2,color:"#eab308",trait:"안정운",gameBonus:"⛰️土 매칭 +50%"},
+  {id:2,name:"호랑이",emoji:"🐅",element:0,color:"#22c55e",trait:"도전운",gameBonus:"🌳木 매칭 +50%"},
+  {id:3,name:"토끼",emoji:"🐇",element:0,color:"#22c55e",trait:"화합운",gameBonus:"🌳木 매칭 +50%"},
+  {id:4,name:"용",emoji:"🐉",element:2,color:"#eab308",trait:"권위운",gameBonus:"⛰️土 매칭 +50%"},
+  {id:5,name:"뱀",emoji:"🐍",element:1,color:"#ef4444",trait:"지혜운",gameBonus:"🔥火 매칭 +50%"},
+  {id:6,name:"말",emoji:"🐴",element:1,color:"#ef4444",trait:"활동운",gameBonus:"🔥火 매칭 +50%"},
+  {id:7,name:"양",emoji:"🐑",element:2,color:"#eab308",trait:"예술운",gameBonus:"⛰️土 매칭 +50%"},
+  {id:8,name:"원숭이",emoji:"🐒",element:3,color:"#a3a3a3",trait:"기민운",gameBonus:"⚔️金 매칭 +50%"},
+  {id:9,name:"닭",emoji:"🐓",element:3,color:"#a3a3a3",trait:"정밀운",gameBonus:"⚔️金 매칭 +50%"},
+  {id:10,name:"개",emoji:"🐕",element:2,color:"#eab308",trait:"충성운",gameBonus:"⛰️土 매칭 +50%"},
+  {id:11,name:"돼지",emoji:"🐖",element:4,color:"#3b82f6",trait:"복록운",gameBonus:"💧水 매칭 +50%"},
+];
+function getZodiac(birthday) {
+  if (!birthday) return null;
+  const parts = birthday.split("-");
+  let year = parseInt(parts[0]);
+  const month = parseInt(parts[1]);
+  const day = parseInt(parts[2]);
+  // 입춘 기준: 양력 2월 4일 전이면 전년도 띠
+  if (month < 2 || (month === 2 && day < 4)) year -= 1;
+  return ZODIAC[(year - 4) % 12];
+}
+function getZodiacCompat(z1, z2) {
+  // 삼합 (삼합 zodiac compatibility)
+  const samhap = [[0,4,8],[1,5,9],[2,6,10],[3,7,11]];
+  for (const g of samhap) if (g.includes(z1.id) && g.includes(z2.id)) return {level:"삼합",emoji:"💎",desc:"최고의 궁합!",bonus:30};
+  // 육합
+  const yukhap = [[0,1],[2,11],[3,10],[4,9],[5,8],[6,7]];
+  for (const p of yukhap) if ((p[0]===z1.id&&p[1]===z2.id)||(p[1]===z1.id&&p[0]===z2.id)) return {level:"육합",emoji:"✨",desc:"천생연분",bonus:20};
+  // 충
+  if (Math.abs(z1.id - z2.id) === 6) return {level:"충",emoji:"⚡",desc:"도전적 관계",bonus:-10};
+  return {level:"보통",emoji:"🌱",desc:"성장 가능",bonus:5};
+}
+// ─── Zodiac Game Items (띠별 특수 아이템) ───
+const ZODIAC_ITEMS = {
+  0:{item:"rainbow",name:"🌈 무지개",desc:"쥐의 영리함 — 색상 변환!"},
+  1:{item:"clock",name:"⏰ 시간 연장",desc:"소의 끈기 — +10초!"},
+  2:{item:"bomb",name:"💣 폭탄",desc:"호랑이의 용맹 — 범위 파괴!"},
+  3:{item:"clock",name:"⏰ 시간 연장",desc:"토끼의 민첩 — +10초!"},
+  4:{item:"bomb",name:"💣 용의 폭풍",desc:"용의 힘 — 범위 파괴!"},
+  5:{item:"rainbow",name:"🌈 뱀의 지혜",desc:"뱀의 직감 — 색상 변환!"},
+  6:{item:"bomb",name:"💣 말의 질주",desc:"말의 돌진 — 범위 파괴!"},
+  7:{item:"clock",name:"⏰ 양의 여유",desc:"양의 평화 — +10초!"},
+  8:{item:"rainbow",name:"🌈 원숭이의 재주",desc:"원숭이의 재치 — 색상 변환!"},
+  9:{item:"bomb",name:"💣 닭의 정확성",desc:"닭의 날카로움 — 범위 파괴!"},
+  10:{item:"clock",name:"⏰ 개의 충성",desc:"개의 인내 — +10초!"},
+  11:{item:"rainbow",name:"🌈 돼지의 복",desc:"돼지의 행운 — 색상 변환!"},
+};
+function getZodiacItem(zodiac) {
+  if (!zodiac) return null;
+  return ZODIAC_ITEMS[zodiac.id];
+}
+
+let playerZodiac = getZodiac(localStorage.getItem("nkai_birthday"));
+
+// ─── Archetype Selection (from N-KAI analysis or user pick) ───
+let playerArchetype = null;
+const savedArch = localStorage.getItem("nkai_archetype");
+if (savedArch) playerArchetype = ARCHETYPES.find(a => a.group === savedArch) || null;
+const hasAnalysis = !!localStorage.getItem("nkai_analyzed");
+
+// ─── Mission System ───
+const MISSIONS = [
+  {id:"checkin",name:"출석 체크",emoji:"📅",desc:"오늘 카이붐 방문!",reward:1,type:"auto"},
+  {id:"share",name:"친구 공유",emoji:"📤",desc:"카이붐 공유하기",reward:1,type:"share"},
+  {id:"analyze",name:"무료 분석",emoji:"🧬",desc:"N-KAI 무료 분석 받기",reward:2,type:"link"},
+  {id:"challenge",name:"일일 챌린지",emoji:"🏆",desc:"오늘의 도전 클리어",reward:1,type:"game"},
+  {id:"boss",name:"보스 격파",emoji:"⚔️",desc:"1,500점 달성하기",reward:1,type:"game"},
+];
+function getMissionStatus() {
+  const today = new Date().toDateString();
+  const saved = JSON.parse(localStorage.getItem("nkai_missions")||"{}");
+  if (saved._date !== today) return {_date:today, checkin:false, share:false, analyze:false, challenge:false, boss:false};
+  return saved;
+}
+function completeMission(id) {
+  const ms = getMissionStatus();
+  if (ms[id]) return false; // already done
+  ms[id] = true;
+  localStorage.setItem("nkai_missions", JSON.stringify(ms));
+  const m = MISSIONS.find(x=>x.id===id);
+  if (m) {
+    state.energy = Math.min(state.energy + m.reward, MAX_ENERGY + 3); // missions can exceed MAX
+    showToast(`${m.emoji} ${m.name} 완료! 🔋+${m.reward}`);
+  }
+  return true;
+}
+// Auto check-in on load
+(function autoCheckin(){
+  const ms = getMissionStatus();
+  if (!ms.checkin) { ms.checkin = true; localStorage.setItem("nkai_missions", JSON.stringify(ms)); }
+})();
+
+// ─── Streak Rewards ───
+const STREAK_REWARDS = [
+  {day:1,reward:"🔋×1",desc:"에너지 +1"},
+  {day:2,reward:"💣×1",desc:"폭탄 아이템"},
+  {day:3,reward:"🔋×2",desc:"에너지 +2"},
+  {day:5,reward:"🌈×1",desc:"레인보우 아이템"},
+  {day:7,reward:"🔋×3",desc:"에너지 +3!"},
+];
+function getStreakReward(s) { return STREAK_REWARDS.filter(r=>r.day<=s).pop(); }
+
+// ─── Daily Attendance Popup ───
+function showAttendancePopup() {
+  const today = new Date().toDateString();
+  if (localStorage.getItem("nkai_attend_shown") === today) return;
+  localStorage.setItem("nkai_attend_shown", today);
+  const sr = getStreakReward(streak);
+  const days = Array.from({length:7},(_,i)=>{
+    const active = i < streak;
+    const isToday = i === streak - 1;
+    const r = STREAK_REWARDS.find(x=>x.day===i+1);
+    const icon = active ? '✅' : (r ? r.reward.split("×")[0] : '·');
+    return `<div style="width:34px;height:42px;border-radius:8px;background:${active?'linear-gradient(135deg,#c9a84c33,#c9a84c11)':'rgba(255,255,255,0.03)'};border:${isToday?'2px solid #c9a84c':'1px solid rgba(255,255,255,0.08)'};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;${isToday?'animation:glow 2s infinite':''}">
+      <span style="font-size:10px">${icon}</span>
+      <span style="font-size:8px;color:${active?'#c9a84c':'#4b5563'};font-weight:700">D${i+1}</span>
+    </div>`;
+  }).join("");
+  const overlay = document.createElement("div");
+  overlay.id = "attend-popup";
+  Object.assign(overlay.style, {position:"fixed",inset:"0",background:"rgba(0,0,0,0.88)",zIndex:"95",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px",animation:"fadeIn 0.3s"});
+  overlay.innerHTML = `<div style="background:#111827;border-radius:16px;padding:20px;max-width:360px;width:100%;border:1px solid rgba(201,168,76,0.3);text-align:center;animation:slideUp 0.4s">
+    <div style="font-size:32px;margin-bottom:4px">🔥</div>
+    <div style="font-size:10px;color:#c9a84c;letter-spacing:3px;font-weight:700">DAILY ATTENDANCE</div>
+    <h3 style="color:#fff;font-size:18px;font-weight:900;margin:4px 0 10px">${streak}일 연속 출석!</h3>
+    <div style="display:flex;gap:4px;justify-content:center;margin-bottom:12px">${days}</div>
+    ${sr?`<div style="background:rgba(201,168,76,0.1);border-radius:8px;padding:8px;margin-bottom:10px"><span style="font-size:13px">${sr.reward}</span> <span style="font-size:11px;color:#c9a84c;font-weight:700">${sr.desc}</span></div>`:''}
+    ${streak>=7?`<div style="font-size:11px;color:#f0c674;font-weight:700;margin-bottom:8px">🏆 7일 연속! 전설의 플레이어!</div>`:''}
+    <button onclick="document.getElementById('attend-popup')?.remove()" style="padding:12px 36px;border-radius:10px;border:none;background:linear-gradient(135deg,#c9a84c,#e8d48b);color:#0a0e1a;font-size:13px;font-weight:900;font-family:inherit;width:100%">🎮 플레이 시작!</button>
+  </div>`;
+  document.body.appendChild(overlay);
+  // Apply streak reward
+  if (sr && streak > 0) {
+    if (streak === 3 || streak === 7) state.energy = Math.min(state.energy + (streak===7?3:2), MAX_ENERGY + 3);
+    else if (streak === 1) state.energy = Math.min(state.energy + 1, MAX_ENERGY + 3);
+  }
+}
+
+// ─── Daily Energy Boost ───
+function getDailyBoost(birthday) {
+  const today = new Date();
+  const seed = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
+  const birthNum = birthday ? birthday.split("-").join("") : "19900101";
+  const hash = (parseInt(seed) + parseInt(birthNum)) % 5;
+  return hash; // 0=木,1=火,2=土,3=金,4=水
+}
+let dailyBoostEl = getDailyBoost(localStorage.getItem("nkai_birthday"));
+let dailyBoostUsed = localStorage.getItem("nkai_boost_date") === new Date().toDateString();
+
+// ─── Fake ranking (increases over time, persisted) ───
+let totalPlayers = parseInt(localStorage.getItem("nkai_players")||"0");
+if (!totalPlayers || totalPlayers < 100) { totalPlayers = 847 + Math.floor(Math.random()*200); localStorage.setItem("nkai_players", totalPlayers); }
+// Slowly grow
+if (Math.random() < 0.3) { totalPlayers += Math.floor(Math.random()*5)+1; localStorage.setItem("nkai_players", totalPlayers); }
+
+function getPercentile(score) {
+  // Score distribution simulation
+  if (score >= 5000) return Math.max(1, Math.floor(Math.random()*2)+1);
+  if (score >= 3500) return Math.max(2, Math.floor(Math.random()*3)+2);
+  if (score >= 2500) return Math.max(5, Math.floor(Math.random()*8)+5);
+  if (score >= 1500) return Math.max(10, Math.floor(Math.random()*15)+10);
+  if (score >= 800) return Math.max(25, Math.floor(Math.random()*20)+25);
+  return Math.max(45, Math.floor(Math.random()*30)+40);
+}
+
+// Boss names for solo result flavor
+const BOSS_NAMES = [
+  {name:"지름신",emoji:"👹",element:1,desc:"충동구매의 유혹"},
+  {name:"무지출 파괴자",emoji:"🔥",element:1,desc:"계획 없는 소비의 화신"},
+  {name:"FOMO 마왕",emoji:"👻",element:4,desc:"놓칠까 두려운 투자 유혹"},
+  {name:"현실 회피 드래곤",emoji:"🐉",element:2,desc:"재무 점검을 미루는 나태"},
+  {name:"과신의 그림자",emoji:"🌑",element:3,desc:"근거 없는 자신감의 함정"},
+];
+function getDailyBoss() { return BOSS_NAMES[new Date().getDate() % BOSS_NAMES.length]; }
+
+// ─── Leaderboard System ───
+const FAKE_PLAYERS = [
+  {name:"금융천재영지",score:4200,grade:"S",arch:"항해사",zodiac:"🐉"},
+  {name:"현수님",score:3800,grade:"S",arch:"분석가",zodiac:"🐅"},
+  {name:"미래투자러",score:3100,grade:"A+",arch:"비전가",zodiac:"🐍"},
+  {name:"도윤_ETF",score:2600,grade:"A+",arch:"분석가",zodiac:"🐓"},
+  {name:"서연🐰",score:2200,grade:"A",arch:"실용주의자",zodiac:"🐇"},
+  {name:"준호_리밸",score:1900,grade:"A",arch:"항해사",zodiac:"🐂"},
+  {name:"하은_배당",score:1500,grade:"A",arch:"실용주의자",zodiac:"🐖"},
+  {name:"지민_코인",score:1200,grade:"B",arch:"비전가",zodiac:"🐒"},
+];
+function getLeaderboard() {
+  const saved = JSON.parse(localStorage.getItem("nkai_leaderboard")||"[]");
+  // Merge fake + real, sort desc
+  const all = [...FAKE_PLAYERS.map(p=>({...p,isNPC:true})), ...saved];
+  // Add player's best
+  if (personalBest > 0) {
+    const pg = getGrade(personalBest);
+    const pName = playerZodiac ? `나 ${playerZodiac.emoji}` : "나";
+    all.push({name:pName, score:personalBest, grade:pg.grade, arch:playerArchetype?.group||"?", zodiac:playerZodiac?.emoji||"", isMe:true});
+  }
+  all.sort((a,b) => b.score - a.score);
+  return all.slice(0, 15);
+}
+function saveToLeaderboard(score) {
+  if (score < 500) return;
+  const saved = JSON.parse(localStorage.getItem("nkai_leaderboard")||"[]");
+  const g = getGrade(score);
+  saved.push({name:"나",score,grade:g.grade,arch:playerArchetype?.group||"?",zodiac:playerZodiac?.emoji||"",isMe:true,date:new Date().toLocaleDateString()});
+  saved.sort((a,b)=>b.score-a.score);
+  localStorage.setItem("nkai_leaderboard", JSON.stringify(saved.slice(0,10)));
+}
+
+// ─── Boss Rush System ───
+const BOSS_RUSH = [
+  {name:"미니 지름신",emoji:"👹",hp:800,element:1,weakness:4,time:30,desc:"서막! 충동을 억제하라!",reward:"💣×1"},
+  {name:"FOMO 정령",emoji:"👻",hp:1200,element:4,weakness:0,time:35,desc:"놓침의 공포를 이겨라!",reward:"⏰×1"},
+  {name:"과신의 대마왕",emoji:"🌑",hp:2000,element:3,weakness:1,time:45,desc:"최종 보스! 겸손이 무기다!",reward:"🏆 전설 칭호"},
+];
+function startBossRush() {
+  KBAnalytics.click('btn_bossRush');
+  KBAnalytics.gameStart('bossRush');
+  if (state.energy <= 0) { state.showNoEnergy = true; render(); return; }
+  state.energy -= 1; // Boss rush costs 1 energy
+  startRechargeTimer(); recordPlay(); initAudio();
+  state.bossWave = 0;
+  startBossWave(0);
+}
+function startBossWave(wave) {
+  if (wave >= BOSS_RUSH.length) {
+    // All bosses defeated!
+    state.screen = "bossVictory";
+    render();
+    return;
+  }
+  const b = BOSS_RUSH[wave];
+  Object.assign(state, {
+    screen: "playing", mode: "bossRush",
+    board: createBoard(), selected: null,
+    score: 0, combo: 0, maxCombo: 0, timeLeft: b.time, maxTime: b.time,
+    matchedCells: new Set(), lastElement: -1, synergyFlash: false,
+    elementCounts: [0,0,0,0,0], totalMatches: 0,
+    shakeBoard: false, processing: false, dropping: true, hintCells: null,
+    comboText: null, moveCount: 0,
+    items: {bomb:1,clock:1,rainbow:1},
+    activeItem: null, itemFlash: null,
+    showNoEnergy: false,
+    boostActive: !dailyBoostUsed,
+    bossWave: wave, bossHp: b.hp, bossMaxHp: b.hp,
+    bossWeakness: b.weakness, bossAttackTimer: 0,
+  });
+  // Zodiac + archetype bonuses
+  if (playerArchetype && playerArchetype.effect === "timeBonus") state.timeLeft += 3;
+  if (playerZodiac) { const zi = getZodiacItem(playerZodiac); if(zi) state.items[zi.item]=(state.items[zi.item]||0)+1; }
+  comboChain = 0; lastMatchEl = -1; lastMilestone = 0;
+  startTimer();
+  render();
+  resetHintTimer();
+  // Boss intro popup
+  setTimeout(()=>{
+    showToast(`⚔️ Wave ${wave+1}: ${b.emoji} ${b.name}!`);
+    if (b.weakness >= 0) setTimeout(()=>showToast(`💡 약점: ${ELEMENTS[b.weakness].emoji} ${ELEMENTS[b.weakness].name}!`), 1200);
+  }, 300);
+}
+// Boss takes damage from player score
+function bossHit(pts) {
+  if (state.mode !== "bossRush") return;
+  state.bossHp = Math.max(0, state.bossHp - pts);
+  if (state.bossHp <= 0) {
+    // Boss defeated, next wave!
+    clearInterval(timerId); timerId = null;
+    clearAllGT(); state.processing = false;
+    const wave = state.bossWave;
+    showToast(`💥 ${BOSS_RUSH[wave].emoji} ${BOSS_RUSH[wave].name} 격파! ${BOSS_RUSH[wave].reward}`);
+    screenFlash("rgba(34,197,94,0.5)", 500);
+    showScorePop("⚔️ DEFEATED!", "#22c55e");
+    setTimeout(()=> startBossWave(wave + 1), 2000);
+  }
+}
+
+// ─── State ───
+let state = {
+  screen: "menu", mode: "solo",
+  board: [], selected: null,
+  score: 0, combo: 0, maxCombo: 0,
+  timeLeft: GAME_TIME, maxTime: GAME_TIME, matchedCells: new Set(),
+  lastElement: -1, synergyFlash: false,
+  elementCounts: [0,0,0,0,0], totalMatches: 0,
+  shakeBoard: false, processing: false, dropping: false,
+  hintCells: null, tutorialStep: 0,
+  comboText: null, soundOn: true,
+  rival: null, chemScore: 0, chemRevealed: false,
+  moveCount: 0, showHelp: false,
+  items: {bomb:1,clock:1,rainbow:1},
+  activeItem: null, itemFlash: null,
+  energy: MAX_ENERGY, rechargeSec: 0,
+  showNoEnergy: false, shareBonus: false,
+  // Daily boost
+  boostElement: dailyBoostEl, boostActive: false,
+  showBirthdayPrompt: !localStorage.getItem("nkai_birthday"),
+  showDailyBoost: false,
+  // Zodiac & Archetype
+  zodiac: playerZodiac, archetype: playerArchetype,
+  zodiacBonusEl: playerZodiac ? playerZodiac.element : -1,
+  // Self-report
+  showSelfReport: false, selfReportDone: localStorage.getItem("nkai_report_date") === new Date().toDateString(),
+  hasShield: false, // 통제의 방패 from self-report
+};
+
+let timerId = null, hintTimerId = null, comboChain = 0, lastMatchEl = -1;
+// === RACE CONDITION FIX: 게임 타임아웃 추적 시스템 ===
+let gameTimeouts = [];
+function addGT(fn, ms) { const id = setTimeout(()=>{ const i=gameTimeouts.indexOf(id); if(i>-1)gameTimeouts.splice(i,1); fn(); }, ms); gameTimeouts.push(id); return id; }
+function clearAllGT() { gameTimeouts.forEach(id=>clearTimeout(id)); gameTimeouts=[]; if(hintTimerId){clearTimeout(hintTimerId);hintTimerId=null;} }
+// === END RACE CONDITION FIX ===
+let synth = null, noiseSynth = null, audioReady = false;
+let lastMilestone = 0; // Track score milestones
+
+// ─── Boss HP ───
+const BOSS_HP = 1500;
+function getBossHpPercent() { return Math.max(0, Math.round((1 - state.score / BOSS_HP) * 100)); }
+
+// ─── Score Milestones ───
+function checkMilestone() {
+  const milestones = [500, 1000, 1500, 2000, 3000, 4000, 5000];
+  for (const m of milestones) {
+    if (state.score >= m && lastMilestone < m) {
+      lastMilestone = m;
+      const msgs = {500:"🔥 500점 돌파!",1000:"⚡ 1,000점! 불타오르는 중!",1500:"⚔️ BOSS 격파 달성!",2000:"✨ 2,000점! 에너지 마스터!",3000:"💎 3,000점! 전설급!",4000:"👑 4,000점! 거의 S급!",5000:"🏆 5,000점! LEGENDARY!"};
+      showToast(msgs[m] || `🎯 ${m.toLocaleString()}점!`);
+      if (m === 1500) { screenFlash("rgba(34,197,94,0.5)", 500); showScorePop("⚔️ BOSS DOWN!", "#22c55e"); }
+      else if (m >= 3000) { screenFlash("rgba(201,168,76,0.5)", 500); showScorePop(msgs[m].split(" ")[0], "#f0c674"); }
+      else { screenFlash("rgba(45,140,255,0.3)", 300); }
+      return;
+    }
+  }
+}
+
+// ─── Helpers ───
+const rand = () => Math.floor(Math.random() * ELEMENTS.length);
+const $ = id => document.getElementById(id);
+const cellSize = () => Math.min(52, (Math.min(window.innerWidth, 440) - 48) / BOARD_SIZE);
+
+function createBoard() {
+  let b, a = 0;
+  do {
+    b = Array.from({length:BOARD_SIZE}, () => Array.from({length:BOARD_SIZE}, () => rand()));
+    a++;
+  } while (findMatches(b).length > 0 && a < 100);
+  return b;
+}
+
+function findMatches(b) {
+  const m = new Set();
+  for (let r=0;r<BOARD_SIZE;r++) for (let c=0;c<BOARD_SIZE-2;c++) {
+    if (b[r][c]!==-1&&b[r][c]===b[r][c+1]&&b[r][c]===b[r][c+2]) {
+      m.add(`${r},${c}`);m.add(`${r},${c+1}`);m.add(`${r},${c+2}`);
+      if (c+3<BOARD_SIZE&&b[r][c]===b[r][c+3]) m.add(`${r},${c+3}`);
+    }
+  }
+  for (let c=0;c<BOARD_SIZE;c++) for (let r=0;r<BOARD_SIZE-2;r++) {
+    if (b[r][c]!==-1&&b[r][c]===b[r+1][c]&&b[r][c]===b[r+2][c]) {
+      m.add(`${r},${c}`);m.add(`${r+1},${c}`);m.add(`${r+2},${c}`);
+      if (r+3<BOARD_SIZE&&b[r][c]===b[r+3][c]) m.add(`${r+3},${c}`);
+    }
+  }
+  return [...m].map(s => s.split(",").map(Number));
+}
+
+function applyGravity(b) {
+  const n = b.map(r=>[...r]);
+  for (let c=0;c<BOARD_SIZE;c++) {
+    let w = BOARD_SIZE-1;
+    for (let r=BOARD_SIZE-1;r>=0;r--) if(n[r][c]!==-1){n[w][c]=n[r][c];if(w!==r)n[r][c]=-1;w--;}
+    for (let r=w;r>=0;r--) n[r][c]=rand();
+  }
+  return n;
+}
+
+function findHint(b) {
+  for (let r=0;r<BOARD_SIZE;r++) for (let c=0;c<BOARD_SIZE;c++) {
+    if (c+1<BOARD_SIZE){const t=b.map(r=>[...r]);[t[r][c],t[r][c+1]]=[t[r][c+1],t[r][c]];if(findMatches(t).length>0) return [[r,c],[r,c+1]];}
+    if (r+1<BOARD_SIZE){const t=b.map(r=>[...r]);[t[r][c],t[r+1][c]]=[t[r+1][c],t[r][c]];if(findMatches(t).length>0) return [[r,c],[r+1,c]];}
+  }
+  return null;
+}
+
+function hasValidMoves(b) { return findHint(b) !== null; }
+function fmtTime(s) { return `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`; }
+
+function genRival(ps) {
+  const v=0.3+Math.random()*0.6, s=Math.round(ps*v+Math.random()*500);
+  const c=[0,0,0,0,0], t=15+Math.floor(Math.random()*25);
+  for(let i=0;i<t;i++)c[rand()]++;
+  return {name:["영지","현수","미래","도윤","서연","준호","하은","지민"][Math.floor(Math.random()*8)],score:s,combo:1+Math.floor(Math.random()*6),counts:c};
+}
+
+function calcChem(a,b) {
+  const at=a.reduce((x,y)=>x+y,0)||1, bt=b.reduce((x,y)=>x+y,0)||1;
+  const ap=a.map(c=>c/at), bp=b.map(c=>c/bt);
+  let comp=0; for(let i=0;i<5;i++)comp+=(1-Math.abs(ap[i]-bp[i]))*20;
+  let syn=0; for(let i=0;i<5;i++){if(ap[i]>0.15&&bp[SYN_MAP[i]]>0.15)syn+=15;if(bp[i]>0.15&&ap[SYN_MAP[i]]>0.15)syn+=15;}
+  return Math.max(15,Math.min(98,Math.round(comp*0.5+syn*0.5+Math.random()*10)));
+}
+
+function getGrade(s) {
+  if(s>=5000)return{grade:"S+",title:"전설의 연금술사",color:"#f0c674",desc:"오행의 섭리를 꿰뚫은 자"};
+  if(s>=3500)return{grade:"S",title:"에너지 마스터",color:"#c084fc",desc:"5-Energy 흐름을 지배"};
+  if(s>=2500)return{grade:"A+",title:"상생의 달인",color:"#2D8CFF",desc:"콤보 리듬을 체득"};
+  if(s>=1500)return{grade:"A",title:"밸런스 탐색자",color:"#00D68F",desc:"에너지 균형의 길"};
+  if(s>=800)return{grade:"B",title:"기운 감지자",color:"#5AA8FF",desc:"오행을 느끼기 시작"};
+  return{grade:"C",title:"입문자",color:"#9ca3af",desc:"에너지 세계 첫 발"};
+}
+
+// ─── Audio ───
+function initAudio() {
+  if (audioReady) return;
+  try {
+    Tone.start();
+    synth = new Tone.PolySynth(Tone.Synth,{oscillator:{type:"triangle"},envelope:{attack:0.01,decay:0.15,sustain:0.05,release:0.3},volume:-12}).toDestination();
+    noiseSynth = new Tone.NoiseSynth({noise:{type:"pink"},envelope:{attack:0.005,decay:0.1,sustain:0},volume:-20}).toDestination();
+    audioReady = true;
+  } catch(e){}
+}
+function playMatch(id){if(!audioReady||!synth)return;try{synth.triggerAttackRelease(ELEMENTS[id]?.note||"C4","16n");}catch(e){}}
+function playSynergy(){if(!audioReady||!synth)return;try{synth.triggerAttackRelease(["C5","E5","G5"],"8n");}catch(e){}}
+function playFail(){if(!audioReady||!noiseSynth)return;try{noiseSynth.triggerAttackRelease("32n");}catch(e){}}
+function playItem(){if(!audioReady||!synth)return;try{synth.triggerAttackRelease(["G5","B5"],"16n");}catch(e){}}
+function playChem(){if(!audioReady||!synth)return;try{synth.triggerAttackRelease(["E4","G4","B4","D5"],"4n");}catch(e){}}
+
+// ─── Share ───
+function shareText(txt) {
+  if (navigator.share) navigator.share({title:"N-KAI 카이붐 KaiBoom",text:txt}).catch(()=>{});
+  else if (navigator.clipboard) { navigator.clipboard.writeText(txt); showToast("📋 복사 완료!"); }
+}
+function shareAndBonus(txt) {
+  KBAnalytics.click('btn_share');
+  KBAnalytics.feature('shareClicks');
+  shareText(txt);
+  completeMission("share");
+  if (!state.shareBonus) {
+    state.energy = Math.min(state.energy+1, MAX_ENERGY);
+    state.shareBonus = true;
+    setTimeout(()=>{ state.shareBonus=false; render(); }, 60000);
+    render();
+  }
+}
+function showToast(msg) {
+  const t = document.createElement("div");
+  t.textContent = msg;
+  Object.assign(t.style, {position:"fixed",top:"20px",left:"50%",transform:"translateX(-50%)",background:"rgba(34,197,94,0.9)",color:"#fff",padding:"8px 20px",borderRadius:"10px",fontSize:"13px",fontWeight:"700",zIndex:"9999",animation:"slideUp 0.3s"});
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2000);
+}
+
+// ─── Screen Flash Effect (big combos & milestones) ───
+function screenFlash(color, duration) {
+  const fl = document.createElement("div");
+  Object.assign(fl.style, {position:"fixed",inset:"0",background:color,zIndex:"70",pointerEvents:"none",opacity:"0.4",transition:`opacity ${duration||300}ms ease-out`});
+  document.body.appendChild(fl);
+  requestAnimationFrame(()=>{fl.style.opacity="0";});
+  setTimeout(()=>fl.remove(), (duration||300)+50);
+}
+
+// ─── Floating Score Pop ───
+function showScorePop(text, color) {
+  const p = document.createElement("div");
+  p.textContent = text;
+  Object.assign(p.style, {position:"fixed",top:"35%",left:"50%",transform:"translate(-50%,-50%)",fontSize:"28px",fontWeight:"900",fontFamily:"'Orbitron',monospace",color:color||"#f0c674",textShadow:`0 0 30px ${color||'rgba(240,198,116,0.8)'}`,zIndex:"75",pointerEvents:"none",animation:"milestone 1.2s ease-out forwards"});
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(), 1300);
+}
+
+// ─── Energy ───
+let rechargeInterval = null;
+function startRechargeTimer() {
+  if (rechargeInterval) clearInterval(rechargeInterval);
+  if (state.energy >= MAX_ENERGY) { state.rechargeSec = 0; return; }
+  if (state.rechargeSec === 0) state.rechargeSec = RECHARGE_SEC;
+  rechargeInterval = setInterval(() => {
+    state.rechargeSec--;
+    if (state.rechargeSec <= 0) {
+      state.energy = Math.min(state.energy+1, MAX_ENERGY);
+      if (state.energy >= MAX_ENERGY) { clearInterval(rechargeInterval); state.rechargeSec = 0; }
+      else state.rechargeSec = RECHARGE_SEC;
+    }
+    if (state.screen === "menu") render();
+  }, 1000);
+}
+
+// ─── Game Logic ───
+function startGame(mode, withTutorial) {
+  KBAnalytics.click(withTutorial ? 'btn_tutorial' : 'btn_'+mode);
+  KBAnalytics.gameStart(withTutorial ? 'tutorial' : mode);
+  if (!withTutorial && state.energy <= 0) { state.showNoEnergy = true; render(); return; }
+  if (!withTutorial) { state.energy--; startRechargeTimer(); recordPlay(); }
+  initAudio();
+  const boss = getDailyBoss();
+  Object.assign(state, {
+    screen: withTutorial ? "tutorial" : "playing", mode,
+    board: createBoard(), selected: null,
+    score: 0, combo: 0, maxCombo: 0, timeLeft: GAME_TIME, maxTime: GAME_TIME,
+    matchedCells: new Set(), lastElement: -1, synergyFlash: false,
+    elementCounts: [0,0,0,0,0], totalMatches: 0,
+    shakeBoard: false, processing: false, dropping: true, hintCells: null,
+    tutorialStep: 0, comboText: null,
+    rival: null, chemScore: 0, chemRevealed: false,
+    moveCount: 0, showHelp: false,
+    items: {bomb:1,clock:1,rainbow:1}, activeItem: null, itemFlash: null,
+    showNoEnergy: false,
+    boostActive: !dailyBoostUsed,
+    hasShield: state.selfReportDone && !state.hasShield,
+  });
+  // Give shield item if self-reported
+  if (state.hasShield) state.items.clock = 2;
+  comboChain = 0; lastMatchEl = -1; lastMilestone = 0;
+  // Archetype passive: 분석가 = +5 seconds
+  if (playerArchetype && playerArchetype.effect === "timeBonus" && !withTutorial) state.timeLeft += 5;
+  // Zodiac item bonus
+  if (playerZodiac && !withTutorial) {
+    const zi = getZodiacItem(playerZodiac);
+    if (zi) { state.items[zi.item] = (state.items[zi.item]||0) + 1; }
+  }
+  if (!dailyBoostUsed) { dailyBoostUsed = true; localStorage.setItem("nkai_boost_date", new Date().toDateString()); }
+  if (!withTutorial) startTimer();
+  render();
+  // Show daily boost popup
+  if (state.boostActive && !withTutorial) {
+    setTimeout(()=> showBoostPopup(), 300);
+  }
+  // Show zodiac item notice
+  if (playerZodiac && !withTutorial) {
+    const zi = getZodiacItem(playerZodiac);
+    if (zi) setTimeout(()=> showToast(`${playerZodiac.emoji} ${zi.desc}`), state.boostActive ? 1500 : 300);
+  }
+  if (!withTutorial) resetHintTimer();
+}
+
+function startTimer() {
+  if (timerId) clearInterval(timerId);
+  timerId = setInterval(() => {
+    if (state.screen !== "playing") { clearInterval(timerId); timerId = null; return; }
+    state.timeLeft--;
+    if (state.timeLeft < 0) state.timeLeft = 0;
+    if (state.timeLeft === 10) showToast("⏰ 10초 남았어요!");
+    if (state.timeLeft <= 5 && state.timeLeft > 0) screenFlash("rgba(239,68,68,0.15)", 200);
+    if (state.timeLeft <= 0) {
+      clearInterval(timerId); timerId = null;
+      clearAllGT(); state.processing = false;
+      if (state.mode === "bossRush") {
+        state.screen = "bossDefeat";
+      } else if (state.mode === "chemistry") {
+        state.rival = genRival(state.score);
+        state.chemScore = calcChem(state.elementCounts, state.rival.counts);
+        state.chemRevealed = false;
+        state.screen = "chemResult";
+        if (state.soundOn) playChem();
+      } else {
+        state.screen = "result";
+        saveToLeaderboard(state.score);
+        updateStats(state.score, state.maxCombo);
+        KBAnalytics.gameEnd(state.mode, state.score, state.maxCombo, GAME_TIME);
+      }
+    }
+    render();
+  }, 1000);
+}
+
+function resetHintTimer() {
+  state.hintCells = null;
+  if (hintTimerId) clearTimeout(hintTimerId);
+  hintTimerId = setTimeout(() => {
+    if (state.screen === "playing") {
+      const h = findHint(state.board);
+      if (h) { state.hintCells = h; render(); }
+    }
+  }, (playerArchetype && playerArchetype.effect === "hintSpeed") ? HINT_DELAY/2 : HINT_DELAY);
+}
+
+function processMatches(board, chain) {
+  if (state.screen !== "playing") { state.processing = false; return; }
+  const ms = findMatches(board);
+  if (ms.length === 0) {
+    state.processing = false; comboChain = 0; lastMatchEl = -1;
+    if (!hasValidMoves(board)) {
+      state.shakeBoard = true; render();
+      addGT(() => { if (state.screen !== "playing") return; state.shakeBoard = false; state.board = createBoard(); state.dropping = true; render(); }, 500);
+    }
+    render(); resetHintTimer(); return;
+  }
+  state.matchedCells = new Set(ms.map(([r,c])=>`${r},${c}`));
+  const pEl = board[ms[0][0]][ms[0][1]];
+  const syn = lastMatchEl >= 0 && SYN_MAP[lastMatchEl] === pEl;
+  const nc = chain + 1;
+  comboChain = nc; lastMatchEl = pEl;
+  state.combo = nc; state.maxCombo = Math.max(state.maxCombo, nc); state.lastElement = pEl;
+  if (state.soundOn) playMatch(pEl);
+  if (syn) { state.synergyFlash = true; if (state.soundOn) playSynergy(); screenFlash("rgba(240,198,116,0.35)", 400); addGT(()=>{state.synergyFlash=false;render();},800); }
+  if (nc >= 2) state.comboText = {text: nc>=5?"🔥 INCREDIBLE!":nc>=4?"⚡ AMAZING!":nc>=3?"✨ GREAT!":"💫 NICE!", id:Date.now()};
+  if (nc >= 3) screenFlash(nc>=5?"rgba(239,68,68,0.5)":nc>=4?"rgba(201,168,76,0.5)":"rgba(124,91,240,0.4)", nc>=4?400:300);
+  if (nc >= 4) showScorePop(`×${nc} COMBO!`, nc>=5?"#ef4444":"#f0c674");
+  const boostMult = (state.boostActive && pEl === state.boostElement) ? 3 : 1;
+  const zodiacMult = (playerZodiac && pEl === playerZodiac.element) ? 1.5 : 1;
+  const comboMult = (playerArchetype && playerArchetype.effect === "comboBoost") ? 1.2 : 1;
+  const synMult = (syn && playerArchetype && playerArchetype.effect === "synergyBoost") ? 3 : (syn ? 2 : 1);
+  const weakMult = (state.mode === "bossRush" && pEl === state.bossWeakness) ? 2 : 1;
+  const pts = Math.round(ms.length*10*(1+(nc-1)*0.5)*synMult*boostMult*zodiacMult*comboMult*weakMult);
+  if (boostMult > 1) showToast(`${ELEMENTS[pEl].emoji} ×3 부스트!`);
+  if (zodiacMult > 1 && boostMult === 1) showToast(`${playerZodiac.emoji} 띠 보너스!`);
+  if (weakMult > 1) showToast(`💥 약점 공격! ×2!`);
+  state.score += pts; state.totalMatches += ms.length;
+  bossHit(pts);
+  checkMilestone();
+  ms.forEach(([r,c])=>{const e=board[r][c];if(e>=0&&e<5)state.elementCounts[e]++;});
+  render();
+  addGT(() => {
+    if (state.screen !== "playing") return;
+    ms.forEach(([r,c])=>{board[r][c]=-1;});
+    state.board = applyGravity(board); state.matchedCells = new Set(); state.dropping = true; render();
+    addGT(() => processMatches(state.board, nc), 200);
+  }, 320);
+}
+
+function handleCell(r, c) {
+  if (state.screen !== "playing" || state.processing) return;
+  if (state.activeItem === "bomb") { useBomb(r,c); return; }
+  if (state.activeItem === "rainbow") { useRainbow(r,c); return; }
+  state.hintCells = null;
+  if (!state.selected) { state.selected = [r,c]; render(); return; }
+  const [sr,sc] = state.selected;
+  if (sr===r&&sc===c) { state.selected = null; render(); return; }
+  if (Math.abs(sr-r)+Math.abs(sc-c) !== 1) { state.selected = [r,c]; render(); return; }
+  const nb = state.board.map(row=>[...row]);
+  [nb[sr][sc],nb[r][c]] = [nb[r][c],nb[sr][sc]];
+  if (findMatches(nb).length === 0) {
+    state.selected = null; state.shakeBoard = true;
+    if (state.soundOn) playFail(); render();
+    addGT(()=>{state.shakeBoard=false;render();},300); return;
+  }
+  state.board = nb; state.selected = null; state.processing = true; state.moveCount++;
+  comboChain = 0; lastMatchEl = -1;
+  processMatches(nb, 0);
+}
+
+function useBomb(r,c) {
+  if (state.items.bomb <= 0) return;
+  state.items.bomb--; state.activeItem = null;
+  if (state.soundOn) playItem();
+  const nb = state.board.map(row=>[...row]);
+  for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){const nr=r+dr,nc=c+dc;if(nr>=0&&nr<BOARD_SIZE&&nc>=0&&nc<BOARD_SIZE)nb[nr][nc]=-1;}
+  state.score += 45; state.board = applyGravity(nb); state.dropping = true; render();
+  addGT(()=>{if(state.screen!=="playing")return;const ms=findMatches(state.board);if(ms.length>0){state.processing=true;comboChain=0;lastMatchEl=-1;processMatches(state.board,0);}},300);
+}
+function useClock() {
+  if (state.items.clock <= 0) return;
+  state.items.clock--; state.activeItem = null;
+  if (state.soundOn) playItem();
+  state.timeLeft = Math.min(state.timeLeft+10, 99);
+  showToast("⏰ +10초!"); render();
+}
+function useRainbow(r,c) {
+  if (state.items.rainbow <= 0) return;
+  const targetEl = state.board[r][c]; state.items.rainbow--; state.activeItem = null;
+  if (state.soundOn) playItem();
+  const counts=[0,0,0,0,0];
+  state.board.forEach(row=>row.forEach(cell=>{if(cell>=0&&cell<5)counts[cell]++;}));
+  const most = counts.indexOf(Math.max(...counts));
+  const nb = state.board.map(row=>[...row]);
+  let changed=0;
+  for(let rr=0;rr<BOARD_SIZE&&changed<4;rr++) for(let cc=0;cc<BOARD_SIZE&&changed<4;cc++){if(nb[rr][cc]===targetEl){nb[rr][cc]=most;changed++;}}
+  state.board = nb; render();
+  addGT(()=>{if(state.screen!=="playing")return;const ms=findMatches(state.board);if(ms.length>0){state.processing=true;comboChain=0;lastMatchEl=-1;processMatches(state.board,0);}},300);
+}
+
+// ─── Daily Boost Popup ───
+function showBoostPopup() {
+  const el = ELEMENTS[state.boostElement];
+  const overlay = document.createElement("div");
+  overlay.id = "boost-popup";
+  Object.assign(overlay.style, {position:"fixed",inset:"0",background:"rgba(0,0,0,0.85)",zIndex:"90",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px",animation:"fadeIn 0.3s"});
+  overlay.innerHTML = `<div style="background:#111827;border-radius:16px;padding:22px;max-width:360px;width:100%;border:2px solid ${el.color};text-align:center;animation:slideUp 0.4s">
+    <div style="font-size:48px;margin-bottom:8px">${el.emoji}</div>
+    <div style="font-size:10px;color:#c9a84c;letter-spacing:3px;font-weight:700;margin-bottom:4px">TODAY'S ENERGY BOOST</div>
+    <h3 style="color:#fff;font-size:18px;font-weight:900;margin:0 0 6px">오늘은 ${el.name} 에너지의 날!</h3>
+    <div style="font-size:13px;color:${el.color};font-weight:700;margin-bottom:12px">${el.emoji} 보석 매칭 시 <span style="font-size:18px">×3배</span> 점수!</div>
+    <div style="font-size:10px;color:#6b7280;margin-bottom:12px">⏰ 매일 자정에 행운 오행이 바뀝니다 — 내일은 다른 원소!</div>
+    <button onclick="document.getElementById('boost-popup')?.remove()" style="padding:12px 36px;border-radius:10px;border:none;background:linear-gradient(135deg,${el.color},${el.color}cc);color:#fff;font-size:14px;font-weight:900;font-family:inherit">⚡ 부스트 시작!</button>
+  </div>`;
+  document.body.appendChild(overlay);
+  // Auto dismiss after 4 seconds
+  setTimeout(()=>{const p=document.getElementById("boost-popup");if(p)p.remove();}, 4000);
+}
+
+// ─── Birthday Prompt ───
+function showBirthdayPrompt() {
+  const overlay = document.createElement("div");
+  overlay.id = "birthday-prompt";
+  Object.assign(overlay.style, {position:"fixed",inset:"0",background:"rgba(0,0,0,0.88)",zIndex:"95",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px",animation:"fadeIn 0.3s"});
+  overlay.innerHTML = `<div style="background:#111827;border-radius:16px;padding:22px;max-width:360px;width:100%;border:1px solid rgba(201,168,76,0.3);text-align:center">
+    <div style="font-size:36px;margin-bottom:8px">🐉</div>
+    <h3 style="color:#fff;font-size:16px;font-weight:900;margin:0 0 4px">생년월일을 알려주세요!</h3>
+    <div style="font-size:11px;color:#c9a84c;font-weight:700;margin-bottom:4px">나의 띠 확인 + 특수 아이템 지급!</div>
+    <div style="font-size:10px;color:#9ca3af;margin-bottom:12px">입춘(2/4) 기준 띠 계산 · 매일 행운 부스트 변경</div>
+    <div style="display:flex;gap:3px;justify-content:center;flex-wrap:wrap;margin-bottom:10px">${ZODIAC.map(z=>`<span style="font-size:14px" title="${z.name}띠">${z.emoji}</span>`).join("")}</div>
+    <input type="date" id="birthday-input" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:#1f2937;color:#fff;font-size:14px;margin-bottom:12px;font-family:inherit" value="1990-01-01">
+    <button onclick="saveBirthday()" style="padding:12px 36px;border-radius:10px;border:none;background:linear-gradient(135deg,#c9a84c,#e8d48b);color:#0a0e1a;font-size:13px;font-weight:900;width:100%;font-family:inherit">🐉 내 띠 + 아이템 확인!</button>
+    <button onclick="document.getElementById('birthday-prompt')?.remove()" style="margin-top:6px;background:none;border:none;color:#4b5563;font-size:10px;font-family:inherit;cursor:pointer">나중에 할게요</button>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+function saveBirthday() {
+  const input = document.getElementById("birthday-input");
+  if (input && input.value) {
+    localStorage.setItem("nkai_birthday", input.value);
+    dailyBoostEl = getDailyBoost(input.value);
+    state.boostElement = dailyBoostEl;
+    state.showBirthdayPrompt = false;
+    playerZodiac = getZodiac(input.value);
+    KBAnalytics.click('set_zodiac_' + (playerZodiac ? playerZodiac.name : 'unknown'));
+    KBAnalytics.feature('zodiacSet');
+    state.zodiac = playerZodiac;
+    state.zodiacBonusEl = playerZodiac ? playerZodiac.element : -1;
+    document.getElementById("birthday-prompt")?.remove();
+    if (playerZodiac) {
+      const zi = getZodiacItem(playerZodiac);
+      showToast(`${playerZodiac.emoji} ${playerZodiac.name}띠! ${zi?zi.name+' 아이템 매 게임 지급!':''}`);
+    }
+    render();
+  }
+}
+
+// ─── Self Report ───
+function selectArchetype(idx) {
+  KBAnalytics.click('archetype_'+ARCHETYPES[idx].code);
+  KBAnalytics.feature(playerArchetype ? 'archetypeChanges' : 'archetypeSet');
+  playerArchetype = ARCHETYPES[idx];
+  state.archetype = playerArchetype;
+  localStorage.setItem("nkai_archetype", playerArchetype.group);
+  document.getElementById("arch-select")?.remove();
+  showToast(`${playerArchetype.icon} ${playerArchetype.group} 선택! ${playerArchetype.gameSkill}`);
+  render();
+}
+function showArchetypeSelect() {
+  const overlay = document.createElement("div");
+  overlay.id = "arch-select";
+  Object.assign(overlay.style, {position:"fixed",inset:"0",background:"rgba(0,0,0,0.92)",zIndex:"90",display:"flex",alignItems:"center",justifyContent:"center",padding:"16px",animation:"fadeIn 0.3s",overflowY:"auto"});
+  const descs = [
+    {tag:"트렌드를 읽는 직감파",desc:"새로운 기회를 남보다 먼저 포착! 빠른 판단력으로 시장을 선점하는 타입",play:"힌트가 2배 빠르게 나타나 놓치는 매칭이 줄어듭니다"},
+    {tag:"숫자로 말하는 논리파",desc:"데이터와 근거로 확실한 판단! 꼼꼼한 분석으로 리스크를 최소화하는 타입",play:"게임 시간이 +5초 추가! 여유 있게 최적의 수를 찾으세요"},
+    {tag:"안전 제일 수비형",desc:"위험을 미리 감지하고 대비! 안정적인 자산 관리로 꾸준히 성장하는 타입",play:"콤보 점수 +20% 보너스! 꾸준히 쌓을수록 차이가 벌어집니다"},
+    {tag:"미래를 보는 혁신파",desc:"남들이 못 보는 가치를 발굴! 장기적 비전으로 큰 그림을 그리는 타입",play:"상생(오행) 보너스 ×3! 원소 간 시너지를 극대화하세요"},
+  ];
+  const cards = ARCHETYPES.map((a,i)=>{
+    const d = descs[i];
+    const isCurrent = playerArchetype && playerArchetype.code === a.code;
+    return `<button onclick="selectArchetype(${i})" style="width:100%;padding:14px;border-radius:14px;border:2px solid ${isCurrent?a.color:a.color+'44'};background:${isCurrent?a.color+'18':a.color+'08'};display:flex;align-items:center;gap:12px;font-family:inherit;cursor:pointer;text-align:left;transition:all 0.2s;position:relative;${isCurrent?'box-shadow:0 0 16px '+a.color+'33;':''}">
+      <div style="flex-shrink:0;width:48px;height:48px;border-radius:12px;background:${a.color}20;display:flex;align-items:center;justify-content:center">
+        <span style="font-size:28px">${a.icon}</span>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+          <span style="font-size:14px;font-weight:900;color:#fff">${a.group}</span>
+          <span style="font-size:8px;color:${a.color};background:${a.color}15;padding:1px 6px;border-radius:4px;font-weight:700">${a.code}</span>
+          ${isCurrent?'<span style="font-size:8px;color:#22c55e;font-weight:800">✓ 선택됨</span>':''}
+        </div>
+        <div style="font-size:9px;color:#c9a84c;font-weight:700;margin-bottom:3px">${d.tag}</div>
+        <div style="font-size:9px;color:#9ca3af;line-height:1.3;margin-bottom:4px">${d.desc}</div>
+        <div style="font-size:9px;color:${a.color};font-weight:800;background:${a.color}10;padding:3px 8px;border-radius:6px;display:inline-block">🎮 ${a.gameSkill}</div>
+      </div>
+    </button>`;
+  }).join("");
+  overlay.innerHTML = `<div style="background:#111827;border-radius:20px;padding:22px 18px;max-width:400px;width:100%;border:1px solid rgba(201,168,76,0.3);animation:slideUp 0.4s">
+    <div style="text-align:center;margin-bottom:14px">
+      <div style="font-size:32px;margin-bottom:6px">🧬</div>
+      <h3 style="color:#fff;font-size:17px;font-weight:900;margin:0 0 4px">나의 금융 아키타입은?</h3>
+      <div style="font-size:10px;color:#9ca3af">선택한 아키타입의 <span style="color:#c9a84c;font-weight:700">특수 능력</span>이 게임에 적용됩니다</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">${cards}</div>
+    <div style="text-align:center">
+      <div style="font-size:9px;color:#6b7280;margin-bottom:8px">💡 어떤 타입인지 모르겠다면? AI가 분석해드려요!</div>
+      <a href="/?utm_source=kaiboom&utm_medium=archetype_select#mvp" style="display:inline-block;padding:10px 24px;border-radius:10px;background:linear-gradient(135deg,#7C5BF0,#2D8CFF);color:#fff;font-size:11px;font-weight:900;text-decoration:none">🔓 무료 AI 분석으로 정확한 아키타입 받기</a>
+      <button onclick="document.getElementById('arch-select')?.remove()" style="display:block;margin:10px auto 0;background:none;border:none;color:#6b7280;font-size:10px;cursor:pointer;font-family:inherit;padding:4px">닫기</button>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+function goAnalyzeAndMission() {
+  KBAnalytics.click('cta_nkai_mission');
+  KBAnalytics.feature('nkaiCTA');
+  KBAnalytics.conversion('resultToNKAI');
+  completeMission("analyze");
+  window.location.href = "/?utm_source=kaiboom&utm_medium=mission_analyze#mvp";
+}
+
+function showSelfReport() {
+  const overlay = document.createElement("div");
+  overlay.id = "self-report";
+  Object.assign(overlay.style, {position:"fixed",inset:"0",background:"rgba(0,0,0,0.88)",zIndex:"85",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px",animation:"fadeIn 0.3s"});
+  overlay.innerHTML = `<div style="background:#111827;border-radius:16px;padding:22px;max-width:360px;width:100%;border:1px solid rgba(0,214,143,0.3);text-align:center">
+    <div style="font-size:36px;margin-bottom:8px">💪</div>
+    <h3 style="color:#fff;font-size:16px;font-weight:900;margin:0 0 6px">어제 불필요한 소비를 참으셨나요?</h3>
+    <div style="font-size:10px;color:#9ca3af;margin-bottom:14px">솔직하게 답해주세요 — 보상이 있어요!</div>
+    <div style="display:flex;gap:8px">
+      <button onclick="selfReport(true)" style="flex:1;padding:14px 8px;border-radius:10px;border:none;background:linear-gradient(135deg,#22c55e,#00D68F);color:#fff;font-size:13px;font-weight:900;font-family:inherit">✅ 참았다!</button>
+      <button onclick="selfReport(false)" style="flex:1;padding:14px 8px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#9ca3af;font-size:13px;font-weight:700;font-family:inherit">😅 아니요</button>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+function selfReport(controlled) {
+  KBAnalytics.click('selfReport_'+(controlled?'yes':'no'));
+  KBAnalytics.feature('selfReport');
+  document.getElementById("self-report")?.remove();
+  localStorage.setItem("nkai_report_date", new Date().toDateString());
+  state.selfReportDone = true;
+  if (controlled) {
+    state.hasShield = true;
+    showToast("🛡️ 통제의 방패 획득! 시계 아이템 +1!");
+  } else {
+    showToast("💡 괜찮아요! 오늘 에너지로 만회하세요!");
+  }
+  render();
+}
+
+// ─── Render ───
+function render() {
+  const root = $("root");
+  const cs = cellSize();
+  const s = state;
+  KBAnalytics.screenView(s.screen); // Track screen
+
+  if (s.screen === "menu" || s.screen === "tutorial") {
+    root.innerHTML = renderMenu(cs);
+    if (s.screen === "tutorial") renderTutorial(cs);
+    if (s.showNoEnergy) renderNoEnergyModal();
+  } else if (s.screen === "playing") {
+    root.innerHTML = renderPlaying(cs);
+  } else if (s.screen === "result") {
+    root.innerHTML = renderResult();
+  } else if (s.screen === "chemResult") {
+    root.innerHTML = renderChemResult();
+  } else if (s.screen === "leaderboard") {
+    root.innerHTML = renderLeaderboard();
+  } else if (s.screen === "bossVictory") {
+    root.innerHTML = renderBossVictory();
+  } else if (s.screen === "bossDefeat") {
+    root.innerHTML = renderBossDefeat();
+  } else if (s.screen === "analytics") {
+    root.innerHTML = renderAnalytics();
+  }
+  // Reset dropping flag so next render won't re-animate
+  state.dropping = false;
+}
+
+function energyBar(size) {
+  return Array.from({length:MAX_ENERGY}, (_,i) =>
+    `<div style="width:${size}px;height:${size}px;border-radius:${Math.round(size*0.3)}px;background:${i<state.energy?"linear-gradient(135deg,#22c55e,#00D68F)":"rgba(255,255,255,0.06)"};border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:${Math.round(size*0.5)}px;transition:all 0.3s">${i<state.energy?"⚡":"∙"}</div>`
+  ).join("");
+}
+
+function renderMenu(cs) {
+  const dc = getDailyChallenge();
+  const dcDone = dailyChallengeCleared;
+  const boss = getDailyBoss();
+  const boostEl = ELEMENTS[state.boostElement];
+  const z = playerZodiac;
+  const arch = playerArchetype;
+  const ms = getMissionStatus();
+  const msDone = Object.keys(ms).filter(k=>k!=='_date'&&ms[k]).length;
+  const msTotal = MISSIONS.length;
+  const fortune = getTodayFortune();
+  const W = "max-width:92vw;width:100%";
+
+  return `
+  <div style="min-height:100%;width:100%;background:linear-gradient(180deg,#050810 0%,#0a0e1a 40%,#111827 100%);display:flex;flex-direction:column;align-items:center;padding:12px 16px 20px;position:relative;overflow-y:auto;overflow-x:hidden">
+
+    <!-- ═══ TOP BAR ═══ -->
+    <div style="display:flex;align-items:center;justify-content:space-between;${W};margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:3px">
+        <div style="display:flex;gap:2px">${energyBar(14)}</div>
+        <span style="font-size:9px;color:#9ca3af;font-weight:700;margin-left:2px">${state.energy}/${MAX_ENERGY}</span>
+        ${state.energy<MAX_ENERGY?`<span style="font-size:8px;color:#6b7280">⏱${fmtTime(state.rechargeSec)}</span>`:""}
+      </div>
+      <div style="display:flex;align-items:center;gap:5px">
+        ${streak>0?`<div onclick="showAttendancePopup()" style="display:flex;align-items:center;gap:2px;cursor:pointer;padding:3px 8px;border-radius:8px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2)"><span style="font-size:10px">🔥</span><span style="font-size:10px;color:#ef4444;font-weight:900">${streak}</span></div>`:""}
+        ${personalBest>0?`<div onclick="state.screen='leaderboard';render()" style="display:flex;align-items:center;gap:2px;cursor:pointer;padding:3px 8px;border-radius:8px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2)"><span style="font-size:10px">🏆</span><span style="font-size:10px;color:#c9a84c;font-weight:900;font-family:'Orbitron',monospace">${personalBest.toLocaleString()}</span></div>`:""}
+      </div>
+    </div>
+
+    <!-- ═══ HERO ═══ -->
+    <div style="text-align:center;margin-bottom:16px;animation:slideUp 0.4s">
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px">
+        <span style="font-size:30px;filter:drop-shadow(0 0 10px rgba(239,68,68,0.5))">💥</span>
+        <h1 style="font-family:'Orbitron',monospace;font-size:36px;font-weight:900;margin:0;letter-spacing:5px;background:linear-gradient(180deg,#fffbe6 0%,#e8d48b 25%,#c9a84c 55%,#8a6420 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.9));animation:heroPulse 3s ease-in-out infinite">KAIBOOM</h1>
+        <span style="font-size:30px;filter:drop-shadow(0 0 10px rgba(201,168,76,0.5))">🎮</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px">
+        ${ELEMENTS.map(el=>`<span style="font-size:16px;filter:drop-shadow(0 0 4px ${el.shadow})">${el.emoji}</span>`).join("")}
+      </div>
+    </div>
+
+    <!-- ═══ 오늘의 한마디 (재미요소!) ═══ -->
+    <div style="${W};padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,rgba(201,168,76,0.06),rgba(124,91,240,0.04));border:1px solid rgba(201,168,76,0.15);margin-bottom:14px;animation:slideUp 0.5s;display:flex;align-items:center;gap:10px">
+      <div style="font-size:28px;animation:float0 3s ease-in-out infinite">${z?z.emoji:'🔮'}</div>
+      <div style="flex:1">
+        <div style="font-size:8px;color:#c9a84c;font-weight:700;letter-spacing:2px;margin-bottom:2px">✨ 오늘의 운세</div>
+        <div style="font-size:11px;color:#e5e7eb;font-weight:600;line-height:1.4">${fortune}</div>
+      </div>
+    </div>
+
+    <!-- ═══ MY STATUS: 4칸 카드 ═══ -->
+    ${(!z || !arch) ? `
+    <div style="${W};padding:8px 12px;border-radius:10px;background:linear-gradient(135deg,rgba(124,91,240,0.08),rgba(45,140,255,0.05));border:1px dashed rgba(124,91,240,0.4);margin-bottom:10px;animation:slideUp 0.52s;text-align:center">
+      <div style="font-size:10px;color:#e5e7eb;font-weight:700">👇 아래 <span style="color:#c9a84c">반짝이는 카드</span>를 눌러 설정하면 맞춤 보너스!</div>
+      <div style="font-size:8px;color:#9ca3af;margin-top:2px">${!z?'🎂 생일 → 띠 보너스  ':'✅ 띠 완료  '}${!arch?'🧬 아키타입 → 특수 스킬':'✅ 아키타입 완료'}</div>
+    </div>` : ''}
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;${W};margin-bottom:14px;animation:slideUp 0.55s">
+      <div onclick="showBirthdayPrompt()" style="background:${z?`${ZODIAC[z.id].color}0c`:'rgba(201,168,76,0.08)'};border:1px solid ${z?ZODIAC[z.id].color+'25':'rgba(201,168,76,0.35)'};border-radius:10px;padding:8px 4px;text-align:center;cursor:pointer;${!z?'animation:glow 2s infinite;':''}">
+        <div style="font-size:20px">${z?z.emoji:'🎂'}</div>
+        <div style="font-size:8px;color:${z?ZODIAC[z.id].color:'#c9a84c'};font-weight:800;margin-top:3px">${z?z.name+'띠':'<span style=\"animation:heroPulse 2s infinite;display:inline-block\">생일 입력!</span>'}</div>
+      </div>
+      <div onclick="showArchetypeSelect()" style="background:${arch?`${arch.color}0c`:'rgba(124,91,240,0.08)'};border:1px solid ${arch?arch.color+'25':'rgba(124,91,240,0.35)'};border-radius:10px;padding:8px 4px;text-align:center;cursor:pointer;${!arch?'animation:glow 2s infinite;':''}">
+        <div style="font-size:20px">${arch?arch.icon:'🧬'}</div>
+        <div style="font-size:8px;color:${arch?arch.color:'#c9a84c'};font-weight:800;margin-top:3px">${arch?arch.group:'<span style=\"animation:heroPulse 2s infinite;display:inline-block\">눌러서 선택!</span>'}</div>
+      </div>
+      <div style="background:${boostEl.color}0c;border:1px solid ${boostEl.color}25;border-radius:10px;padding:8px 4px;text-align:center">
+        <div style="font-size:20px">${boostEl.emoji}</div>
+        <div style="font-size:8px;color:#c9a84c;font-weight:800;margin-top:3px">×3 부스트</div>
+      </div>
+      <div style="background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.18);border-radius:10px;padding:8px 4px;text-align:center">
+        <div style="font-size:20px">${boss.emoji}</div>
+        <div style="font-size:8px;color:#ef4444;font-weight:800;margin-top:3px">오늘보스</div>
+      </div>
+    </div>
+
+    <!-- ═══ PLAY BUTTONS ═══ -->
+    <div style="display:flex;flex-direction:column;gap:8px;${W};margin-bottom:14px;animation:slideUp 0.6s">
+      <!-- SOLO (메인 CTA) -->
+      <button onclick="startGame('solo')" style="padding:14px 16px;border-radius:14px;border:none;background:linear-gradient(135deg,#c9a84c,#e8d48b);color:#0a0e1a;display:flex;align-items:center;gap:10px;animation:glow 2.5s infinite;font-family:inherit;width:100%">
+        <span style="font-size:30px">🎯</span>
+        <div style="text-align:left;flex:1">
+          <div style="font-size:16px;font-weight:900;font-family:'Orbitron',monospace;letter-spacing:3px">SOLO MODE</div>
+          <div style="font-size:10px;opacity:0.7">${boss.emoji} ${boss.name} 도전${z?' · '+z.emoji:''}${arch?' · '+arch.icon:''}</div>
+        </div>
+        <span style="font-size:22px;opacity:0.4">▶</span>
+      </button>
+      <!-- 2×2 서브 모드 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button onclick="startBossRush()" style="padding:12px 10px;border-radius:12px;border:1px solid rgba(239,68,68,0.3);background:linear-gradient(135deg,rgba(239,68,68,0.1),rgba(239,68,68,0.03));color:#fff;display:flex;align-items:center;gap:6px;font-family:inherit">
+          <span style="font-size:24px">⚔️</span>
+          <div style="text-align:left"><div style="font-size:12px;font-weight:900">보스전</div><div style="font-size:8px;color:#ef4444">3단계 연전!</div></div>
+        </button>
+        <button onclick="startGame('chemistry')" style="padding:12px 10px;border-radius:12px;border:1px solid rgba(124,91,240,0.3);background:linear-gradient(135deg,rgba(124,91,240,0.1),rgba(45,140,255,0.06));color:#fff;display:flex;align-items:center;gap:6px;font-family:inherit">
+          <span style="font-size:24px">💜</span>
+          <div style="text-align:left"><div style="font-size:12px;font-weight:900">궁합대결</div><div style="font-size:8px;color:#9ca3af">${z?z.emoji+' 띠 궁합':'케미 측정'}</div></div>
+        </button>
+        <button onclick="state.screen='leaderboard';render()" style="padding:12px 10px;border-radius:12px;border:1px solid rgba(201,168,76,0.3);background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.03));color:#fff;display:flex;align-items:center;gap:6px;font-family:inherit">
+          <span style="font-size:24px">🏆</span>
+          <div style="text-align:left"><div style="font-size:12px;font-weight:900">순위</div><div style="font-size:8px;color:#c9a84c">${personalBest>0?personalBest.toLocaleString()+'점':'랭킹 확인'}</div></div>
+        </button>
+        <button onclick="startGame('solo',true)" style="padding:12px 10px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.02);color:#9ca3af;display:flex;align-items:center;gap:6px;font-family:inherit">
+          <span style="font-size:24px">📖</span>
+          <div style="text-align:left"><div style="font-size:12px;font-weight:900">튜토리얼</div><div style="font-size:8px;color:#6b7280">처음이라면!</div></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ 내 전적 (재미요소!) ═══ -->
+    ${gameStats.totalGames > 0 ? `
+    <div style="${W};display:flex;gap:6px;margin-bottom:14px;animation:slideUp 0.65s">
+      <div style="flex:1;text-align:center;padding:8px;border-radius:10px;background:rgba(45,140,255,0.06);border:1px solid rgba(45,140,255,0.15)">
+        <div style="font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:#2D8CFF">${gameStats.totalGames}</div>
+        <div style="font-size:8px;color:#6b7280;font-weight:700;margin-top:2px">🎮 총 게임</div>
+      </div>
+      <div style="flex:1;text-align:center;padding:8px;border-radius:10px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15)">
+        <div style="font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:#ef4444">×${gameStats.bestCombo}</div>
+        <div style="font-size:8px;color:#6b7280;font-weight:700;margin-top:2px">🔥 최고콤보</div>
+      </div>
+      <div style="flex:1;text-align:center;padding:8px;border-radius:10px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15)">
+        <div style="font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:#c9a84c">${Math.round(gameStats.totalScore/gameStats.totalGames).toLocaleString()}</div>
+        <div style="font-size:8px;color:#6b7280;font-weight:700;margin-top:2px">📊 평균점수</div>
+      </div>
+    </div>` : ''}
+
+    <!-- ═══ 일일 도전 + 소비체크 ═══ -->
+    <div style="display:flex;gap:6px;${W};margin-bottom:10px;animation:slideUp 0.7s">
+      ${!state.selfReportDone?`<button onclick="showSelfReport()" style="flex:1;padding:9px 10px;border-radius:10px;border:1px solid rgba(0,214,143,0.25);background:rgba(0,214,143,0.05);color:#00D68F;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;font-family:inherit">💪 소비체크 → 🛡️</button>`:''}
+      <div style="flex:${state.selfReportDone?'1':'1'};padding:9px 10px;border-radius:10px;border:1px solid ${dcDone?'rgba(34,197,94,0.25)':'rgba(201,168,76,0.2)'};background:${dcDone?'rgba(34,197,94,0.05)':'rgba(201,168,76,0.05)'};display:flex;align-items:center;gap:6px">
+        <span style="font-size:16px">${dcDone?'✅':dc.emoji}</span>
+        <div style="font-size:10px;color:${dcDone?'#22c55e':'#c9a84c'};font-weight:700">${dcDone?'도전 클리어!':dc.desc}</div>
+      </div>
+    </div>
+
+    <!-- ═══ MISSION BOARD ═══ -->
+    <div style="${W};background:rgba(255,255,255,0.015);border:1px solid rgba(201,168,76,0.12);border-radius:12px;padding:10px 12px;margin-bottom:14px;animation:slideUp 0.75s">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:10px;color:#c9a84c;font-weight:800;display:flex;align-items:center;gap:4px">📋 일일 미션</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:9px;color:#9ca3af">${msDone}/${msTotal}</span>
+          <div style="width:50px;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.round(msDone/msTotal*100)}%;background:linear-gradient(90deg,#c9a84c,#e8d48b);border-radius:2px"></div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px">
+        ${MISSIONS.map(m=>{
+          const done = ms[m.id];
+          if (m.type==="link" && !done) return `<button onclick="goAnalyzeAndMission()" style="flex:1;min-width:90px;padding:7px 8px;border-radius:8px;border:1px solid rgba(124,91,240,0.3);background:rgba(124,91,240,0.08);display:flex;align-items:center;gap:5px;font-family:inherit;cursor:pointer"><span style="font-size:14px">${m.emoji}</span><div style="text-align:left"><div style="font-size:9px;color:#fff;font-weight:700">${m.name}</div><div style="font-size:7px;color:#9ca3af">🔋+${m.reward}</div></div></button>`;
+          if (m.type==="share" && !done) return `<button onclick="shareAndBonus('🧬 N-KAI 카이붐\\n오행 매칭 퍼즐로 내 금융 DNA 확인!\\n👉 neurinkairosai.com')" style="flex:1;min-width:90px;padding:7px 8px;border-radius:8px;border:1px solid rgba(45,140,255,0.3);background:rgba(45,140,255,0.08);display:flex;align-items:center;gap:5px;font-family:inherit;cursor:pointer"><span style="font-size:14px">${m.emoji}</span><div style="text-align:left"><div style="font-size:9px;color:#fff;font-weight:700">${m.name}</div><div style="font-size:7px;color:#9ca3af">🔋+${m.reward}</div></div></button>`;
+          return `<div style="flex:1;min-width:90px;padding:7px 8px;border-radius:8px;border:1px solid ${done?'rgba(34,197,94,0.2)':'rgba(255,255,255,0.05)'};background:${done?'rgba(34,197,94,0.05)':'transparent'};display:flex;align-items:center;gap:5px"><span style="font-size:14px">${done?'✅':m.emoji}</span><div><div style="font-size:9px;color:${done?'#22c55e':'#4b5563'};font-weight:700">${m.name}</div></div></div>`;
+        }).join("")}
+      </div>
+    </div>
+
+    <!-- ═══ N-KAI 분석 (자연스러운 CTA) ═══ -->
+    <a href="/?utm_source=kaiboom&utm_medium=menu_cta#mvp" style="display:flex;align-items:center;gap:12px;${W};padding:14px 16px;border-radius:14px;border:1px solid rgba(124,91,240,0.3);background:linear-gradient(135deg,rgba(124,91,240,0.1),rgba(45,140,255,0.06));color:#fff;text-decoration:none;margin-bottom:10px;animation:slideUp 0.8s">
+      <span style="font-size:32px">🧬</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:900">무료 금융 DNA 분석</div>
+        <div style="font-size:9px;color:#9ca3af;margin-top:2px">나의 아키타입 · N-Score · 골든타임 확인</div>
+      </div>
+      <span style="font-size:18px;color:#c9a84c">→</span>
+    </a>
+
+    <!-- ═══ FOOTER ═══ -->
+    <div style="text-align:center;margin-top:4px;animation:fadeIn 1s">
+      <div onclick="state.screen='analytics';render()" style="font-size:8px;color:#374151;cursor:pointer">© 2025 Neurin Kairos AI · Neural CDE™ · 📈</div>
+    </div>
+  </div>`;
+}
+
+function renderNoEnergyModal() {
+  const overlay = document.createElement("div");
+  overlay.id = "no-energy-modal";
+  Object.assign(overlay.style, {position:"fixed",inset:"0",background:"rgba(0,0,0,0.88)",zIndex:"80",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px",animation:"fadeIn 0.2s"});
+  overlay.innerHTML = `
+    <div style="background:#111827;border-radius:16px;padding:22px;max-width:360px;width:100%;border:1px solid rgba(255,255,255,0.1);text-align:center">
+      <div style="font-size:48px;margin-bottom:8px">😴</div>
+      <h3 style="color:#fff;font-size:16px;font-weight:900;margin:0 0 6px">에너지가 부족해요!</h3>
+      <div style="display:flex;justify-content:center;gap:4px;margin-bottom:12px">${energyBar(20)}</div>
+      ${state.energy<MAX_ENERGY?`<div style="font-size:10px;color:#6b7280;margin-bottom:10px">다음 충전까지 ⏱️ ${fmtTime(state.rechargeSec)}</div>`:""}
+      <div style="font-size:10px;color:#c9a84c;font-weight:700;margin-bottom:8px">🔋 에너지 충전 미션</div>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
+        <button onclick="document.getElementById('no-energy-modal')?.remove();shareAndBonus('🧬 N-KAI 카이붐\\n오행 매칭 퍼즐!\\n👉 neurinkairosai.com')" style="width:100%;padding:9px 14px;border-radius:8px;border:none;background:linear-gradient(135deg,#7C5BF0,#2D8CFF);color:#fff;font-size:11px;font-weight:700;font-family:inherit">📤 공유하고 🔋+1 충전!</button>
+        <button onclick="goAnalyzeAndMission()" style="width:100%;padding:9px 14px;border-radius:8px;border:none;background:linear-gradient(135deg,#c9a84c,#e8d48b);color:#0a0e1a;font-size:11px;font-weight:900;font-family:inherit">🧬 무료 분석 받고 🔋+2 충전!</button>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button onclick="shareAndBonus('🧬 N-KAI 카이붐!\\n오행 매칭 퍼즐로 내 금융 DNA 확인!\\n👉 neurinkairosai.com');document.getElementById('no-energy-modal')?.remove();" style="padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,#7C5BF0,#2D8CFF);color:#fff;font-size:13px;font-weight:900;font-family:inherit">📤 공유하면 🔋+1 충전!</button>
+        <div style="background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.05));border-radius:10px;padding:10px;border:1px solid rgba(201,168,76,0.2)">
+          <div style="font-size:11px;color:#fff;font-weight:700;margin-bottom:6px">🧬 N-KAI 분석하면 🔋+3!</div>
+          <a href="/?utm_source=kaiboom&utm_medium=no_energy#mvp" style="display:inline-block;padding:8px 20px;border-radius:8px;border:none;background:linear-gradient(135deg,#c9a84c,#e8d48b);color:#0a0e1a;font-size:10px;font-weight:900;text-decoration:none">🧬 무료 금융 DNA 분석 →</a>
+        </div>
+        <button onclick="state.showNoEnergy=false;document.getElementById('no-energy-modal')?.remove();" style="background:none;border:none;color:#4b5563;font-size:10px;margin-top:2px;font-family:inherit">닫기</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+function renderTutorial(cs) {
+  const steps = [
+    {title:"① 보석 선택",desc:"같은 보석 옆에 있는 보석을 탭하세요",visual:`<div style="display:flex;align-items:center;gap:4px;margin:16px 0"><div style="width:48px;height:48px;border-radius:11px;background:#22c55e22;border:2px solid #22c55e;display:flex;align-items:center;justify-content:center;font-size:24px">🌳</div><div style="width:48px;height:48px;border-radius:11px;background:#ef444422;border:2px solid #ef4444;display:flex;align-items:center;justify-content:center;font-size:24px;position:relative">🔥<div style="position:absolute;bottom:-24px;font-size:24px;animation:fingerMove 2s ease-in-out infinite">👆</div></div><div style="width:48px;height:48px;border-radius:11px;background:#22c55e22;border:1px solid #22c55e44;display:flex;align-items:center;justify-content:center;font-size:24px">🌳</div></div>`},
+    {title:"② 3개 매칭 = 점수!",desc:"같은 보석 3개가 나란히 있으면 매칭!",visual:`<div style="display:flex;gap:4px;margin:16px 0">${[0,0,0].map((_,i)=>`<div style="width:48px;height:48px;border-radius:11px;background:rgba(34,197,94,0.3);border:2px solid #22c55e;display:flex;align-items:center;justify-content:center;font-size:24px;animation:tapPulse 0.8s ${i*0.15}s infinite">🌳</div>`).join("")}<div style="display:flex;align-items:center;font-size:20px;color:#f0c674;font-weight:900;margin-left:8px">+30</div></div>`},
+    {title:"③ 상생 콤보 ×2!",desc:"木→火→土→金→水 순서로 매칭하면 2배!",visual:`<div style="display:flex;align-items:center;gap:4px;margin:16px 0">${ELEMENTS.map((el,i)=>`<div style="display:flex;align-items:center;gap:3px"><div style="width:34px;height:34px;border-radius:8px;background:${el.color}33;border:2px solid ${el.color};display:flex;align-items:center;justify-content:center;font-size:16px;animation:rotIn 0.4s ${i*0.15}s both">${el.emoji}</div>${i<4?'<span style="color:#f0c674;font-weight:900;font-size:11px">→</span>':''}</div>`).join("")}</div>`},
+    {title:"④ 아이템 활용!",desc:"3가지 아이템으로 위기를 극복하세요",visual:`<div style="display:flex;gap:10px;margin:16px 0">${[{e:"💣",n:"폭탄",d:"3×3 폭발"},{e:"⏰",n:"시계",d:"+10초"},{e:"🌈",n:"무지개",d:"색 변환"}].map((it,i)=>`<div style="text-align:center;animation:rotIn 0.4s ${i*0.15}s both"><div style="width:44px;height:44px;border-radius:11px;background:rgba(201,168,76,0.15);border:2px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:4px">${it.e}</div><div style="font-size:10px;color:#fff;font-weight:700">${it.n}</div><div style="font-size:9px;color:#6b7280">${it.d}</div></div>`).join("")}</div>`},
+    {title:"💡 3초 자동 힌트",desc:"멈추면 매칭 가능한 보석이 반짝!",visual:`<div style="display:flex;gap:4px;margin:16px 0"><div style="width:48px;height:48px;border-radius:11px;background:#3b82f622;display:flex;align-items:center;justify-content:center;font-size:24px">💧</div><div style="width:48px;height:48px;border-radius:11px;background:#eab30844;border:2px solid #eab308;display:flex;align-items:center;justify-content:center;font-size:24px;animation:hPulse 1s infinite">⛰️</div><div style="width:48px;height:48px;border-radius:11px;background:#eab30822;display:flex;align-items:center;justify-content:center;font-size:24px">⛰️</div></div>`},
+  ];
+  const step = steps[state.tutorialStep];
+  const overlay = document.createElement("div");
+  overlay.id = "tutorial-overlay";
+  Object.assign(overlay.style, {position:"fixed",inset:"0",background:"rgba(5,8,16,0.92)",zIndex:"100",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",animation:"fadeIn 0.3s",padding:"20px"});
+  overlay.innerHTML = `
+    <div style="display:flex;gap:6px;margin-bottom:24px">${steps.map((_,i)=>`<div style="width:7px;height:7px;border-radius:50%;background:${i===state.tutorialStep?"#c9a84c":"rgba(255,255,255,0.15)"}"></div>`).join("")}</div>
+    <div style="background:rgba(17,24,39,0.9);border-radius:16px;padding:22px 26px;border:1px solid rgba(255,255,255,0.1);max-width:330px;width:100%;text-align:center;animation:slideUp 0.4s">
+      <h3 style="color:#fff;font-size:17px;font-weight:900;margin:0 0 6px">${step.title}</h3>
+      <p style="color:#9ca3af;font-size:12px;line-height:1.7;margin:0">${step.desc}</p>
+      <div style="display:flex;justify-content:center">${step.visual}</div>
+    </div>
+    <button onclick="nextTutorial()" style="margin-top:18px;padding:12px 40px;border-radius:12px;border:none;background:${state.tutorialStep>=4?"linear-gradient(135deg,#c9a84c,#e8d48b)":"rgba(255,255,255,0.1)"};color:${state.tutorialStep>=4?"#0a0e1a":"#fff"};font-size:13px;font-weight:900;font-family:${state.tutorialStep>=4?"'Orbitron',monospace":"inherit"}">${state.tutorialStep>=4?"▶ 게임 시작!":"다음 →"}</button>
+    ${state.tutorialStep<4?'<button onclick="skipTutorial()" style="margin-top:6px;background:none;border:none;color:#4b5563;font-size:10px;cursor:pointer">건너뛰기</button>':""}`;
+  document.body.appendChild(overlay);
+}
+
+function nextTutorial() {
+  const el = $("tutorial-overlay"); if(el) el.remove();
+  if (state.tutorialStep >= 4) { state.screen = "playing"; startTimer(); resetHintTimer(); render(); }
+  else { state.tutorialStep++; render(); }
+}
+function skipTutorial() {
+  const el = $("tutorial-overlay"); if(el) el.remove();
+  state.screen = "playing"; startTimer(); resetHintTimer(); render();
+}
+
+function renderPlaying(cs) {
+  const bw = BOARD_SIZE*(cs+3)+16;
+  let cells = "";
+  for (let r=0;r<BOARD_SIZE;r++) for (let c=0;c<BOARD_SIZE;c++) {
+    const cell = state.board[r][c];
+    const el = ELEMENTS[cell]||ELEMENTS[0];
+    const isSel = state.selected && state.selected[0]===r && state.selected[1]===c;
+    const isMat = state.matchedCells.has(`${r},${c}`);
+    const isHint = state.hintCells && state.hintCells.some(([hr,hc])=>hr===r&&hc===c);
+    const isFirst = isHint && state.moveCount < 3;
+    cells += `<div onclick="handleCell(${r},${c})" style="touch-action:none;width:${cs}px;height:${cs}px;border-radius:8px;position:relative;background:${state.activeItem?'linear-gradient(135deg,rgba(240,198,116,0.08),rgba(240,198,116,0.15))':isSel?`linear-gradient(135deg,${el.color}55,${el.color}88)`:`linear-gradient(135deg,${el.color}11,${el.color}22)`};border:${isSel?`2px solid ${el.color}`:isHint?'2px solid rgba(255,255,255,0.5)':'1px solid rgba(255,255,255,0.05)'};display:flex;align-items:center;justify-content:center;font-size:${cs*0.44}px;cursor:pointer;transition:all 0.15s;animation:${isMat?'pop 0.32s forwards':isHint?'hPulse 1s infinite':state.dropping?'drop 0.25s':'none'};box-shadow:${isSel?`0 0 14px ${el.shadow}`:'none'};transform:${isSel?'scale(1.08)':'scale(1)'}">${el.emoji}${isFirst?'<div style="position:absolute;bottom:-2px;right:-2px;font-size:10px;animation:tapHere 1s infinite;pointer-events:none">👆</div>':''}</div>`;
+  }
+
+  const itemBtns = [{key:"bomb",emoji:"💣",act:`state.activeItem=state.activeItem==='bomb'?null:'bomb';render()`},
+    {key:"clock",emoji:"⏰",act:"useClock()"},
+    {key:"rainbow",emoji:"🌈",act:`state.activeItem=state.activeItem==='rainbow'?null:'rainbow';render()`}]
+    .map(it=>`<button onclick="${it.act}" ${state.items[it.key]<=0||state.processing?"disabled":""} style="padding:4px 8px;border-radius:8px;border:${state.activeItem===it.key?'2px solid #f0c674':'1px solid rgba(255,255,255,0.1)'};background:${state.activeItem===it.key?'rgba(240,198,116,0.15)':'rgba(255,255,255,0.03)'};opacity:${state.items[it.key]>0?1:0.3};display:flex;align-items:center;gap:4px;font-size:10px;color:#fff;font-family:inherit"><span style="font-size:14px">${it.emoji}</span><span style="font-size:9px;color:#6b7280">×${state.items[it.key]}</span></button>`).join("");
+
+  const synGuide = ELEMENTS.map((el,i)=>`<span style="opacity:${state.lastElement===el.id?1:0.3};font-size:11px">${el.emoji}</span>${i<4?'<span style="color:#374151;font-size:7px">→</span>':''}`).join("")+`<span style="color:#374151;font-size:7px">→</span><span style="opacity:${state.lastElement===0?1:0.3};font-size:11px">🌳</span><span style="margin-left:2px;color:#f0c674;font-weight:700;font-size:9px">= ×2</span>`;
+
+  return `
+  <div style="height:100%;background:linear-gradient(180deg,#050810 0%,#0a0e1a 40%,#111827 100%);display:flex;flex-direction:column;align-items:center;padding:12px;overflow:hidden;touch-action:none">
+    ${state.mode==="chemistry"?'<div style="background:linear-gradient(90deg,#7C5BF0,#2D8CFF);border-radius:20px;padding:3px 12px;margin-bottom:4px;font-size:9px;color:#fff;font-weight:700;letter-spacing:1px">💜 궁합 대결</div>':""}
+    ${state.mode==="bossRush"?(()=>{const b=BOSS_RUSH[state.bossWave]||BOSS_RUSH[0];const hpPct=Math.max(0,Math.round(state.bossHp/state.bossMaxHp*100));return `
+    <div style="width:100%;max-width:${bw}px;margin-bottom:4px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+        <div style="font-size:9px;color:#ef4444;font-weight:900;letter-spacing:1px">⚔️ WAVE ${state.bossWave+1}/3</div>
+        <div style="font-size:10px;color:#fff;font-weight:800">${b.emoji} ${b.name}</div>
+        <div style="font-size:9px;color:#ef4444;font-weight:700">${state.bossHp}/${state.bossMaxHp}</div>
+      </div>
+      <div style="width:100%;height:8px;background:rgba(239,68,68,0.15);border-radius:4px;overflow:hidden;border:1px solid rgba(239,68,68,0.3)">
+        <div style="height:100%;width:${hpPct}%;background:linear-gradient(90deg,#ef4444,#f97316);border-radius:4px;transition:width 0.3s"></div>
+      </div>
+      <div style="font-size:7px;color:#9ca3af;text-align:center;margin-top:1px">💡 약점: ${ELEMENTS[b.weakness].emoji} ${ELEMENTS[b.weakness].name} (×2 대미지)</div>
+    </div>`;})():""}
+    <div style="display:flex;align-items:center;gap:3px;margin-bottom:3px">${energyBar(12)}<span style="font-size:8px;color:#6b7280;margin-left:2px">${state.energy}/${MAX_ENERGY}</span>${state.boostActive?`<span style="font-size:8px;background:${ELEMENTS[state.boostElement].color}33;color:${ELEMENTS[state.boostElement].color};padding:1px 5px;border-radius:4px;margin-left:3px;font-weight:700">${ELEMENTS[state.boostElement].emoji}×3</span>`:''}</div>
+    <!-- HUD -->
+    <div style="display:flex;justify-content:space-between;align-items:center;width:100%;max-width:${bw}px;margin-bottom:4px;padding:0 2px">
+      <div><div style="font-size:7px;color:#6b7280;letter-spacing:2px">SCORE</div><div style="font-family:'Orbitron',monospace;font-size:18px;font-weight:900;color:#c9a84c">${state.score.toLocaleString()}</div></div>
+      <div style="text-align:center;position:relative;min-width:90px;min-height:22px">
+        ${state.comboText?`<div style="font-size:13px;font-weight:900;color:${state.combo>=5?'#f0c674':state.combo>=3?'#ef4444':'#5AA8FF'};animation:cFloat 0.8s forwards;font-family:'Orbitron',monospace;position:absolute;width:100%">${state.comboText.text}</div>`:""}
+        ${state.synergyFlash?'<div style="font-size:9px;font-weight:900;color:#f0c674;animation:cFloat 1s forwards;position:absolute;top:-14px;width:100%;white-space:nowrap">✨ 상생 ×2 ✨</div>':""}
+      </div>
+      <div style="text-align:right"><div style="font-size:7px;color:#6b7280;letter-spacing:2px">TIME</div><div style="font-family:'Orbitron',monospace;font-size:18px;font-weight:900;color:${state.timeLeft<=10?'#ef4444':state.timeLeft<=20?'#eab308':'#00D68F'};animation:${state.timeLeft<=5?'tPulse 0.5s infinite':'none'}">${state.timeLeft}</div></div>
+    </div>
+    <!-- Timer bar -->
+    <div style="width:${bw}px;height:3px;background:rgba(255,255,255,0.05);border-radius:2px;margin-bottom:4px;overflow:hidden"><div style="height:100%;border-radius:2px;background:${state.timeLeft<=10?'#ef4444':state.timeLeft<=20?'#eab308':'linear-gradient(90deg,#00D68F,#2D8CFF)'};width:${(state.timeLeft/(state.maxTime||GAME_TIME))*100}%;transition:width 1s linear"></div></div>
+    <!-- Items -->
+    <div style="display:flex;gap:6px;margin-bottom:5px">${itemBtns}</div>
+    ${state.activeItem?`<div style="font-size:9px;color:#f0c674;margin-bottom:3px;animation:fadeIn 0.3s">${state.activeItem==='bomb'?'💣 폭탄 모드: 보드를 탭하세요!':'🌈 변환 모드: 바꿀 보석을 탭하세요!'}</div>`:""}
+    <!-- Board -->
+    <div style="display:grid;grid-template-columns:repeat(${BOARD_SIZE},${cs}px);gap:3px;padding:7px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid ${state.mode==='chemistry'?'rgba(124,91,240,0.2)':'rgba(255,255,255,0.06)'};animation:${state.shakeBoard?'shake 0.3s':state.synergyFlash?'synGlow 0.8s':'none'}">${cells}</div>
+    <!-- Synergy -->
+    <div style="display:flex;align-items:center;gap:2px;margin-top:5px;font-size:8px;color:#4b5563">${synGuide}</div>
+    <!-- Controls -->
+    <div style="display:flex;gap:8px;margin-top:5px">
+      <button onclick="state.soundOn=!state.soundOn;render()" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:#6b7280;font-size:8px;padding:2px 7px">${state.soundOn?"🔊":"🔇"}</button>
+      <button onclick="state.showHelp=!state.showHelp;renderHelp()" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:#6b7280;font-size:8px;padding:2px 7px">❓</button>
+      <button onclick="if(timerId)clearInterval(timerId);timerId=null;clearAllGT();state.processing=false;state.screen='menu';render()" style="background:none;border:1px solid rgba(255,255,255,0.1);border-radius:7px;color:#6b7280;font-size:8px;padding:2px 7px">✕</button>
+    </div>
+  </div>`;
+}
+
+function renderHelp() {
+  let el = $("help-overlay"); if(el){el.remove();return;}
+  el = document.createElement("div"); el.id="help-overlay";
+  Object.assign(el.style,{position:"fixed",inset:"0",background:"rgba(0,0,0,0.85)",zIndex:"50",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px",animation:"fadeIn 0.2s"});
+  el.onclick = ()=>el.remove();
+  el.innerHTML = `<div style="background:#111827;border-radius:14px;padding:18px;max-width:360px;border:1px solid rgba(255,255,255,0.1)">
+    <h3 style="color:#c9a84c;font-size:14px;font-weight:900;margin:0 0 10px">🎮 플레이 방법</h3>
+    <div style="font-size:11px;color:#d1d5db;line-height:2">
+      1️⃣ 보석을 <b>탭</b>하여 선택<br>2️⃣ 옆 보석을 <b>탭</b>하여 교환<br>3️⃣ <b>3개 이상</b> 같은 보석 → 매칭!<br>4️⃣ 연속 매칭 = <b style="color:#ef4444">콤보</b><br>5️⃣ <b style="color:#f0c674">상생</b>(木→火→土→金→水) = <b style="color:#f0c674">×2배</b><br><br>💣 <b>폭탄</b>: 3×3 폭발<br>⏰ <b>시계</b>: +10초<br>🌈 <b>변환</b>: 보석 색 변경
+    </div>
+    <button onclick="this.parentElement.parentElement.remove()" style="margin-top:12px;padding:8px 24px;border-radius:8px;border:none;background:rgba(255,255,255,0.1);color:#fff;font-size:11px;font-weight:700;width:100%;font-family:inherit">닫기</button>
+  </div>`;
+  document.body.appendChild(el);
+}
+
+function renderResult() {
+  const g = getGrade(state.score);
+  const dom = state.elementCounts.indexOf(Math.max(...state.elementCounts));
+  const weakest = state.elementCounts.indexOf(Math.min(...state.elementCounts));
+  const tot = state.elementCounts.reduce((a,b)=>a+b,0)||1;
+  const pct = getPercentile(state.score);
+  const boss = getDailyBoss();
+  const bossDefeated = state.score >= 1500;
+  const weakEl = ELEMENTS[weakest];
+  const isNewBest = updateBest(state.score);
+  const dc = getDailyChallenge();
+  const dcCleared = dc.check(state);
+  if(dcCleared&&!dailyChallengeCleared){dailyChallengeCleared=true;localStorage.setItem("nkai_challenge_date",new Date().toDateString());state.energy=Math.min(state.energy+1,MAX_ENERGY);completeMission("challenge");}
+  if(bossDefeated)completeMission("boss");
+  const sTxt = `🧬 N-KAI 카이붐!\\n${boss.emoji} ${boss.name} ${bossDefeated?"격파!":"아쉽게 실패.."}\\n${g.grade} ${g.title} — ${state.score.toLocaleString()}점\\n전국 ${totalPlayers.toLocaleString()}명 중 상위 ${pct}%\\n👉 neurinkairosai.com`;
+  const sosTxt = `🆘 카이붐 SOS!\\n${boss.emoji} ${boss.name}한테 졌어... 😭\\n너의 오행 에너지가 필요해!\\n내 금융 DNA 확인하고 나 좀 구해줘!\\n👉 neurinkairosai.com/game.html`;
+  const bars = ELEMENTS.map((el,i)=>{const p=Math.round((state.elementCounts[i]/tot)*100);return `<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px"><span style="font-size:13px;width:18px">${el.emoji}</span><div style="flex:1;height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden"><div style="height:100%;border-radius:3px;background:${el.color};width:${p}%;animation:barG 1s ease-out ${0.5+i*0.15}s both"></div></div><span style="font-size:10px;color:${el.color};font-weight:700;width:28px;text-align:right">${p}%</span></div>`;}).join("");
+
+  return `
+  <div style="min-height:100%;background:linear-gradient(180deg,#050810 0%,#0a0e1a 40%,#111827 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px">
+    <!-- Boss Result -->
+    <div style="text-align:center;margin-bottom:10px;animation:slideUp 0.4s">
+      <span style="font-size:36px">${boss.emoji}</span>
+      <div style="font-size:10px;color:${bossDefeated?'#22c55e':'#ef4444'};font-weight:700;letter-spacing:2px">${bossDefeated?'⚔️ BOSS DEFEATED!':'💀 BOSS SURVIVED...'}</div>
+      <div style="font-size:13px;color:#fff;font-weight:900">${boss.name} ${bossDefeated?'격파!':'— 다음엔 반드시!'}</div>
+    </div>
+    <!-- Grade -->
+    <div style="text-align:center;margin-bottom:14px;animation:gradeR 0.8s cubic-bezier(0.34,1.56,0.64,1)">
+      <div style="width:72px;height:72px;border-radius:50%;margin:0 auto 8px;background:linear-gradient(135deg,${g.color}33,${g.color}66);border:3px solid ${g.color};display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px ${g.color}44"><span style="font-family:'Orbitron',monospace;font-size:24px;font-weight:900;color:${g.color}">${g.grade}</span></div>
+      <h2 style="color:#fff;font-size:16px;font-weight:900;margin:0 0 2px">${g.title}</h2>
+      <p style="color:#9ca3af;font-size:10px;margin:0">${g.desc}</p>
+    </div>
+    <!-- Ranking -->
+    <div style="background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.05));border-radius:10px;padding:8px 16px;margin-bottom:10px;text-align:center;border:1px solid rgba(201,168,76,0.2);max-width:360px;width:100%;animation:slideUp 0.5s 0.2s both">
+      <div style="font-size:9px;color:#c9a84c;letter-spacing:2px;font-weight:700">NATIONAL RANKING</div>
+      <div style="font-size:14px;color:#fff;font-weight:900">전국 <span style="color:#c9a84c">${totalPlayers.toLocaleString()}</span>명 중 상위 <span style="color:${pct<=10?'#f0c674':pct<=30?'#22c55e':'#5AA8FF'};font-family:'Orbitron',monospace;font-size:18px">${pct}%</span></div>
+      <div style="height:4px;background:rgba(255,255,255,0.05);border-radius:2px;margin-top:4px;overflow:hidden"><div style="height:100%;width:${100-pct}%;background:linear-gradient(90deg,#c9a84c,#e8d48b);border-radius:2px;animation:barG 1s ease-out"></div></div>
+    </div>
+    <!-- Score Card -->
+    <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.08);max-width:360px;width:100%;margin-bottom:10px;animation:slideUp 0.6s 0.3s both">
+      <div style="text-align:center;margin-bottom:8px"><div style="font-size:9px;color:#c9a84c;letter-spacing:2px;font-weight:700">TOTAL SCORE</div><div style="font-family:'Orbitron',monospace;font-size:34px;font-weight:900;background:linear-gradient(135deg,#c9a84c,#e8d48b);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 3s linear infinite">${state.score.toLocaleString()}</div></div>
+      <div style="display:flex;justify-content:space-around;margin-bottom:8px">
+        <div style="text-align:center"><div style="font-size:8px;color:#6b7280">COMBO</div><div style="font-size:14px;font-weight:900;color:#ef4444">×${state.maxCombo}</div></div>
+        <div style="text-align:center"><div style="font-size:8px;color:#6b7280">MATCH</div><div style="font-size:14px;font-weight:900;color:#3b82f6">${state.totalMatches}</div></div>
+        <div style="text-align:center"><div style="font-size:8px;color:#6b7280">DOMINANT</div><div style="font-size:14px">${ELEMENTS[dom]?.emoji}</div></div>
+      </div>
+      <div style="font-size:9px;color:#c9a84c;letter-spacing:2px;font-weight:700;margin-bottom:5px">ENERGY BALANCE</div>
+      ${bars}
+    </div>
+    <!-- Actions -->
+    <div style="display:flex;flex-direction:column;gap:7px;max-width:360px;width:100%;animation:slideUp 0.6s 0.5s both">
+      <button onclick="shareAndBonus('${sTxt}')" style="width:100%;padding:13px 20px;border-radius:12px;border:none;background:linear-gradient(135deg,#7C5BF0,#2D8CFF);color:#fff;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 20px rgba(124,91,240,0.3);font-family:inherit">📤 내 랭킹 공유하기 ${!state.shareBonus?'<span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:6px">🔋+1</span>':""}</button>
+      ${!bossDefeated?`<button onclick="shareText('${sosTxt}')" style="width:100%;padding:11px 16px;border-radius:10px;border:2px solid rgba(239,68,68,0.3);background:rgba(239,68,68,0.08);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;font-family:inherit">🆘 친구에게 SOS 보내기!</button>`:''}
+      <div style="background:linear-gradient(135deg,rgba(124,91,240,0.12),rgba(45,140,255,0.12));border-radius:10px;padding:9px 12px;border:1px solid rgba(124,91,240,0.25);text-align:center">
+        ${playerZodiac?`<div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:6px"><span style="font-size:18px">${playerZodiac.emoji}</span><span style="font-size:10px;color:#c9a84c;font-weight:700">${playerZodiac.name}띠 · ${playerZodiac.trait}</span>${playerArchetype?`<span style="font-size:10px;color:${playerArchetype.color}">${playerArchetype.icon} ${playerArchetype.group}</span>`:''}</div>`:''}
+        <div style="font-size:10px;color:#fff;font-weight:700;margin-bottom:5px">🧬 내 금융 DNA = 게임 스킬</div>
+        <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:5px">${ARCHETYPES.map(a=>`<span style="padding:2px 6px;border-radius:5px;font-size:8px;background:${a.color}22;color:${a.color};border:1px solid ${a.color}44">${a.icon} ${a.skill}</span>`).join("")}</div>
+        <div style="font-size:9px;color:#9ca3af;margin-bottom:5px">무료 AI 분석으로 나의 아키타입을 알아보세요!</div>
+        <a href="/?utm_source=kaiboom&utm_medium=result_cta#mvp" style="display:inline-block;padding:8px 22px;border-radius:8px;border:none;background:linear-gradient(135deg,#7C5BF0,#2D8CFF);color:#fff;font-size:11px;font-weight:900;text-decoration:none;box-shadow:0 2px 12px rgba(124,91,240,0.3)">🔓 무료 아키타입 분석하기 →</a>
+      </div>
+      <div style="display:flex;gap:7px;justify-content:center">
+        <button onclick="startGame('solo')" style="padding:9px 20px;border-radius:10px;border:none;background:linear-gradient(135deg,#c9a84c,#e8d48b);color:#0a0e1a;font-size:12px;font-weight:900;font-family:'Orbitron',monospace">▶ RETRY</button>
+        <button onclick="state.screen='leaderboard';render()" style="padding:9px 14px;border-radius:10px;border:none;background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.05));border:1px solid rgba(201,168,76,0.3);color:#c9a84c;font-size:10px;font-weight:700;font-family:inherit">🏆 순위</button>
+        <button onclick="state.screen='menu';render()" style="padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#9ca3af;font-size:10px;font-family:inherit">MENU</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderChemResult() {
+  const g = getGrade(state.score); const rg = getGrade(state.rival.score);
+  const ci = CHEM_TITLES.find(c=>state.chemScore>=c.min)||CHEM_TITLES[5];
+  const rT = state.rival.counts.reduce((a,b)=>a+b,0)||1;
+  const tot = state.elementCounts.reduce((a,b)=>a+b,0)||1;
+  const sTxt = `🧬 N-KAI 카이붐 궁합!\\n나 vs ${state.rival.name}: ${state.chemScore}% ${ci.title}\\n👉 neurinkairosai.com`;
+
+  const comparison = state.chemRevealed ? ELEMENTS.map((el,i)=>{
+    const mp=Math.round((state.elementCounts[i]/tot)*100);
+    const rp=Math.round((state.rival.counts[i]/rT)*100);
+    return `<div style="margin-bottom:5px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1px"><span style="font-size:9px;color:#9ca3af">${mp}%</span><span style="font-size:13px">${el.emoji}</span><span style="font-size:9px;color:#9ca3af">${rp}%</span></div><div style="display:flex;gap:2px;height:5px"><div style="flex:1;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;direction:rtl"><div style="width:${mp}%;height:100%;background:${el.color};border-radius:3px;animation:barG 0.8s ${i*0.1}s both"></div></div><div style="flex:1;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden"><div style="width:${rp}%;height:100%;background:${el.color}88;border-radius:3px;animation:barG 0.8s ${i*0.1+0.05}s both"></div></div></div></div>`;
+  }).join("") : "";
+
+  return `
+  <div style="min-height:100%;background:linear-gradient(180deg,#050810 0%,#0a0e1a 40%,#111827 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px">
+    <!-- VS -->
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;animation:slideUp 0.5s">
+      <div style="text-align:center"><div style="width:52px;height:52px;border-radius:50%;background:${g.color}33;border:2px solid ${g.color};display:flex;align-items:center;justify-content:center;margin:0 auto 4px"><span style="font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:${g.color}">${g.grade}</span></div><div style="font-size:10px;color:#fff;font-weight:700">나</div><div style="font-family:'Orbitron',monospace;font-size:14px;font-weight:900;color:#c9a84c">${state.score.toLocaleString()}</div></div>
+      <div style="animation:vsFlash 0.6s 0.3s both"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7C5BF0,#2D8CFF);display:flex;align-items:center;justify-content:center"><span style="font-family:'Orbitron',monospace;font-size:11px;font-weight:900;color:#fff">VS</span></div></div>
+      <div style="text-align:center"><div style="width:52px;height:52px;border-radius:50%;background:${rg.color}33;border:2px solid ${rg.color};display:flex;align-items:center;justify-content:center;margin:0 auto 4px"><span style="font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:${rg.color}">${rg.grade}</span></div><div style="font-size:10px;color:#fff;font-weight:700">${state.rival.name}</div><div style="font-family:'Orbitron',monospace;font-size:14px;font-weight:900;color:#c9a84c">${state.rival.score.toLocaleString()}</div></div>
+    </div>
+    <!-- Chemistry -->
+    <div style="text-align:center;margin-bottom:16px;animation:slideUp 0.6s 0.4s both">
+      ${!state.chemRevealed?`<button onclick="state.chemRevealed=true;render()" style="padding:14px 44px;border-radius:14px;border:none;background:linear-gradient(135deg,#7C5BF0,#2D8CFF);color:#fff;font-size:15px;font-weight:900;animation:chemP 2s infinite;font-family:inherit">💜 궁합 결과 확인</button>`:
+      `<div style="animation:countUp 0.6s cubic-bezier(0.34,1.56,0.64,1)"><div style="font-size:52px;animation:heartBeat 1s;display:inline-block">${ci.emoji}</div><div style="font-family:'Orbitron',monospace;font-size:44px;font-weight:900;color:${ci.color}">${state.chemScore}%</div><div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:2px">${ci.title}</div><div style="font-size:11px;color:#9ca3af">${ci.desc}</div>${playerZodiac?`<div style="margin-top:8px;padding:6px 12px;border-radius:8px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);display:inline-block"><span style="font-size:14px">${playerZodiac.emoji}</span> <span style="font-size:10px;color:#c9a84c;font-weight:700">${playerZodiac.name}띠의 ${playerZodiac.trait}</span></div>`:''}</div>`}
+    </div>
+    ${state.chemRevealed?`
+    <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,0.08);max-width:360px;width:100%;margin-bottom:12px;animation:slideUp 0.6s 0.2s both">
+      <div style="font-size:9px;color:#c9a84c;letter-spacing:2px;font-weight:700;margin-bottom:8px">ENERGY COMPARISON</div>
+      ${comparison}
+      <div style="display:flex;justify-content:space-between;font-size:8px;color:#6b7280;margin-top:2px"><span>← 나</span><span>${state.rival.name} →</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;max-width:360px;width:100%;animation:slideUp 0.6s 0.5s both">
+      <button onclick="shareAndBonus('${sTxt}')" style="width:100%;padding:14px 24px;border-radius:12px;border:none;background:linear-gradient(135deg,#7C5BF0,#2D8CFF);color:#fff;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 20px rgba(124,91,240,0.3);font-family:inherit">📤 궁합 결과 공유하기 ${!state.shareBonus?'<span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 6px;border-radius:6px">🔋+1</span>':""}</button>
+      <div style="background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.05));border-radius:10px;padding:10px 14px;border:1px solid rgba(201,168,76,0.2);text-align:center">
+        <div style="font-size:11px;color:#fff;font-weight:700;margin-bottom:6px">🧬 진짜 금융 궁합이 궁금하다면?</div>
+        <a href="/?utm_source=kaiboom&utm_medium=chem_result#mvp" style="display:inline-block;padding:8px 20px;border-radius:8px;border:none;background:linear-gradient(135deg,#c9a84c,#e8d48b);color:#0a0e1a;font-size:10px;font-weight:900;text-decoration:none">💜 무료 금융 궁합 분석 →</a>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center">
+        <button onclick="startGame('chemistry')" style="padding:10px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,#c9a84c,#e8d48b);color:#0a0e1a;font-size:12px;font-weight:900;font-family:'Orbitron',monospace">▶ 다시 대결</button>
+        <button onclick="state.screen='menu';render()" style="padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#9ca3af;font-size:11px;font-family:inherit">MENU</button>
+      </div>
+    </div>`:""}
+  </div>`;
+}
+
+// ─── Leaderboard Screen ───
+function renderLeaderboard() {
+  const lb = getLeaderboard();
+  const rows = lb.map((p,i)=>{
+    const rank = i+1;
+    const medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':`<span style="color:#6b7280;font-size:10px">${rank}</span>`;
+    const bg = p.isMe ? 'rgba(201,168,76,0.12)' : 'rgba(255,255,255,0.02)';
+    const border = p.isMe ? 'border:1px solid rgba(201,168,76,0.3)' : 'border:1px solid rgba(255,255,255,0.04)';
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:${bg};${border};animation:slideUp ${0.3+i*0.05}s">
+      <div style="width:24px;text-align:center;font-size:16px">${medal}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;color:${p.isMe?'#c9a84c':'#fff'};font-weight:${p.isMe?900:600};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.zodiac||''} ${p.name}${p.isMe?' ← 나!':''}</div>
+        <div style="font-size:8px;color:#6b7280">${p.arch||''}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:${rank<=3?'#c9a84c':'#9ca3af'}">${p.score.toLocaleString()}</div>
+        <div style="font-size:8px;color:${p.grade==='S'?'#ef4444':p.grade.startsWith('A')?'#c9a84c':'#6b7280'};font-weight:700">${p.grade}</div>
+      </div>
+    </div>`;
+  }).join("");
+
+  const myRank = lb.findIndex(p=>p.isMe);
+  const myRankText = myRank >= 0 ? `내 순위: ${myRank+1}위` : '아직 기록 없음';
+
+  return `<div style="min-height:100%;background:linear-gradient(180deg,#050810,#0a0e1a,#111827);display:flex;flex-direction:column;align-items:center;padding:16px;overflow-y:auto">
+    <div style="font-size:10px;color:#c9a84c;letter-spacing:4px;font-weight:700;margin-bottom:4px;animation:fadeIn 0.3s">LEADERBOARD</div>
+    <div style="font-size:28px;margin-bottom:2px">🏆</div>
+    <div style="font-size:14px;color:#fff;font-weight:900;margin-bottom:2px">${myRankText}</div>
+    <div style="font-size:9px;color:#6b7280;margin-bottom:14px">게임할수록 순위 상승! 500점 이상 자동 기록</div>
+    <div style="display:flex;flex-direction:column;gap:4px;max-width:380px;width:100%;margin-bottom:16px">${rows}</div>
+    <div style="display:flex;gap:8px">
+      <button onclick="startGame('solo')" style="padding:10px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,#c9a84c,#e8d48b);color:#0a0e1a;font-size:12px;font-weight:900;font-family:'Orbitron',monospace">🎯 순위 올리기</button>
+      <button onclick="state.screen='menu';render()" style="padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#9ca3af;font-size:11px;font-family:inherit">MENU</button>
+    </div>
+    <a href="/?utm_source=kaiboom&utm_medium=leaderboard#mvp" style="display:inline-block;margin-top:12px;padding:8px 20px;border-radius:8px;background:linear-gradient(135deg,rgba(124,91,240,0.2),rgba(45,140,255,0.2));border:1px solid rgba(124,91,240,0.3);color:#fff;font-size:10px;font-weight:700;text-decoration:none">🧬 무료 분석으로 아키타입 스킬 강화 →</a>
+    <div style="margin-top:12px;font-size:8px;color:#4b5563">© 2025 Neurin Kairos AI · Neural CDE™</div>
+  </div>`;
+}
+
+// ─── Boss Victory Screen ───
+function renderBossVictory() {
+  return `<div style="min-height:100%;background:linear-gradient(180deg,#050810,#0a0e1a,#111827);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;animation:fadeIn 0.5s">
+    <div style="font-size:60px;animation:pop 0.5s">🏆</div>
+    <div style="font-size:10px;color:#c9a84c;letter-spacing:4px;font-weight:700;margin-top:8px">BOSS RUSH</div>
+    <h2 style="font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:#fff;margin:6px 0 4px;background:linear-gradient(135deg,#c9a84c,#e8d48b);-webkit-background-clip:text;-webkit-text-fill-color:transparent">COMPLETE!</h2>
+    <div style="font-size:13px;color:#22c55e;font-weight:700;margin-bottom:12px">3단계 보스 전원 격파! 🎉</div>
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      ${BOSS_RUSH.map((b,i)=>`<div style="padding:8px 10px;border-radius:10px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);text-align:center">
+        <div style="font-size:22px">${b.emoji}</div>
+        <div style="font-size:8px;color:#22c55e;font-weight:700">✅ 격파!</div>
+        <div style="font-size:7px;color:#6b7280">${b.name}</div>
+      </div>`).join("")}
+    </div>
+    <div style="padding:10px 16px;border-radius:10px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);margin-bottom:16px">
+      <div style="font-size:9px;color:#c9a84c;font-weight:700">🏆 전설의 금융 전사 칭호 획득!</div>
+      <div style="font-size:8px;color:#6b7280;margin-top:2px">${playerZodiac?playerZodiac.emoji+' '+playerZodiac.name+'띠':''}${playerArchetype?' · '+playerArchetype.icon+' '+playerArchetype.group:''}</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button onclick="startBossRush()" style="padding:10px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;font-size:12px;font-weight:900;font-family:'Orbitron',monospace">⚔️ 재도전</button>
+      <button onclick="state.screen='menu';render()" style="padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#9ca3af;font-size:11px;font-family:inherit">MENU</button>
+    </div>
+    <a href="/?utm_source=kaiboom&utm_medium=boss_victory#mvp" style="display:inline-block;padding:10px 24px;border-radius:10px;background:linear-gradient(135deg,#c9a84c,#e8d48b);color:#0a0e1a;font-size:11px;font-weight:900;text-decoration:none">🧬 무료 분석 → 진짜 금융 DNA 확인!</a>
+  </div>`;
+}
+
+// ─── Boss Defeat Screen ───
+function renderBossDefeat() {
+  const b = BOSS_RUSH[state.bossWave] || BOSS_RUSH[0];
+  const hpLeft = state.bossHp || 0;
+  const hpPct = Math.round(hpLeft / (state.bossMaxHp||1) * 100);
+  return `<div style="min-height:100%;background:linear-gradient(180deg,#050810,#0a0e1a,#111827);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;animation:fadeIn 0.5s">
+    <div style="font-size:60px;animation:pop 0.5s">${b.emoji}</div>
+    <div style="font-size:10px;color:#ef4444;letter-spacing:4px;font-weight:700;margin-top:8px">DEFEATED</div>
+    <h2 style="font-size:18px;font-weight:900;color:#fff;margin:6px 0 4px">Wave ${state.bossWave+1}에서 패배...</h2>
+    <div style="font-size:11px;color:#9ca3af;margin-bottom:4px">${b.name}의 HP ${hpPct}% 남음</div>
+    <div style="width:200px;height:6px;background:rgba(239,68,68,0.15);border-radius:3px;overflow:hidden;margin-bottom:14px;border:1px solid rgba(239,68,68,0.2)">
+      <div style="height:100%;width:${hpPct}%;background:#ef4444;border-radius:3px"></div>
+    </div>
+    <div style="padding:10px 16px;border-radius:10px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);margin-bottom:14px;max-width:260px">
+      <div style="font-size:9px;color:#c9a84c;font-weight:700;margin-bottom:4px">💡 공략 팁</div>
+      <div style="font-size:9px;color:#9ca3af">약점 ${ELEMENTS[b.weakness].emoji} ${ELEMENTS[b.weakness].name} 보석을 우선 매칭하면 ×2 대미지!</div>
+      <div style="font-size:9px;color:#9ca3af;margin-top:2px">상생 콤보 + 띠 보너스 활용하세요</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button onclick="startBossRush()" style="padding:10px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;font-size:12px;font-weight:900;font-family:'Orbitron',monospace">⚔️ 재도전!</button>
+      <button onclick="state.screen='menu';render()" style="padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#9ca3af;font-size:11px;font-family:inherit">MENU</button>
+    </div>
+    <a href="/?utm_source=kaiboom&utm_medium=boss_defeat#mvp" style="display:inline-block;padding:8px 20px;border-radius:8px;background:linear-gradient(135deg,rgba(124,91,240,0.2),rgba(45,140,255,0.2));border:1px solid rgba(124,91,240,0.3);color:#fff;font-size:10px;font-weight:700;text-decoration:none">🧬 아키타입 스킬로 더 강해지기 →</a>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+// ─── Analytics Dashboard (투자자/심사위원용) ───
+// ═══════════════════════════════════════════
+function renderAnalytics() {
+  const s = KBAnalytics.getSummary();
+  const W = "max-width:92vw;width:100%";
+
+  // Screen data for bar chart
+  const screenColors = {menu:'#c9a84c',playing:'#22c55e',result:'#3b82f6',bossVictory:'#ef4444',bossDefeat:'#f97316',leaderboard:'#a855f7',chemResult:'#ec4899',tutorial:'#6b7280'};
+  const screenLabels = {menu:'🏠메뉴',playing:'🎮플레이',result:'📊결과',bossVictory:'🏆보스승리',bossDefeat:'💀보스패배',leaderboard:'🏅순위',chemResult:'💜궁합',tutorial:'📖튜토리얼',analytics:'📈분석'};
+  const maxViews = Math.max(...s.screenRank.map(r=>r.views), 1);
+
+  // Mode data
+  const modeLabels = {solo:'🎯 솔로',bossRush:'⚔️ 보스전',chemistry:'💜 궁합',tutorial:'📖 튜토리얼'};
+  const modeColors = {solo:'#c9a84c',bossRush:'#ef4444',chemistry:'#a855f7',tutorial:'#6b7280'};
+  const totalModes = Object.values(s.modes).reduce((a,b)=>a+b,1);
+
+  // Click ranking (top 10)
+  const topClicks = s.clickRank.slice(0, 10);
+  const clickLabels = {
+    btn_solo:'🎯 솔로모드',btn_bossRush:'⚔️ 보스전',btn_chemistry:'💜 궁합대결',btn_tutorial:'📖 튜토리얼',
+    btn_share:'📤 공유',selfReport_yes:'✅ 소비체크(참음)',selfReport_no:'😅 소비체크(못참음)',
+    cta_nkai_menu_cta:'🧬 메뉴CTA',cta_nkai_result_cta:'🧬 결과CTA',cta_nkai_archetype_select:'🧬 아키타입CTA',
+    cta_nkai_boss_victory:'🧬 보스승리CTA',cta_nkai_boss_defeat:'🧬 보스패배CTA',cta_nkai_leaderboard:'🧬 순위CTA',
+    cta_nkai_chem_result:'🧬 궁합CTA',cta_nkai_no_energy:'🧬 에너지부족CTA',cta_nkai_mission:'🧬 미션CTA',
+    archetype_NT:'🧭 항해사 선택',archetype_ST:'🔬 분석가 선택',archetype_SF:'🛡️ 실용주의자 선택',archetype_NF:'🔮 비전가 선택',
+  };
+  const maxClicks = topClicks.length > 0 ? topClicks[0].count : 1;
+
+  // Conversion funnel
+  const fSteps = [
+    {label:'메뉴 진입', val: s.screens.menu?.views || 0, color:'#c9a84c'},
+    {label:'게임 시작', val: s.conversions.menuToPlay, color:'#22c55e'},
+    {label:'결과 도달', val: s.conversions.playToResult, color:'#3b82f6'},
+    {label:'N-KAI 클릭', val: s.conversions.resultToNKAI, color:'#7C5BF0'},
+  ];
+  const fMax = Math.max(...fSteps.map(f=>f.val), 1);
+
+  // Feature usage
+  const featureItems = [
+    {label:'🐉 띠 설정', val: s.features.zodiacSet},
+    {label:'🧬 아키타입 설정', val: s.features.archetypeSet},
+    {label:'🔄 아키타입 변경', val: s.features.archetypeChanges},
+    {label:'📤 공유 클릭', val: s.features.shareClicks},
+    {label:'🧬 N-KAI CTA', val: s.features.nkaiCTA},
+    {label:'📋 미션 클릭', val: s.features.missionClicks},
+    {label:'💪 소비체크', val: s.features.selfReport},
+  ].filter(f=>f.val>0);
+  const fMaxFeat = Math.max(...featureItems.map(f=>f.val), 1);
+
+  // Peak hours chart (horizontal)
+  const hours = Object.entries(s.peakHours).sort((a,b)=>parseInt(a[0])-parseInt(b[0]));
+  const maxHour = Math.max(...hours.map(h=>h[1]), 1);
+
+  // Retention (last 7 days)
+  const retDays = Object.entries(s.retention).sort((a,b)=>a[0].localeCompare(b[0])).slice(-7);
+
+  return `<div style="min-height:100%;background:linear-gradient(180deg,#050810,#0a0e1a,#111827);display:flex;flex-direction:column;align-items:center;padding:16px;overflow-y:auto">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;${W};margin-bottom:16px">
+      <button onclick="state.screen='menu';render()" style="padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#9ca3af;font-size:10px;font-family:inherit">← 메뉴</button>
+      <div style="text-align:center">
+        <div style="font-size:16px;font-weight:900;color:#fff;font-family:'Orbitron',monospace">📈 ANALYTICS</div>
+        <div style="font-size:8px;color:#6b7280">KaiBoom 트래픽 대시보드</div>
+      </div>
+      <button onclick="if(confirm('분석 데이터를 초기화할까요?'))KBAnalytics.reset()" style="padding:6px 10px;border-radius:8px;border:1px solid rgba(239,68,68,0.2);background:transparent;color:#ef4444;font-size:9px;font-family:inherit">초기화</button>
+    </div>
+
+    <!-- ═══ KPI 카드 (4칸) ═══ -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;${W};margin-bottom:14px">
+      <div style="padding:12px;border-radius:12px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.2);text-align:center">
+        <div style="font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:#c9a84c">${s.totalSessions}</div>
+        <div style="font-size:9px;color:#9ca3af;font-weight:700;margin-top:2px">총 세션</div>
+      </div>
+      <div style="padding:12px;border-radius:12px;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);text-align:center">
+        <div style="font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:#22c55e">${s.totalPlays}</div>
+        <div style="font-size:9px;color:#9ca3af;font-weight:700;margin-top:2px">총 플레이</div>
+      </div>
+      <div style="padding:12px;border-radius:12px;background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);text-align:center">
+        <div style="font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:#3b82f6">${s.avgSession}<span style="font-size:10px;color:#6b7280">s</span></div>
+        <div style="font-size:9px;color:#9ca3af;font-weight:700;margin-top:2px">평균 세션</div>
+      </div>
+      <div style="padding:12px;border-radius:12px;background:rgba(124,91,240,0.06);border:1px solid rgba(124,91,240,0.2);text-align:center">
+        <div style="font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:#7C5BF0">${s.dau}<span style="font-size:10px;color:#6b7280">일</span></div>
+        <div style="font-size:9px;color:#9ca3af;font-weight:700;margin-top:2px">활성일수(30일)</div>
+      </div>
+    </div>
+
+    <!-- ═══ 전환 퍼널 ═══ -->
+    <div style="${W};background:rgba(255,255,255,0.015);border:1px solid rgba(124,91,240,0.15);border-radius:12px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:10px;color:#7C5BF0;font-weight:800;margin-bottom:10px">🔄 전환 퍼널 (킬링 콘텐츠 지표)</div>
+      ${fSteps.map((f,i)=>{
+        const pct = fMax > 0 ? Math.round(f.val/fMax*100) : 0;
+        const rate = i > 0 && fSteps[i-1].val > 0 ? Math.round(f.val/fSteps[i-1].val*100) : (i===0?100:0);
+        return `<div style="margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+            <span style="font-size:9px;color:#e5e7eb;font-weight:700">${f.label}</span>
+            <span style="font-size:9px;font-weight:800"><span style="color:${f.color}">${f.val.toLocaleString()}</span>${i>0?` <span style="color:${rate>=50?'#22c55e':'#ef4444'};font-size:8px">(${rate}%)</span>`:''}</span>
+          </div>
+          <div style="height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:${f.color};border-radius:3px;transition:width 0.5s"></div>
+          </div>
+        </div>`;
+      }).join('')}
+      <div style="margin-top:6px;padding:6px 8px;border-radius:6px;background:rgba(124,91,240,0.08);font-size:9px;color:#c9a84c;font-weight:700;text-align:center">
+        🎯 게임→N-KAI 전환율: <span style="color:#7C5BF0;font-size:11px;font-weight:900">${s.funnelRates.playToNKAI}%</span>
+      </div>
+    </div>
+
+    <!-- ═══ 화면별 조회수 ═══ -->
+    <div style="${W};background:rgba(255,255,255,0.015);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:10px;color:#c9a84c;font-weight:800;margin-bottom:10px">📱 화면별 조회 & 체류시간</div>
+      ${s.screenRank.filter(r=>r.name!=='analytics').map(r=>{
+        const pct = Math.round(r.views/maxViews*100);
+        const color = screenColors[r.name]||'#6b7280';
+        const label = screenLabels[r.name]||r.name;
+        return `<div style="margin-bottom:5px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+            <span style="font-size:9px;color:#e5e7eb">${label}</span>
+            <span style="font-size:8px;color:#9ca3af"><span style="color:${color};font-weight:800">${r.views}</span>회 · 평균 <span style="font-weight:700">${r.avgSec}s</span></span>
+          </div>
+          <div style="height:5px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:${color};border-radius:3px"></div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <!-- ═══ 게임 모드 분포 ═══ -->
+    <div style="${W};background:rgba(255,255,255,0.015);border:1px solid rgba(34,197,94,0.15);border-radius:12px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:10px;color:#22c55e;font-weight:800;margin-bottom:10px">🎮 게임 모드 인기도</div>
+      <div style="display:flex;gap:4px;height:20px;border-radius:6px;overflow:hidden;margin-bottom:8px">
+        ${Object.entries(s.modes).map(([k,v])=>v>0?`<div style="flex:${v};background:${modeColors[k]||'#6b7280'};height:100%" title="${k}: ${v}"></div>`:'').join('')}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${Object.entries(s.modes).map(([k,v])=>`<div style="display:flex;align-items:center;gap:3px">
+          <div style="width:8px;height:8px;border-radius:2px;background:${modeColors[k]||'#6b7280'}"></div>
+          <span style="font-size:9px;color:#9ca3af">${modeLabels[k]||k} <span style="color:#fff;font-weight:700">${v}</span> (${Math.round(v/totalModes*100)}%)</span>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- ═══ 클릭 랭킹 TOP 10 ═══ -->
+    ${topClicks.length > 0 ? `
+    <div style="${W};background:rgba(255,255,255,0.015);border:1px solid rgba(239,68,68,0.15);border-radius:12px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:10px;color:#ef4444;font-weight:800;margin-bottom:10px">🔥 클릭 랭킹 TOP ${topClicks.length}</div>
+      ${topClicks.map((c,i)=>{
+        const pct = Math.round(c.count/maxClicks*100);
+        const label = clickLabels[c.name] || c.name;
+        return `<div style="margin-bottom:4px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+            <span style="font-size:9px;color:#e5e7eb">${i+1}. ${label}</span>
+            <span style="font-size:9px;color:#ef4444;font-weight:800">${c.count}</span>
+          </div>
+          <div style="height:4px;background:rgba(255,255,255,0.04);border-radius:2px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#ef4444,#f97316);border-radius:2px"></div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>` : ''}
+
+    <!-- ═══ 기능 사용 현황 ═══ -->
+    ${featureItems.length > 0 ? `
+    <div style="${W};background:rgba(255,255,255,0.015);border:1px solid rgba(45,140,255,0.15);border-radius:12px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:10px;color:#2D8CFF;font-weight:800;margin-bottom:10px">⚙️ 기능 사용 현황</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        ${featureItems.map(f=>`<div style="padding:8px;border-radius:8px;background:rgba(45,140,255,0.05);border:1px solid rgba(45,140,255,0.1);text-align:center">
+          <div style="font-family:'Orbitron',monospace;font-size:16px;font-weight:900;color:#2D8CFF">${f.val}</div>
+          <div style="font-size:8px;color:#9ca3af;margin-top:2px">${f.label}</div>
+        </div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <!-- ═══ 피크 시간대 ═══ -->
+    ${hours.length > 0 ? `
+    <div style="${W};background:rgba(255,255,255,0.015);border:1px solid rgba(201,168,76,0.15);border-radius:12px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:10px;color:#c9a84c;font-weight:800;margin-bottom:10px">⏰ 시간대별 접속 ${s.peakHour?`(피크: ${s.peakHour[0]}시)`:''}</div>
+      <div style="display:flex;align-items:flex-end;gap:2px;height:50px">
+        ${Array.from({length:24},(_,h)=>{
+          const val = s.peakHours[h]||0;
+          const pct = maxHour > 0 ? Math.round(val/maxHour*100) : 0;
+          const isPeak = s.peakHour && parseInt(s.peakHour[0])===h;
+          return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%">
+            <div style="width:100%;height:${Math.max(pct,2)}%;background:${isPeak?'#c9a84c':val>0?'rgba(201,168,76,0.4)':'rgba(255,255,255,0.04)'};border-radius:2px 2px 0 0;min-height:2px"></div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:2px">
+        <span style="font-size:7px;color:#6b7280">0시</span>
+        <span style="font-size:7px;color:#6b7280">6시</span>
+        <span style="font-size:7px;color:#6b7280">12시</span>
+        <span style="font-size:7px;color:#6b7280">18시</span>
+        <span style="font-size:7px;color:#6b7280">24시</span>
+      </div>
+    </div>` : ''}
+
+    <!-- ═══ 일별 리텐션 ═══ -->
+    ${retDays.length > 0 ? `
+    <div style="${W};background:rgba(255,255,255,0.015);border:1px solid rgba(34,197,94,0.15);border-radius:12px;padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:10px;color:#22c55e;font-weight:800;margin-bottom:10px">📅 일별 방문 & 플레이 (최근 7일)</div>
+      ${retDays.map(([date, r])=>{
+        const d = new Date(date);
+        const dayLabel = ['일','월','화','수','목','금','토'][d.getDay()];
+        return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+          <span style="font-size:8px;color:#6b7280;width:50px">${date.slice(5)} ${dayLabel}</span>
+          <div style="flex:1;display:flex;gap:3px;align-items:center">
+            <span style="font-size:8px;color:#22c55e;width:40px">방문 ${r.visits}</span>
+            <div style="flex:1;height:4px;background:rgba(34,197,94,0.1);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(r.visits*20,100)}%;background:#22c55e;border-radius:2px"></div></div>
+          </div>
+          <div style="flex:1;display:flex;gap:3px;align-items:center">
+            <span style="font-size:8px;color:#3b82f6;width:40px">플레이 ${r.plays}</span>
+            <div style="flex:1;height:4px;background:rgba(59,130,246,0.1);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(r.plays*10,100)}%;background:#3b82f6;border-radius:2px"></div></div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>` : ''}
+
+    <!-- ═══ 데이터 내보내기 ═══ -->
+    <div style="${W};display:flex;gap:8px;margin-bottom:14px">
+      <button onclick="copyAnalyticsJSON()" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(201,168,76,0.3);background:rgba(201,168,76,0.06);color:#c9a84c;font-size:10px;font-weight:700;font-family:inherit">📋 JSON 복사</button>
+      <button onclick="copyAnalyticsReport()" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(124,91,240,0.3);background:rgba(124,91,240,0.06);color:#7C5BF0;font-size:10px;font-weight:700;font-family:inherit">📊 리포트 복사</button>
+    </div>
+
+    <div style="font-size:8px;color:#374151;margin-bottom:10px">첫 방문: ${new Date(s.firstVisit).toLocaleDateString('ko')}</div>
+  </div>`;
+}
+
+function copyAnalyticsJSON() {
+  const data = JSON.stringify(KBAnalytics.getSummary(), null, 2);
+  navigator.clipboard?.writeText(data).then(()=>showToast('📋 JSON 복사 완료!'));
+}
+function copyAnalyticsReport() {
+  const s = KBAnalytics.getSummary();
+  const lines = [
+    '═══ KaiBoom Analytics Report ═══',
+    `📅 기간: ${new Date(s.firstVisit).toLocaleDateString('ko')} ~ ${new Date().toLocaleDateString('ko')}`,
+    '',
+    '▶ 핵심 KPI',
+    `  총 세션: ${s.totalSessions} | 총 플레이: ${s.totalPlays} | 평균 세션: ${s.avgSession}초 | 활성일: ${s.dau}일`,
+    '',
+    '▶ 전환 퍼널',
+    `  메뉴 진입 → 게임 시작: ${s.conversions.menuToPlay}`,
+    `  게임 시작 → 결과 도달: ${s.conversions.playToResult}`,
+    `  결과 → N-KAI 클릭: ${s.conversions.resultToNKAI}`,
+    `  ★ 게임→N-KAI 전환율: ${s.funnelRates.playToNKAI}%`,
+    '',
+    '▶ 게임 모드 분포',
+    ...Object.entries(s.modes).map(([k,v])=>`  ${k}: ${v}회`),
+    '',
+    '▶ 기능 사용',
+    ...Object.entries(s.features).filter(([k,v])=>v>0).map(([k,v])=>`  ${k}: ${v}회`),
+    '',
+    '▶ 피크 시간대: ' + (s.peakHour ? s.peakHour[0]+'시 ('+s.peakHour[1]+'회)' : 'N/A'),
+    '',
+    '© Neurin Kairos AI · KaiBoom Analytics',
+  ];
+  navigator.clipboard?.writeText(lines.join('\n')).then(()=>showToast('📊 리포트 복사 완료!'));
+}
+
+// Init
+startRechargeTimer();
+render();
+
+// ═══ Global CTA Click Tracker ═══
+document.addEventListener('click', function(e) {
+  const a = e.target.closest('a[href*="utm_source=kaiboom"]');
+  if (a) {
+    const url = new URL(a.href, location.origin);
+    const medium = url.searchParams.get('utm_medium') || 'unknown';
+    KBAnalytics.click('cta_nkai_' + medium);
+    KBAnalytics.feature('nkaiCTA');
+    KBAnalytics.conversion('resultToNKAI');
+  }
+});
+
+// Track zodiac setting
+const _origShowBirthday = showBirthdayPrompt;
+// Wrap showBirthdayPrompt isn't easily done, so we track in setBirthday inline
+
+// Show attendance popup on first visit today
+setTimeout(()=>{
+  if (streak > 0) showAttendancePopup();
+  else if (state.showBirthdayPrompt) setTimeout(showBirthdayPrompt, 800);
+}, 500);
+window.addEventListener("resize", () => { if (state.screen === "playing") render(); });
+
+// ═══ Mobile touch scroll prevention ═══
+// Prevent pull-to-refresh and bounce scroll on mobile during gameplay
+document.addEventListener('touchmove', function(e) {
+  // Allow scroll on result screens (they can be long), block during playing
+  if (state.screen === 'playing') {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+// Prevent iOS overscroll bounce
+document.body.addEventListener('touchmove', function(e) {
+  if (state.screen === 'playing') {
+    e.preventDefault();
+  }
+}, { passive: false });
+</script>
+</body>
+</html>

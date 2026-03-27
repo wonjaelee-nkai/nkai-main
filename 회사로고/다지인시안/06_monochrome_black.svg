@@ -1,0 +1,13 @@
+<svg width="600" height="160" viewBox="0 0 600 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="600" height="160" fill="#F8FAFC" rx="16"/>
+  <polygon points="75,35 115,55 75,75 35,55" fill="#0F172A" opacity="0.90"/>
+  <polygon points="35,55 35,95 75,115 75,75" fill="#0F172A" opacity="0.55"/>
+  <polygon points="115,55 115,95 75,115 75,75" fill="#0F172A" opacity="0.25"/>
+  <line x1="35" y1="55" x2="115" y2="55" stroke="#0F172A" stroke-width="0.8" stroke-opacity="0.2"/>
+  <line x1="75" y1="35" x2="75" y2="75" stroke="#0F172A" stroke-width="0.8" stroke-opacity="0.15"/>
+  <line x1="75" y1="75" x2="75" y2="115" stroke="#0F172A" stroke-width="0.8" stroke-opacity="0.12"/>
+  <text x="75" y="59" text-anchor="middle" dominant-baseline="central" font-family="Arial Black" font-weight="900" font-size="18" fill="#F8FAFC" opacity="0.8">N</text>
+  <text x="140" y="72" font-family="Arial Black, sans-serif" font-weight="900" font-size="52" fill="#0F172A" letter-spacing="-1">N-KAI</text>
+  <line x1="140" y1="90" x2="480" y2="90" stroke="#0F172A" stroke-width="0.8" stroke-opacity="0.15"/>
+  <text x="140" y="112" font-family="Arial, sans-serif" font-size="14" fill="#64748B" letter-spacing="8">NEURIN  KAIROS  AI</text>
+</svg>

@@ -1,20 +1,16 @@
-# Sensitive files
-sftp.json
+# 민감정보 파일
+CLAUDE_최종.md
+CLAUDE.md
 .env
-.env.*
+*.env
 *.pem
 *.key
+config.js
 
-# OS
-Thumbs.db
-Desktop.ini
-.DS_Store
+# 배포 로그
+deploy_*.log
 
-# Node
+# 시스템
 node_modules/
-
-# Archives (no need to track)
-*.zip
-
-# Claude Code local
-.claude/settings.local.json
+.DS_Store
+Thumbs.db

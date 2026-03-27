@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-KAI Living Profile SDK — Edge AI 라이브 데모</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Pretendard:wght@300;400;500;600;700;800;900&display=swap');
+:root {
+  --bg: #060b14;
+  --surface: #0b1220;
+  --surface2: #0f1828;
+  --surface3: #131f30;
+  --border: rgba(56,120,220,0.12);
+  --border2: rgba(56,120,220,0.22);
+  --text: #dde8f8;
+  --muted: #8899b8;
+  --dim: #3d5070;
+  --accent: #3b7ff8;
+  --gold: #e8b84b;
+  --green: #12c78a;
+  --amber: #f59e0b;
+  --red: #f05252;
+  --purple: #a873f5;
+  --indigo: #818cf8;
+  --teal: #0ea5e9;
+  --mono: 'Space Mono', monospace;
+  --body: 'Pretendard', -apple-system, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:12px;}
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4;}
+
+/* ── TOP BAR ── */
+.topbar{
+  height:48px;display:flex;align-items:center;gap:12px;
+  padding:0 16px;
+  background:linear-gradient(90deg,rgba(6,11,20,0.98),rgba(11,18,32,0.98));
+  border-bottom:1px solid var(--border2);
+  backdrop-filter:blur(20px);position:sticky;top:0;z-index:100;
+}
+.tb-logo{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);letter-spacing:-0.5px;white-space:nowrap;}
+.tb-logo em{color:var(--accent);font-style:normal;}
+.tb-edge{
+  display:flex;align-items:center;gap:6px;padding:3px 10px;
+  border-radius:20px;background:rgba(18,199,138,0.07);border:1px solid rgba(18,199,138,0.2);
+}
+.edge-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1s infinite;}
+.tb-engines{display:flex;gap:6px;flex:1;}
+.eng-chip{
+  display:flex;align-items:center;gap:5px;padding:3px 9px;
+  border-radius:5px;background:var(--surface2);border:1px solid var(--border);
+  transition:all 0.25s;
+}
+.eng-chip.firing{border-color:var(--gold);background:rgba(232,184,75,0.08);}
+.eng-chip-dot{width:5px;height:5px;border-radius:50%;background:var(--dim);transition:all 0.25s;}
+.eng-chip.firing .eng-chip-dot{background:var(--gold);animation:blink 0.35s infinite;}
+.eng-chip-name{font-size:8px;color:var(--muted);font-weight:700;letter-spacing:0.5px;}
+.nscore-chip{
+  display:flex;align-items:center;gap:8px;padding:4px 12px;
+  border-radius:7px;background:rgba(59,127,248,0.07);border:1px solid rgba(59,127,248,0.2);
+  white-space:nowrap;
+}
+.nscore-val{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--accent);transition:all 0.4s;}
+.nra-chip{
+  display:inline-flex;align-items:center;gap:4px;padding:2px 8px;
+  border-radius:10px;background:rgba(18,199,138,0.1);border:1px solid rgba(18,199,138,0.25);
+  font-size:8px;font-weight:700;color:var(--green);
+}
+.tx-counter{font-size:9px;color:var(--muted);white-space:nowrap;}
+.tx-counter strong{color:var(--green);font-family:var(--mono);}
+
+/* ── PIPELINE ── */
+.pipeline{
+  display:flex;align-items:center;gap:0;padding:8px 16px;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  overflow-x:auto;
+}
+.pip-node{
+  display:flex;align-items:center;gap:7px;padding:5px 12px;
+  border-radius:6px;border:1px solid var(--border);background:var(--bg);
+  cursor:pointer;transition:all 0.25s;position:relative;white-space:nowrap;
+}
+.pip-node.active{border-color:var(--accent);background:rgba(59,127,248,0.08);}
+.pip-node.done{border-color:rgba(18,199,138,0.35);background:rgba(18,199,138,0.05);}
+.pip-num{
+  width:18px;height:18px;border-radius:50%;background:var(--surface2);
+  font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  color:var(--dim);flex-shrink:0;transition:all 0.25s;
+}
+.pip-node.active .pip-num{background:var(--accent);color:#fff;}
+.pip-node.done .pip-num{background:var(--green);color:#fff;}
+.pip-label{font-size:9px;font-weight:700;color:var(--muted);}
+.pip-node.active .pip-label{color:var(--accent);}
+.pip-node.done .pip-label{color:var(--green);}
+.pip-sub{font-size:8px;color:var(--dim);}
+.pip-lat{
+  position:absolute;top:-9px;right:5px;
+  font-size:7px;color:var(--green);font-family:var(--mono);
+  background:rgba(18,199,138,0.1);padding:1px 4px;border-radius:3px;
+  display:none;
+}
+.pip-node.done .pip-lat{display:block;}
+.pip-arrow{font-size:10px;color:var(--dim);padding:0 6px;flex-shrink:0;}
+
+/* ── MAIN LAYOUT ── */
+.main{display:grid;grid-template-columns:200px 1fr 300px;height:calc(100vh - 96px);overflow:hidden;}
+
+/* ── LEFT PANEL ── */
+.left{
+  background:var(--surface);border-right:1px solid var(--border);
+  padding:12px 10px;display:flex;flex-direction:column;gap:10px;
+  overflow-y:auto;
+}
+.panel-label{font-size:8px;font-weight:700;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;}
+.eng-card{
+  padding:9px 10px;border-radius:8px;
+  border:1px solid var(--border);background:var(--bg);
+  transition:all 0.3s;
+}
+.eng-card.firing{border-color:var(--gold);box-shadow:0 0 10px rgba(232,184,75,0.12);}
+.ec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.ec-title{font-size:9px;font-weight:700;}
+.ec-badge{font-size:7px;padding:2px 5px;border-radius:8px;background:rgba(61,80,112,0.3);color:var(--dim);transition:all 0.25s;}
+.eng-card.firing .ec-badge{background:rgba(232,184,75,0.18);color:var(--gold);}
+.ec-bar{height:2px;background:rgba(61,80,112,0.25);border-radius:1px;overflow:hidden;margin-bottom:5px;}
+.ec-fill{height:100%;width:10%;border-radius:1px;transition:width 0.6s ease;}
+.ec-val{font-family:var(--mono);font-size:10px;font-weight:700;}
+
+/* TX FEED */
+.tx-mini{
+  padding:5px 7px;border-radius:5px;margin-bottom:3px;
+  background:rgba(11,18,32,0.8);border:1px solid rgba(56,120,220,0.07);
+  animation:fadeUp 0.3s ease;
+}
+.tx-mini-row{display:flex;justify-content:space-between;align-items:center;}
+.tx-mini-name{font-size:8px;color:var(--text);font-weight:600;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tx-mini-amt{font-size:8px;color:var(--muted);font-family:var(--mono);}
+
+/* ── CENTER ── */
+.center{padding:14px;overflow-y:auto;}
+.stage{display:none;}
+.stage.active{display:block;animation:fadeUp 0.35s ease;}
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:14px;margin-bottom:12px;
+}
+.card-title{
+  font-size:11px;font-weight:700;color:var(--text);
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.api-badge{
+  font-size:7px;font-family:var(--mono);padding:2px 7px;border-radius:4px;
+  background:rgba(129,140,248,0.1);border:1px solid rgba(129,140,248,0.2);color:var(--indigo);
+  display:inline-flex;align-items:center;gap:3px;
+}
+.api-badge::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--indigo);animation:blink 1.5s infinite;}
+
+/* Stage 1 */
+.pillar-row{display:flex;gap:8px;justify-content:center;margin:10px 0;}
+.pillar{
+  padding:8px 12px;border-radius:8px;background:var(--bg);
+  border:1px solid var(--border);text-align:center;min-width:65px;transition:all 0.4s;
+}
+.pillar.lit{border-color:rgba(168,115,245,0.5);background:rgba(168,115,245,0.07);box-shadow:0 0 12px rgba(168,115,245,0.1);}
+.pillar-cn{font-size:22px;font-weight:900;color:var(--dim);transition:color 0.4s;line-height:1.2;}
+.pillar.lit .pillar-cn{color:#a873f5;}
+.ohang-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:12px;}
+.ohang{
+  padding:7px 3px;border-radius:7px;text-align:center;
+  border:1px solid var(--border);background:var(--bg);
+  transition:all 0.5s;opacity:0.3;
+}
+.ohang.on{opacity:1;}
+.ohang.top{transform:scale(1.08);box-shadow:0 4px 20px rgba(0,0,0,0.5);}
+.ohang-icon{font-size:16px;display:block;margin-bottom:2px;}
+.ohang-name{font-size:8px;font-weight:700;}
+.ohang-pct{font-family:var(--mono);font-size:12px;font-weight:900;margin-top:2px;}
+.ebar-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.ebar-lbl{font-size:9px;width:26px;text-align:right;}
+.ebar-track{flex:1;height:5px;background:rgba(61,80,112,0.2);border-radius:3px;overflow:hidden;}
+.ebar-fill{height:100%;border-radius:3px;transition:width 0.8s ease;width:0;}
+.ebar-val{font-size:9px;font-family:var(--mono);width:26px;color:var(--muted);}
+
+/* Stage 2 */
+.kipa-q{
+  padding:7px 10px;border-radius:6px;background:var(--bg);
+  border:1px solid var(--border);margin-bottom:5px;
+  display:flex;align-items:center;gap:9px;opacity:0;transition:opacity 0.3s;
+}
+.kipa-q.done{opacity:1;border-color:rgba(18,199,138,0.3);}
+.kipa-q-text{font-size:9px;color:var(--muted);flex:1;}
+.kipa-q-ans{font-size:8px;font-weight:700;padding:2px 7px;border-radius:8px;background:rgba(18,199,138,0.1);color:var(--green);}
+.kipa-prog-wrap{height:3px;background:rgba(61,80,112,0.2);border-radius:2px;overflow:hidden;margin-bottom:10px;}
+.kipa-prog{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:2px;transition:width 0.4s ease;width:0;}
+
+/* Stage 3 */
+.month-pills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.mpill{
+  font-size:8px;padding:2px 8px;border-radius:8px;
+  border:1px solid var(--border);color:var(--dim);cursor:pointer;transition:all 0.2s;
+}
+.mpill.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.mpill.past{background:rgba(18,199,138,0.08);color:var(--green);border-color:rgba(18,199,138,0.28);}
+.cluster-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.cc{padding:7px;border-radius:6px;background:var(--bg);border:1px solid var(--border);text-align:center;transition:all 0.5s;}
+.cc.hot{border-color:rgba(18,199,138,0.4);background:rgba(18,199,138,0.05);}
+.cc-name{font-size:8px;font-weight:700;color:var(--muted);}
+.cc-pct{font-size:13px;font-weight:900;color:var(--dim);font-family:var(--mono);transition:all 0.5s;}
+.cc.hot .cc-pct{color:var(--green);}
+
+/* Stage 4 */
+.lp-hero{
+  text-align:center;padding:16px;
+  background:linear-gradient(135deg,rgba(59,127,248,0.06),rgba(18,199,138,0.04));
+  border-radius:10px;border:1px solid rgba(59,127,248,0.2);margin-bottom:12px;
+}
+.lp-archetype{font-size:20px;font-weight:800;color:var(--text);margin-bottom:3px;}
+.lp-grade{font-size:11px;color:var(--accent);margin-bottom:10px;}
+.lp-kpis{display:flex;gap:14px;justify-content:center;}
+.lp-kpi{text-align:center;}
+.lp-kpi-val{font-family:var(--mono);font-size:22px;font-weight:700;}
+.lp-kpi-lbl{font-size:8px;color:var(--muted);margin-top:2px;}
+
+/* DNA Fingerprint items */
+.dna-row{display:flex;align-items:center;gap:8px;font-size:10px;padding:4px 0;}
+
+/* ── RIGHT PANEL — AI ADVISOR ── */
+.right{
+  background:var(--surface2);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;height:100%;
+}
+.right-tabs{
+  display:flex;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.rtab{
+  flex:1;padding:8px 4px;text-align:center;font-size:9px;font-weight:700;
+  color:var(--dim);cursor:pointer;transition:all 0.2s;border-bottom:2px solid transparent;
+}
+.rtab.active{color:var(--accent);border-color:var(--accent);background:rgba(59,127,248,0.04);}
+.right-content{flex:1;overflow:hidden;display:flex;flex-direction:column;position:relative;}
+.rpanel{display:none;flex-direction:column;height:100%;overflow:hidden;}
+.rpanel.active{display:flex;}
+
+/* AI Chat Panel */
+.chat-header{
+  padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.chat-status{display:flex;align-items:center;gap:6px;}
+.chat-body{flex:1;overflow-y:auto;padding:10px 10px;display:flex;flex-direction:column;gap:8px;}
+.msg{max-width:90%;animation:fadeUp 0.3s ease;}
+.msg.ai{align-self:flex-start;}
+.msg.user{align-self:flex-end;}
+.msg-bubble{
+  padding:8px 10px;border-radius:8px;font-size:10px;line-height:1.6;
+}
+.msg.ai .msg-bubble{
+  background:var(--surface);border:1px solid var(--border);color:var(--text);
+  border-bottom-left-radius:2px;
+}
+.msg.user .msg-bubble{
+  background:rgba(59,127,248,0.15);border:1px solid rgba(59,127,248,0.25);
+  color:var(--text);border-bottom-right-radius:2px;
+}
+.msg-meta{font-size:7px;color:var(--dim);margin-top:2px;}
+.msg.user .msg-meta{text-align:right;}
+.thinking-dots{display:flex;gap:3px;padding:8px 10px;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--muted);animation:dotBounce 1.2s infinite;}
+.dot:nth-child(2){animation-delay:0.2s;}
+.dot:nth-child(3){animation-delay:0.4s;}
+.chat-input-area{
+  padding:8px;border-top:1px solid var(--border);background:var(--surface);flex-shrink:0;
+}
+.chat-input-row{display:flex;gap:6px;}
+.chat-presets{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;}
+.preset-btn{
+  font-size:8px;padding:2px 7px;border-radius:10px;
+  border:1px solid var(--border);background:var(--bg);color:var(--muted);
+  cursor:pointer;transition:all 0.2s;
+}
+.preset-btn:hover{border-color:var(--accent);color:var(--accent);}
+.chat-input{
+  flex:1;background:var(--bg);border:1px solid var(--border);
+  border-radius:6px;padding:6px 9px;font-family:var(--body);font-size:10px;
+  color:var(--text);outline:none;resize:none;height:36px;
+}
+.chat-input:focus{border-color:var(--accent);}
+.chat-send{
+  width:34px;height:36px;border-radius:6px;
+  background:rgba(59,127,248,0.15);border:1px solid rgba(59,127,248,0.3);
+  color:var(--accent);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;flex-shrink:0;
+}
+.chat-send:hover{background:rgba(59,127,248,0.25);}
+
+/* Alert Panel */
+.alert-feed{flex:1;overflow-y:auto;padding:8px;}
+.alert-item{
+  padding:7px 9px;border-radius:7px;margin-bottom:5px;
+  animation:fadeUp 0.35s ease;
+}
+.alert-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;}
+.alert-title{font-size:9px;font-weight:700;display:flex;align-items:center;gap:4px;}
+.alert-ts{font-size:7px;color:var(--dim);font-family:var(--mono);}
+.alert-text{font-size:9px;color:var(--muted);line-height:1.5;}
+.alert-tags{display:flex;gap:4px;margin-top:3px;}
+.alert-tag{font-size:7px;padding:1px 5px;border-radius:5px;background:rgba(61,80,112,0.35);color:var(--dim);}
+
+/* API Log Panel */
+.api-log-panel{flex:1;overflow-y:auto;padding:6px 8px;}
+.log-line{
+  display:flex;gap:5px;margin-bottom:3px;
+  font-family:var(--mono);font-size:8px;animation:fadeUp 0.3s ease;
+}
+.log-ts{color:var(--dim);}
+.log-m.post{color:#60a5fa;}
+.log-m.get{color:#34d399;}
+.log-m.sys{color:var(--gold);}
+.log-m.ai{color:var(--purple);}
+.log-path{color:#c084fc;}
+.log-ms{color:var(--amber);}
+
+/* N-Score sparkline */
+.spark-wrap{padding:8px 10px;border-top:1px solid var(--border);flex-shrink:0;}
+.sparkline{display:flex;align-items:flex-end;gap:3px;height:36px;}
+.sb{flex:1;border-radius:2px 2px 0 0;transition:height 0.5s ease,background 0.5s;min-height:2px;}
+.spark-labels{display:flex;justify-content:space-between;font-size:7px;color:var(--dim);margin-top:3px;}
+
+/* Edge AI overlay indicator */
+.edge-indicator{
+  position:fixed;bottom:12px;left:210px;
+  background:rgba(6,11,20,0.9);border:1px solid rgba(18,199,138,0.3);
+  border-radius:8px;padding:5px 10px;display:flex;align-items:center;gap:6px;
+  font-size:8px;color:var(--green);font-family:var(--mono);
+  z-index:50;backdrop-filter:blur(8px);
+  opacity:0;transition:opacity 0.3s;
+}
+.edge-indicator.show{opacity:1;}
+
+/* TX insight popup */
+.tx-insight{
+  position:fixed;bottom:12px;right:310px;
+  max-width:260px;
+  background:rgba(11,18,32,0.95);border:1px solid rgba(59,127,248,0.25);
+  border-radius:8px;padding:8px 10px;
+  font-size:9px;color:var(--text);line-height:1.5;
+  z-index:50;backdrop-filter:blur(10px);
+  animation:slideInRight 0.3s ease,fadeOut 0.3s ease 3.7s forwards;
+}
+.tx-insight-head{font-size:8px;font-weight:700;color:var(--accent);margin-bottom:3px;display:flex;align-items:center;gap:5px;}
+
+/* ── ANIMATIONS ── */
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dotBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0;pointer-events:none}}
+@keyframes glow{0%,100%{box-shadow:0 0 5px rgba(59,127,248,0.3)}50%{box-shadow:0 0 14px rgba(59,127,248,0.6)}}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px;}
+
+@media(max-width:900px){
+  .main{grid-template-columns:1fr;}
+  .left,.right{display:none;}
+  .tb-engines{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ TOP BAR ══ -->
+<div class="topbar">
+  <div class="tb-logo">N-<em>KAI</em></div>
+  <div class="tb-edge">
+    <div class="edge-dot"></div>
+    <span style="font-size:9px;color:var(--green);font-weight:700;">EDGE AI ON</span>
+  </div>
+  <div class="tb-engines">
+    <div class="eng-chip" id="ec-bayes"><div class="eng-chip-dot"></div><span class="eng-chip-name">BAYESIAN</span></div>
+    <div class="eng-chip" id="ec-roc"><div class="eng-chip-dot"></div><span class="eng-chip-name">ROC</span></div>
+    <div class="eng-chip" id="ec-cluster"><div class="eng-chip-dot"></div><span class="eng-chip-name">CLUSTER</span></div>
+    <div class="eng-chip" id="ec-dl"><div class="eng-chip-dot"></div><span class="eng-chip-name">DL ENGINE</span></div>
+  </div>
+  <div class="nscore-chip">
+    <span style="font-size:8px;color:var(--muted);">N-Score</span>
+    <span class="nscore-val" id="topNScore">—</span>
+    <span class="nra-chip" id="topNRA" style="display:none;">NRA 97.3%</span>
+  </div>
+  <div class="tx-counter">실증 <strong id="topTxCount">0</strong>/510건</div>
+  <div style="display:flex;gap:6px;margin-left:auto;">
+    <button onclick="autoRunAll()" id="btnRun" style="font-size:9px;padding:4px 12px;border-radius:6px;border:1px solid rgba(18,199,138,0.35);background:rgba(18,199,138,0.08);color:var(--green);cursor:pointer;font-weight:700;">▶ AUTO</button>
+    <button onclick="resetAll()" style="font-size:9px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;">↺</button>
+  </div>
+</div>
+
+<!-- ══ PIPELINE ══ -->
+<div class="pipeline">
+  <div class="pip-node active" id="pip1" onclick="goStage(1)">
+    <div class="pip-lat" id="lat1">124ms</div>
+    <div class="pip-num">1</div>
+    <div><div class="pip-label">POST /birth/analyze</div><div class="pip-sub">선천기질 → 8원소 벡터</div></div>
+  </div>
+  <div class="pip-arrow">→</div>
+  <div class="pip-node" id="pip2" onclick="goStage(2)">
+    <div class="pip-lat" id="lat2">89ms</div>
+    <div class="pip-num">2</div>
+    <div><div class="pip-label">POST /kipa/fuse</div><div class="pip-sub">선천×후천 융합 → 아키타입</div></div>
+  </div>
+  <div class="pip-arrow">→</div>
+  <div class="pip-node" id="pip3" onclick="goStage(3)">
+    <div class="pip-lat" id="lat3">2.3s</div>
+    <div class="pip-num">3</div>
+    <div><div class="pip-label">STREAM /mcc/evolve</div><div class="pip-sub">실거래 510건 → 동적 진화</div></div>
+  </div>
+  <div class="pip-arrow">→</div>
+  <div class="pip-node" id="pip4" onclick="goStage(4)">
+    <div class="pip-lat" id="lat4">41ms</div>
+    <div class="pip-num">4</div>
+    <div><div class="pip-label">GET /profile/living</div><div class="pip-sub">Living Profile 확정</div></div>
+  </div>
+</div>
+
+<!-- ══ MAIN LAYOUT ══ -->
+<div class="main">
+
+<!-- ── LEFT ── -->
+<div class="left">
+  <div class="panel-label">4대 알고리즘 엔진</div>
+
+  <div class="eng-card" id="lec-bayes">
+    <div class="ec-head">
+      <span class="ec-title" style="color:#60a5fa;">① 베이지안 추론</span>
+      <span class="ec-badge" id="eb-bayes">대기</span>
+    </div>
+    <div style="font-size:7px;color:var(--dim);margin-bottom:5px;">P(H|D) 사후확률 갱신</div>
+    <div class="ec-bar"><div class="ec-fill" id="ef-bayes" style="background:linear-gradient(90deg,#3b7ff8,#818cf8);"></div></div>
+    <div class="ec-val" style="color:#60a5fa;" id="ev-bayes">P = 0.95</div>
+  </div>
+
+  <div class="eng-card" id="lec-roc">
+    <div class="ec-head">
+      <span class="ec-title" style="color:#e8b84b;">② ROC 임계치</span>
+      <span class="ec-badge" id="eb-roc">대기</span>
+    </div>
+    <div style="font-size:7px;color:var(--dim);margin-bottom:5px;">이상감지 θ 동적 보정</div>
+    <div class="ec-bar"><div class="ec-fill" id="ef-roc" style="background:linear-gradient(90deg,#e8b84b,#fbbf24);"></div></div>
+    <div class="ec-val" style="color:#e8b84b;" id="ev-roc">θ = 0.65</div>
+  </div>
+
+  <div class="eng-card" id="lec-cluster">
+    <div class="ec-head">
+      <span class="ec-title" style="color:#a873f5;">③ 비지도 군집화</span>
+      <span class="ec-badge" id="eb-cluster">대기</span>
+    </div>
+    <div style="font-size:7px;color:var(--dim);margin-bottom:5px;">행동 클러스터 자율 탐지</div>
+    <div class="ec-bar"><div class="ec-fill" id="ef-cluster" style="background:linear-gradient(90deg,#a873f5,#c084fc);"></div></div>
+    <div class="ec-val" style="color:#a873f5;" id="ev-cluster">C = 8군집</div>
+  </div>
+
+  <div class="eng-card" id="lec-dl">
+    <div class="ec-head">
+      <span class="ec-title" style="color:#12c78a;">④ 딥러닝 엔진</span>
+      <span class="ec-badge" id="eb-dl">대기</span>
+    </div>
+    <div style="font-size:7px;color:var(--dim);margin-bottom:5px;">포괄적 신경망 — 진화 학습</div>
+    <div class="ec-bar"><div class="ec-fill" id="ef-dl" style="background:linear-gradient(90deg,#12c78a,#34d399);"></div></div>
+    <div class="ec-val" style="color:#12c78a;" id="ev-dl">NRA = 97.3%</div>
+  </div>
+
+  <div style="border-top:1px solid var(--border);padding-top:8px;">
+    <div class="panel-label" style="margin-bottom:7px;">실시간 거래 피드</div>
+    <div id="leftTxFeed"></div>
+  </div>
+</div>
+
+<!-- ── CENTER ── -->
+<div class="center">
+
+<!-- STAGE 1 -->
+<div class="stage active" id="sv1">
+  <div class="card">
+    <div class="card-title">🧬 선천적 기질 분석 <span class="api-badge">POST /birth/analyze</span></div>
+    <div style="text-align:center;margin-bottom:12px;">
+      <div style="font-family:var(--mono);font-size:20px;font-weight:700;">1982. 01. 18 — 亥時</div>
+      <div style="font-size:9px;color:var(--dim);margin-top:3px;">4차원 시간좌표 → 8원소 기질벡터 변환</div>
+    </div>
+    <div class="pillar-row" id="pillarsRow">
+      <div class="pillar" id="p1"><div class="pillar-cn" style="color:#94a3b8;">辛</div><div style="font-size:8px;color:#94a3b8;">🪙金</div><div class="pillar-cn" style="font-size:13px;color:#94a3b8;">酉</div><div style="font-size:8px;color:#94a3b8;">🪙金</div><div style="font-size:8px;color:var(--dim);margin-top:3px;">년주</div></div>
+      <div class="pillar" id="p2"><div class="pillar-cn" style="color:#94a3b8;">辛</div><div style="font-size:8px;color:#94a3b8;">🪙金</div><div class="pillar-cn" style="font-size:13px;color:#d97706;">丑</div><div style="font-size:8px;color:#d97706;">🌏土</div><div style="font-size:8px;color:var(--dim);margin-top:3px;">월주</div></div>
+      <div class="pillar" id="p3"><div class="pillar-cn" style="color:#94a3b8;">辛</div><div style="font-size:8px;color:#94a3b8;">🪙金</div><div class="pillar-cn" style="font-size:13px;color:#d97706;">丑</div><div style="font-size:8px;color:#d97706;">🌏土</div><div style="font-size:8px;color:var(--dim);margin-top:3px;">일주</div></div>
+      <div class="pillar" id="p4"><div class="pillar-cn" style="color:#d97706;">己</div><div style="font-size:8px;color:#d97706;">🌏土</div><div class="pillar-cn" style="font-size:13px;color:#3b7ff8;">亥</div><div style="font-size:8px;color:#3b7ff8;">💧水</div><div style="font-size:8px;color:var(--dim);margin-top:3px;">시주</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">⚙️ 오행 에너지 벡터</div>
+    <div class="ohang-grid">
+      <div class="ohang" id="oh-metal" style="border-color:rgba(148,163,184,0.3);"><span class="ohang-icon">🪙</span><div class="ohang-name" style="color:#94a3b8;">金</div><div class="ohang-pct" style="color:#94a3b8;" id="ohp-metal">0%</div></div>
+      <div class="ohang" id="oh-earth" style="border-color:rgba(217,119,6,0.3);"><span class="ohang-icon">🌏</span><div class="ohang-name" style="color:#d97706;">土</div><div class="ohang-pct" style="color:#d97706;" id="ohp-earth">0%</div></div>
+      <div class="ohang" id="oh-water" style="border-color:rgba(59,127,248,0.3);"><span class="ohang-icon">💧</span><div class="ohang-name" style="color:#3b7ff8;">水</div><div class="ohang-pct" style="color:#3b7ff8;" id="ohp-water">0%</div></div>
+      <div class="ohang" id="oh-wood" style="border-color:rgba(22,163,74,0.3);"><span class="ohang-icon">🌿</span><div class="ohang-name" style="color:#16a34a;">木</div><div class="ohang-pct" style="color:#16a34a;" id="ohp-wood">0%</div></div>
+      <div class="ohang" id="oh-fire" style="border-color:rgba(239,68,68,0.2);"><span class="ohang-icon">🔥</span><div class="ohang-name" style="color:#ef4444;">火</div><div class="ohang-pct" style="color:#ef4444;" id="ohp-fire">0%</div></div>
+    </div>
+    <div style="margin-top:10px;">
+      <div class="ebar-row"><span class="ebar-lbl" style="color:#94a3b8;">🪙金</span><div class="ebar-track"><div class="ebar-fill" id="eb-metal" style="background:#94a3b8;" data-w="55"></div></div><span class="ebar-val" id="ebv-metal">0%</span></div>
+      <div class="ebar-row"><span class="ebar-lbl" style="color:#d97706;">🌏土</span><div class="ebar-track"><div class="ebar-fill" id="eb-earth" style="background:#d97706;" data-w="28"></div></div><span class="ebar-val" id="ebv-earth">0%</span></div>
+      <div class="ebar-row"><span class="ebar-lbl" style="color:#3b7ff8;">💧水</span><div class="ebar-track"><div class="ebar-fill" id="eb-water" style="background:#3b7ff8;" data-w="14"></div></div><span class="ebar-val" id="ebv-water">0%</span></div>
+      <div class="ebar-row"><span class="ebar-lbl" style="color:#16a34a;">🌿木</span><div class="ebar-track"><div class="ebar-fill" id="eb-wood" style="background:#16a34a;" data-w="3"></div></div><span class="ebar-val" id="ebv-wood">0%</span></div>
+      <div class="ebar-row"><span class="ebar-lbl" style="color:#ef4444;">🔥火</span><div class="ebar-track"><div class="ebar-fill" id="eb-fire" style="background:#ef4444;" data-w="0"></div></div><span class="ebar-val" id="ebv-fire">0%</span></div>
+    </div>
+    <div id="s1-result" style="display:none;margin-top:10px;padding:10px;background:rgba(168,115,245,0.06);border:1px solid rgba(168,115,245,0.2);border-radius:8px;text-align:center;">
+      <div style="font-size:9px;color:var(--dim);">코어 에너지 확정</div>
+      <div style="font-size:18px;font-weight:800;color:#a873f5;margin:3px 0;">⚙️ 辛金 극강 · 金 55%</div>
+      <div style="font-size:9px;color:var(--dim);">木(재성) 0% — 가치창출형 · 인정이 수익에 선행</div>
+    </div>
+  </div>
+  <div style="text-align:center;">
+    <button onclick="goStage(2)" id="s1btn" style="display:none;font-size:10px;padding:9px 22px;border-radius:7px;border:1px solid rgba(59,127,248,0.35);background:rgba(59,127,248,0.08);color:var(--accent);cursor:pointer;font-weight:700;">다음: KIPA 융합 →</button>
+  </div>
+</div>
+
+<!-- STAGE 2 -->
+<div class="stage" id="sv2">
+  <div class="card">
+    <div class="card-title">📋 KIPA 후천 성향 분석 <span class="api-badge">POST /kipa/fuse</span></div>
+    <div class="kipa-prog-wrap"><div class="kipa-prog" id="kipaProgBar"></div></div>
+    <div id="kipaList"></div>
+  </div>
+  <div class="card" id="s2fuse" style="display:none;">
+    <div class="card-title">🔗 선천 × 후천 수리 융합</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;">
+      <div style="text-align:center;padding:10px 16px;background:rgba(168,115,245,0.07);border:1px solid rgba(168,115,245,0.2);border-radius:8px;">
+        <div style="font-size:8px;color:var(--dim);">선천벡터</div>
+        <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:#a873f5;margin:3px 0;">V_core</div>
+        <div style="font-size:8px;color:var(--muted);">🪙金55% · 🌏土28%</div>
+      </div>
+      <div style="font-size:18px;color:var(--accent);">⊗</div>
+      <div style="text-align:center;padding:10px 16px;background:rgba(59,127,248,0.07);border:1px solid rgba(59,127,248,0.2);border-radius:8px;">
+        <div style="font-size:8px;color:var(--dim);">후천벡터</div>
+        <div style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--accent);margin:3px 0;">V_kipa</div>
+        <div style="font-size:8px;color:var(--muted);">ISTJ · θ=0.68</div>
+      </div>
+      <div style="font-size:18px;color:var(--green);">→</div>
+      <div id="s2fuse-result" style="text-align:center;padding:10px 16px;background:rgba(18,199,138,0.07);border:1px solid rgba(18,199,138,0.28);border-radius:8px;opacity:0;transition:opacity 0.5s;">
+        <div style="font-size:8px;color:var(--dim);">융합 아키타입</div>
+        <div style="font-family:var(--mono);font-size:13px;font-weight:800;color:var(--green);margin:3px 0;">전략적 분석가</div>
+        <div style="font-size:8px;color:var(--muted);">N-Score 진화 대기</div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;">
+    <button onclick="goStage(3)" id="s2btn" style="display:none;font-size:10px;padding:9px 22px;border-radius:7px;border:1px solid rgba(18,199,138,0.35);background:rgba(18,199,138,0.08);color:var(--green);cursor:pointer;font-weight:700;">실거래 주입 → STREAM /mcc/evolve</button>
+  </div>
+</div>
+
+<!-- STAGE 3 -->
+<div class="stage" id="sv3">
+  <div class="card">
+    <div class="card-title">📊 실거래 510건 동적 진화 <span class="api-badge">STREAM /mcc/evolve</span></div>
+    <div class="month-pills" id="monthPills">
+      <div class="mpill">9월</div><div class="mpill">10월</div><div class="mpill">11월</div>
+      <div class="mpill">12월</div><div class="mpill">1월</div><div class="mpill">2월</div>
+    </div>
+    <div class="cluster-grid">
+      <div class="cc" id="cc0"><div class="cc-name">C1 건강식</div><div class="cc-pct" id="cv0">0%</div></div>
+      <div class="cc" id="cc1"><div class="cc-name">C2 운동</div><div class="cc-pct" id="cv1">0%</div></div>
+      <div class="cc" id="cc2"><div class="cc-name">C3 카페</div><div class="cc-pct" id="cv2">0%</div></div>
+      <div class="cc" id="cc3"><div class="cc-name">C4 자기계발</div><div class="cc-pct" id="cv3">0%</div></div>
+      <div class="cc" id="cc4"><div class="cc-name">C7 생활</div><div class="cc-pct" id="cv4">0%</div></div>
+      <div class="cc" id="cc5" style="border-color:rgba(239,68,68,0.15);"><div class="cc-name" style="color:#ef4444;">C6 유흥↓</div><div class="cc-pct" id="cv5">0%</div></div>
+      <div class="cc" id="cc6"><div class="cc-name">C8 보험</div><div class="cc-pct" id="cv6">0%</div></div>
+      <div class="cc" id="cc7"><div class="cc-name">C9 헬스케어</div><div class="cc-pct" id="cv7">0%</div></div>
+    </div>
+    <div style="margin-top:10px;display:flex;align-items:center;gap:10px;">
+      <div style="text-align:center;padding:8px 14px;background:rgba(59,127,248,0.07);border:1px solid rgba(59,127,248,0.2);border-radius:8px;flex:1;">
+        <div style="font-size:9px;color:var(--dim);">N-Score</div>
+        <div id="s3nscore" style="font-family:var(--mono);font-size:28px;font-weight:900;color:var(--accent);transition:all 0.5s;">—</div>
+        <div id="s3grade" style="font-size:9px;color:var(--muted);">데이터 주입 중...</div>
+      </div>
+      <div style="flex:2;padding:8px 12px;background:rgba(18,199,138,0.05);border:1px solid rgba(18,199,138,0.15);border-radius:8px;">
+        <div style="font-size:8px;color:var(--dim);margin-bottom:5px;">N-Score 궤적</div>
+        <div class="sparkline" id="s3sparkline">
+          <div class="sb" style="background:var(--dim);height:3px;"></div>
+          <div class="sb" style="background:var(--dim);height:3px;"></div>
+          <div class="sb" style="background:var(--dim);height:3px;"></div>
+          <div class="sb" style="background:var(--amber);height:3px;"></div>
+          <div class="sb" style="background:var(--accent);height:3px;"></div>
+          <div class="sb" style="background:var(--green);height:3px;"></div>
+        </div>
+        <div class="spark-labels"><span>9</span><span>10</span><span>11</span><span>12</span><span>1</span><span>2</span></div>
+      </div>
+    </div>
+    <div id="s3insight" style="margin-top:8px;padding:8px 10px;border-radius:6px;background:rgba(59,127,248,0.05);border:1px solid var(--border);font-size:9px;color:var(--muted);font-style:italic;">데이터 스트림 대기 중...</div>
+  </div>
+  <div style="text-align:center;">
+    <button onclick="goStage(4)" id="s3btn" style="display:none;font-size:10px;padding:9px 22px;border-radius:7px;border:1px solid rgba(59,127,248,0.35);background:rgba(59,127,248,0.08);color:var(--accent);cursor:pointer;font-weight:700;">Living Profile 확정 → GET /profile/living</button>
+  </div>
+</div>
+
+<!-- STAGE 4 -->
+<div class="stage" id="sv4">
+  <div class="lp-hero">
+    <div class="lp-archetype">🎯 실행형 건강전략가</div>
+    <div class="lp-grade">Living Profile N3-Grade · 辛金 극강 DNA</div>
+    <div class="lp-kpis">
+      <div class="lp-kpi"><div class="lp-kpi-val" id="s4nscore" style="color:var(--green);">52</div><div class="lp-kpi-lbl">N-Score</div></div>
+      <div class="lp-kpi"><div class="lp-kpi-val" style="color:var(--accent);">97.3%</div><div class="lp-kpi-lbl">NRA</div></div>
+      <div class="lp-kpi"><div class="lp-kpi-val" style="color:var(--gold);">87%</div><div class="lp-kpi-lbl">골든타임</div></div>
+      <div class="lp-kpi"><div class="lp-kpi-val" style="color:var(--purple);">510건</div><div class="lp-kpi-lbl">실증</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📌 DNA 지문 — 불변 기준점</div>
+    <div class="dna-row"><span style="color:var(--green);font-weight:700;">✓</span><span style="color:var(--muted);">C6 유흥 <b style="color:var(--dim);text-decoration:line-through;">45%</b> → <b style="color:var(--green);">0%</b> 완전 소멸 (100일)</span></div>
+    <div class="dna-row"><span style="color:var(--green);font-weight:700;">✓</span><span style="color:var(--muted);">C1 건강식 <b style="color:var(--green);">2.4배</b> 성장 · 5극 식습관 DNA 확정</span></div>
+    <div class="dna-row"><span style="color:var(--gold);font-weight:700;">◆</span><span style="color:var(--muted);">C8 보험 <b style="color:var(--accent);">18% 고정</b> · 현대해상 286,000원 법칙</span></div>
+    <div class="dna-row"><span style="color:var(--accent);font-weight:700;">◆</span><span style="color:var(--muted);">골든타임 <b style="color:var(--gold);">화~목 오후 2~5시</b> · 의사결정 정확도 87%</span></div>
+  </div>
+  <div class="card" style="border-color:rgba(232,184,75,0.2);">
+    <div class="card-title">
+      🤖 AI 실시간 인사이트 엔진
+      <span class="api-badge">EDGE → CLOUD AI</span>
+      <div style="display:flex;align-items:center;gap:4px;margin-left:auto;">
+        <div style="width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1.2s infinite;"></div>
+        <span style="font-size:8px;color:var(--green);font-weight:700;">LIVE</span>
+      </div>
+    </div>
+    <div id="alarmFeed" style="display:flex;flex-direction:column;gap:6px;min-height:60px;">
+      <div style="text-align:center;padding:14px;font-size:10px;color:var(--dim);">DNA 지문 로딩 중... AI 알람 엔진 초기화</div>
+    </div>
+  </div>
+  <div style="padding:10px 12px;background:rgba(129,140,248,0.04);border:1px solid rgba(129,140,248,0.15);border-radius:9px;">
+    <div style="font-size:8px;font-weight:700;color:var(--indigo);margin-bottom:7px;">💻 파트너 앱 — SDK 2줄 연동</div>
+    <div style="background:var(--bg);border:1px solid rgba(99,102,241,0.2);border-radius:7px;padding:10px;font-family:var(--mono);font-size:8px;line-height:1.9;">
+      <span style="color:#64748b;">// 거래 발생 → DNA 대조 → 즉시 알람 push</span><br>
+      engine<span style="color:#94a3b8;">.</span><span style="color:#60a5fa;">on</span><span style="color:#94a3b8;">(</span><span style="color:#fcd34d;">'alert'</span><span style="color:#94a3b8;">,</span> alert <span style="color:#818cf8;">=></span> <span style="color:#86efac;">notify</span><span style="color:#94a3b8;">(</span>alert<span style="color:#94a3b8;">.</span><span style="color:#60a5fa;">message</span><span style="color:#94a3b8;">,</span> alert<span style="color:#94a3b8;">.</span><span style="color:#60a5fa;">priority</span><span style="color:#94a3b8;">));</span><br>
+      engine<span style="color:#94a3b8;">.</span><span style="color:#60a5fa;">on</span><span style="color:#94a3b8;">(</span><span style="color:#fcd34d;">'insight'</span><span style="color:#94a3b8;">,</span> ins <span style="color:#818cf8;">=></span> <span style="color:#86efac;">renderCard</span><span style="color:#94a3b8;">(</span>ins<span style="color:#94a3b8;">.</span><span style="color:#60a5fa;">type</span><span style="color:#94a3b8;">,</span> ins<span style="color:#94a3b8;">.</span><span style="color:#60a5fa;">text</span><span style="color:#94a3b8;">));</span>
+    </div>
+  </div>
+</div>
+
+</div><!-- /center -->
+
+<!-- ── RIGHT PANEL ── -->
+<div class="right">
+  <div class="right-tabs">
+    <div class="rtab active" id="tab-chat" onclick="switchTab('chat')">🤖 AI 어드바이저</div>
+    <div class="rtab" id="tab-alert" onclick="switchTab('alert')">⚡ 실시간 알람</div>
+    <div class="rtab" id="tab-log" onclick="switchTab('log')">📡 API 로그</div>
+  </div>
+  <div class="right-content">
+
+    <!-- CHAT PANEL -->
+    <div class="rpanel active" id="rp-chat">
+      <div class="chat-header">
+        <div class="chat-status">
+          <div style="width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.2s infinite;"></div>
+          <span style="font-size:9px;color:var(--green);font-weight:700;">N-KAI AI 어드바이저 · 실시간 응답</span>
+        </div>
+        <div style="font-size:8px;color:var(--dim);margin-top:2px;">Living Profile 기반 개인화 AI · Edge On-Device</div>
+      </div>
+      <div class="chat-body" id="chatBody">
+        <div class="msg ai">
+          <div class="msg-bubble">안녕하세요, Architect. 저는 당신의 N-KAI AI 어드바이저입니다.<br><br>Living Profile 분석이 완료되면 개인화된 인사이트를 제공해드립니다. 아래 질문 버튼을 눌러보시거나, 직접 질문을 입력해주세요.</div>
+          <div class="msg-meta">N-KAI SDK · Edge AI</div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <div class="chat-presets">
+          <button class="preset-btn" onclick="sendPreset('내 소비 패턴 분석해줘')">소비 분석</button>
+          <button class="preset-btn" onclick="sendPreset('골든타임이 언제야?')">골든타임</button>
+          <button class="preset-btn" onclick="sendPreset('이번 달 지출 예측해줘')">지출 예측</button>
+          <button class="preset-btn" onclick="sendPreset('내 DNA 지문 요약해줘')">DNA 지문</button>
+        </div>
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="chatInput" placeholder="AI 어드바이저에게 질문하세요..." onkeydown="handleKey(event)"></textarea>
+          <button class="chat-send" onclick="sendChat()">↑</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALERT PANEL -->
+    <div class="rpanel" id="rp-alert">
+      <div style="padding:7px 10px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:9px;font-weight:700;color:var(--text);">실시간 AI 알람 피드</div>
+        <div style="display:flex;align-items:center;gap:4px;"><div style="width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1.2s infinite;"></div><span style="font-size:8px;color:var(--green);">LIVE</span></div>
+      </div>
+      <div class="alert-feed" id="alertFeedRight">
+        <div style="text-align:center;padding:20px;font-size:10px;color:var(--dim);">AI 알람 대기 중...</div>
+      </div>
+    </div>
+
+    <!-- LOG PANEL -->
+    <div class="rpanel" id="rp-log">
+      <div style="padding:7px 10px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;">
+        <div style="font-size:9px;font-weight:700;color:var(--text);">API 로그</div>
+      </div>
+      <div class="api-log-panel" id="apiLogEl">
+        <div class="log-line"><span class="log-ts">--:--</span><span class="log-m sys">SYS</span><span class="log-path"> N-KAI SDK v1.0 부팅...</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- N-Score sparkline (bottom) -->
+  <div class="spark-wrap">
+    <div style="font-size:8px;color:var(--dim);margin-bottom:5px;">N-Score 궤적 (6개월)</div>
+    <div class="sparkline" id="rightSparkline">
+      <div class="sb" title="9월"></div>
+      <div class="sb" title="10월"></div>
+      <div class="sb" title="11월"></div>
+      <div class="sb" title="12월"></div>
+      <div class="sb" title="1월"></div>
+      <div class="sb" title="2월"></div>
+    </div>
+    <div class="spark-labels"><span>9월</span><span>10월</span><span>11월</span><span>12월</span><span>1월</span><span>2월</span></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- Edge AI indicator -->
+<div class="edge-indicator" id="edgeIndicator">
+  <div style="width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 0.4s infinite;"></div>
+  <span id="edgeText">EDGE PROCESSING</span>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  N-KAI SDK LIVE DEMO v13 — Claude API 실시간 연동
+//  + Edge AI 온디바이스 시뮬레이션
+// ══════════════════════════════════════════════════════════
+
+// ── STATE ──
+let curStage = 1;
+let txCount = 0;
+let txIdx = 0;
+let curNScore = null;
+let s3Month = -1;
+let s3Timer = null;
+let alarmTimer = null;
+let alarmCount = 0;
+let isAutoRun = false;
+let profileReady = false;
+let aiCalling = false;
+let lastTxForAI = null;
+let txAIQueue = [];
+let txAIRunning = false;
+
+// ── CLAUDE AI SYSTEM CONTEXT ──
+const AI_SYSTEM = `당신은 N-KAI Living Profile SDK의 온디바이스 AI 어드바이저입니다.
+
+[사용자 프로파일 — Living Profile 확정]
+이름: 이원재 (Architect)
+사주: 辛酉/辛丑/辛丑/己亥 — 辛金 3개 극강금국
+오행: 金55% · 土28% · 水14% · 木3%(재성 0%) · 火0%
+DNA 유형: 가치창출형 — 인정이 수익에 선행하는 구조
+아키타입: 실행형 건강전략가
+N-Score: 74 (52→65→74, 90일 PoC 상승)
+NRA(서사복원율): 97.3%
+
+[확정 DNA 지문]
+- C1 건강식: 40% (비빔밥·포케볼·베이글 5극 체제)
+- C8 보험: 18% 고정 (현대해상 286,000원 법칙)
+- C9 헬스케어: 12%
+- C6 유흥: 0% (완전 소멸, 100일)
+- 모닝루틴: 물+삶은계란2+그릭요거트 (3.5년 생존루틴, 사후확률 0.99+)
+- 배달앱 Baemin 선호 85%+
+- 커피: 백억커피 청량리점 2~3일 주기 벌크구매
+- 골든타임: 화~목 오후 2~5시 (의사결정 정확도 87%)
+
+[4대 특허 알고리즘 — 동적진화형 카이로스 페르소나 엔진 내부 작동]
+① 베이지안 추론: 사전→사후확률 갱신
+② ROC 임계치 보정: T-60 경보 θ=0.65
+③ 비지도 군집화: 16형 아키타입 분류
+④ 딥러닝 포괄: 포괄적 신경망 진화 학습
+
+답변 규칙:
+- 반드시 한국어로, 경어체로 답변
+- 2~4문장으로 간결하게
+- 구체적 수치(%, 금액, 날짜) 반드시 포함
+- 행동 권장사항 1개 포함
+- 마치 실시간 온디바이스 AI가 분석하는 것처럼 생생하게`;
+
+// ── CLAUDE API 호출 ──
+async function callClaude(userMsg, systemOverride) {
+  const system = systemOverride || AI_SYSTEM;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: system,
+        messages: [{ role: 'user', content: userMsg }]
+      })
+    });
+    const data = await res.json();
+    const textBlock = data.content?.find(b => b.type === 'text');
+    return textBlock?.text || '분석 중 오류가 발생했습니다.';
+  } catch(e) {
+    return null;
+  }
+}
+
+// ── ENGINE FIRE ──
+const ENGINES = {
+  bayes:   { chip:'ec-bayes',   card:'lec-bayes',   fill:'ef-bayes',   badge:'eb-bayes',   val:'ev-bayes',   fn:()=>`P = ${(0.90+Math.random()*0.08).toFixed(2)}` },
+  roc:     { chip:'ec-roc',     card:'lec-roc',     fill:'ef-roc',     badge:'eb-roc',     val:'ev-roc',     fn:()=>`θ = ${(0.60+Math.random()*0.10).toFixed(2)}` },
+  cluster: { chip:'ec-cluster', card:'lec-cluster', fill:'ef-cluster', badge:'eb-cluster', val:'ev-cluster', fn:()=>`C = ${7+Math.floor(Math.random()*3)}군집` },
+  dl:      { chip:'ec-dl',      card:'lec-dl',      fill:'ef-dl',      badge:'eb-dl',      val:'ev-dl',      fn:()=>`NRA = ${(96+Math.random()*2).toFixed(1)}%` },
+};
+function fireEngine(key, dur=1600) {
+  const e = ENGINES[key]; if(!e) return;
+  const pct = 55 + Math.random()*40;
+  const chip = document.getElementById(e.chip);
+  if(chip){ chip.classList.add('firing'); setTimeout(()=>chip.classList.remove('firing'), dur); }
+  const card = document.getElementById(e.card);
+  if(card){ card.classList.add('firing'); setTimeout(()=>card.classList.remove('firing'), dur); }
+  const fill = document.getElementById(e.fill);
+  if(fill){ fill.style.width=pct+'%'; setTimeout(()=>fill.style.width='10%', dur); }
+  const badge = document.getElementById(e.badge);
+  if(badge){ badge.textContent='🔥 FIRING'; setTimeout(()=>badge.textContent='대기', dur); }
+  const val = document.getElementById(e.val);
+  if(val) val.textContent = e.fn();
+}
+
+// ── EDGE AI INDICATOR ──
+function showEdge(text, dur=2000) {
+  const el = document.getElementById('edgeIndicator');
+  const tx = document.getElementById('edgeText');
+  if(el && tx){ tx.textContent=text; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'), dur); }
+}
+
+// ── API LOG ──
+function addLog(method, path, ms='', note='') {
+  const log = document.getElementById('apiLogEl'); if(!log) return;
+  const ts = new Date().toLocaleTimeString('ko',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const d = document.createElement('div');
+  d.className = 'log-line';
+  const mc = method==='POST'?'post':method==='AI'?'ai':method==='SYS'?'sys':'get';
+  d.innerHTML = `<span class="log-ts">${ts}</span><span class="log-m ${mc}">${method}</span><span class="log-path"> ${path}</span>${ms?`<span class="log-ms"> ${ms}</span>`:''}${note?`<span style="color:var(--dim);"> // ${note}</span>`:''}`;
+  log.insertBefore(d, log.firstChild);
+  while(log.children.length > 30) log.removeChild(log.lastChild);
+}
+
+// ── TX DATA ──
+const TX_DATA = [
+  {n:'배민(강된장비빔밥)', a:'9,800',  c:'C1·건강식', e:'cluster', col:'#12c78a', raw:'강된장비빔밥 9800원'},
+  {n:'현대해상보험',       a:'286,000',c:'C8·보험',   e:'bayes',   col:'#60a5fa', raw:'현대해상 보험료 286000원'},
+  {n:'배민(포케볼)',       a:'13,500', c:'C1·건강식', e:'cluster', col:'#12c78a', raw:'포케볼 13500원'},
+  {n:'쿠팡로켓',          a:'37,800', c:'C7·생활',   e:'roc',     col:'#e8b84b', raw:'쿠팡 생활용품 37800원'},
+  {n:'백억커피',          a:'2,500',  c:'C3·카페',   e:'cluster', col:'#a873f5', raw:'백억커피 아메리카노 2500원'},
+  {n:'올리브영',          a:'18,500', c:'C9·헬스케어',e:'bayes',  col:'#a873f5', raw:'올리브영 건강식품 18500원'},
+  {n:'배민(베이글세트)',   a:'8,500',  c:'C1·건강식', e:'dl',      col:'#12c78a', raw:'베이글세트 8500원'},
+  {n:'마켓컬리',          a:'45,600', c:'C6·식재료', e:'cluster', col:'#e8b84b', raw:'마켓컬리 신선식품 45600원'},
+  {n:'배민(새우아보카도)', a:'14,800', c:'C1·건강식', e:'dl',      col:'#12c78a', raw:'새우아보카도 포케 14800원'},
+  {n:'연세세브란스병원',   a:'15,000', c:'C9·의료',   e:'bayes',   col:'#a873f5', raw:'연세세브란스 외래진료 15000원'},
+  {n:'쿠팡(계란+그릭요거트)',a:'22,400',c:'C6·식재료',e:'cluster', col:'#e8b84b', raw:'그릭요거트 계란 22400원'},
+];
+
+function pushTx() {
+  const tx = TX_DATA[txIdx % TX_DATA.length]; txIdx++;
+  txCount++;
+  const ctr = document.getElementById('topTxCount');
+  if(ctr) ctr.textContent = Math.min(txCount * 3, 510);
+  fireEngine(tx.e);
+  showEdge(`EDGE: ${tx.c} 분석`, 1400);
+  // Left feed
+  const feed = document.getElementById('leftTxFeed');
+  if(feed){
+    const d = document.createElement('div'); d.className='tx-mini';
+    const ts = new Date().toLocaleTimeString('ko',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    d.innerHTML = `<div class="tx-mini-row"><span class="tx-mini-name">${tx.n}</span><span class="tx-mini-amt">₩${tx.a}</span></div><div style="font-size:7px;color:${tx.col};margin-top:2px;">${tx.c} · ${ts}</div>`;
+    feed.insertBefore(d, feed.firstChild);
+    while(feed.children.length > 8) feed.removeChild(feed.lastChild);
+  }
+  addLog('POST', '/mcc/stream', Math.floor(5+Math.random()*15)+'ms', tx.c);
+  // AI 트랜잭션 분석 (스테이지4 활성 시)
+  if(profileReady && currentTab === 'chat') {
+    txAIQueue.push(tx);
+    processTxAIQueue();
+  }
+}
+
+// ── TX AI 분석 큐 ──
+async function processTxAIQueue() {
+  if(txAIRunning || txAIQueue.length === 0) return;
+  txAIRunning = true;
+  const tx = txAIQueue.shift();
+  const msg = `방금 거래 발생: ${tx.raw}. DNA 지문 기준으로 이 거래의 의미를 1~2문장으로 즉시 분석해주세요. N-Score 변동 예측 포함.`;
+  addLog('AI', '/edge/tx-analyze', '...', tx.n);
+  const reply = await callClaude(msg);
+  txAIRunning = false;
+  if(reply) {
+    showTxInsight(tx, reply);
+    addLog('AI', '/edge/tx-analyze', Math.floor(800+Math.random()*400)+'ms', '✓');
+  }
+  if(txAIQueue.length > 0) setTimeout(processTxAIQueue, 2000);
+}
+
+// ── TX 인사이트 팝업 ──
+function showTxInsight(tx, text) {
+  document.querySelectorAll('.tx-insight').forEach(el=>el.remove());
+  const d = document.createElement('div');
+  d.className = 'tx-insight';
+  d.innerHTML = `<div class="tx-insight-head">⚡ Edge AI · ${tx.n} <span style="font-size:7px;color:var(--dim);">₩${tx.a}</span></div>${text}`;
+  document.body.appendChild(d);
+  setTimeout(()=>d.remove(), 4200);
+}
+
+// ── STAGE NAVIGATION ──
+function goStage(n) {
+  if(n > curStage+1 && !isAutoRun) { addLog('ERR','/stage','—','순서 오류'); return; }
+  curStage = n;
+  [1,2,3,4].forEach(i=>{ const v=document.getElementById('sv'+i); if(v) v.classList.toggle('active',i===n); });
+  ['pip1','pip2','pip3','pip4'].forEach((id,i)=>{
+    const el=document.getElementById(id); if(!el) return;
+    el.classList.remove('active','done');
+    if(i+1<n) el.classList.add('done');
+    else if(i+1===n) el.classList.add('active');
+  });
+  if(n===1) initS1();
+  if(n===2) initS2();
+  if(n===3) initS3();
+  if(n===4) initS4();
+  addLog(n===3?'STREAM':'POST',['/birth/analyze','/kipa/fuse','/mcc/evolve','/profile/living'][n-1], Math.floor(50+Math.random()*200)+'ms');
+}
+
+// ── STAGE 1 ──
+function initS1() {
+  fireEngine('bayes'); fireEngine('dl');
+  showEdge('EDGE: 사주 벡터 변환', 2000);
+  ['p1','p2','p3','p4'].forEach((id,i)=>setTimeout(()=>{
+    const el=document.getElementById(id); if(el) el.classList.add('lit');
+    fireEngine(['dl','bayes','cluster','roc'][i]);
+  }, 400+i*500));
+  const ebars=[
+    {id:'eb-metal',vid:'ebv-metal',oid:'oh-metal',opid:'ohp-metal',w:55,delay:2200},
+    {id:'eb-earth', vid:'ebv-earth', oid:'oh-earth', opid:'ohp-earth', w:28,delay:2500},
+    {id:'eb-water', vid:'ebv-water', oid:'oh-water', opid:'ohp-water', w:14,delay:2800},
+    {id:'eb-wood',  vid:'ebv-wood',  oid:'oh-wood',  opid:'ohp-wood',  w:3, delay:3100},
+    {id:'eb-fire',  vid:'ebv-fire',  oid:'oh-fire',  opid:'ohp-fire',  w:0, delay:3400},
+  ];
+  ebars.forEach(en=>setTimeout(()=>{
+    const fill=document.getElementById(en.id); if(fill) fill.style.width=en.w+'%';
+    const val=document.getElementById(en.vid); if(val) val.textContent=en.w+'%';
+    const card=document.getElementById(en.oid); if(card){ card.classList.add('on'); if(en.w>=40) card.classList.add('top'); }
+    const pct=document.getElementById(en.opid); if(pct) pct.textContent=en.w+'%';
+    if(en.w>0) fireEngine('cluster');
+  }, en.delay));
+  setTimeout(()=>{
+    const r=document.getElementById('s1-result'); if(r) r.style.display='block';
+    const btn=document.getElementById('s1btn'); if(btn) btn.style.display='inline-block';
+    document.getElementById('lat1').textContent='124ms';
+    addLog('RES','/birth/analyze','124ms','🪙金55% 확정');
+    if(isAutoRun) setTimeout(()=>goStage(2), 700);
+  }, 4300);
+}
+
+// ── STAGE 2 ──
+const KIPA_QS = [
+  {q:'새로운 아이디어를 즉각 실행하는가?', a:'J형 68%'},
+  {q:'감정보다 논리로 결정하는가?', a:'T형 72%'},
+  {q:'계획을 꼼꼼히 세우는가?', a:'J형 확정'},
+  {q:'외부 자극보다 내면 분석을 선호?', a:'I형 55%'},
+  {q:'직관보다 데이터를 신뢰하는가?', a:'S형 보정'},
+];
+function initS2() {
+  const list=document.getElementById('kipaList'); if(!list) return;
+  list.innerHTML='';
+  KIPA_QS.forEach((q,i)=>{
+    const d=document.createElement('div'); d.className='kipa-q';
+    d.innerHTML=`<div class="kipa-q-text">${q.q}</div><div class="kipa-q-ans">${q.a}</div>`;
+    list.appendChild(d);
+    setTimeout(()=>{
+      d.classList.add('done');
+      const p=document.getElementById('kipaProgBar'); if(p) p.style.width=((i+1)/KIPA_QS.length*100)+'%';
+      fireEngine(['bayes','roc','cluster','dl','bayes'][i]);
+      addLog('POST',`/kipa/q${i+1}`,Math.floor(20+Math.random()*40)+'ms',q.a);
+    }, 500+i*600);
+  });
+  setTimeout(()=>{
+    const fp=document.getElementById('s2fuse'); if(fp) fp.style.display='block';
+    fireEngine('bayes'); fireEngine('dl');
+    setTimeout(()=>{
+      const fr=document.getElementById('s2fuse-result'); if(fr) fr.style.opacity='1';
+      document.getElementById('lat2').textContent='89ms';
+      addLog('RES','/kipa/fuse','89ms','전략적 분석가 확정');
+      const btn=document.getElementById('s2btn'); if(btn) btn.style.display='inline-block';
+      if(isAutoRun) setTimeout(()=>goStage(3), 700);
+    }, 600);
+  }, 500+KIPA_QS.length*600+400);
+}
+
+// ── STAGE 3 ──
+const MONTH_DATA = [
+  {m:'9월',  s:null, c:[0,0,0,0,3,45,0,3],  ins:'Pre-PoC — Dead Profile 상태 · 유흥 지배', e:'roc'},
+  {m:'10월', s:null, c:[0,0,0,0,4,30,5,3],  ins:'카드 교체 이벤트 → 행동 리셋 감지', e:'bayes'},
+  {m:'11월', s:null, c:[5,0,0,8,4,14,8,0],  ins:'전환기 — 배달↑ 유흥 감소 중', e:'cluster'},
+  {m:'12월', s:52,   c:[10,0,3,15,3,12,11,14],ins:'Phase 1 돌입 · N-Score 52 첫 산출', e:'dl'},
+  {m:'1월',  s:65,   c:[35,5,10,10,1,0,0,18], ins:'비빔밥 루틴 정착 · 유흥 소멸 · N-Score 65', e:'bayes'},
+  {m:'2월',  s:74,   c:[40,15,12,8,4,0,0,18], ins:'수렴 완료 · 5극 체제 확정 · N-Score 74 ▲', e:'dl'},
+];
+const SPARK_VALS=[0,0,0,55,70,80];
+function initS3() {
+  s3Month=-1; clearInterval(s3Timer);
+  s3Timer=setInterval(advanceS3, 1800);
+  advanceS3();
+}
+function advanceS3() {
+  s3Month++;
+  if(s3Month>=MONTH_DATA.length){
+    clearInterval(s3Timer);
+    const btn=document.getElementById('s3btn'); if(btn) btn.style.display='inline-block';
+    document.getElementById('lat3').textContent='2.3s';
+    document.getElementById('topNRA').style.display='inline-flex';
+    addLog('RES','/mcc/evolve','2.3s','510건 수렴 · N-Score 74');
+    if(isAutoRun) setTimeout(()=>goStage(4), 900);
+    return;
+  }
+  const d=MONTH_DATA[s3Month];
+  document.querySelectorAll('.mpill').forEach((el,i)=>{
+    el.classList.toggle('active',i===s3Month);
+    if(i<s3Month) el.classList.add('past');
+  });
+  d.c.forEach((v,i)=>{
+    const cc=document.getElementById('cc'+i); const cv=document.getElementById('cv'+i);
+    if(cc&&cv){ cv.textContent=v+'%'; cc.classList.toggle('hot',v>10&&i!==5); }
+  });
+  const ns=document.getElementById('s3nscore'); const gr=document.getElementById('s3grade');
+  if(ns&&gr){
+    if(d.s){ ns.textContent=d.s; ns.style.color=d.s>=70?'var(--green)':d.s>=60?'var(--accent)':'var(--amber)'; gr.textContent=d.s>=70?'N3 Grade · B+':d.s>=60?'N4 Grade · B':'N5 Grade · C+'; curNScore=d.s; const top=document.getElementById('topNScore'); if(top) top.textContent=d.s; }
+    else { ns.textContent='—'; gr.textContent='데이터 주입 중...'; }
+  }
+  updateSparks(s3Month);
+  const ins=document.getElementById('s3insight'); if(ins) ins.textContent=d.ins;
+  fireEngine(d.e);
+  addLog('STREAM','/mcc/evolve',Math.floor(180+Math.random()*200)+'ms',d.m);
+}
+function updateSparks(idx) {
+  ['s3sparkline','rightSparkline'].forEach(sid=>{
+    const s=document.getElementById(sid); if(!s) return;
+    s.querySelectorAll('.sb').forEach((b,i)=>{
+      if(i<=idx){ const p=SPARK_VALS[i]; b.style.height=(p>0?p:5)+'%'; b.style.background=p>=70?'var(--green)':p>=55?'var(--accent)':p>0?'var(--amber)':'var(--dim)'; }
+    });
+  });
+}
+
+// ── STAGE 4 + AI 알람 ──
+const STATIC_ALARMS = [
+  {icon:'⏰',title:'골든타임 진입',msg:'화요일 오후 2시 — DNA 지문 기반 재정 의사결정 최적 시간대. 정확도 87%.', col:'#e8b84b',border:'rgba(232,184,75,0.3)',bg:'rgba(232,184,75,0.05)',type:'GOLDEN',e:'dl'},
+  {icon:'✅',title:'비빔밥 루틴 확인',msg:'강된장비빔밥 7일 연속 감지. C1 건강식 유지 중. N-Score +1 예측.',col:'#12c78a',border:'rgba(18,199,138,0.25)',bg:'rgba(18,199,138,0.04)',type:'ROUTINE',e:'cluster'},
+  {icon:'🎯',title:'이번 주 소비 예측',msg:'포케볼 21% · 베이글 9% · 보험 납부(286,000원) D-3. 예상 지출 ₩64,000.',col:'#3b7ff8',border:'rgba(59,127,248,0.25)',bg:'rgba(59,127,248,0.04)',type:'PREDICT',e:'bayes'},
+  {icon:'⚠️',title:'지출 이탈 경고',msg:'편의점 3회 연속 감지. 루틴 이탈 가능성 28% — DNA 기준점 대비 +12%.',col:'#e8b84b',border:'rgba(232,184,75,0.3)',bg:'rgba(232,184,75,0.04)',type:'WARN',e:'roc'},
+  {icon:'🛡️',title:'ROC 이상감지',msg:'ROC θ=0.65 기준 이상 없음. 위기대응력 0.79 — 현재 안전 범위.',col:'#60a5fa',border:'rgba(96,165,250,0.2)',bg:'rgba(96,165,250,0.03)',type:'RISK',e:'roc'},
+  {icon:'💡',title:'패턴 인사이트',msg:'수요일 배달 주문 집중(68%). C4→C1 전환 완료. 루틴 안정성 94%.',col:'#818cf8',border:'rgba(129,140,248,0.25)',bg:'rgba(129,140,248,0.04)',type:'INSIGHT',e:'dl'},
+];
+let staticAlarmIdx = 0;
+let aiAlarmCount = 0;
+
+function initS4() {
+  profileReady = true;
+  addLog('GET','/profile/living','41ms','실행형 건강전략가 · DNA 지문 확정');
+  fireEngine('dl'); fireEngine('bayes');
+  setTimeout(()=>{ fireEngine('cluster'); fireEngine('roc'); }, 600);
+  const top=document.getElementById('topNScore'); if(top) top.textContent='74';
+  document.getElementById('lat4').textContent='41ms';
+  let n=52; const target=74;
+  const s4s=document.getElementById('s4nscore');
+  const t=setInterval(()=>{ n+=2; if(n>=target){ n=target; clearInterval(t); } if(s4s) s4s.textContent=n; }, 80);
+  // 알람 시작
+  setTimeout(()=>{
+    pushStaticAlarm(); pushStaticAlarm();
+    alarmTimer=setInterval(()=>{
+      if(aiAlarmCount < 3 && !aiCalling) {
+        aiAlarmCount++;
+        pushAIAlarm();
+      } else {
+        pushStaticAlarm();
+      }
+    }, 4000);
+  }, 1000);
+  // 초기 AI 인사이트 (채팅)
+  setTimeout(()=>pushAIWelcome(), 2000);
+}
+
+function pushStaticAlarm() {
+  const a = STATIC_ALARMS[staticAlarmIdx % STATIC_ALARMS.length]; staticAlarmIdx++;
+  const ts = new Date().toLocaleTimeString('ko',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const html = `<div class="alert-item" style="background:${a.bg};border:1px solid ${a.border};">
+    <div class="alert-head"><div class="alert-title" style="color:${a.col};">${a.icon} ${a.title}</div><span class="alert-ts">${ts}</span></div>
+    <div class="alert-text">${a.msg}</div>
+    <div class="alert-tags"><span class="alert-tag">${a.type}</span><span class="alert-tag">EDGE</span></div>
+  </div>`;
+  ['alarmFeed','alertFeedRight'].forEach(id=>{
+    const feed=document.getElementById(id); if(!feed) return;
+    const placeholder=feed.querySelector('[style*="초기화"]')||feed.querySelector('[style*="대기"]');
+    if(placeholder) placeholder.remove();
+    const d=document.createElement('div'); d.innerHTML=html; feed.insertBefore(d.firstChild, feed.firstChild);
+    while(feed.children.length>7) feed.removeChild(feed.lastChild);
+  });
+  fireEngine(a.e);
+  addLog('GET','/alert/stream','8ms',a.title);
+}
+
+// ── Claude API 기반 실시간 AI 알람 ──
+async function pushAIAlarm() {
+  if(aiCalling) return;
+  aiCalling = true;
+  const prompts = [
+    'DNA 지문을 기반으로 오늘 주목해야 할 소비 패턴 이상 신호 1개를 탐지해서 알람 형식으로 알려주세요. 제목과 본문을 포함해주세요.',
+    '현재 N-Score 74 기준, 다음 7일 동안 가장 가능성 높은 지출 이벤트를 예측해서 알람으로 알려주세요.',
+    '비빔밥 루틴과 보험 납부 패턴을 기반으로 이번 주 재정 건강도를 분석해서 알람으로 알려주세요.',
+  ];
+  const prompt = prompts[Math.floor(Math.random()*prompts.length)];
+  addLog('AI','/ai/alarm/generate','...','Claude API');
+  const reply = await callClaude(prompt);
+  aiCalling = false;
+  if(!reply) { aiAlarmCount--; return; }
+  const ts = new Date().toLocaleTimeString('ko',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const html = `<div class="alert-item" style="background:rgba(168,115,245,0.06);border:1px solid rgba(168,115,245,0.25);">
+    <div class="alert-head"><div class="alert-title" style="color:#a873f5;">🧠 AI 실시간 분석</div><span class="alert-ts">${ts}</span></div>
+    <div class="alert-text">${reply}</div>
+    <div class="alert-tags"><span class="alert-tag">AI CLOUD</span><span class="alert-tag">LIVE</span></div>
+  </div>`;
+  ['alarmFeed','alertFeedRight'].forEach(id=>{
+    const feed=document.getElementById(id); if(!feed) return;
+    const d=document.createElement('div'); d.innerHTML=html; feed.insertBefore(d.firstChild, feed.firstChild);
+    while(feed.children.length>7) feed.removeChild(feed.lastChild);
+  });
+  fireEngine('dl');
+  addLog('AI','/ai/alarm/generate',Math.floor(900+Math.random()*600)+'ms','✓ Claude');
+}
+
+// ── AI 환영 메시지 (Stage 4 진입 시) ──
+async function pushAIWelcome() {
+  if(!profileReady) return;
+  const prompt = 'Living Profile 분석이 완료되었습니다. Architect(이원재)의 N-Score 74 달성을 축하하고, 오늘 가장 주목해야 할 인사이트 1개를 간결하게 알려주세요.';
+  addLog('AI','/ai/welcome','...','초기 인사이트');
+  const reply = await callClaude(prompt);
+  if(reply) {
+    addChatMsg('ai', reply);
+    addLog('AI','/ai/welcome',Math.floor(800+Math.random()*500)+'ms','✓');
+  }
+}
+
+// ── CHAT ──
+let currentTab = 'chat';
+function switchTab(tab) {
+  currentTab = tab;
+  ['chat','alert','log'].forEach(t=>{
+    document.getElementById('tab-'+t)?.classList.toggle('active', t===tab);
+    document.getElementById('rp-'+t)?.classList.toggle('active', t===tab);
+  });
+}
+
+function ts() {
+  return new Date().toLocaleTimeString('ko',{hour12:false,hour:'2-digit',minute:'2-digit'});
+}
+
+function addChatMsg(role, text) {
+  const body = document.getElementById('chatBody'); if(!body) return;
+  const d = document.createElement('div');
+  d.className = `msg ${role}`;
+  d.innerHTML = `<div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div><div class="msg-meta">${role==='ai'?'N-KAI AI · '+ts():'Architect · '+ts()}</div>`;
+  body.appendChild(d);
+  body.scrollTop = body.scrollHeight;
+}
+
+function addThinking() {
+  const body = document.getElementById('chatBody'); if(!body) return;
+  const d = document.createElement('div');
+  d.className = 'msg ai'; d.id = 'thinking';
+  d.innerHTML = `<div class="thinking-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+  body.appendChild(d);
+  body.scrollTop = body.scrollHeight;
+}
+
+function removeThinking() {
+  const t = document.getElementById('thinking'); if(t) t.remove();
+}
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim(); if(!text) return;
+  if(aiCalling) { addChatMsg('ai', '현재 다른 분석이 진행 중입니다. 잠시 후 다시 시도해주세요.'); return; }
+  input.value = '';
+  addChatMsg('user', text);
+  switchTab('chat');
+  addThinking();
+  aiCalling = true;
+  addLog('AI','/ai/chat','...','질문 처리 중');
+  const reply = await callClaude(text);
+  removeThinking();
+  aiCalling = false;
+  if(reply) {
+    addChatMsg('ai', reply);
+    addLog('AI','/ai/chat',Math.floor(800+Math.random()*600)+'ms','✓');
+  } else {
+    addChatMsg('ai', '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+  }
+}
+
+function sendPreset(msg) {
+  if(!profileReady) {
+    addChatMsg('ai', '먼저 Stage 4 (Living Profile 확정)까지 진행해주세요. AUTO 버튼을 눌러 빠르게 완료할 수 있습니다.');
+    switchTab('chat'); return;
+  }
+  document.getElementById('chatInput').value = msg;
+  sendChat();
+}
+
+function handleKey(e) {
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendChat(); }
+}
+
+// ── AUTO RUN ──
+function autoRunAll() {
+  isAutoRun = true;
+  resetAll();
+  const btn = document.getElementById('btnRun');
+  if(btn){ btn.textContent='▶ 실행 중...'; btn.style.color='var(--amber)'; }
+  setTimeout(()=>goStage(1), 200);
+  setTimeout(()=>{ isAutoRun=false; const b=document.getElementById('btnRun'); if(b){ b.textContent='▶ AUTO'; b.style.color='var(--green)'; } }, 18000);
+}
+
+function resetAll() {
+  clearInterval(s3Timer); clearInterval(alarmTimer);
+  s3Month=-1; alarmCount=0; txAIQueue=[]; txAIRunning=false; aiCalling=false;
+  profileReady=false; aiAlarmCount=0; staticAlarmIdx=0;
+  ['oh-metal','oh-earth','oh-water','oh-wood','oh-fire'].forEach(id=>{ const el=document.getElementById(id); if(el){ el.classList.remove('on','top'); } });
+  ['ohp-metal','ohp-earth','ohp-water','ohp-wood','ohp-fire'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent='0%'; });
+  const af=document.getElementById('alarmFeed'); if(af) af.innerHTML='<div style="text-align:center;padding:14px;font-size:10px;color:var(--dim);">DNA 지문 로딩 중... AI 알람 엔진 초기화</div>';
+  const afr=document.getElementById('alertFeedRight'); if(afr) afr.innerHTML='<div style="text-align:center;padding:20px;font-size:10px;color:var(--dim);">AI 알람 대기 중...</div>';
+  txCount=0; txIdx=0; curNScore=null;
+  const t=document.getElementById('topNScore'); if(t) t.textContent='—';
+  const c=document.getElementById('topTxCount'); if(c) c.textContent='0';
+  const n=document.getElementById('topNRA'); if(n) n.style.display='none';
+  ['pip1','pip2','pip3','pip4'].forEach((id,i)=>{ const el=document.getElementById(id); if(!el) return; el.classList.remove('active','done'); if(i===0) el.classList.add('active'); });
+  // 챗 리셋
+  const chatBody=document.getElementById('chatBody');
+  if(chatBody) chatBody.innerHTML=`<div class="msg ai"><div class="msg-bubble">안녕하세요, Architect. 저는 당신의 N-KAI AI 어드바이저입니다.<br><br>Living Profile 분석이 완료되면 개인화된 인사이트를 제공해드립니다. AUTO 버튼을 눌러 데모를 시작해보세요.</div><div class="msg-meta">N-KAI SDK · Edge AI</div></div>`;
+  goStage(1);
+}
+
+// ── GLOBAL TX STREAM ──
+setInterval(pushTx, 2500);
+setTimeout(pushTx, 700);
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', ()=>{
+  setTimeout(()=>initS1(), 300);
+  addLog('SYS','engine_boot','—','N-KAI SDK v1.0 · Edge AI ON');
+  addLog('SYS','claude_api','—','AI 어드바이저 연결됨');
+});
+</script>
+</body>
+</html>
