@@ -3211,7 +3211,10 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
 
                     <!-- ========== 🔓 GATED DETAIL SECTION (공유 후 표시) ========== -->
                     <div id="gated-detail-section" style="display:none;">
-                    
+
+                    <!-- ========== 1장 요약 카드 (Report v2.0) ========== -->
+                    <div id="nkai-summary-card-mount" class="mb-6"></div>
+
                     <!-- ========== N-Score 핵심 (간결하게) ========== -->
                     <div class="bg-black/30 rounded-2xl p-5 mb-6 border border-white/8">
                         <div class="flex items-center justify-center gap-6 flex-wrap">
@@ -6309,6 +6312,28 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
             if(teaser) teaser.style.display = 'none';
             if(gatedSection) gatedSection.style.display = 'block';
 
+            /* ★ Report v2.0 — 1장 요약 카드 (unlockPremium 시점) */
+            if(window.NKAIReportV2 && window.NKAIReportV2.renderSummaryCard){
+                var mountEl = document.getElementById('nkai-summary-card-mount');
+                if(mountEl && !mountEl.innerHTML){
+                    if(!document.getElementById('nkai-report-v2-css')){
+                        var styleTag = document.createElement('style');
+                        styleTag.id = 'nkai-report-v2-css';
+                        styleTag.textContent = window.NKAIReportV2.SUMMARY_CARD_CSS;
+                        document.head.appendChild(styleTag);
+                    }
+                    mountEl.innerHTML = window.NKAIReportV2.renderSummaryCard({
+                        nScore: r.nScore || 0,
+                        economic: r.wealthEnergy || 50,
+                        expression: r.expressionScore || 50,
+                        risk: r.riskTolerance || 50,
+                        archetype: r.code || 'ESTJ',
+                        name: r.userName || '고객',
+                        goldenTime: (r.goldenCalendar && r.goldenCalendar.length > 0) ? { phase: 'peak', score: 75 } : null
+                    });
+                }
+            }
+
             /* ── 혈액형/별자리/띠 뱃지 표시 ── */
             showTraitBadges();
 
@@ -7694,6 +7719,33 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
             sessionStorage.removeItem('nkai_pending_plan');
             if(window.renderBloodArchetypeCard) setTimeout(function(){ window.renderBloodArchetypeCard(); }, 250);
 
+            /* ★ Report v2.0 — 1장 요약 카드 렌더링 */
+            setTimeout(function(){
+                if(window.NKAIReportV2 && window.NKAIReportV2.renderSummaryCard){
+                    var r = window._nkaiResult || {};
+                    var mountEl = document.getElementById('nkai-summary-card-mount');
+                    if(mountEl){
+                        /* CSS 주입 (1회) */
+                        if(!document.getElementById('nkai-report-v2-css')){
+                            var styleTag = document.createElement('style');
+                            styleTag.id = 'nkai-report-v2-css';
+                            styleTag.textContent = window.NKAIReportV2.SUMMARY_CARD_CSS;
+                            document.head.appendChild(styleTag);
+                        }
+                        mountEl.innerHTML = window.NKAIReportV2.renderSummaryCard({
+                            nScore: r.nScore || 0,
+                            economic: r.wealthEnergy || 50,
+                            expression: r.expressionScore || 50,
+                            risk: r.riskTolerance || 50,
+                            archetype: r.code || 'ESTJ',
+                            name: r.userName || '고객',
+                            goldenTime: (r.goldenCalendar && r.goldenCalendar.length > 0) ? { phase: 'peak', score: 75 } : null
+                        });
+                        console.log('[N-KAI] ★ Report v2.0 요약 카드 렌더링 완료');
+                    }
+                }
+            }, 350);
+
             /* ★ [HOUR-SYNC] Living Profile N-Score 강제 동기화 — 시간업그레이드 후 */
             setTimeout(function(){
                 try {
@@ -8990,5 +9042,6 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
     </script>
     <script src="js/nkai-patch.js?v=20260322"></script>
       <script src="js/nkai-breakdown.js"></script>
+      <script src="js/nkai-report-v2.js?v=20260327"></script>
     </body>
     </html>
