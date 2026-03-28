@@ -5990,10 +5990,11 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
         /* ── 카카오톡 공유 ── PROTECTED: KAKAO-SHARE */
         function shareKakao(url){
             var r = window._nkaiResult || {};
-            var title = r.code ? '🧬 ' + r.code + ' ' + (r.archetype||'') : getShareTitle();
-            var desc = r.code 
-                ? r.code + ' ' + (r.archetype||'') + ' | N-Score ' + (r.nGrade||'N5') + ' (' + (r.nScore||500) + '점) — 카드 거래 데이터로 분석하는 나의 금융 DNA, 무료로 확인!'
-                : getShareText();
+            var archName = r.archetype || r.title || '';
+            var title = '나의 금융 DNA 분석 결과 공유';
+            var desc = r.code
+                ? '나 AI로 금융 DNA 분석했는데\n내 아키타입이 ' + archName + '래!\n너도 무료로 해봐 \uD83D\uDC47'
+                : 'AI가 분석하는 16가지 투자 성향 — 무료 분석!';
 
             if(window.Kakao && Kakao.isInitialized()){
                 Kakao.Share.sendDefault({
@@ -6007,7 +6008,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                         link:{ mobileWebUrl: url, webUrl: url }
                     },
                     buttons:[{
-                        title:'내 금융 DNA 무료 분석',
+                        title:'무료 분석하기',
                         link:{ mobileWebUrl: url, webUrl: url }
                     }]
                 });
@@ -6038,16 +6039,17 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
         function shareCopy(url, inputId){
             var el = document.getElementById(inputId);
             if(el){ el.value = url; }
+            var _msg = '추천 링크가 복사되었습니다!\n\n친구에게 이렇게 전달해보세요:\n\n\"나 AI로 금융 DNA 분석했는데 신기해!\nMBTI는 입이 말하고 N-KAI는 지갑이 말한다 \uD83D\uDE04\n무료로 해봐! \u2192 ' + url + '\"';
             if(navigator.clipboard){
                 navigator.clipboard.writeText(url).then(function(){
-                    alert('추천 링크가 복사되었습니다!');
+                    alert(_msg);
                 });
             } else {
                 var ta = document.createElement('textarea');
                 ta.value = url; document.body.appendChild(ta);
                 ta.select(); document.execCommand('copy');
                 document.body.removeChild(ta);
-                alert('추천 링크가 복사되었습니다!');
+                alert(_msg);
             }
         }
 
@@ -8576,15 +8578,18 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
         }
         function _kakaoShare(url){
             var r = window._nkaiResult || {};
-            var title = r.code ? r.code + ' ' + (r.archetype||'') + ' | N-KAI 금융 DNA 분석' : '나의 금융 DNA는? — N-KAI 무료 분석';
-            var desc  = r.code ? r.code + ' | N-Score ' + (r.nGrade||'N5') + ' (' + (r.nScore||500) + '점) — 카드 거래 기반 행동 예측 AI' : 'AI가 분석하는 16가지 투자 성향 — 무료 분석';
+            var archName = r.archetype || r.title || '';
+            var title = '나의 금융 DNA 분석 결과 공유';
+            var desc  = r.code
+                ? '나 AI로 금융 DNA 분석했는데\n내 아키타입이 ' + archName + '래!\n너도 무료로 해봐 \uD83D\uDC47'
+                : 'AI가 분석하는 16가지 투자 성향 — 무료 분석!';
             try {
                 if(window.Kakao){
                     if(!Kakao.isInitialized()) Kakao.init(KAKAO_KEY);
                     Kakao.Share.sendDefault({
                         objectType:'feed',
                         content:{ title:title, description:desc, imageUrl:'https://www.neurinkairosai.com/og-image-nkai.png?v=20260325b', imageWidth:800, imageHeight:400, link:{mobileWebUrl:url, webUrl:url} },
-                        buttons:[{ title:'내 금융 DNA 무료 분석', link:{mobileWebUrl:url, webUrl:url} }]
+                        buttons:[{ title:'무료 분석하기', link:{mobileWebUrl:url, webUrl:url} }]
                     });
                     return;
                 }
@@ -8624,8 +8629,9 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                     window.location.href = 'sms:' + sep + 'body=' + encodeURIComponent('나의 금융 DNA 분석 결과\n' + url);
                     break;
                 case 'copy':
-                    if(navigator.clipboard){ navigator.clipboard.writeText(url).then(function(){ alert('추천 링크가 복사되었습니다!'); }).catch(function(){ var ta=document.createElement('textarea'); ta.value=url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert('추천 링크가 복사되었습니다!'); }); }
-                    else { var ta=document.createElement('textarea'); ta.value=url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert('추천 링크가 복사되었습니다!'); }
+                    var _copyMsg = '추천 링크가 복사되었습니다!\n\n친구에게 이렇게 전달해보세요:\n\n\"나 AI로 금융 DNA 분석했는데 신기해!\nMBTI는 입이 말하고 N-KAI는 지갑이 말한다 \uD83D\uDE04\n무료로 해봐! \u2192 ' + url + '\"';
+                    if(navigator.clipboard){ navigator.clipboard.writeText(url).then(function(){ alert(_copyMsg); }).catch(function(){ var ta=document.createElement('textarea'); ta.value=url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert(_copyMsg); }); }
+                    else { var ta=document.createElement('textarea'); ta.value=url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert(_copyMsg); }
                     break;
             }
         }
