@@ -3244,7 +3244,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                             <div class="text-center">
                                 <p class="text-gray-400 text-[10px] uppercase tracking-wider mb-1">Ranking</p>
                                 <div id="result-percentile" class="text-2xl font-black text-[#5AA8FF]">상위 32%</div>
-                                <p class="text-[10px] text-gray-600" data-i18n="res_percentile_suffix">전체 분석자 중</p>
+                                <p id="result-ranking-desc" class="text-[10px] text-[#5AA8FF]/70 mt-1 font-bold" style="word-break:keep-all;"></p>
                             </div>
                         </div>
                         
@@ -3273,20 +3273,29 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                     <div class="grid grid-cols-3 gap-2 mb-6">
                         <div class="bg-[#0F1524] rounded-xl metric-card-compact border border-[#2D8CFF]/20">
                             <div class="metric-icon-circle inline-flex items-center justify-center rounded-full" style="background:rgba(45,140,255,0.15); border:2px solid #2D8CFF;"><span>💰</span></div>
-                            <p class="metric-label">경제감각</p>
+                            <p class="metric-label">돈 버는 감각</p>
                             <p id="result-wealth-energy" class="metric-value font-black text-[#2D8CFF]">-%</p>
                         </div>
                         <div class="bg-[#0F1524] rounded-xl metric-card-compact border border-[#5AA8FF]/20">
                             <div class="metric-icon-circle inline-flex items-center justify-center rounded-full" style="background:rgba(90,168,255,0.15); border:2px solid #5AA8FF;"><span>⚡</span></div>
-                            <p class="metric-label">표현에너지</p>
+                            <p class="metric-label">행동 에너지</p>
                             <p id="result-opportunity" class="metric-value font-black text-[#5AA8FF]">-%</p>
                         </div>
                         <div class="bg-[#0F1524] rounded-xl metric-card-compact border border-[#00D68F]/20">
                             <div class="metric-icon-circle inline-flex items-center justify-center rounded-full" style="background:rgba(0,214,143,0.15); border:2px solid #00D68F;"><span>🛡️</span></div>
-                            <p class="metric-label">위기대응력</p>
+                            <p class="metric-label">위기 버티는 힘</p>
                             <p id="result-risk-tolerance" class="metric-value font-black text-[#00D68F]">-%</p>
                         </div>
                     </div>
+
+                    <!-- ========== 지금 할 것 / 조심할 것 (Report v2.0) ========== -->
+                    <div id="action-risk-section" class="mb-6"></div>
+
+                    <!-- ========== 오행별 몸 관리 (Report v2.0) ========== -->
+                    <div id="ohang-body-section" class="mb-6"></div>
+
+                    <!-- ========== 오행별 웰니스 식단 (Report v2.0) ========== -->
+                    <div id="ohang-wellness-section" class="mb-6"></div>
 
                     <!-- ========== 🩸⭐ 혈액형 · 별자리 · 띠 뱃지 ========== -->
                     <div id="trait-badges-section" class="mb-6" style="display:none;">
@@ -3751,6 +3760,12 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                     <!-- ★ 2026.03.17 결제 버튼 — 무료분석 결과 화면 직접 삽입 -->
                     <div id="result-pay-section" class="mb-6 rounded-2xl border border-[#7C5BF0]/30 bg-gradient-to-br from-[#0F1524] to-[#1a1a2e] p-4">
 
+                        <!-- 킬링 카피 -->
+                        <div class="text-center mb-4">
+                            <p class="text-white font-black text-base leading-snug" style="word-break:keep-all;">지갑이 증명하는 당신의 진짜 모습 →</p>
+                            <p class="text-gray-500 text-[11px] mt-1">무료 결과는 핵심 1줄만. 전략·식단·골든타임은 아래에서 해금</p>
+                        </div>
+
                         <!-- ★ 3단계 사다리 — 한 눈에 차이 인식 -->
                         <div style="display:flex;gap:6px;margin-bottom:16px;">
                             <!-- 무료 -->
@@ -3800,8 +3815,8 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                                     </div>
                                     <span class="text-[#9B7FF8] text-xs font-bold">합계: <span id="result-std-total">₩9,900</span></span>
                                 </div>
-                                <button onclick="resultPay('standard')" class="w-full py-3 bg-gradient-to-r from-[#7C5BF0] to-[#9B7FF8] text-white font-black text-sm rounded-xl hover:opacity-90 transition flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-credit-card"></i> Standard 결제하기
+                                <button onclick="resultPay('standard')" class="w-full py-4 bg-gradient-to-r from-[#7C5BF0] to-[#9B7FF8] text-white font-black text-base rounded-xl hover:opacity-90 transition flex items-center justify-center gap-2 shadow-lg shadow-[#7C5BF0]/30" style="font-size:15px;letter-spacing:0.3px;">
+                                    <i class="fa-solid fa-credit-card"></i> ₩9,900 — 전략 리포트 받기
                                 </button>
                             </div>
 
@@ -6334,6 +6349,59 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                 }
             }
 
+            /* ★ Report v2.0 — 오행 CSS 주입 */
+            if(window.NKAIReportV2 && window.NKAIReportV2.OHANG_CSS && !document.getElementById('nkai-ohang-css')){
+                var ohangStyle = document.createElement('style');
+                ohangStyle.id = 'nkai-ohang-css';
+                ohangStyle.textContent = window.NKAIReportV2.OHANG_CSS;
+                document.head.appendChild(ohangStyle);
+            }
+
+            /* ★ Report v2.0 — 100명 중 X번째 랭킹 표현 */
+            try {
+                if(window.NKAIReportV2 && window.NKAIReportV2.getNScoreSimpleText){
+                    var _scoreInfo = window.NKAIReportV2.getNScoreSimpleText(r.nScore || 0);
+                    var _rankDescEl = document.getElementById('result-ranking-desc');
+                    if(_rankDescEl) _rankDescEl.textContent = '100명 중 ' + _scoreInfo.raw + '번째로 강한 사람';
+                }
+            } catch(_re){}
+
+            /* ★ Report v2.0 — 지금 할 것 / 조심할 것 */
+            try {
+                if(window.NKAIReportV2 && window.NKAIReportV2.renderActionRisk){
+                    var _arEl = document.getElementById('action-risk-section');
+                    if(_arEl && !_arEl.innerHTML){
+                        _arEl.innerHTML = window.NKAIReportV2.renderActionRisk({
+                            economic:   r.wealthEnergy || 50,
+                            expression: r.expressionScore || 50,
+                            risk:       r.riskTolerance || 50,
+                            archetype:  r.code || 'ESTJ',
+                            goldenTime: r.goldenTime || null
+                        });
+                    }
+                }
+            } catch(_are){}
+
+            /* ★ Report v2.0 — 오행별 몸 관리 */
+            try {
+                if(window.NKAIReportV2 && window.NKAIReportV2.renderOhangBody){
+                    var _obEl = document.getElementById('ohang-body-section');
+                    if(_obEl && !_obEl.innerHTML){
+                        _obEl.innerHTML = window.NKAIReportV2.renderOhangBody(r.dayElement || '土');
+                    }
+                }
+            } catch(_obe){}
+
+            /* ★ Report v2.0 — 오행별 웰니스 식단 */
+            try {
+                if(window.NKAIReportV2 && window.NKAIReportV2.renderOhangWellness){
+                    var _owEl = document.getElementById('ohang-wellness-section');
+                    if(_owEl && !_owEl.innerHTML){
+                        _owEl.innerHTML = window.NKAIReportV2.renderOhangWellness(r.dayElement || '土');
+                    }
+                }
+            } catch(_owe){}
+
             /* ── 혈액형/별자리/띠 뱃지 표시 ── */
             showTraitBadges();
 
@@ -7742,6 +7810,33 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                             goldenTime: (r.goldenCalendar && r.goldenCalendar.length > 0) ? { phase: 'peak', score: 75 } : null
                         });
                         console.log('[N-KAI] ★ Report v2.0 요약 카드 렌더링 완료');
+
+                        /* ★ Report v2.0 — 오행 CSS 주입 */
+                        if(window.NKAIReportV2.OHANG_CSS && !document.getElementById('nkai-ohang-css')){
+                            var os = document.createElement('style'); os.id = 'nkai-ohang-css';
+                            os.textContent = window.NKAIReportV2.OHANG_CSS; document.head.appendChild(os);
+                        }
+                        /* ★ Report v2.0 — 100명 중 X번째 */
+                        try {
+                            var _si = window.NKAIReportV2.getNScoreSimpleText(r.nScore || 0);
+                            var _rdEl = document.getElementById('result-ranking-desc');
+                            if(_rdEl) _rdEl.textContent = '100명 중 ' + _si.raw + '번째로 강한 사람';
+                        } catch(e2){}
+                        /* ★ Report v2.0 — 지금 할 것 / 조심할 것 */
+                        try {
+                            var _arEl = document.getElementById('action-risk-section');
+                            if(_arEl && !_arEl.innerHTML) _arEl.innerHTML = window.NKAIReportV2.renderActionRisk({ economic: r.wealthEnergy||50, expression: r.expressionScore||50, risk: r.riskTolerance||50, archetype: r.code||'ESTJ', goldenTime: r.goldenTime||null });
+                        } catch(e3){}
+                        /* ★ Report v2.0 — 오행별 몸 관리 */
+                        try {
+                            var _obEl = document.getElementById('ohang-body-section');
+                            if(_obEl && !_obEl.innerHTML) _obEl.innerHTML = window.NKAIReportV2.renderOhangBody(r.dayElement||'土');
+                        } catch(e4){}
+                        /* ★ Report v2.0 — 오행별 웰니스 식단 */
+                        try {
+                            var _owEl = document.getElementById('ohang-wellness-section');
+                            if(_owEl && !_owEl.innerHTML) _owEl.innerHTML = window.NKAIReportV2.renderOhangWellness(r.dayElement||'土');
+                        } catch(e5){}
                     }
                 }
             }, 350);
@@ -9042,6 +9137,6 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
     </script>
     <script src="js/nkai-patch.js?v=20260322"></script>
       <script src="js/nkai-breakdown.js"></script>
-      <script src="js/nkai-report-v2.js?v=20260327"></script>
+      <script src="js/nkai-report-v2.js?v=20260328"></script>
     </body>
     </html>

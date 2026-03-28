@@ -8,7 +8,8 @@
 // 1. N-Score 언어 순화 함수
 // ─────────────────────────────────────────
 function getNScoreSimpleText(nScore) {
-  var rank = Math.round((1 - nScore / 1000) * 100);
+  var percentile = Math.round(100 - (nScore / 10));
+  var strongerThan = Math.max(1, Math.min(99, 100 - percentile));
   var grade = '';
   if (nScore >= 900) { grade = '상위 5% 🏆'; }
   else if (nScore >= 800) { grade = '상위 15% 🥇'; }
@@ -19,9 +20,9 @@ function getNScoreSimpleText(nScore) {
 
   return {
     score: nScore,
-    simple: nScore + '점 — 100명 중 ' + rank + '번째로 강한 사람',
+    simple: nScore + '점 — 100명 중 ' + strongerThan + '번째로 강한 사람',
     grade: grade,
-    raw: rank
+    raw: strongerThan
   };
 }
 
@@ -306,7 +307,193 @@ var DRIP_TEMPLATES = {
 };
 
 // ─────────────────────────────────────────
-// 9. 외부 노출 (전역)
+// 9. 오행별 몸 관리 데이터
+// ─────────────────────────────────────────
+var OHANG_BODY_DATA = {
+  '木': {
+    emoji: '🌿',
+    name: '목(木)',
+    body: '간, 눈, 근육, 손발톱',
+    skin: '두피·헤어 건강',
+    msg: '이번 달 눈 피로가 쌓이기 쉬워요. 스크린 타임을 줄이고 두피 마사지를 꾸준히 해주세요. 근육이 굳기 전에 가볍게 스트레칭을 습관화하세요.',
+    caution: '눈 피로 과적, 근육 경직',
+    color: '#22c55e'
+  },
+  '火': {
+    emoji: '🔥',
+    name: '화(火)',
+    body: '심장, 혈관, 소장, 얼굴',
+    skin: '안색, 홍조',
+    msg: '이번 달 혈압과 심장 두근거림을 주의하세요. 얼굴에 홍조가 올라오기 쉬운 시기입니다. 카페인을 줄이고 충분한 수면을 취하세요.',
+    caution: '혈압 상승, 심장 두근거림',
+    color: '#ef4444'
+  },
+  '土': {
+    emoji: '🌍',
+    name: '토(土)',
+    body: '위장, 비장, 소화기, 입술',
+    skin: '피부 칙칙함',
+    msg: '이번 달 소화기가 예민해질 수 있어요. 밀가루·찬 음식을 줄이고 규칙적으로 드세요. 과식하면 피부까지 칙칙해질 수 있으니 주의하세요.',
+    caution: '소화불량, 부종',
+    color: '#f59e0b'
+  },
+  '金': {
+    emoji: '💎',
+    name: '금(金)',
+    body: '폐, 피부, 대장, 코',
+    skin: '피부 건조·트러블',
+    msg: '이번 달 피부가 예민해질 수 있어요. 보습에 집중하고 폐·호흡기 관리를 신경 쓰세요. 건조한 환경에서는 가습기를 사용하세요.',
+    caution: '호흡기 민감, 피부 트러블',
+    color: '#6366f1'
+  },
+  '水': {
+    emoji: '💧',
+    name: '수(水)',
+    body: '신장, 뼈, 귀, 생식기',
+    skin: '다크서클, 탈모',
+    msg: '이번 달 허리와 뼈 관리가 중요합니다. 다크서클이 짙어지고 탈모가 늘 수 있어요. 수면을 충분히 취하고 과로를 피하세요.',
+    caution: '부신 피로, 허리 통증',
+    color: '#0ea5e9'
+  }
+};
+
+// ─────────────────────────────────────────
+// 10. 오행별 웰니스 식단 데이터
+// ─────────────────────────────────────────
+var OHANG_WELLNESS_DATA = {
+  '木': {
+    emoji: '🥗',
+    good: '녹색채소, 식초·레몬(신맛), 보리, 부추',
+    avoid: '기름진 음식, 과음',
+    recommend: '나물류, 샐러드, 녹즙',
+    msg: '이번 달 간과 눈을 위해 녹색채소를 자주 드세요. 나물류나 샐러드에 레몬즙을 더해보세요. 기름진 음식과 음주는 최대한 줄이는 게 좋아요.'
+  },
+  '火': {
+    emoji: '🐟',
+    good: '쑥·여주(쓴맛), 토마토, 오메가3, 견과류',
+    avoid: '자극적 음식, 카페인 과다',
+    recommend: '연어, 호두, 아보카도',
+    msg: '이번 달 심장과 혈관을 위해 연어·호두·아보카도를 챙기세요. 오메가3가 풍부한 음식이 혈관을 깨끗하게 해줍니다. 카페인과 자극적인 음식은 줄이세요.'
+  },
+  '土': {
+    emoji: '🍠',
+    good: '고구마·호박(단맛), 잡곡, 발효식품',
+    avoid: '밀가루, 찬 음식, 폭식',
+    recommend: '현미밥, 된장국, 단호박',
+    msg: '이번 달 위장을 위해 현미밥과 된장국을 기본으로 드세요. 단호박이나 고구마 같은 단맛 채소가 소화기를 도와줍니다. 밀가루와 찬 음식은 피하세요.'
+  },
+  '金': {
+    emoji: '🍐',
+    good: '마늘·생강(매운맛), 배, 도라지, 백합',
+    avoid: '건조한 환경, 음주',
+    recommend: '배즙, 도라지차, 무',
+    msg: '이번 달 폐와 피부가 건조해질 수 있어요. 배즙이나 도라지차 한 잔씩 챙기고, 마늘·생강 요리를 자주 드세요. 음주는 피부 건조를 악화시키니 줄이세요.'
+  },
+  '水': {
+    emoji: '🫘',
+    good: '검은콩, 블루베리, 해산물, 적당한 짠맛',
+    avoid: '과로, 수면 부족',
+    recommend: '검은깨, 미역국, 콩류',
+    msg: '이번 달 신장을 위해 검은깨와 미역국을 꾸준히 드세요. 블루베리와 콩류가 신장 기능을 도와줍니다. 과로와 수면 부족은 탈모와 허리에 직결되니 조심하세요.'
+  }
+};
+
+// ─────────────────────────────────────────
+// 11. 지금 할 것 / 조심할 것 렌더링
+// ─────────────────────────────────────────
+function renderActionRisk(data) {
+  var economic   = data.economic   || 50;
+  var expression = data.expression || 50;
+  var risk       = data.risk       || 50;
+
+  // 가장 높은 지표로 중심 인사이트 결정
+  var dominantType = 'economic';
+  if (expression >= economic && expression >= risk) { dominantType = 'expression'; }
+  else if (risk >= economic && risk >= expression)  { dominantType = 'risk'; }
+
+  var insight = generate5StepInsight(dominantType, data[dominantType === 'economic' ? 'economic' : dominantType === 'expression' ? 'expression' : 'risk'], data.archetype);
+
+  var doNow    = insight[2] ? insight[2].replace('✅ 지금 당장: ', '') : '오늘 재무 목표 1가지 적어보기';
+  var doMonth  = insight[4] ? insight[4].replace('📅 다음 달 예고: ', '') : '저축률 점검';
+  var doNot    = insight[3] ? insight[3].replace('❌ 절대 금지: ', '') : '충동구매 자제';
+
+  // 골든타임 기반 리스크 경보
+  var gtData   = data.goldenTime;
+  var riskAlert = (gtData && gtData.phase !== 'peak') ? '큰 결정은 이번 달 미루세요. 기존 자산 지키는 데 집중.' : '이번 달 새로운 기회가 왔을 때 너무 큰 금액을 한 번에 베팅하지 마세요.';
+
+  return '<div class="nkai-action-risk" translate="no">' +
+    '<div class="nar-do">' +
+      '<p class="nar-label" style="color:#00D68F">✅ 지금 해야 할 것</p>' +
+      '<p class="nar-main">' + doNow + '</p>' +
+      '<p class="nar-sub">이번 달 집중 → ' + doMonth + '</p>' +
+    '</div>' +
+    '<div class="nar-dont">' +
+      '<p class="nar-label" style="color:#FF6B6B">⛔ 절대 하면 안 되는 것</p>' +
+      '<p class="nar-main">' + doNot + '</p>' +
+      '<p class="nar-sub">이번 달 리스크 경보 → ' + riskAlert + '</p>' +
+    '</div>' +
+  '</div>';
+}
+
+// ─────────────────────────────────────────
+// 12. 오행별 몸 관리 렌더링
+// ─────────────────────────────────────────
+function renderOhangBody(dayElement) {
+  var d = OHANG_BODY_DATA[dayElement] || OHANG_BODY_DATA['土'];
+  return '<div class="nkai-ohang-body" translate="no">' +
+    '<p class="noh-title">🏥 <span style="color:' + d.color + '">' + d.name + '</span> — 이번 달 몸 관리</p>' +
+    '<p class="noh-msg">' + d.msg + '</p>' +
+    '<div class="noh-tags">' +
+      '<span class="noh-tag-body">🫀 ' + d.body + '</span>' +
+      '<span class="noh-tag-skin">✨ ' + d.skin + '</span>' +
+      '<span class="noh-tag-warn" style="color:#FF6B6B">⚠️ ' + d.caution + ' 주의</span>' +
+    '</div>' +
+  '</div>';
+}
+
+// ─────────────────────────────────────────
+// 13. 오행별 웰니스 식단 렌더링
+// ─────────────────────────────────────────
+function renderOhangWellness(dayElement) {
+  var d = OHANG_WELLNESS_DATA[dayElement] || OHANG_WELLNESS_DATA['土'];
+  return '<div class="nkai-ohang-wellness" translate="no">' +
+    '<p class="now-title">🥘 이번 달 추천 식단</p>' +
+    '<p class="now-msg">' + d.msg + '</p>' +
+    '<div class="now-grid">' +
+      '<div class="now-item now-good"><p class="now-item-label">✅ 좋은 식품</p><p class="now-item-val">' + d.good + '</p></div>' +
+      '<div class="now-item now-avoid"><p class="now-item-label">⛔ 피할 것</p><p class="now-item-val">' + d.avoid + '</p></div>' +
+    '</div>' +
+    '<p class="now-recommend">' + d.emoji + ' 이번 달 추천: <strong>' + d.recommend + '</strong></p>' +
+  '</div>';
+}
+
+// ─────────────────────────────────────────
+// 14. 오행 섹션 통합 CSS
+// ─────────────────────────────────────────
+var OHANG_CSS = '\n' +
+'.nkai-action-risk{display:grid;gap:12px;margin:0 auto;}\n' +
+'.nar-do,.nar-dont{background:rgba(255,255,255,0.04);border-radius:14px;padding:16px;}\n' +
+'.nar-do{border-left:3px solid #00D68F;}\n' +
+'.nar-dont{border-left:3px solid #FF6B6B;}\n' +
+'.nar-label{font-size:11px;font-weight:800;letter-spacing:0.5px;margin:0 0 6px;}\n' +
+'.nar-main{font-size:14px;font-weight:700;color:#fff;margin:0 0 4px;line-height:1.5;}\n' +
+'.nar-sub{font-size:11px;color:#8899BB;margin:0;line-height:1.5;}\n' +
+'.nkai-ohang-body,.nkai-ohang-wellness{background:rgba(255,255,255,0.04);border-radius:14px;padding:16px;}\n' +
+'.noh-title,.now-title{font-size:13px;font-weight:800;margin:0 0 10px;color:#E2E8F0;}\n' +
+'.noh-msg,.now-msg{font-size:13px;color:#CBD5E1;line-height:1.7;margin:0 0 12px;word-break:keep-all;}\n' +
+'.noh-tags{display:flex;flex-wrap:wrap;gap:6px;}\n' +
+'.noh-tag-body,.noh-tag-skin,.noh-tag-warn{font-size:11px;background:rgba(255,255,255,0.06);border-radius:20px;padding:4px 10px;color:#94A3B8;}\n' +
+'.noh-tag-warn{background:rgba(255,107,107,0.08);}\n' +
+'.now-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}\n' +
+'.now-item{background:rgba(255,255,255,0.06);border-radius:10px;padding:10px 12px;}\n' +
+'.now-good{border-top:2px solid #00D68F;}\n' +
+'.now-avoid{border-top:2px solid #FF6B6B;}\n' +
+'.now-item-label{font-size:10px;font-weight:700;color:#94A3B8;margin:0 0 4px;}\n' +
+'.now-item-val{font-size:11px;color:#E2E8F0;margin:0;line-height:1.5;}\n' +
+'.now-recommend{font-size:13px;color:#AAC0E0;margin:0;}\n';
+
+// ─────────────────────────────────────────
+// 15. 외부 노출 (전역)
 // ─────────────────────────────────────────
 window.NKAIReportV2 = {
   getNScoreSimpleText: getNScoreSimpleText,
@@ -315,7 +502,11 @@ window.NKAIReportV2 = {
   getArchetypeSimpleText: getArchetypeSimpleText,
   generate5StepInsight: generate5StepInsight,
   renderSummaryCard: renderSummaryCard,
+  renderActionRisk: renderActionRisk,
+  renderOhangBody: renderOhangBody,
+  renderOhangWellness: renderOhangWellness,
   SUMMARY_CARD_CSS: SUMMARY_CARD_CSS,
+  OHANG_CSS: OHANG_CSS,
   DRIP_TEMPLATES: DRIP_TEMPLATES
 };
 
