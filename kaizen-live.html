@@ -2513,6 +2513,9 @@ function showTab(id) {
     el.classList.toggle('active', TAB_IDS[i]===id);
   });
   window.scrollTo(0,0);
+  if (id === 'timeline' && window._tlCore) {
+    renderTimeline(window._tlCore, window._tlName || '사용자');
+  }
 }
 
 function setRP(prefix, panel) {
