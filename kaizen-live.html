@@ -870,8 +870,8 @@ function getYearGan(y){return GANS[((y-4)%10+10)%10];}
 function getYearZhi(y){return ZHIS[((y-4)%12+12)%12];}
 function getMonthGan(yIdx,m){return GANS[((yIdx%5)*2+(m<2?m+12:m))%10];}
 function getMonthZhi(m){return ['丑','寅','卯','辰','巳','午','未','申','酉','戌','亥','子'][m-1];}
-function getDayGan(y,m,d){var b=new Date(1900,0,1),t=new Date(y,m-1,d),diff=Math.floor((t-b)/86400000);return GANS[(diff+10)%10];}
-function getDayZhi(y,m,d){var b=new Date(1900,0,1),t=new Date(y,m-1,d),diff=Math.floor((t-b)/86400000);return ZHIS[(diff+10)%12];}
+function getDayGan(y,m,d){var b=new Date(1900,0,1),t=new Date(y,m-1,d),diff=Math.floor((t-b)/86400000);return GANS[(diff+11)%10];}
+function getDayZhi(y,m,d){var b=new Date(1900,0,1),t=new Date(y,m-1,d),diff=Math.floor((t-b)/86400000);return ZHIS[(diff+11)%12];}
 function getHourGan(dayGanIdx,h){return GANS[((dayGanIdx%5)*2+h)%10];}
 function getHourZhi(h){return ZHIS[h%12];}
 
