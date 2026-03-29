@@ -1,0 +1,968 @@
+<!-- N-KAI PARTNER ADMIN v1.0 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-KAI Partner Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;scrollbar-width:thin;scrollbar-color:#1A3A5C #071523}
+:root{--dark:#071523;--mid:#0D1B2A;--card:#0F2035;--border:#1A3A5C;--gold:#F0C674;--blue:#2D8CFF;--text:#E8EDF2;--sub:#7A8FA6;--green:#22C55E;--red:#EF4444;--purple:#A78BFA;--orange:#FB923C}
+body{min-height:100vh;background:var(--dark);color:var(--text);font-family:'Segoe UI','맑은 고딕',sans-serif;font-size:13px}
+
+/* Gate */
+.gate{position:fixed;inset:0;z-index:9999;background:var(--dark);display:flex;align-items:center;justify-content:center}
+.gate-box{background:var(--mid);border:1px solid var(--border);border-radius:20px;padding:40px 36px;width:380px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.gate-logo{font-size:28px;font-weight:900;color:var(--gold);letter-spacing:3px;margin-bottom:4px}
+.gate-sub{font-size:10px;color:rgba(240,198,116,.5);letter-spacing:2px;margin-bottom:24px}
+.role-tabs{display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.role-tab{flex:1;padding:10px;font-size:12px;font-weight:700;cursor:pointer;background:transparent;border:none;color:var(--sub);transition:.15s}
+.role-tab.active{background:var(--blue);color:white}
+.gate-input{width:100%;padding:12px 16px;background:var(--dark);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;outline:none;margin-bottom:10px;letter-spacing:1px}
+.gate-input:focus{border-color:var(--blue)}
+.gate-select{width:100%;padding:12px 16px;background:var(--dark);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;outline:none;margin-bottom:10px}
+.gate-btn{width:100%;padding:13px;background:linear-gradient(135deg,#2D8CFF,#1a5fa8);color:white;font-weight:800;font-size:14px;border:none;border-radius:10px;cursor:pointer;letter-spacing:1px}
+.gate-btn:hover{opacity:.9}
+.gate-err{color:var(--red);font-size:11px;margin-top:8px;display:none}
+
+/* Layout */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:210px;background:var(--mid);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100}
+.sb-logo{padding:20px 20px 14px;border-bottom:1px solid var(--border)}
+.sb-logo-main{font-size:17px;font-weight:900;color:var(--gold);letter-spacing:2px}
+.sb-logo-sub{font-size:9px;color:rgba(240,198,116,.5);letter-spacing:1.5px;margin-top:1px}
+.sb-role-badge{display:inline-block;padding:3px 9px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:1px;margin-top:7px}
+.sb-nav{flex:1;padding:10px 0;overflow-y:auto}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;border-left:3px solid transparent;color:var(--sub);font-size:12px;transition:.15s}
+.sb-item.active{background:rgba(45,140,255,.15);border-left-color:var(--blue);color:var(--blue);font-weight:700}
+.sb-item:hover:not(.active){background:rgba(255,255,255,.03);color:var(--text)}
+.sb-footer{padding:14px 20px;border-top:1px solid var(--border);font-size:10px;color:var(--sub)}
+.main{margin-left:210px;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;background:var(--mid);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.top-title{font-size:15px;font-weight:700}
+.content{padding:24px 28px}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:16px}
+.card-title{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.kpi-label{font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--sub);margin-bottom:6px}
+.kpi-val{font-size:25px;font-weight:900;margin-bottom:3px;line-height:1.1}
+.kpi-sub{font-size:11px;color:var(--sub)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+
+/* Badge */
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.bg{background:rgba(34,197,94,.15);color:var(--green)}
+.br{background:rgba(239,68,68,.15);color:var(--red)}
+.bb{background:rgba(45,140,255,.15);color:var(--blue)}
+.bgold{background:rgba(240,198,116,.15);color:var(--gold)}
+.bpurple{background:rgba(167,139,250,.15);color:var(--purple)}
+.bgray{background:rgba(255,255,255,.08);color:var(--sub)}
+.borange{background:rgba(251,146,60,.15);color:var(--orange)}
+
+/* Table */
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{padding:9px 12px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.8px;color:var(--sub);border-bottom:1px solid var(--border);background:rgba(0,0,0,.2);cursor:pointer;user-select:none;white-space:nowrap}
+.tbl th:hover{color:var(--text)}
+.tbl td{padding:10px 12px;border-bottom:1px solid rgba(26,58,92,.35);font-size:12px;white-space:nowrap}
+.tbl tr:hover td{background:rgba(45,140,255,.04)}
+
+/* Btn */
+.btn{border-radius:7px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;border:1px solid}
+.btn:hover{opacity:.85}
+.btn-primary{background:var(--blue);border-color:var(--blue);color:white}
+.btn-danger{background:rgba(239,68,68,.12);border-color:var(--red);color:var(--red)}
+.btn-success{background:rgba(34,197,94,.12);border-color:var(--green);color:var(--green)}
+.btn-ghost{background:rgba(255,255,255,.06);border-color:var(--border);color:var(--sub)}
+
+/* Toggle */
+.toggle{position:relative;width:40px;height:22px;cursor:pointer;display:inline-block}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.slider{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:20px;transition:.25s;border:1px solid var(--border)}
+.slider::before{content:'';position:absolute;width:15px;height:15px;border-radius:50%;background:#7A8FA6;left:3px;top:3px;transition:.25s}
+input:checked+.slider{background:rgba(34,197,94,.25);border-color:var(--green)}
+input:checked+.slider::before{background:var(--green);transform:translateX(18px)}
+
+/* API key */
+.key-field{display:flex;align-items:center;gap:6px}
+.key-val{font-family:monospace;font-size:11px;background:rgba(0,0,0,.3);padding:5px 10px;border-radius:6px;border:1px solid var(--border);flex:1;overflow:hidden;text-overflow:ellipsis;letter-spacing:.5px}
+
+/* Chart */
+.chart-wrap{position:relative;height:240px}
+
+/* Panel */
+.panel{display:none}
+.panel.active{display:block}
+
+/* Filter */
+.filter-bar{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.filter-input{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:7px;padding:7px 12px;color:var(--text);font-size:12px;outline:none}
+.filter-input:focus{border-color:var(--blue)}
+select.filter-input option{background:#0D1B2A}
+
+/* Info row */
+.irow{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(26,58,92,.3);font-size:12px}
+.irow:last-child{border-bottom:none}
+.ilabel{color:var(--sub)}
+
+/* Alert */
+.alert{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:12px}
+
+/* Rev */
+.rev{color:var(--gold);font-weight:900}
+
+/* Logout */
+.logout-btn{font-size:11px;color:var(--sub);cursor:pointer;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:transparent}
+.logout-btn:hover{color:var(--red);border-color:var(--red)}
+
+/* Responsive */
+@media(max-width:960px){
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .grid2{grid-template-columns:1fr}
+  .sidebar{width:64px}
+  .sb-logo-main,.sb-logo-sub,.sb-item span:last-child,.sb-role-badge,.sb-footer>div{display:none}
+  .sb-item{padding:12px;justify-content:center;gap:0}
+  .main{margin-left:64px}
+}
+@media(max-width:580px){
+  .kpi-grid{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .main{margin-left:0}
+  .content{padding:14px}
+  .topbar{padding:10px 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN GATE ═══ -->
+<div id="gate" class="gate">
+  <div class="gate-box">
+    <div class="gate-logo">N·KAI</div>
+    <div class="gate-sub">PARTNER MANAGEMENT SYSTEM</div>
+    <div class="role-tabs">
+      <button class="role-tab active" id="tab-admin-btn" onclick="switchRole('admin')">⚔️ 관리자</button>
+      <button class="role-tab" id="tab-partner-btn" onclick="switchRole('partner')">🤝 파트너</button>
+    </div>
+    <div id="admin-login">
+      <input id="admin-pw" class="gate-input" type="password" placeholder="관리자 비밀번호" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="gate-btn" onclick="doLogin()">진입</button>
+      <div id="admin-err" class="gate-err">❌ 비밀번호 오류</div>
+    </div>
+    <div id="partner-login" style="display:none">
+      <select id="partner-select" class="gate-select">
+        <option value="">파트너사 선택...</option>
+        <option value="PA">파트너 A — 핀테크스타트업</option>
+        <option value="PB">파트너 B — 웰니스앱</option>
+        <option value="PC">파트너 C — HR테크</option>
+        <option value="PD">파트너 D — 교육플랫폼</option>
+      </select>
+      <input id="partner-key" class="gate-input" type="password" placeholder="API 키 입력 (데모: 아무 값)">
+      <button class="gate-btn" onclick="doLogin()">파트너 포털 진입</button>
+      <div id="partner-err" class="gate-err">❌ 파트너사를 선택하세요</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN VIEW ═══ -->
+<div id="admin-view" style="display:none">
+  <div class="sidebar">
+    <div class="sb-logo">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <div style="width:32px;height:32px;background:linear-gradient(135deg,var(--gold),#d4a853);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--dark);font-size:14px;flex-shrink:0">N</div>
+        <div><div class="sb-logo-main">N·KAI</div><div class="sb-logo-sub">PARTNER ADMIN</div></div>
+      </div>
+      <span class="sb-role-badge br">ADMIN</span>
+    </div>
+    <div class="sb-nav" id="admin-sb-nav">
+      <div class="sb-item active" onclick="showAdminPanel('overview')"><span>📊</span><span>대시보드</span></div>
+      <div class="sb-item" onclick="showAdminPanel('partners')"><span>🤝</span><span>파트너 현황</span></div>
+      <div class="sb-item" onclick="showAdminPanel('apikeys')"><span>🔑</span><span>API 키 관리</span></div>
+      <div class="sb-item" onclick="showAdminPanel('settlement')"><span>💰</span><span>정산 관리</span></div>
+      <div class="sb-item" onclick="showAdminPanel('anomaly')">
+        <span>⚠️</span><span>이상 감지</span>
+        <span class="badge br" style="margin-left:auto;font-size:9px;padding:1px 6px">1</span>
+      </div>
+    </div>
+    <div class="sb-footer">
+      <div style="color:var(--gold);font-weight:700;margin-bottom:2px">Partner Mgmt v1.0</div>
+      <div>2026-03-29 기준</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <div class="top-title" id="admin-top-title">📊 파트너 대시보드</div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <span class="badge br" style="font-size:10px">ADMIN</span>
+        <span style="font-size:11px;color:var(--sub)">2026년 3월</span>
+        <button class="logout-btn" onclick="doLogout()">로그아웃</button>
+      </div>
+    </div>
+    <div class="content">
+      <!-- OVERVIEW -->
+      <div class="panel active" id="ap-overview">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">총 파트너 수</div><div class="kpi-val" style="color:var(--blue)">4</div><div class="kpi-sub">활성 3 / 비활성 1</div></div>
+          <div class="kpi-card"><div class="kpi-label">이번달 API 호출</div><div class="kpi-val" style="color:var(--gold)">7,535</div><div class="kpi-sub">전월 대비 +23.4%</div></div>
+          <div class="kpi-card"><div class="kpi-label">수익쉐어(30%)</div><div class="kpi-val" style="color:var(--green)" id="kpi-total-rev">-</div><div class="kpi-sub">총 파트너 매출 × 30%</div></div>
+          <div class="kpi-card"><div class="kpi-label">다음 정산일</div><div class="kpi-val" style="color:var(--purple);font-size:18px">2026-04-05</div><div class="kpi-sub">D-7</div></div>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <div class="card-title">파트너별 API 호출 건수</div>
+            <div class="chart-wrap"><canvas id="chartCalls"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-title">수익쉐어 분포 (₩)</div>
+            <div class="chart-wrap"><canvas id="chartDonut"></canvas></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">파트너 현황 요약</div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr>
+            <th>파트너사</th><th>상태</th><th>이번달 호출</th><th>파트너 매출</th><th>N-KAI 수익(30%)</th><th>다음달 예상</th><th>이상</th>
+          </tr></thead><tbody id="overview-tbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- PARTNERS -->
+      <div class="panel" id="ap-partners">
+        <div class="filter-bar">
+          <input class="filter-input" placeholder="파트너사 검색..." oninput="filterPartners(this.value)" style="width:200px">
+          <select class="filter-input" onchange="filterStatus(this.value)" style="width:130px">
+            <option value="">전체 상태</option><option value="active">활성</option><option value="inactive">비활성</option>
+          </select>
+          <button class="btn btn-primary" onclick="openAddPartnerModal()">+ 파트너 추가</button>
+        </div>
+        <div class="card">
+          <div class="card-title">파트너 목록</div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr>
+            <th onclick="sortPartners('id')">ID ↕</th>
+            <th onclick="sortPartners('name')">파트너사명 ↕</th>
+            <th>업종</th>
+            <th onclick="sortPartners('calls')">이번달 호출 ↕</th>
+            <th onclick="sortPartners('revenue')">매출 ↕</th>
+            <th>가입일</th><th>상태</th><th>관리</th>
+          </tr></thead><tbody id="partners-tbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- API KEYS -->
+      <div class="panel" id="ap-apikeys">
+        <div class="card">
+          <div class="card-title">API 키 관리 <button class="btn btn-primary" onclick="openGenKeyModal()">🔑 신규 키 발급</button></div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr>
+            <th>파트너사</th><th>API 키</th><th>발급일</th><th>마지막 사용</th><th>이번달 호출</th><th>활성화</th><th>액션</th>
+          </tr></thead><tbody id="apikeys-tbody"></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="card-title">요금 구조</div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr><th>구간</th><th>범위</th><th>건당 단가</th><th>구간 최대액</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge bb">Basic</span></td><td>1 ~ 500건</td><td><span class="rev">₩500</span></td><td>₩250,000</td></tr>
+            <tr><td><span class="badge bgold">Growth</span></td><td>501 ~ 2,000건</td><td><span class="rev">₩200</span></td><td>+₩300,000</td></tr>
+            <tr><td><span class="badge bpurple">Scale</span></td><td>2,001건~</td><td><span class="rev">₩100</span></td><td>무제한</td></tr>
+          </tbody></table></div>
+          <div style="margin-top:14px;padding:12px 16px;background:rgba(240,198,116,.05);border:1px solid rgba(240,198,116,.2);border-radius:8px;font-size:12px;line-height:2;color:var(--sub)">
+            ✅ 수익쉐어: 파트너 총 매출 × <span class="rev">30%</span> → N-KAI 수익 &nbsp;|&nbsp; 파트너 수취: 70%<br>
+            ✅ 월정액 옵션: 5,000건/월 <span class="rev">₩800,000</span> 고정 (별도 계약)<br>
+            ✅ 정산 주기: 매월 5일 (전월분 자동 정산)
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTLEMENT -->
+      <div class="panel" id="ap-settlement">
+        <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi-card"><div class="kpi-label">이번달 파트너 총 매출</div><div class="kpi-val" style="color:var(--gold)" id="kpi-partner-rev">-</div><div class="kpi-sub">4개 파트너 합산</div></div>
+          <div class="kpi-card"><div class="kpi-label">N-KAI 수익쉐어(30%)</div><div class="kpi-val" style="color:var(--green)" id="kpi-nkai-rev">-</div><div class="kpi-sub">정산일: 2026-04-05</div></div>
+          <div class="kpi-card"><div class="kpi-label">다음달 예상 수익</div><div class="kpi-val" style="color:var(--purple)" id="kpi-next-rev">-</div><div class="kpi-sub">+25% 성장 전망</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">2026년 3월 정산 상세</div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr>
+            <th>파트너사</th><th>API 호출</th><th>총 매출</th><th>N-KAI 수익(30%)</th><th>파트너 지급(70%)</th><th>정산 상태</th>
+          </tr></thead><tbody id="settlement-tbody"></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="card-title">월별 수익 추이 <span style="font-size:10px;color:var(--sub);font-weight:400">최근 6개월</span></div>
+          <div class="chart-wrap"><canvas id="chartMonthly"></canvas></div>
+        </div>
+      </div>
+
+      <!-- ANOMALY -->
+      <div class="panel" id="ap-anomaly">
+        <div class="alert">
+          <span style="font-size:18px">⚠️</span>
+          <div><div style="font-weight:700;color:var(--red)">이상 사용 감지 — 즉시 확인 필요</div>
+          <div style="color:var(--sub);margin-top:2px;font-size:11px">파트너 C (HR테크): 2026-03-20 일일 최대치 초과 (450건 / 임계값 200건)</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">이상 감지 로그</div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr>
+            <th>발생일시</th><th>파트너사</th><th>유형</th><th>세부 내용</th><th>심각도</th><th>상태</th><th>액션</th>
+          </tr></thead><tbody id="anomaly-tbody"></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="card-title">파트너 C — 일별 호출 추이 (3월)</div>
+          <div class="chart-wrap"><canvas id="chartAnomaly"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PARTNER VIEW ═══ -->
+<div id="partner-view" style="display:none">
+  <div class="sidebar">
+    <div class="sb-logo">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <div style="width:32px;height:32px;background:linear-gradient(135deg,var(--blue),#1a5fa8);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;color:white;font-size:14px;flex-shrink:0">P</div>
+        <div><div class="sb-logo-main" id="p-sb-name">파트너</div><div class="sb-logo-sub">PARTNER PORTAL</div></div>
+      </div>
+      <span class="sb-role-badge bb">PARTNER</span>
+    </div>
+    <div class="sb-nav" id="partner-sb-nav">
+      <div class="sb-item active" onclick="showPartnerPanel('dashboard')"><span>📊</span><span>대시보드</span></div>
+      <div class="sb-item" onclick="showPartnerPanel('apistat')"><span>📈</span><span>API 현황</span></div>
+      <div class="sb-item" onclick="showPartnerPanel('psettlement')"><span>💰</span><span>정산 내역</span></div>
+      <div class="sb-item" onclick="showPartnerPanel('settings')"><span>⚙️</span><span>설정 / API 키</span></div>
+    </div>
+    <div class="sb-footer">
+      <div id="p-sb-footer" style="color:var(--blue);font-weight:700;margin-bottom:2px">파트너</div>
+      <div>2026-03-29 기준</div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <div class="top-title" id="partner-top-title">📊 파트너 대시보드</div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <span class="badge bb">PARTNER</span>
+        <span id="p-top-name" style="font-size:12px;font-weight:700"></span>
+        <button class="logout-btn" onclick="doLogout()">로그아웃</button>
+      </div>
+    </div>
+    <div class="content">
+      <!-- P: DASHBOARD -->
+      <div class="panel active" id="pp-dashboard">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-label">이번달 사용자</div><div class="kpi-val" style="color:var(--blue)" id="p-users">-</div><div class="kpi-sub" id="p-users-sub">-</div></div>
+          <div class="kpi-card"><div class="kpi-label">분석 건수</div><div class="kpi-val" style="color:var(--gold)" id="p-analyses">-</div><div class="kpi-sub" id="p-analyses-sub">-</div></div>
+          <div class="kpi-card"><div class="kpi-label">API 호출 건수</div><div class="kpi-val" style="color:var(--green)" id="p-calls">-</div><div class="kpi-sub" id="p-calls-sub">-</div></div>
+          <div class="kpi-card"><div class="kpi-label">이번달 예상 비용</div><div class="kpi-val" style="color:var(--purple);font-size:19px" id="p-cost">-</div><div class="kpi-sub" id="p-cost-sub">-</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">일별 API 호출 현황 <span style="font-size:10px;color:var(--sub);font-weight:400">2026년 3월</span></div>
+          <div class="chart-wrap"><canvas id="chartPartnerDaily"></canvas></div>
+        </div>
+      </div>
+      <!-- P: API STAT -->
+      <div class="panel" id="pp-apistat">
+        <div class="card">
+          <div class="card-title">일별 API 호출 (Bar)</div>
+          <div class="chart-wrap"><canvas id="chartPartnerBar"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">이번달 요금 계산 내역</div>
+          <div id="p-price-breakdown"></div>
+        </div>
+      </div>
+      <!-- P: SETTLEMENT -->
+      <div class="panel" id="pp-psettlement">
+        <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi-card"><div class="kpi-label">이번달 청구액</div><div class="kpi-val" style="color:var(--gold)" id="p-bill-cur">-</div><div class="kpi-sub">정산일: 2026-04-05</div></div>
+          <div class="kpi-card"><div class="kpi-label">전월 납부액</div><div class="kpi-val" style="color:var(--green)" id="p-bill-prev">-</div><div class="kpi-sub">완납</div></div>
+          <div class="kpi-card"><div class="kpi-label">다음달 예상</div><div class="kpi-val" style="color:var(--purple);font-size:19px" id="p-bill-next">-</div><div class="kpi-sub">현재 추세 기준</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">정산 이력</div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr>
+            <th>정산월</th><th>API 호출</th><th>청구액</th><th>납부일</th><th>상태</th>
+          </tr></thead><tbody id="p-settlement-tbody"></tbody></table></div>
+        </div>
+      </div>
+      <!-- P: SETTINGS -->
+      <div class="panel" id="pp-settings">
+        <div class="card"><div class="card-title">API 키 정보</div><div id="p-apikey-info"></div></div>
+        <div class="card"><div class="card-title">파트너사 정보</div><div id="p-partner-info"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal" style="position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:500;display:none;align-items:center;justify-content:center" onclick="closeModal()">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;width:500px;max-width:92vw;max-height:80vh;overflow-y:auto" onclick="event.stopPropagation()" id="modal-body"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════
+// DATA
+// ═══════════════════════════════════
+const PARTNERS = [
+  {id:'PA',name:'핀테크스타트업',sector:'핀테크',calls:2340,users:890,analyses:2100,joinDate:'2025-10-15',status:'active',lastUsed:'2026-03-29',apiKey:'nkai_pa_a1b2c3d4e5f678901234567890abcdef',anomaly:false},
+  {id:'PB',name:'웰니스앱',sector:'헬스케어',calls:756,users:320,analyses:680,joinDate:'2025-11-03',status:'active',lastUsed:'2026-03-28',apiKey:'nkai_pb_b2c3d4e5f67890123456789abcdef01',anomaly:false},
+  {id:'PC',name:'HR테크',sector:'HR·채용',calls:4125,users:1240,analyses:3800,joinDate:'2025-09-20',status:'active',lastUsed:'2026-03-29',apiKey:'nkai_pc_c3d4e5f6789012345678901234567890',anomaly:true},
+  {id:'PD',name:'교육플랫폼',sector:'에듀테크',calls:314,users:180,analyses:290,joinDate:'2026-01-10',status:'inactive',lastUsed:'2026-03-15',apiKey:'nkai_pd_d4e5f678901234567890abcdef012345',anomaly:false}
+];
+
+const ANOMALIES = [
+  {ts:'2026-03-20 14:32',partner:'HR테크 (PC)',type:'일일 호출 초과',detail:'단일 IP 450건 (임계값 200건/일)',severity:'critical',status:'검토중'},
+  {ts:'2026-03-17 09:15',partner:'핀테크스타트업 (PA)',type:'비정상 패턴',detail:'새벽 2-4시 연속 호출 (자동화 의심)',severity:'low',status:'정상 확인'}
+];
+
+const DAILY = {
+  PA:[72,85,68,91,104,78,62,95,88,73,110,82,76,93,87,65,98,105,72,80,88,95,102,78,84,91,76,88,80],
+  PB:[22,28,19,31,26,24,28,32,18,25,29,21,27,30,22,25,28,24,26,31,28,27,24,26,29,22,25,28,21],
+  PC:[115,128,142,131,138,125,119,145,152,138,162,148,135,158,141,128,155,168,142,450,151,138,162,148,135,158,141,128,80],
+  PD:[10,12,8,11,9,13,10,11,12,9,10,11,8,12,11,9,8,10,11,9,7,8,10,12,9,8,10,7,9]
+};
+
+const DAY_LABELS = Array.from({length:29},(_,i)=>`3/${i+1}`);
+const MONTHLY = {labels:['10월','11월','12월','1월','2월','3월'],data:[120000,185000,210000,380000,450000,0]};
+
+const toggleStates = {};
+PARTNERS.forEach(p => { toggleStates[p.id] = p.status === 'active'; });
+
+let keyVis = {};
+let partnerKeyVis = false;
+let sortDir = {};
+let charts = {};
+let currentRole = null;
+let currentPartner = null;
+
+// ─ Revenue calc ─
+function calcRev(calls) {
+  const t1 = Math.min(calls, 500);
+  const t2 = Math.min(Math.max(calls-500,0), 1500);
+  const t3 = Math.max(calls-2000, 0);
+  return t1*500 + t2*200 + t3*100;
+}
+
+function fmt(n) { return '₩' + n.toLocaleString('ko-KR'); }
+
+function totalRev() { return PARTNERS.reduce((s,p) => s + calcRev(p.calls), 0); }
+
+// Update MONTHLY last point
+MONTHLY.data[5] = Math.round(totalRev() * 0.3);
+
+// ─ UUID v4 ─
+function uuid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random()*16|0;
+    return (c==='x' ? r : (r&0x3|0x8)).toString(16);
+  });
+}
+
+// ═══ AUTH ═══
+function switchRole(role) {
+  document.getElementById('tab-admin-btn').classList.toggle('active', role==='admin');
+  document.getElementById('tab-partner-btn').classList.toggle('active', role==='partner');
+  document.getElementById('admin-login').style.display = role==='admin' ? '' : 'none';
+  document.getElementById('partner-login').style.display = role==='partner' ? '' : 'none';
+}
+
+function doLogin() {
+  const isAdmin = document.getElementById('tab-admin-btn').classList.contains('active');
+  if (isAdmin) {
+    if (document.getElementById('admin-pw').value === 'nkai3827') {
+      sessionStorage.setItem('nkai_p_role','admin');
+      enterAdmin();
+    } else {
+      document.getElementById('admin-err').style.display = 'block';
+    }
+  } else {
+    const pid = document.getElementById('partner-select').value;
+    const key = document.getElementById('partner-key').value;
+    if (!pid || !key) { document.getElementById('partner-err').style.display='block'; return; }
+    currentPartner = PARTNERS.find(p => p.id === pid);
+    sessionStorage.setItem('nkai_p_role','partner');
+    sessionStorage.setItem('nkai_p_pid', pid);
+    enterPartner();
+  }
+}
+
+function enterAdmin() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('admin-view').style.display = 'block';
+  currentRole = 'admin';
+  initAdminData();
+  initAdminCharts();
+  renderAdminTables();
+}
+
+function enterPartner() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('partner-view').style.display = 'block';
+  currentRole = 'partner';
+  initPartnerView();
+}
+
+function doLogout() {
+  sessionStorage.removeItem('nkai_p_role');
+  sessionStorage.removeItem('nkai_p_pid');
+  currentRole = null; currentPartner = null;
+  document.getElementById('admin-view').style.display = 'none';
+  document.getElementById('partner-view').style.display = 'none';
+  document.getElementById('gate').style.display = 'flex';
+  document.getElementById('admin-pw').value = '';
+  document.getElementById('partner-key').value = '';
+  document.getElementById('partner-select').value = '';
+  document.getElementById('admin-err').style.display = 'none';
+  document.getElementById('partner-err').style.display = 'none';
+  Object.values(charts).forEach(c => { try{c.destroy()}catch(e){} });
+  charts = {}; keyVis = {}; partnerKeyVis = false;
+  // reset panels
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('ap-overview').classList.add('active');
+  document.getElementById('pp-dashboard').classList.add('active');
+  document.querySelectorAll('#admin-sb-nav .sb-item').forEach((el,i) => el.classList.toggle('active', i===0));
+  document.querySelectorAll('#partner-sb-nav .sb-item').forEach((el,i) => el.classList.toggle('active', i===0));
+}
+
+// ═══ ADMIN ═══
+function initAdminData() {
+  const total = totalRev();
+  const share = Math.round(total * 0.3);
+  document.getElementById('kpi-total-rev').textContent = fmt(share);
+  document.getElementById('kpi-partner-rev').textContent = fmt(total);
+  document.getElementById('kpi-nkai-rev').textContent = fmt(share);
+  document.getElementById('kpi-next-rev').textContent = fmt(Math.round(share * 1.25));
+}
+
+function showAdminPanel(id) {
+  document.querySelectorAll('#ap-overview,#ap-partners,#ap-apikeys,#ap-settlement,#ap-anomaly').forEach(p => p.classList.remove('active'));
+  document.getElementById('ap-' + id).classList.add('active');
+  const items = document.querySelectorAll('#admin-sb-nav .sb-item');
+  items.forEach(i => i.classList.remove('active'));
+  items[{overview:0,partners:1,apikeys:2,settlement:3,anomaly:4}[id]].classList.add('active');
+  const titles = {overview:'📊 파트너 대시보드',partners:'🤝 파트너 현황',apikeys:'🔑 API 키 관리',settlement:'💰 정산 관리',anomaly:'⚠️ 이상 감지'};
+  document.getElementById('admin-top-title').textContent = titles[id];
+  if (id==='settlement' && !charts.monthly) initSettlementChart();
+  if (id==='anomaly' && !charts.anomaly) initAnomalyChart();
+}
+
+function initAdminCharts() {
+  const names = PARTNERS.map(p => p.name);
+  const calls = PARTNERS.map(p => p.calls);
+  const shares = PARTNERS.map(p => Math.round(calcRev(p.calls) * 0.3));
+  const colors = ['rgba(45,140,255,.75)','rgba(34,197,94,.75)','rgba(240,198,116,.75)','rgba(167,139,250,.75)'];
+
+  charts.calls = new Chart(document.getElementById('chartCalls'), {
+    type:'bar',
+    data:{labels:names,datasets:[{label:'API 호출',data:calls,backgroundColor:colors,borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'rgba(26,58,92,.4)'},ticks:{color:'#7A8FA6'}},y:{grid:{color:'rgba(26,58,92,.4)'},ticks:{color:'#7A8FA6'}}}}
+  });
+
+  charts.donut = new Chart(document.getElementById('chartDonut'), {
+    type:'doughnut',
+    data:{labels:names,datasets:[{data:shares,backgroundColor:colors,borderColor:'#0F2035',borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'right',labels:{color:'#7A8FA6',font:{size:11}}},
+        tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${fmt(ctx.raw)}`}}}}
+  });
+}
+
+function initSettlementChart() {
+  charts.monthly = new Chart(document.getElementById('chartMonthly'), {
+    type:'bar',
+    data:{labels:MONTHLY.labels,datasets:[{label:'N-KAI 수익쉐어',data:MONTHLY.data,
+      backgroundColor:MONTHLY.data.map((_,i)=>i===5?'rgba(240,198,116,.85)':'rgba(45,140,255,.5)'),borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${fmt(ctx.raw)}`}}},
+      scales:{x:{grid:{color:'rgba(26,58,92,.4)'},ticks:{color:'#7A8FA6'}},
+        y:{grid:{color:'rgba(26,58,92,.4)'},ticks:{color:'#7A8FA6',callback:v=>fmt(v)}}}}
+  });
+}
+
+function initAnomalyChart() {
+  const data = DAILY.PC;
+  charts.anomaly = new Chart(document.getElementById('chartAnomaly'), {
+    type:'line',
+    data:{labels:DAY_LABELS,datasets:[
+      {label:'일별 호출',data,borderColor:'#F0C674',backgroundColor:'rgba(240,198,116,.1)',fill:true,tension:0.3,
+        pointBackgroundColor:data.map((v,i)=>i===19?'#EF4444':'#F0C674'),
+        pointRadius:data.map((v,i)=>i===19?8:3)},
+      {label:'임계값(200)',data:Array(29).fill(200),borderColor:'rgba(239,68,68,.5)',borderDash:[6,3],fill:false,pointRadius:0}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#7A8FA6',font:{size:11}}}},
+      scales:{x:{grid:{color:'rgba(26,58,92,.4)'},ticks:{color:'#7A8FA6',maxTicksLimit:10}},
+        y:{grid:{color:'rgba(26,58,92,.4)'},ticks:{color:'#7A8FA6'}}}}
+  });
+}
+
+// ─ Admin Tables ─
+function renderAdminTables() {
+  // Overview
+  document.getElementById('overview-tbody').innerHTML = PARTNERS.map(p => {
+    const rev = calcRev(p.calls);
+    const share = Math.round(rev * 0.3);
+    return `<tr>
+      <td><strong>${p.name}</strong></td>
+      <td>${p.status==='active'?'<span class="badge bg">활성</span>':'<span class="badge bgray">비활성</span>'}</td>
+      <td>${p.calls.toLocaleString()}건</td>
+      <td>${fmt(rev)}</td>
+      <td class="rev"><strong>${fmt(share)}</strong></td>
+      <td style="color:var(--sub)">${fmt(Math.round(rev*1.15))}</td>
+      <td>${p.anomaly?'<span class="badge br">⚠️ 이상</span>':'<span class="badge bg">정상</span>'}</td>
+    </tr>`;
+  }).join('');
+
+  renderPartnersTable(PARTNERS);
+
+  // API Keys
+  document.getElementById('apikeys-tbody').innerHTML = PARTNERS.map(p => {
+    const masked = p.apiKey.slice(0,14)+'••••••••'+p.apiKey.slice(-4);
+    return `<tr>
+      <td><strong>${p.name}</strong></td>
+      <td><div class="key-field"><span class="key-val" id="kd-${p.id}">${masked}</span>
+        <button class="btn btn-ghost" style="padding:4px 8px;font-size:10px;white-space:nowrap" onclick="toggleKey('${p.id}','${p.apiKey}')">보기</button></div></td>
+      <td style="color:var(--sub)">${p.joinDate}</td>
+      <td style="color:var(--sub)">${p.lastUsed}</td>
+      <td>${p.calls.toLocaleString()}건</td>
+      <td><label class="toggle"><input type="checkbox" ${toggleStates[p.id]?'checked':''} onchange="toggleApiKey('${p.id}',this.checked)"><span class="slider"></span></label></td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-ghost" style="font-size:10px" onclick="regenKey('${p.id}')">재발급</button>
+        <button class="btn btn-danger" style="font-size:10px" onclick="revokeKey('${p.id}')">폐기</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Settlement
+  let totalPartnerRev = 0, totalNKAI = 0, totalPayout = 0;
+  document.getElementById('settlement-tbody').innerHTML = PARTNERS.map(p => {
+    const rev = calcRev(p.calls);
+    const share = Math.round(rev * 0.3);
+    const payout = rev - share;
+    totalPartnerRev += rev; totalNKAI += share; totalPayout += payout;
+    return `<tr>
+      <td><strong>${p.name}</strong></td>
+      <td>${p.calls.toLocaleString()}건</td>
+      <td>${fmt(rev)}</td>
+      <td class="rev"><strong>${fmt(share)}</strong></td>
+      <td>${fmt(payout)}</td>
+      <td>${p.status==='active'?'<span class="badge bb">정산 예정</span>':'<span class="badge bgray">해당없음</span>'}</td>
+    </tr>`;
+  }).join('') + `<tr style="background:rgba(240,198,116,.05);font-weight:700">
+    <td colspan="2" style="color:var(--gold)">합계</td>
+    <td>${fmt(totalPartnerRev)}</td>
+    <td class="rev" style="font-size:13px">${fmt(totalNKAI)}</td>
+    <td>${fmt(totalPayout)}</td>
+    <td></td>
+  </tr>`;
+
+  // Anomaly
+  document.getElementById('anomaly-tbody').innerHTML = ANOMALIES.map(a => `<tr>
+    <td style="color:var(--sub);font-size:11px">${a.ts}</td>
+    <td><strong>${a.partner}</strong></td>
+    <td>${a.type}</td>
+    <td style="color:var(--sub);font-size:11px">${a.detail}</td>
+    <td>${a.severity==='critical'?'<span class="badge br">긴급</span>':'<span class="badge borange">낮음</span>'}</td>
+    <td>${a.status==='검토중'?'<span class="badge bgold">검토중</span>':'<span class="badge bg">완료</span>'}</td>
+    <td><button class="btn btn-ghost" style="font-size:10px" onclick="showToast('처리됨')">처리</button></td>
+  </tr>`).join('');
+}
+
+function renderPartnersTable(data) {
+  document.getElementById('partners-tbody').innerHTML = data.map(p => {
+    const rev = calcRev(p.calls);
+    return `<tr>
+      <td style="color:var(--sub);font-family:monospace;font-size:11px">${p.id}</td>
+      <td><strong>${p.name}</strong>${p.anomaly?' <span class="badge br" style="font-size:9px;padding:1px 5px">⚠️</span>':''}</td>
+      <td><span class="badge bb" style="font-size:10px">${p.sector}</span></td>
+      <td>${p.calls.toLocaleString()}건</td>
+      <td>${fmt(rev)}</td>
+      <td style="color:var(--sub)">${p.joinDate}</td>
+      <td>${p.status==='active'?'<span class="badge bg">활성</span>':'<span class="badge bgray">비활성</span>'}</td>
+      <td><button class="btn btn-ghost" style="font-size:10px" onclick="viewPartner('${p.id}')">상세</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ─ Sort/Filter ─
+function sortPartners(col) {
+  const dir = sortDir[col] === 1 ? -1 : 1;
+  sortDir[col] = dir;
+  const data = [...PARTNERS].sort((a,b) => {
+    const av = col==='revenue' ? calcRev(a.calls) : a[col];
+    const bv = col==='revenue' ? calcRev(b.calls) : b[col];
+    return typeof av === 'number' ? (av-bv)*dir : String(av).localeCompare(String(bv))*dir;
+  });
+  renderPartnersTable(data);
+}
+function filterPartners(q) { renderPartnersTable(PARTNERS.filter(p => p.name.includes(q)||p.sector.includes(q)||p.id.toUpperCase().includes(q.toUpperCase()))); }
+function filterStatus(s) { renderPartnersTable(s ? PARTNERS.filter(p=>p.status===s) : PARTNERS); }
+
+// ─ Key management ─
+function toggleKey(pid, key) {
+  const el = document.getElementById('kd-'+pid);
+  if (keyVis[pid]) {
+    el.textContent = key.slice(0,14)+'••••••••'+key.slice(-4);
+    keyVis[pid] = false;
+  } else {
+    el.textContent = key;
+    keyVis[pid] = true;
+    setTimeout(()=>{ if(keyVis[pid]){el.textContent=key.slice(0,14)+'••••••••'+key.slice(-4);keyVis[pid]=false;} }, 5000);
+  }
+}
+
+function toggleApiKey(pid, active) {
+  toggleStates[pid] = active;
+  showToast(active ? `✅ ${pid} API 키 활성화` : `🚫 ${pid} API 키 비활성화`);
+}
+
+function regenKey(pid) {
+  const p = PARTNERS.find(x=>x.id===pid);
+  const newKey = 'nkai_'+pid.toLowerCase()+'_'+uuid().replace(/-/g,'');
+  p.apiKey = newKey;
+  showModal(`<div style="text-align:center">
+    <div style="font-size:20px;margin-bottom:10px">🔑</div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:6px">API 키 재발급 완료</div>
+    <div style="font-size:11px;color:var(--sub);margin-bottom:14px">${p.name}</div>
+    <div style="font-family:monospace;font-size:11px;background:rgba(0,0,0,.35);padding:12px;border-radius:8px;border:1px solid var(--border);word-break:break-all;color:var(--gold)">${newKey}</div>
+    <div style="font-size:11px;color:var(--red);margin-top:10px">⚠️ 한 번만 표시됩니다. 즉시 복사하세요.</div>
+    <button class="btn btn-primary" style="margin-top:14px;width:100%" onclick="navigator.clipboard.writeText('${newKey}');showToast('복사됨');closeModal();renderAdminTables()">복사 후 닫기</button>
+  </div>`);
+}
+
+function revokeKey(pid) {
+  const p = PARTNERS.find(x=>x.id===pid);
+  showModal(`<div style="text-align:center">
+    <div style="font-size:20px;margin-bottom:10px">🚫</div>
+    <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:8px">API 키 폐기</div>
+    <div style="font-size:12px;color:var(--sub);margin-bottom:20px">${p.name}의 API 키를 즉시 폐기합니다.</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-danger" style="flex:1" onclick="toggleStates['${pid}']=false;showToast('🚫 ${p.name} 키 폐기됨');closeModal();renderAdminTables()">폐기 확인</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">취소</button>
+    </div>
+  </div>`);
+}
+
+function viewPartner(pid) {
+  const p = PARTNERS.find(x=>x.id===pid);
+  const rev = calcRev(p.calls);
+  showModal(`<div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:16px">🤝 ${p.name} 상세</div>
+    <div class="irow"><span class="ilabel">파트너 ID</span><span style="font-family:monospace">${p.id}</span></div>
+    <div class="irow"><span class="ilabel">업종</span><span>${p.sector}</span></div>
+    <div class="irow"><span class="ilabel">가입일</span><span>${p.joinDate}</span></div>
+    <div class="irow"><span class="ilabel">마지막 API 사용</span><span>${p.lastUsed}</span></div>
+    <div class="irow"><span class="ilabel">이번달 API 호출</span><span style="color:var(--gold)">${p.calls.toLocaleString()}건</span></div>
+    <div class="irow"><span class="ilabel">이번달 사용자</span><span>${p.users.toLocaleString()}명</span></div>
+    <div class="irow"><span class="ilabel">분석 건수</span><span>${p.analyses.toLocaleString()}건</span></div>
+    <div class="irow"><span class="ilabel">파트너 매출</span><span>${fmt(rev)}</span></div>
+    <div class="irow"><span class="ilabel">N-KAI 수익(30%)</span><span class="rev" style="font-size:14px">${fmt(Math.round(rev*.3))}</span></div>
+    <div class="irow"><span class="ilabel">이상 여부</span><span>${p.anomaly?'<span class="badge br">⚠️ 이상 감지</span>':'<span class="badge bg">정상</span>'}</span></div>
+    <button class="btn btn-ghost" style="width:100%;margin-top:14px" onclick="closeModal()">닫기</button>
+  </div>`);
+}
+
+function openGenKeyModal() {
+  const newKey = 'nkai_new_' + uuid().replace(/-/g,'');
+  showModal(`<div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:16px">🔑 신규 API 키 발급</div>
+    <div style="margin-bottom:10px">
+      <label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px">파트너사 선택</label>
+      <select class="filter-input" id="gen-partner-sel" style="width:100%">
+        ${PARTNERS.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}
+        <option value="NEW">신규 파트너...</option>
+      </select>
+    </div>
+    <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px">
+      <div style="font-size:10px;color:var(--sub);margin-bottom:4px">생성된 API 키</div>
+      <div style="font-family:monospace;font-size:11px;color:var(--gold);word-break:break-all">${newKey}</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="navigator.clipboard.writeText('${newKey}');showToast('✅ 키 복사됨');closeModal()">발급 및 복사</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">취소</button>
+    </div>
+  </div>`);
+}
+
+function openAddPartnerModal() {
+  const newId = 'P' + String.fromCharCode(65 + PARTNERS.length);
+  const newKey = 'nkai_' + newId.toLowerCase() + '_' + uuid().replace(/-/g,'');
+  showModal(`<div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:16px">➕ 파트너 추가</div>
+    <div style="margin-bottom:10px">
+      <label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px">파트너사명</label>
+      <input class="filter-input" id="np-name" style="width:100%" placeholder="예: 스타트업 A">
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px">업종</label>
+      <select class="filter-input" id="np-sector" style="width:100%">
+        <option>핀테크</option><option>헬스케어</option><option>HR·채용</option><option>에듀테크</option><option>이커머스</option><option>기타</option>
+      </select>
+    </div>
+    <div style="background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:14px">
+      <div style="font-size:10px;color:var(--sub);margin-bottom:3px">자동 발급 API 키</div>
+      <div style="font-family:monospace;font-size:10px;color:var(--gold);word-break:break-all">${newKey}</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="addPartner('${newId}','${newKey}')">추가 확인</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">취소</button>
+    </div>
+  </div>`);
+}
+
+function addPartner(id, key) {
+  const name = document.getElementById('np-name')?.value || '신규 파트너';
+  const sector = document.getElementById('np-sector')?.value || '기타';
+  PARTNERS.push({id,name,sector,calls:0,users:0,analyses:0,joinDate:'2026-03-29',status:'active',lastUsed:'-',apiKey:key,anomaly:false});
+  toggleStates[id] = true;
+  DAILY[id] = Array(29).fill(0);
+  renderAdminTables();
+  closeModal();
+  showToast(`✅ ${name} 파트너 추가됨`);
+}
+
+// ═══ PARTNER VIEW ═══
+function showPartnerPanel(id) {
+  ['dashboard','apistat','psettlement','settings'].forEach(n => document.getElementById('pp-'+n).classList.remove('active'));
+  document.getElementById('pp-'+id).classList.add('active');
+  const items = document.querySelectorAll('#partner-sb-nav .sb-item');
+  items.forEach(i => i.classList.remove('active'));
+  items[{dashboard:0,apistat:1,psettlement:2,settings:3}[id]].classList.add('active');
+  const titles = {dashboard:'📊 파트너 대시보드',apistat:'📈 API 호출 현황',psettlement:'💰 정산 내역',settings:'⚙️ 설정 / API 키'};
+  document.getElementById('partner-top-title').textContent = titles[id];
+  if (id==='apistat' && !charts.pBar) initPartnerBarChart();
+}
+
+function initPartnerView() {
+  const p = currentPartner;
+  document.getElementById('p-sb-name').textContent = p.name;
+  document.getElementById('p-sb-footer').textContent = p.name;
+  document.getElementById('p-top-name').textContent = p.name;
+
+  const rev = calcRev(p.calls);
+  document.getElementById('p-users').textContent = p.users.toLocaleString()+'명';
+  document.getElementById('p-users-sub').textContent = '전월 대비 +12%';
+  document.getElementById('p-analyses').textContent = p.analyses.toLocaleString()+'건';
+  document.getElementById('p-analyses-sub').textContent = `호출 대비 ${Math.round(p.analyses/p.calls*100)}% 전환`;
+  document.getElementById('p-calls').textContent = p.calls.toLocaleString()+'건';
+  document.getElementById('p-calls-sub').textContent = '남은 일수 2일';
+  document.getElementById('p-cost').textContent = fmt(rev);
+  document.getElementById('p-cost-sub').textContent = '다음달 예상: '+fmt(Math.round(rev*1.1));
+
+  document.getElementById('p-bill-cur').textContent = fmt(rev);
+  document.getElementById('p-bill-prev').textContent = fmt(Math.round(rev*0.85));
+  document.getElementById('p-bill-next').textContent = fmt(Math.round(rev*1.1));
+
+  // Settlement history
+  const months = ['2025-10','2025-11','2025-12','2026-01','2026-02'];
+  const mults = [0.38,0.54,0.68,0.82,0.91];
+  document.getElementById('p-settlement-tbody').innerHTML =
+    months.map((m,i)=>{
+      const c = Math.round(p.calls*mults[i]);
+      return `<tr><td>${m}</td><td>${c.toLocaleString()}건</td><td>${fmt(calcRev(c))}</td><td style="color:var(--sub)">${m}-05</td><td><span class="badge bg">완납</span></td></tr>`;
+    }).join('') +
+    `<tr style="font-weight:700"><td style="color:var(--gold)">2026-03</td><td>${p.calls.toLocaleString()}건</td><td class="rev">${fmt(rev)}</td><td style="color:var(--sub)">2026-04-05</td><td><span class="badge bgold">정산 예정</span></td></tr>`;
+
+  // Price breakdown
+  const c = p.calls;
+  const t1=Math.min(c,500), t2=Math.min(Math.max(c-500,0),1500), t3=Math.max(c-2000,0);
+  document.getElementById('p-price-breakdown').innerHTML = `
+    <div class="irow"><span class="ilabel">Basic 구간 (1~500건) × ${t1.toLocaleString()}건 × ₩500</span><span>${fmt(t1*500)}</span></div>
+    ${t2>0?`<div class="irow"><span class="ilabel">Growth 구간 (501~2,000건) × ${t2.toLocaleString()}건 × ₩200</span><span>${fmt(t2*200)}</span></div>`:''}
+    ${t3>0?`<div class="irow"><span class="ilabel">Scale 구간 (2,001건~) × ${t3.toLocaleString()}건 × ₩100</span><span>${fmt(t3*100)}</span></div>`:''}
+    <div class="irow" style="border-top:2px solid var(--border);margin-top:6px;padding-top:14px">
+      <span style="font-weight:700;font-size:13px">이번달 총 청구액</span>
+      <span class="rev" style="font-size:18px;font-weight:900">${fmt(rev)}</span>
+    </div>`;
+
+  // API key info
+  const masked = p.apiKey.slice(0,14)+'••••••••'+p.apiKey.slice(-4);
+  document.getElementById('p-apikey-info').innerHTML = `
+    <div class="irow"><span class="ilabel">API 키</span>
+      <div class="key-field"><span class="key-val" id="p-key-disp" style="min-width:260px">${masked}</span>
+        <button class="btn btn-ghost" style="font-size:10px;padding:4px 8px" onclick="togglePartnerKey('${p.apiKey}')">보기</button>
+        <button class="btn btn-ghost" style="font-size:10px;padding:4px 8px" onclick="navigator.clipboard.writeText('${p.apiKey}');showToast('복사됨')">복사</button>
+      </div>
+    </div>
+    <div class="irow"><span class="ilabel">상태</span><span class="badge bg">활성</span></div>
+    <div class="irow"><span class="ilabel">발급일</span><span>${p.joinDate}</span></div>
+    <div class="irow"><span class="ilabel">마지막 사용</span><span>${p.lastUsed}</span></div>
+    <div class="irow"><span class="ilabel">이번달 호출</span><span style="color:var(--gold);font-weight:700">${p.calls.toLocaleString()}건</span></div>`;
+
+  document.getElementById('p-partner-info').innerHTML = `
+    <div class="irow"><span class="ilabel">파트너사명</span><span>${p.name}</span></div>
+    <div class="irow"><span class="ilabel">업종</span><span>${p.sector}</span></div>
+    <div class="irow"><span class="ilabel">파트너 ID</span><span style="font-family:monospace;color:var(--sub)">${p.id}</span></div>
+    <div class="irow"><span class="ilabel">가입일</span><span>${p.joinDate}</span></div>
+    <div class="irow"><span class="ilabel">요금제</span><span class="badge bb">종량제</span></div>
+    <div class="irow"><span class="ilabel">월정액 옵션</span><span style="color:var(--sub)">미적용 (협의 가능)</span></div>`;
+
+  // Daily line chart
+  charts.pLine = new Chart(document.getElementById('chartPartnerDaily'), {
+    type:'line',
+    data:{labels:DAY_LABELS,datasets:[{label:'API 호출',data:DAILY[p.id],borderColor:'#2D8CFF',backgroundColor:'rgba(45,140,255,.1)',fill:true,tension:0.3,pointRadius:3,pointBackgroundColor:'#2D8CFF'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'rgba(26,58,92,.4)'},ticks:{color:'#7A8FA6',maxTicksLimit:10}},y:{grid:{color:'rgba(26,58,92,.4)'},ticks:{color:'#7A8FA6'}}}}
+  });
+}
+
+function initPartnerBarChart() {
+  const p = currentPartner;
+  charts.pBar = new Chart(document.getElementById('chartPartnerBar'), {
+    type:'bar',
+    data:{labels:DAY_LABELS,datasets:[{label:'일별 호출',data:DAILY[p.id],
+      backgroundColor:DAILY[p.id].map(v=>v>300?'rgba(239,68,68,.7)':'rgba(45,140,255,.6)'),borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'rgba(26,58,92,.4)'},ticks:{color:'#7A8FA6',maxTicksLimit:10}},y:{grid:{color:'rgba(26,58,92,.4)'},ticks:{color:'#7A8FA6'}}}}
+  });
+}
+
+function togglePartnerKey(key) {
+  const el = document.getElementById('p-key-disp');
+  if (partnerKeyVis) {
+    el.textContent = key.slice(0,14)+'••••••••'+key.slice(-4);
+    partnerKeyVis = false;
+  } else {
+    el.textContent = key;
+    partnerKeyVis = true;
+    setTimeout(()=>{ if(partnerKeyVis){el.textContent=key.slice(0,14)+'••••••••'+key.slice(-4);partnerKeyVis=false;} }, 5000);
+  }
+}
+
+// ═══ MODAL / TOAST ═══
+function showModal(html) {
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal').style.display = 'flex';
+}
+function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+function showToast(msg) {
+  let t = document.getElementById('_toast');
+  if (!t) {
+    t = document.createElement('div'); t.id = '_toast';
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#0F2035;border:1px solid #1A3A5C;border-radius:10px;padding:11px 18px;font-size:12px;color:#E8EDF2;z-index:9999;transition:opacity .3s;box-shadow:0 8px 24px rgba(0,0,0,.4);pointer-events:none';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg; t.style.opacity = '1';
+  clearTimeout(window._tTimer);
+  window._tTimer = setTimeout(()=>{ t.style.opacity='0'; }, 2500);
+}
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+// ═══ SESSION RESTORE ═══
+(function() {
+  const role = sessionStorage.getItem('nkai_p_role');
+  if (role === 'admin') {
+    enterAdmin();
+  } else if (role === 'partner') {
+    const pid = sessionStorage.getItem('nkai_p_pid');
+    if (pid) {
+      currentPartner = PARTNERS.find(p => p.id === pid);
+      if (currentPartner) enterPartner();
+    }
+  }
+})();
+</script>
+</body>
+</html>

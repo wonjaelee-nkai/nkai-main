@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KAI-ZEN — AI 사주·운세</title>
+<script src="https://js.tosspayments.com/v2/standard"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --bg: #09090f; --card: #12121e; --card2: #1a1a2e;
+  --border: rgba(255,255,255,0.08); --text: #e8e8f0; --muted: #8888aa;
+  --accent: #7C5BF0; --accent2: #00D68F; --danger: #ef4444;
+  --wood: #22c55e; --fire: #ef4444; --earth: #f59e0b; --metal: #94a3b8; --water: #3b82f6;
+  --grad: linear-gradient(135deg,#7C5BF0,#00D68F);
+  --plan-free: #374151; --plan-w: #1e3a5f; --plan-f: #2d1b69; --plan-u: #1a2e1a;
+}
+[data-theme="light"] {
+  --bg:#f0f0f8;--card:#fff;--card2:#f8f8ff;--border:rgba(0,0,0,0.1);
+  --text:#1a1a2e;--muted:#6b7280;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);overscroll-behavior:none}
+a{color:inherit;text-decoration:none}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+/* LAYOUT */
+#app{display:flex;flex-direction:column;min-height:100vh;max-width:480px;margin:0 auto;position:relative}
+/* HEADER */
+.kz-header{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100}
+.kz-logo{font-size:22px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px}
+.kz-logo span{font-size:10px;display:block;font-weight:400;color:var(--muted);-webkit-text-fill-color:var(--muted);letter-spacing:1px;margin-top:-2px}
+.kz-header-right{display:flex;gap:10px;align-items:center}
+.btn-sm{padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:12px;cursor:pointer;transition:.2s}
+.btn-sm:hover{border-color:var(--accent);color:var(--accent)}
+.btn-premium{background:var(--grad);border:none;color:#fff;font-weight:700}
+.btn-premium:hover{opacity:.9;color:#fff}
+/* CONTENT */
+.kz-body{flex:1;overflow-y:auto;padding-bottom:80px}
+/* INPUT SECTION */
+.input-section{padding:24px 20px 20px;background:linear-gradient(180deg,rgba(124,91,240,0.1) 0%,transparent 100%)}
+.input-title{font-size:20px;font-weight:800;margin-bottom:4px}
+.input-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.input-row{display:flex;gap:10px;margin-bottom:12px}
+.input-group{flex:1;display:flex;flex-direction:column;gap:6px}
+.input-group label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.kz-input{width:100%;padding:12px 14px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;outline:none;transition:.2s;-webkit-appearance:none}
+.kz-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,91,240,0.15)}
+.kz-input[type=date]::-webkit-calendar-picker-indicator{filter:invert(0.7)}
+select.kz-input option{background:var(--card2)}
+.btn-analyze{width:100%;padding:15px;border-radius:14px;border:none;background:var(--grad);color:#fff;font-size:16px;font-weight:800;cursor:pointer;transition:.2s;margin-top:8px;letter-spacing:-.3px}
+.btn-analyze:hover{opacity:.9;transform:translateY(-1px)}
+.btn-analyze:active{transform:translateY(0)}
+/* RESULT CARD */
+.result-card{margin:0 16px 8px;background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;display:none}
+.result-card.show{display:block}
+.result-top{padding:18px 20px 14px;background:linear-gradient(135deg,rgba(124,91,240,0.2),rgba(0,214,143,0.1));display:flex;align-items:center;justify-content:space-between}
+.result-element-badge{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;flex-shrink:0}
+.result-info{flex:1;margin-left:14px}
+.result-name{font-size:18px;font-weight:800;line-height:1.2}
+.result-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.precision-badge{font-size:11px;color:var(--accent2);background:rgba(0,214,143,0.1);padding:3px 8px;border-radius:20px;display:inline-block;margin-top:4px}
+/* SAJU GRID */
+.saju-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:14px 16px}
+.saju-pillar{background:var(--card2);border-radius:12px;padding:10px 8px;text-align:center;border:1px solid var(--border)}
+.saju-pillar .label{font-size:10px;color:var(--muted);margin-bottom:6px;display:block}
+.saju-pillar .gan{font-size:22px;font-weight:900;line-height:1;margin-bottom:4px}
+.saju-pillar .zhi{font-size:18px;color:var(--muted)}
+/* OHAENG BARS */
+.ohaeng-section{padding:4px 16px 16px}
+.ohaeng-title{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.5px;margin-bottom:10px}
+.ohaeng-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ohaeng-label{width:24px;font-size:13px;font-weight:700;text-align:center}
+.ohaeng-bar-bg{flex:1;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.ohaeng-bar-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.ohaeng-val{font-size:12px;color:var(--muted);width:32px;text-align:right}
+/* TABS NAV */
+.tab-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(9,9,15,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(6,1fr);padding:8px 4px 12px;z-index:200;gap:2px}
+.tab-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:10px;transition:.2s;position:relative}
+.tab-btn i{font-size:16px}
+.tab-btn.active{color:var(--accent)}
+.tab-btn .pro-dot{position:absolute;top:3px;right:calc(50% - 14px);width:6px;height:6px;background:var(--accent2);border-radius:50%}
+/* TAB PANELS */
+.tab-panel{display:none;padding:16px}
+.tab-panel.active{display:block}
+/* SECTION CARD */
+.s-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px}
+.s-card h3{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.s-card h3 i{color:var(--accent);font-size:14px}
+/* PREMIUM GATE */
+.premium-gate{position:relative;margin-bottom:14px}
+.premium-gate .blur-content{filter:blur(5px);pointer-events:none;user-select:none}
+.premium-overlay{position:absolute;inset:0;background:rgba(9,9,15,0.7);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:16px;gap:12px;text-align:center;padding:20px}
+.premium-overlay .lock-icon{font-size:32px;color:var(--accent)}
+.premium-overlay p{font-size:14px;font-weight:600;color:var(--text)}
+.premium-overlay .unlock-price{font-size:13px;color:var(--muted)}
+.btn-unlock{padding:10px 24px;border-radius:12px;border:none;background:var(--grad);color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:.2s}
+.btn-unlock:hover{opacity:.9}
+/* FORTUNE CARD */
+.fortune-card{background:var(--card2);border-radius:14px;padding:16px;margin-bottom:10px;border-left:3px solid var(--accent)}
+.fortune-date{font-size:11px;color:var(--muted);margin-bottom:6px}
+.fortune-score{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.fortune-tag{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+/* COUPLE INPUT */
+.couple-row{display:flex;gap:10px;align-items:flex-end;margin-bottom:12px}
+.couple-row .input-group{flex:1}
+/* CHAT */
+.chat-wrap{background:var(--card2);border-radius:14px;overflow:hidden;margin-bottom:14px}
+.chat-msgs{min-height:200px;max-height:320px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.msg-ai{align-self:flex-start;background:rgba(124,91,240,0.15);border-radius:12px 12px 12px 2px;padding:10px 14px;font-size:13px;max-width:85%;line-height:1.5}
+.msg-user{align-self:flex-end;background:var(--accent);color:#fff;border-radius:12px 12px 2px 12px;padding:10px 14px;font-size:13px;max-width:85%;line-height:1.5}
+.chat-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border)}
+.chat-input-row input{flex:1;background:transparent;border:none;color:var(--text);font-size:13px;outline:none}
+.chat-send{width:36px;height:36px;border-radius:10px;border:none;background:var(--grad);color:#fff;cursor:pointer;font-size:14px;flex-shrink:0}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;align-items:flex-end;justify-content:center}
+.modal-bg.show{display:flex}
+.modal-sheet{background:var(--card);border-radius:24px 24px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px;cursor:pointer}
+.modal-title{font-size:18px;font-weight:800;margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+/* PLAN CARDS */
+.plan-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.plan-card{background:var(--card2);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:14px}
+.plan-card.selected{border-color:var(--accent);background:rgba(124,91,240,0.1)}
+.plan-card.recommended{border-color:var(--accent2)}
+.plan-badge{font-size:9px;background:var(--accent2);color:#000;padding:2px 6px;border-radius:4px;font-weight:700;letter-spacing:.5px}
+.plan-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-left:auto}
+.plan-radio.checked::after{content:'';width:10px;height:10px;background:var(--accent);border-radius:50%;display:block}
+.plan-name{font-size:15px;font-weight:700;margin-bottom:2px}
+.plan-price{font-size:13px;color:var(--accent);font-weight:600}
+.plan-features{font-size:11px;color:var(--muted);margin-top:3px}
+.plan-icon{font-size:24px;flex-shrink:0}
+.btn-pay{width:100%;padding:16px;border-radius:14px;border:none;background:var(--grad);color:#fff;font-size:16px;font-weight:800;cursor:pointer;transition:.2s}
+.btn-pay:hover{opacity:.9}
+.btn-pay:disabled{opacity:.5;cursor:not-allowed}
+/* TOAST */
+#toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:rgba(0,214,143,0.15);border:1px solid var(--accent2);color:var(--accent2);padding:10px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:999;display:none;white-space:nowrap}
+/* HEALTH */
+.organ-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.organ-tag{padding:4px 10px;border-radius:8px;font-size:12px;font-weight:600;background:rgba(255,255,255,0.05);border:1px solid var(--border)}
+.organ-tag.risk{border-color:var(--danger);color:var(--danger)}
+.organ-tag.ok{border-color:var(--wood);color:var(--wood)}
+/* NAME INPUT */
+.name-char-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.name-char-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:12px 16px;text-align:center;min-width:70px}
+.name-char-card .char{font-size:24px;font-weight:900}
+.name-char-card .info{font-size:11px;color:var(--muted);margin-top:4px}
+/* CALENDAR */
+.date-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px}
+.date-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:12px;cursor:pointer;border:1px solid transparent;transition:.15s}
+.date-cell.good{background:rgba(0,214,143,0.15);border-color:var(--accent2);color:var(--accent2);font-weight:700}
+.date-cell.bad{color:var(--muted);opacity:.5}
+.date-cell.today{border-color:var(--accent);color:var(--accent)}
+/* DREAM */
+.dream-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.dream-tag{padding:7px 14px;border-radius:20px;border:1px solid var(--border);font-size:12px;cursor:pointer;transition:.2s}
+.dream-tag.active{background:var(--accent);border-color:var(--accent);color:#fff}
+/* PARTNER */
+.partner-type-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+.partner-type-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center}
+.partner-type-card .compat-score{font-size:28px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+/* MISC */
+.divider{height:1px;background:var(--border);margin:16px 0}
+.badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700}
+.badge-free{background:rgba(55,65,81,0.5);color:#9ca3af}
+.badge-paid{background:rgba(124,91,240,0.2);color:var(--accent)}
+.text-accent{color:var(--accent)}.text-accent2{color:var(--accent2)}.text-muted{color:var(--muted)}
+.flex{display:flex}.items-center{align-items:center}.justify-between{justify-content:space-between}
+.gap-8{gap:8px}.mt-8{margin-top:8px}.mt-4{margin-top:4px}
+.loading-dots::after{content:'...';animation:dots 1.5s steps(4,end) infinite}
+@keyframes dots{0%,20%{content:''}40%{content:'.'}60%{content:'..'}80%,100%{content:'...'}}
+.shine{background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent);background-size:200%;animation:shine 2s linear infinite}
+@keyframes shine{0%{background-position:200%}100%{background-position:-200%}}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- HEADER -->
+  <header class="kz-header">
+    <div>
+      <div class="kz-logo">KAI-ZEN<span>AI 사주·운세 플랫폼</span></div>
+    </div>
+    <div class="kz-header-right">
+      <button class="btn-sm" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+      <button class="btn-sm btn-premium" onclick="openPayModal(null)"><i class="fa-solid fa-crown" style="margin-right:4px"></i>프리미엄</button>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="kz-body" id="kz-body">
+
+    <!-- INPUT SECTION -->
+    <div class="input-section" id="input-section">
+      <div class="input-title">AI가 분석하는<br>나의 사주·운세</div>
+      <div class="input-sub">생년월일만 입력하면 즉시 결과 · 무료</div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>생년월일</label>
+          <input type="date" class="kz-input" id="birth-date" min="1920-01-01" max="2010-12-31" value="1990-01-01">
+        </div>
+        <div class="input-group" style="max-width:110px">
+          <label>성별</label>
+          <select class="kz-input" id="birth-gender">
+            <option value="M">남성</option>
+            <option value="F">여성</option>
+          </select>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>출생 시간 <span style="color:var(--accent2);font-size:9px">정밀도↑</span></label>
+          <select class="kz-input" id="birth-hour">
+            <option value="">모름</option>
+            <option value="0">子時 (23:00~01:00)</option>
+            <option value="1">丑時 (01:00~03:00)</option>
+            <option value="2">寅時 (03:00~05:00)</option>
+            <option value="3">卯時 (05:00~07:00)</option>
+            <option value="4">辰時 (07:00~09:00)</option>
+            <option value="5">巳時 (09:00~11:00)</option>
+            <option value="6">午時 (11:00~13:00)</option>
+            <option value="7">未時 (13:00~15:00)</option>
+            <option value="8">申時 (15:00~17:00)</option>
+            <option value="9">酉時 (17:00~19:00)</option>
+            <option value="10">戌時 (19:00~21:00)</option>
+            <option value="11">亥時 (21:00~23:00)</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-analyze" onclick="doAnalyze()">
+        <i class="fa-solid fa-wand-magic-sparkles" style="margin-right:8px"></i>사주 분석하기
+      </button>
+    </div>
+
+    <!-- RESULT CARD -->
+    <div class="result-card" id="result-card">
+      <div class="result-top">
+        <div class="result-element-badge" id="element-badge"></div>
+        <div class="result-info">
+          <div class="result-name" id="result-name-el"></div>
+          <div class="result-sub" id="result-saju-text"></div>
+          <div class="precision-badge" id="precision-badge">정밀도 82% · 생년월일 기준</div>
+        </div>
+      </div>
+      <div class="saju-grid" id="saju-grid"></div>
+      <div class="ohaeng-section">
+        <div class="ohaeng-title">오행 분포</div>
+        <div id="ohaeng-bars"></div>
+      </div>
+    </div>
+
+    <!-- TAB PANELS -->
+    <div id="tab-today" class="tab-panel active">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-sun"></i>오늘의 운세 <span class="badge badge-free">FREE</span></h3>
+        <div id="today-fortune-content" class="text-muted" style="font-size:13px;line-height:1.7">
+          생년월일을 입력하고 분석하면 오늘의 운세를 확인할 수 있습니다.
+        </div>
+      </div>
+      <div class="premium-gate" id="gate-weekly">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3><i class="fa-solid fa-calendar-week"></i>주간 운세</h3>
+            <div class="fortune-card"><div class="fortune-date">2026년 3월 30일 (월)</div><div>대인관계에서 긍정적인 에너지가 흐릅니다. 새로운 제안을 받을 수 있는 날.</div><div class="fortune-score"><span class="fortune-tag" style="background:rgba(34,197,94,0.2);color:#22c55e">재물 ★★★★</span><span class="fortune-tag" style="background:rgba(239,68,68,0.2);color:#ef4444">건강 ★★★</span><span class="fortune-tag" style="background:rgba(59,130,246,0.2);color:#3b82f6">사랑 ★★★★★</span></div></div>
+            <div class="fortune-card"><div class="fortune-date">2026년 3월 31일 (화)</div><div>집중력이 높아지는 날. 중요한 업무나 학습에 에너지를 쏟으세요.</div></div>
+          </div>
+        </div>
+        <div class="premium-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>주간 운세 잠금 해제</p>
+          <div class="unlock-price">₩3,900 · 7일 운세 + 궁합 1회</div>
+          <button class="btn-unlock" onclick="openPayModal('weekly')">지금 열기</button>
+        </div>
+      </div>
+      <div class="premium-gate" id="gate-monthly">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3><i class="fa-solid fa-calendar-days"></i>월간 운세 캘린더</h3>
+            <div id="monthly-cal-demo"></div>
+          </div>
+        </div>
+        <div class="premium-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>월간 운세 달력</p>
+          <div class="unlock-price">₩9,900 · 전체 분석 패키지</div>
+          <button class="btn-unlock" onclick="openPayModal('full')">잠금 해제</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-saju" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-yin-yang"></i>사주 4주 분석 <span class="badge badge-free">FREE</span></h3>
+        <div id="saju-detail" class="text-muted" style="font-size:13px;line-height:1.7">분석 후 확인 가능합니다.</div>
+      </div>
+      <div class="s-card">
+        <h3><i class="fa-solid fa-leaf"></i>코어 에너지</h3>
+        <div id="core-energy-detail" class="text-muted" style="font-size:13px;line-height:1.7">분석 후 확인 가능합니다.</div>
+      </div>
+      <div class="premium-gate">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3><i class="fa-solid fa-chart-line"></i>골든타임 캘린더 (12개월)</h3>
+            <div style="font-size:13px;line-height:2">1월 ★★★★★ 새로운 시작 유리<br>2월 ★★★ 꾸준히 나아가세요<br>3월 ★★ 신중한 결정 필요<br>4월 ★★★★ 표현과 창조의 달</div>
+          </div>
+        </div>
+        <div class="premium-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>12개월 골든타임 캘린더</p>
+          <div class="unlock-price">₩9,900 · 전체 분석 패키지</div>
+          <button class="btn-unlock" onclick="openPayModal('full')">잠금 해제</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-beauty" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-spa"></i>오행별 뷰티·웰니스</h3>
+        <p style="font-size:13px;color:var(--muted)">내 오행 에너지에 맞는 피부·헤어·식단·운동을 AI가 제안합니다.</p>
+      </div>
+      <div class="premium-gate">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3><i class="fa-solid fa-face-smile"></i>피부 케어 루틴</h3>
+            <div style="font-size:13px;line-height:1.8">수(水) 에너지: 수분 집중 관리. 히알루론산 세럼 + 시트마스크 주 3회.<br>식단: 검은콩·미역·블루베리 권장. 찬 음식 제한.</div>
+          </div>
+          <div class="s-card">
+            <h3><i class="fa-solid fa-dumbbell"></i>맞춤 운동</h3>
+            <div style="font-size:13px;line-height:1.8">수영, 요가, 필라테스 권장. 오전 7-9시 운동이 가장 효과적.</div>
+          </div>
+        </div>
+        <div class="premium-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>오행별 맞춤 뷰티·웰니스 플랜</p>
+          <div class="unlock-price">₩9,900 · 전체 분석 패키지</div>
+          <button class="btn-unlock" onclick="openPayModal('full')">잠금 해제</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-couple" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-heart"></i>궁합 분석</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px">두 사람의 오행 에너지를 비교·분석합니다.</p>
+        <div class="input-group" style="margin-bottom:10px">
+          <label>내 생년월일</label>
+          <input type="date" class="kz-input" id="couple-a" placeholder="YYYY-MM-DD">
+        </div>
+        <div class="input-group" style="margin-bottom:14px">
+          <label>상대방 생년월일</label>
+          <input type="date" class="kz-input" id="couple-b" placeholder="YYYY-MM-DD">
+        </div>
+        <button class="btn-analyze" onclick="doCoupleAnalysis()">궁합 분석하기</button>
+      </div>
+      <div id="couple-result" style="display:none">
+        <div class="s-card">
+          <h3><i class="fa-solid fa-chart-pie"></i>궁합 점수</h3>
+          <div id="couple-score-detail"></div>
+        </div>
+      </div>
+      <div class="premium-gate" id="gate-couple-detail">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3>상세 궁합 리포트</h3>
+            <div style="font-size:13px;line-height:1.8">금수(金水) 조합: 지성과 깊이가 만나는 관계. 서로의 논리를 존중하며 성장하는 파트너십. 갈등: 감정 표현 부족.</div>
+          </div>
+        </div>
+        <div class="premium-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>상세 궁합 리포트</p>
+          <div class="unlock-price">₩3,900 · 주간 패키지에 포함</div>
+          <button class="btn-unlock" onclick="openPayModal('weekly')">잠금 해제</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-wealth" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-coins"></i>금전·재물운 <span class="badge badge-free">FREE 미리보기</span></h3>
+        <div id="wealth-preview" style="font-size:13px;color:var(--muted);line-height:1.7">분석 후 재물운 미리보기를 확인할 수 있습니다.</div>
+      </div>
+      <div class="premium-gate">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3><i class="fa-solid fa-chart-line"></i>투자 타이밍 분석</h3>
+            <div style="font-size:13px;line-height:1.8">3월: 관인성 강세 → 보수적 포지션 유지. 4월: 재성 활성화 → 적극적 투자 타이밍. 피해야 할 종목: 화(火) 섹터.</div>
+          </div>
+          <div class="s-card">
+            <h3><i class="fa-solid fa-piggy-bank"></i>재물 DNA 분석</h3>
+            <div style="font-size:13px;line-height:1.8">재성 지수: 72/100. 정재(고정수입) 중심. 편재(투자/사업) 보완 필요.</div>
+          </div>
+        </div>
+        <div class="premium-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>투자 타이밍 + 재물 DNA 분석</p>
+          <div class="unlock-price">₩9,900 · 전체 분석 패키지</div>
+          <button class="btn-unlock" onclick="openPayModal('full')">잠금 해제</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-health" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-heart-pulse"></i>건강운</h3>
+        <div id="health-content">
+          <p style="font-size:13px;color:var(--muted)">분석 후 오행별 건강 정보를 확인할 수 있습니다.</p>
+        </div>
+      </div>
+      <div class="premium-gate">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3><i class="fa-solid fa-stethoscope"></i>취약 장기 + 관리법</h3>
+            <div style="font-size:13px;line-height:1.8">수(水) 부족: 신장·방광 주의. 충분한 수분 섭취. 금(金) 과잉: 폐·대장 관리. 심호흡 운동 권장.</div>
+            <div class="organ-row">
+              <span class="organ-tag risk">신장 주의</span>
+              <span class="organ-tag risk">방광 관리</span>
+              <span class="organ-tag ok">심장 양호</span>
+              <span class="organ-tag ok">간 양호</span>
+            </div>
+          </div>
+        </div>
+        <div class="premium-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>취약 장기 분석 + 맞춤 관리법</p>
+          <div class="unlock-price">₩9,900 · 전체 분석 패키지</div>
+          <button class="btn-unlock" onclick="openPayModal('full')">잠금 해제</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-ai" class="tab-panel">
+      <div class="s-card" style="padding:0;overflow:hidden">
+        <div style="padding:16px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <h3 style="margin-bottom:0"><i class="fa-solid fa-robot"></i>AI 실시간 상담</h3>
+          <span class="badge badge-paid" id="ai-session-badge">무료 1회</span>
+        </div>
+        <div class="chat-msgs" id="chat-msgs">
+          <div class="msg-ai">안녕하세요! 저는 KAI-ZEN AI 상담사입니다. 사주·운세·인생 고민 무엇이든 물어보세요. 생년월일을 먼저 입력하시면 개인화된 답변을 드릴게요. 🙏</div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="궁금한 것을 물어보세요..." onkeypress="if(event.key==='Enter')sendChat()">
+          <button class="chat-send" onclick="sendChat()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </div>
+      <div style="text-align:center;padding:10px;font-size:12px;color:var(--muted)">무료: 1회 · 프리미엄(₩9,900): 5회 · 무제한(₩19,900/월)</div>
+      <div class="premium-gate" id="gate-ai-extra" style="display:none">
+        <div class="blur-content"><div class="s-card"><div style="height:60px"></div></div></div>
+        <div class="premium-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>AI 상담 추가 이용</p>
+          <div class="unlock-price">₩9,900 · AI 상담 5회</div>
+          <button class="btn-unlock" onclick="openPayModal('full')">잠금 해제</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-name" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-pen-nib"></i>이름 오행 분석</h3>
+        <div class="input-group" style="margin-bottom:12px">
+          <label>분석할 이름</label>
+          <input type="text" class="kz-input" id="name-input" placeholder="이름을 입력하세요" maxlength="10">
+        </div>
+        <button class="btn-analyze" style="padding:12px" onclick="doNameAnalysis()">오행 분석</button>
+        <div class="name-char-grid" id="name-result"></div>
+      </div>
+      <div class="premium-gate">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3><i class="fa-solid fa-star"></i>이름 궁합 점수 + 개명 추천</h3>
+            <div style="font-size:13px;line-height:1.8">현재 이름 오행 점수: 73/100. 사주와의 상생도: 보통. 보완 방향: 수(水) 기운 추가 권장.</div>
+          </div>
+        </div>
+        <div class="premium-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>이름 점수 + 개명 AI 추천</p>
+          <div class="unlock-price">₩9,900 · 전체 분석 패키지</div>
+          <button class="btn-unlock" onclick="openPayModal('full')">잠금 해제</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-date" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-calendar-check"></i>길일 택일</h3>
+        <div class="input-group" style="margin-bottom:12px">
+          <label>목적</label>
+          <select class="kz-input" id="date-purpose">
+            <option value="wedding">결혼</option>
+            <option value="move">이사</option>
+            <option value="open">개업</option>
+            <option value="travel">여행</option>
+            <option value="contract">계약</option>
+          </select>
+        </div>
+        <div class="input-group" style="margin-bottom:12px">
+          <label>기준 월</label>
+          <input type="month" class="kz-input" id="date-month" value="2026-04">
+        </div>
+        <button class="btn-analyze" style="padding:12px" onclick="doDatePicking()">길일 찾기</button>
+      </div>
+      <div class="premium-gate" id="gate-date">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3>4월 길일 달력</h3>
+            <div class="date-grid" id="date-cal-demo"></div>
+          </div>
+        </div>
+        <div class="premium-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>맞춤 길일 달력</p>
+          <div class="unlock-price">₩9,900 · 전체 분석 패키지</div>
+          <button class="btn-unlock" onclick="openPayModal('full')">잠금 해제</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-dream" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-moon"></i>꿈 해몽</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px">AI가 꿈의 의미를 사주와 연결해 해석합니다.</p>
+        <div class="dream-tags" id="dream-tags">
+          <span class="dream-tag" onclick="toggleDream(this,'물·바다')">물·바다</span>
+          <span class="dream-tag" onclick="toggleDream(this,'불·태양')">불·태양</span>
+          <span class="dream-tag" onclick="toggleDream(this,'뱀·용')">뱀·용</span>
+          <span class="dream-tag" onclick="toggleDream(this,'나무·숲')">나무·숲</span>
+          <span class="dream-tag" onclick="toggleDream(this,'돈·황금')">돈·황금</span>
+          <span class="dream-tag" onclick="toggleDream(this,'사람')">사람</span>
+          <span class="dream-tag" onclick="toggleDream(this,'동물')">동물</span>
+          <span class="dream-tag" onclick="toggleDream(this,'하늘·구름')">하늘·구름</span>
+        </div>
+        <textarea class="kz-input" id="dream-text" rows="3" placeholder="꿈 내용을 자세히 적어주세요..." style="resize:none;margin-bottom:12px"></textarea>
+        <button class="btn-analyze" style="padding:12px" onclick="doDreamAnalysis()">AI 해몽</button>
+        <div id="dream-result" style="display:none;margin-top:14px" class="fortune-card"></div>
+      </div>
+    </div>
+
+    <div id="tab-love" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-venus-mars"></i>연애·결혼 궁합</h3>
+        <div id="love-preview" style="font-size:13px;color:var(--muted);line-height:1.7">분석 후 나의 최적 파트너 유형을 확인할 수 있습니다.</div>
+      </div>
+      <div class="premium-gate">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3><i class="fa-solid fa-ring"></i>최적 파트너 유형</h3>
+            <div class="partner-type-grid">
+              <div class="partner-type-card"><div class="compat-score">94%</div><div style="font-size:13px;font-weight:700;margin-top:4px">木 일간</div><div style="font-size:11px;color:var(--muted)">상생 관계 · 성장형 파트너</div></div>
+              <div class="partner-type-card"><div class="compat-score" style="-webkit-text-fill-color:#ef4444">78%</div><div style="font-size:13px;font-weight:700;margin-top:4px">火 일간</div><div style="font-size:11px;color:var(--muted)">열정적 · 자극적 관계</div></div>
+            </div>
+          </div>
+          <div class="s-card">
+            <h3>결혼 타이밍</h3>
+            <div style="font-size:13px;line-height:1.8">2026년 하반기: 결혼·약혼 길기. 특히 8~9월 가장 유리. 피해야 할 시기: 3월 (충(沖) 작용)</div>
+          </div>
+        </div>
+        <div class="premium-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>최적 파트너 유형 + 결혼 타이밍</p>
+          <div class="unlock-price">₩9,900 · 전체 분석 패키지</div>
+          <button class="btn-unlock" onclick="openPayModal('full')">잠금 해제</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /kz-body -->
+
+  <!-- TAB NAV -->
+  <nav class="tab-nav" id="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('today',this)" data-tab="today"><i class="fa-solid fa-sun"></i>운세</button>
+    <button class="tab-btn" onclick="switchTab('saju',this)" data-tab="saju"><i class="fa-solid fa-yin-yang"></i>사주</button>
+    <button class="tab-btn" onclick="switchTab('couple',this)" data-tab="couple"><i class="fa-solid fa-heart"></i>궁합<span class="pro-dot"></span></button>
+    <button class="tab-btn" onclick="switchTab('ai',this)" data-tab="ai"><i class="fa-solid fa-robot"></i>AI상담<span class="pro-dot"></span></button>
+    <button class="tab-btn" onclick="switchTab('wealth',this)" data-tab="wealth"><i class="fa-solid fa-coins"></i>재물<span class="pro-dot"></span></button>
+    <button class="tab-btn" onclick="openMoreMenu()" id="btn-more"><i class="fa-solid fa-ellipsis"></i>더보기</button>
+  </nav>
+
+  <!-- MORE MENU -->
+  <div class="modal-bg" id="more-modal" onclick="closeMoreMenu(event)">
+    <div class="modal-sheet" style="padding-bottom:32px" onclick="event.stopPropagation()">
+      <div class="modal-handle" onclick="closeMoreMenu()"></div>
+      <div class="modal-title">더보기</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px">
+        <button class="tab-btn" style="background:var(--card2);border-radius:14px;padding:16px 8px;height:auto;color:var(--text)" onclick="switchTabFromMore('beauty')"><i class="fa-solid fa-spa" style="font-size:22px;color:var(--accent)"></i><span style="font-size:12px;margin-top:4px;display:block">뷰티</span></button>
+        <button class="tab-btn" style="background:var(--card2);border-radius:14px;padding:16px 8px;height:auto;color:var(--text)" onclick="switchTabFromMore('health')"><i class="fa-solid fa-heart-pulse" style="font-size:22px;color:#ef4444"></i><span style="font-size:12px;margin-top:4px;display:block">건강</span></button>
+        <button class="tab-btn" style="background:var(--card2);border-radius:14px;padding:16px 8px;height:auto;color:var(--text)" onclick="switchTabFromMore('name')"><i class="fa-solid fa-pen-nib" style="font-size:22px;color:#f59e0b"></i><span style="font-size:12px;margin-top:4px;display:block">작명</span></button>
+        <button class="tab-btn" style="background:var(--card2);border-radius:14px;padding:16px 8px;height:auto;color:var(--text)" onclick="switchTabFromMore('date')"><i class="fa-solid fa-calendar-check" style="font-size:22px;color:#22c55e"></i><span style="font-size:12px;margin-top:4px;display:block">택일</span></button>
+        <button class="tab-btn" style="background:var(--card2);border-radius:14px;padding:16px 8px;height:auto;color:var(--text)" onclick="switchTabFromMore('dream')"><i class="fa-solid fa-moon" style="font-size:22px;color:#8b5cf6"></i><span style="font-size:12px;margin-top:4px;display:block">꿈해몽</span></button>
+        <button class="tab-btn" style="background:var(--card2);border-radius:14px;padding:16px 8px;height:auto;color:var(--text)" onclick="switchTabFromMore('love')"><i class="fa-solid fa-venus-mars" style="font-size:22px;color:#ec4899"></i><span style="font-size:12px;margin-top:4px;display:block">연애</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAYMENT MODAL -->
+  <div class="modal-bg" id="pay-modal" onclick="closePayModal(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+      <div class="modal-handle" onclick="closePayModal()"></div>
+      <div class="modal-title">프리미엄 업그레이드</div>
+      <div class="modal-sub">더 깊은 운세와 AI 상담을 경험하세요</div>
+      <div class="plan-grid">
+        <div class="plan-card" id="plan-weekly" onclick="selectPlan('weekly')">
+          <span class="plan-icon">📅</span>
+          <div style="flex:1">
+            <div class="plan-name">주간 패키지</div>
+            <div class="plan-price">₩3,900 <span style="font-size:11px;color:var(--muted);font-weight:400">1회</span></div>
+            <div class="plan-features">7일 운세 + 궁합 분석 1회</div>
+          </div>
+          <div class="plan-radio" id="radio-weekly"></div>
+        </div>
+        <div class="plan-card recommended" id="plan-full" onclick="selectPlan('full')">
+          <span class="plan-icon">⭐</span>
+          <div style="flex:1">
+            <div class="plan-name">전체 분석 <span class="plan-badge">인기</span></div>
+            <div class="plan-price">₩9,900 <span style="font-size:11px;color:var(--muted);font-weight:400">1회</span></div>
+            <div class="plan-features">전체 분석 + AI 상담 5회 + 골든타임</div>
+          </div>
+          <div class="plan-radio" id="radio-full"></div>
+        </div>
+        <div class="plan-card" id="plan-unlimited" onclick="selectPlan('unlimited')">
+          <span class="plan-icon">♾️</span>
+          <div style="flex:1">
+            <div class="plan-name">무제한 월정액</div>
+            <div class="plan-price">₩19,900 <span style="font-size:11px;color:var(--muted);font-weight:400">/월</span></div>
+            <div class="plan-features">무제한 AI 상담 + 매일 운세 업데이트</div>
+          </div>
+          <div class="plan-radio" id="radio-unlimited"></div>
+        </div>
+      </div>
+      <div class="input-group" style="margin-bottom:16px">
+        <label>이메일 (결과 발송)</label>
+        <input type="email" class="kz-input" id="pay-email" placeholder="your@email.com">
+      </div>
+      <button class="btn-pay" id="btn-pay" onclick="doPayment()">
+        <i class="fa-solid fa-credit-card" style="margin-right:8px"></i>결제하기
+      </button>
+      <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:12px">
+        <i class="fa-solid fa-shield" style="color:var(--accent2)"></i> TossPayments 안전 결제 · 환불 3일 이내 가능
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════
+var TOSS_CLIENT_KEY = 'test_ck_oEjb0gm23P4vBwp96WJk3pGwBJn5';
+var GAS_URL = ''; // config.js의 WEB_APP_URL 값으로 교체
+var CLAUDE_API_KEY = ''; // GAS 프록시 엔드포인트로 교체 권장
+
+var PLANS = {
+  weekly:    { name:'주간 패키지',   price:3900,  type:'one-time' },
+  full:      { name:'전체 분석',     price:9900,  type:'one-time' },
+  unlimited: { name:'무제한 월정액', price:19900, type:'subscription' }
+};
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+var state = {
+  birth: null, birthStr: null, gender: 'M', hourIdx: null,
+  vCore: null, plan: null, userPlan: null,
+  chatCount: 0, chatLimit: 1,
+  dreamTags: []
+};
+
+// ═══════════════════════════════════════════════════
+// MANSERYEOK ENGINE (공개 도메인 천간지지 연산)
+// ═══════════════════════════════════════════════════
+var GANS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+var ZHIS = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+var GAN_EL = {甲:'木',乙:'木',丙:'火',丁:'火',戊:'土',己:'土',庚:'金',辛:'金',壬:'水',癸:'水'};
+var ZHI_EL = {子:'水',丑:'土',寅:'木',卯:'木',辰:'土',巳:'火',午:'火',未:'土',申:'金',酉:'金',戌:'土',亥:'水'};
+var EL_KO  = {木:'목',火:'화',土:'토',金:'금',水:'수'};
+var EL_COLOR = {木:'var(--wood)',火:'var(--fire)',土:'var(--earth)',金:'var(--metal)',水:'var(--water)'};
+var EL_EMOJI = {木:'🌿',火:'🔥',土:'🏔',金:'⚔️',水:'💧'};
+var EL_BG = {木:'rgba(34,197,94,0.15)',火:'rgba(239,68,68,0.15)',土:'rgba(245,158,11,0.15)',金:'rgba(148,163,184,0.15)',水:'rgba(59,130,246,0.15)'};
+
+var LICHUN = {
+  1920:[2,5],1921:[2,4],1930:[2,4],1940:[2,5],1950:[2,4],1960:[2,5],1970:[2,4],1980:[2,5],
+  1981:[2,4],1982:[2,4],1983:[2,4],1984:[2,4],1985:[2,4],1986:[2,4],1987:[2,4],1988:[2,4],
+  1989:[2,4],1990:[2,4],1991:[2,4],1992:[2,4],1993:[2,4],1994:[2,4],1995:[2,4],1996:[2,4],
+  1997:[2,4],1998:[2,4],1999:[2,4],2000:[2,4],2001:[2,4],2002:[2,4],2003:[2,4],2004:[2,4],
+  2005:[2,4],2006:[2,4],2007:[2,4],2008:[2,4],2009:[2,4],2010:[2,4],2011:[2,4],2012:[2,4],
+  2013:[2,4],2014:[2,4],2015:[2,4],2016:[2,4],2017:[2,3],2018:[2,4],2019:[2,4],2020:[2,4],
+  2021:[2,3],2022:[2,4],2023:[2,4],2024:[2,4],2025:[2,3],2026:[2,4],2027:[2,4],2028:[2,4]
+};
+
+var BRANCH_RATIO = {
+  子:[0,0,0,0,1],丑:[0,0,.6,.2,.2],寅:[.6,.3,.1,0,0],卯:[1,0,0,0,0],
+  辰:[.2,0,.6,0,.2],巳:[0,.6,.1,.3,0],午:[0,.7,.3,0,0],未:[.2,.2,.6,0,0],
+  申:[0,0,.1,.6,.3],酉:[0,0,0,1,0],戌:[0,.1,.7,.2,0],亥:[.3,0,0,0,.7]
+};
+
+function getSajuYear(y,m,d){
+  var lc=LICHUN[y]||[2,4];
+  return (m<lc[0]||(m===lc[0]&&d<lc[1]))?y-1:y;
+}
+function getYearGan(y){return GANS[y%10];}
+function getYearZhi(y){return ZHIS[y%12];}
+function getMonthGan(yIdx,m){return GANS[((yIdx%5)*2+(m-1))%10];}
+function getMonthZhi(m){return ['丑','寅','卯','辰','巳','午','未','申','酉','戌','亥','子'][m-1];}
+function getDayGan(y,m,d){var b=new Date(1900,0,1),t=new Date(y,m-1,d),diff=Math.floor((t-b)/86400000);return GANS[(diff+10)%10];}
+function getDayZhi(y,m,d){var b=new Date(1900,0,1),t=new Date(y,m-1,d),diff=Math.floor((t-b)/86400000);return ZHIS[(diff+10)%12];}
+function getHourGan(dayGanIdx,h){return GANS[((dayGanIdx%5)*2+h)%10];}
+function getHourZhi(h){return ZHIS[h%12];}
+
+function computeSaju(birthStr, hourIdx) {
+  var y=parseInt(birthStr.slice(0,4)),m=parseInt(birthStr.slice(4,6)),d=parseInt(birthStr.slice(6,8));
+  var sy=getSajuYear(y,m,d);
+  var yGan=getYearGan(sy), yZhi=getYearZhi(sy);
+  var yIdx=GANS.indexOf(yGan);
+  var mGan=getMonthGan(yIdx,m), mZhi=getMonthZhi(m);
+  var dGan=getDayGan(y,m,d), dZhi=getDayZhi(y,m,d);
+  var hGan=null,hZhi=null;
+  var hi = (hourIdx!==null&&hourIdx!==''&&!isNaN(parseInt(hourIdx)))?parseInt(hourIdx):-1;
+  if(hi>=0){var dIdx=GANS.indexOf(dGan);hGan=getHourGan(dIdx,hi);hZhi=getHourZhi(hi);}
+
+  // 오행 세력
+  var oh={木:0,火:0,土:0,金:0,水:0};
+  var stems=[yGan,mGan,dGan];
+  var branches=[{z:yZhi,w:1.2},{z:mZhi,w:2.5},{z:dZhi,w:1.2}];
+  if(hGan){stems.push(hGan);branches.push({z:hZhi,w:1.2});}
+  stems.forEach(function(g){oh[GAN_EL[g]]+=1.0;});
+  branches.forEach(function(item){
+    var r=BRANCH_RATIO[item.z]||[.2,.2,.2,.2,.2];
+    var els=['木','火','土','金','水'];
+    els.forEach(function(e,i){oh[e]+=r[i]*item.w;});
+  });
+
+  var dayEl=GAN_EL[dGan];
+  var generates={木:'火',火:'土',土:'金',金:'水',水:'木'};
+  var controls={木:'土',土:'水',水:'火',火:'金',金:'木'};
+  var genBy={火:'木',土:'火',金:'土',水:'金',木:'水'};
+  var ctlBy={土:'木',水:'土',火:'水',金:'火',木:'金'};
+  var Ein=oh[dayEl]+(oh[genBy[dayEl]]||0);
+  var Eout=(oh[generates[dayEl]]||0)+(oh[controls[dayEl]]||0)+(oh[ctlBy[dayEl]]||0);
+  var si=(Ein-Eout)/(Ein+Eout+1e-9);
+
+  return {
+    saju:{yGan,yZhi,mGan,mZhi,dGan,dZhi,hGan,hZhi},
+    dayEl, oh, si,
+    wealthEl:controls[dayEl],
+    exprEl:generates[dayEl],
+    precision:hi>=0?94:82
+  };
+}
+
+// ═══════════════════════════════════════════════════
+// ANALYZE
+// ═══════════════════════════════════════════════════
+function doAnalyze() {
+  var d=document.getElementById('birth-date').value;
+  if(!d){showToast('생년월일을 입력해주세요');return;}
+  var parts=d.split('-');
+  state.birthStr=parts[0]+parts[1]+parts[2];
+  state.birth=new Date(d);
+  state.gender=document.getElementById('birth-gender').value;
+  var hv=document.getElementById('birth-hour').value;
+  state.hourIdx=hv===''?null:hv;
+
+  state.vCore=computeSaju(state.birthStr, state.hourIdx);
+  renderResult();
+  renderTodayFortune();
+  renderSajuDetail();
+  renderHealthContent();
+  renderWealthPreview();
+  renderLovePreview();
+  document.getElementById('result-card').classList.add('show');
+  document.getElementById('kz-body').scrollTop=0;
+  switchTab('today', document.querySelector('[data-tab="today"]'));
+  showToast('분석 완료! '+EL_EMOJI[state.vCore.dayEl]+' '+state.vCore.dayEl+'('+EL_KO[state.vCore.dayEl]+') 일간');
+}
+
+function renderResult() {
+  var vc=state.vCore, saju=vc.saju;
+  var el=vc.dayEl, col=EL_COLOR[el];
+  var badge=document.getElementById('element-badge');
+  badge.style.background=EL_BG[el];
+  badge.style.color=col;
+  badge.textContent=EL_EMOJI[el];
+
+  document.getElementById('result-name-el').innerHTML=
+    '<span style="color:'+col+'">'+vc.dayEl+'('+EL_KO[el]+')</span> 일간 · '+saju.dGan+saju.dZhi+'일';
+  document.getElementById('result-saju-text').textContent=
+    saju.yGan+saju.yZhi+'년 '+saju.mGan+saju.mZhi+'월 '+saju.dGan+saju.dZhi+'일'+(saju.hGan?(' '+saju.hGan+saju.hZhi+'시'):'');
+  document.getElementById('precision-badge').textContent='정밀도 '+vc.precision+'% · '+(state.hourIdx?'시간 반영':'생년월일 기준');
+
+  // 4주 grid
+  var pillars=[
+    {label:'年柱',gan:saju.yGan,zhi:saju.yZhi},
+    {label:'月柱',gan:saju.mGan,zhi:saju.mZhi},
+    {label:'日柱',gan:saju.dGan,zhi:saju.dZhi},
+    {label:'時柱',gan:saju.hGan||'?',zhi:saju.hZhi||'?'}
+  ];
+  var grid=document.getElementById('saju-grid');
+  grid.innerHTML=pillars.map(function(p){
+    var ganEl=GAN_EL[p.gan]||'土', zhiEl=ZHI_EL[p.zhi]||'土';
+    return '<div class="saju-pillar">'
+      +'<span class="label">'+p.label+'</span>'
+      +'<div class="gan" style="color:'+EL_COLOR[ganEl]+'">'+p.gan+'</div>'
+      +'<div class="zhi" style="color:'+EL_COLOR[zhiEl]+'">'+p.zhi+'</div>'
+      +'</div>';
+  }).join('');
+
+  // 오행 바
+  var oh=vc.oh, maxOh=Math.max.apply(null,Object.values(oh))||1;
+  var els=['木','火','土','金','水'];
+  var barsHtml=els.map(function(e){
+    var pct=Math.round(oh[e]/maxOh*100);
+    return '<div class="ohaeng-row">'
+      +'<span class="ohaeng-label" style="color:'+EL_COLOR[e]+'">'+e+'</span>'
+      +'<div class="ohaeng-bar-bg"><div class="ohaeng-bar-fill" style="width:'+pct+'%;background:'+EL_COLOR[e]+'"></div></div>'
+      +'<span class="ohaeng-val">'+oh[e].toFixed(1)+'</span>'
+      +'</div>';
+  }).join('');
+  document.getElementById('ohaeng-bars').innerHTML=barsHtml;
+}
+
+function renderTodayFortune() {
+  var vc=state.vCore, el=vc.dayEl;
+  var today=new Date();
+  var todayEl=getElementOfDay(today);
+  var rel=getElementRelation(el, todayEl);
+  var fortune=getTodayFortuneText(el, rel);
+  var scoreMap={상생:5,비화:4,상극:2,상생역:3,상극역:3};
+  var score=scoreMap[rel]||3;
+  document.getElementById('today-fortune-content').innerHTML=
+    '<div style="background:'+EL_BG[el]+';border-radius:12px;padding:14px;margin-bottom:12px">'
+    +'<div style="font-size:12px;color:var(--muted);margin-bottom:6px">'+formatDate(today)+' · 오늘의 에너지</div>'
+    +'<div style="font-size:14px;font-weight:700;margin-bottom:8px;color:'+EL_COLOR[el]+'">'+EL_EMOJI[el]+' '+el+'('+EL_KO[el]+') 에너지</div>'
+    +'<div style="font-size:14px;line-height:1.7">'+fortune.main+'</div>'
+    +'</div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    +'<span class="fortune-tag" style="background:rgba(34,197,94,0.15);color:#22c55e">전체 '+'★'.repeat(score)+'</span>'
+    +'<span class="fortune-tag" style="background:rgba(245,158,11,0.15);color:#f59e0b">재물 '+'★'.repeat(fortune.wealth)+'</span>'
+    +'<span class="fortune-tag" style="background:rgba(236,72,153,0.15);color:#ec4899">인연 '+'★'.repeat(fortune.love)+'</span>'
+    +'</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-top:10px">'+fortune.advice+'</div>';
+}
+
+function getElementOfDay(d) {
+  var els=['木','火','土','金','水'];
+  var base=new Date(1900,0,1);
+  var diff=Math.floor((d-base)/86400000);
+  return els[diff%5];
+}
+
+function getElementRelation(myEl, dayEl) {
+  var generates={木:'火',火:'土',土:'金',金:'水',水:'木'};
+  var genBy={火:'木',土:'火',金:'土',水:'金',木:'水'};
+  var controls={木:'土',土:'水',水:'火',火:'金',金:'木'};
+  var ctlBy={土:'木',水:'土',火:'水',金:'火',木:'金'};
+  if(myEl===dayEl) return '비화';
+  if(generates[myEl]===dayEl) return '상생';
+  if(genBy[myEl]===dayEl) return '상생역';
+  if(controls[myEl]===dayEl) return '상극';
+  return '상극역';
+}
+
+var FORTUNE_DB = {
+  木: { main:'새로운 시작과 성장의 에너지가 흐릅니다. 창의적인 아이디어를 실행에 옮기기 좋은 날입니다.', advice:'오전에 중요한 결정을 내리세요. 동쪽 방향이 유리합니다.', wealth:4, love:3 },
+  火: { main:'열정과 활력이 넘치는 하루입니다. 표현력이 높아지고 사람들의 주목을 받을 수 있습니다.', advice:'감정 기복에 주의하세요. 남쪽 방향이 유리합니다.', wealth:3, love:5 },
+  土: { main:'안정과 중심을 잡는 날입니다. 실무적인 처리와 신뢰 관계 강화에 좋습니다.', advice:'무리한 변화보다 현상 유지가 유리합니다. 황색 계열이 행운색입니다.', wealth:4, love:3 },
+  金: { main:'집중력과 결단력이 높아지는 날입니다. 계획을 정리하고 우선순위를 재설정하세요.', advice:'불필요한 지출을 줄이세요. 서쪽 방향이 유리합니다.', wealth:5, love:2 },
+  水: { main:'직관력과 깊은 통찰이 강해지는 날입니다. 내면의 목소리를 신뢰하세요.', advice:'과음을 피하고 충분한 수분 섭취를 하세요. 북쪽 방향이 유리합니다.', wealth:3, love:4 }
+};
+
+function getTodayFortuneText(el, relation) {
+  var base=FORTUNE_DB[el]||FORTUNE_DB['土'];
+  var r=Object.assign({},base);
+  if(relation==='상생역'||relation==='비화') r.main='에너지가 충만한 하루입니다. '+r.main;
+  if(relation==='상극') r.main='신중함이 필요한 날입니다. 큰 결정은 잠시 미루세요.';
+  return r;
+}
+
+function renderSajuDetail() {
+  var vc=state.vCore, el=vc.dayEl;
+  var strLabel=vc.si>0.15?'신강(에너지 강세)':vc.si<-0.15?'신약(에너지 약세)':'중화';
+  document.getElementById('saju-detail').innerHTML=
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+    +'<div style="background:var(--card2);border-radius:12px;padding:12px">'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:4px">일간(코어 에너지)</div>'
+    +'<div style="font-size:18px;font-weight:900;color:'+EL_COLOR[el]+'">'+EL_EMOJI[el]+' '+el+'('+EL_KO[el]+')</div>'
+    +'</div>'
+    +'<div style="background:var(--card2);border-radius:12px;padding:12px">'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:4px">신강약</div>'
+    +'<div style="font-size:14px;font-weight:700">'+strLabel+'</div>'
+    +'</div>'
+    +'<div style="background:var(--card2);border-radius:12px;padding:12px">'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:4px">재물 에너지</div>'
+    +'<div style="font-size:14px;font-weight:700;color:'+EL_COLOR[vc.wealthEl]+'">'+vc.wealthEl+'('+EL_KO[vc.wealthEl]+')</div>'
+    +'</div>'
+    +'<div style="background:var(--card2);border-radius:12px;padding:12px">'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:4px">표현 에너지</div>'
+    +'<div style="font-size:14px;font-weight:700;color:'+EL_COLOR[vc.exprEl]+'">'+vc.exprEl+'('+EL_KO[vc.exprEl]+')</div>'
+    +'</div>'
+    +'</div>';
+
+  document.getElementById('core-energy-detail').innerHTML=getCoreEnergyText(el, vc.si);
+}
+
+var CORE_TEXT = {
+  木: { personality:'성장과 창조의 에너지. 리더십과 추진력이 강하며 새로운 시작을 즐깁니다.', strength:'기획력, 창의성, 추진력', weakness:'인내심 부족, 충동적 결정', career:'기획자, 디자이너, 창업가, 교육자' },
+  火: { personality:'열정과 표현의 에너지. 카리스마가 있고 사람들을 끌어당기는 매력이 있습니다.', strength:'커뮤니케이션, 설득력, 열정', weakness:'감정 기복, 끈기 부족', career:'마케터, 연예인, 상담사, 영업직' },
+  土: { personality:'안정과 신뢰의 에너지. 실용적이고 믿음직하며 사람들의 중심이 됩니다.', strength:'신뢰성, 실행력, 조율 능력', weakness:'변화 저항, 고집', career:'관리자, 공무원, 부동산, 의료직' },
+  金: { personality:'정밀과 결단의 에너지. 분석적이고 원칙을 중시하며 높은 기준을 추구합니다.', strength:'분석력, 결단력, 집중력', weakness:'고집, 타협 어려움', career:'금융인, 법조인, 엔지니어, 외과의' },
+  水: { personality:'지혜와 깊이의 에너지. 직관력이 뛰어나고 유연하게 상황에 적응합니다.', strength:'통찰력, 유연성, 적응력', weakness:'우유부단, 비밀주의', career:'연구자, 철학자, 심리상담사, 작가' }
+};
+
+function getCoreEnergyText(el, si) {
+  var c=CORE_TEXT[el]||CORE_TEXT['土'];
+  var siTxt=si>0.15?'강한 자아 에너지 — 주도적, 때로 고집스러운 면 있음':si<-0.15?'섬세한 감수성 — 협력적, 환경 영향 받기 쉬움':'균형잡힌 에너지 — 상황에 따라 유연하게 대응';
+  return '<div class="flex gap-8 mt-4" style="flex-direction:column">'
+    +'<div><span style="font-size:12px;color:var(--muted)">성격</span><p style="margin-top:4px;line-height:1.6">'+c.personality+'</p></div>'
+    +'<div class="divider"></div>'
+    +'<div><span style="font-size:12px;color:var(--muted)">신강약</span><p style="margin-top:4px">'+siTxt+'</p></div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">'
+    +'<div style="flex:1;background:rgba(0,214,143,0.08);border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--accent2);margin-bottom:4px">강점</div><div style="font-size:12px">'+c.strength+'</div></div>'
+    +'<div style="flex:1;background:rgba(239,68,68,0.08);border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--danger);margin-bottom:4px">개선점</div><div style="font-size:12px">'+c.weakness+'</div></div>'
+    +'</div>'
+    +'<div style="background:rgba(124,91,240,0.08);border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--accent);margin-bottom:4px">적합 직업</div><div style="font-size:12px">'+c.career+'</div></div>'
+    +'</div>';
+}
+
+function renderHealthContent() {
+  var el=state.vCore.dayEl;
+  var orgMap={木:['간','담낭'],火:['심장','소장'],土:['비장','위'],金:['폐','대장'],水:['신장','방광']};
+  var riskMap={木:['근육','시력'],火:['혈압','심혈관'],土:['혈당','소화'],金:['호흡기','피부'],水:['신장','관절']};
+  var orgs=orgMap[el]||[], risks=riskMap[el]||[];
+  document.getElementById('health-content').innerHTML=
+    '<div style="font-size:13px;line-height:1.7;margin-bottom:10px">'
+    +'<strong style="color:'+EL_COLOR[el]+'">'+el+'('+EL_KO[el]+') 에너지</strong> 일간은 '
+    +orgs.join('·')+'가 관장 장기입니다.</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-bottom:8px">관리 포인트</div>'
+    +'<div class="organ-row">'
+    +orgs.map(function(o){return '<span class="organ-tag ok">'+o+' 관리</span>';}).join('')
+    +risks.map(function(r){return '<span class="organ-tag risk">'+r+' 주의</span>';}).join('')
+    +'</div>';
+}
+
+function renderWealthPreview() {
+  var el=state.vCore.dayEl, wEl=state.vCore.wealthEl;
+  var txt = '재물 에너지: <strong style="color:'+EL_COLOR[wEl]+'">'+wEl+'('+EL_KO[wEl]+')</strong>. ';
+  var map={木:'부동산·목재·교육 관련 재물운 강함. 봄철 투자 타이밍.',火:'IT·미디어·식음료 관련. 여름철 활성화.',土:'토지·부동산·제조업. 안정적 정재(正財) 중심.',金:'금융·보석·철강. 가을철 수확기.',水:'유통·무역·물 관련 업종. 겨울철 숨기기.'};
+  txt += (map[wEl]||'균형잡힌 재물 흐름.');
+  document.getElementById('wealth-preview').innerHTML='<p style="line-height:1.7">'+txt+'</p>';
+}
+
+function renderLovePreview() {
+  var el=state.vCore.dayEl;
+  var map={木:'감성적이고 성장을 함께할 파트너와 궁합이 좋습니다.',火:'열정과 공감 능력이 높은 파트너와 잘 맞습니다.',土:'안정적이고 신뢰를 주는 파트너가 최적입니다.',金:'지성적이고 원칙이 있는 파트너와 깊은 유대감.',水:'깊이 있고 감성적인 파트너와의 교감이 중요합니다.'};
+  document.getElementById('love-preview').innerHTML='<p style="line-height:1.7">'+map[el]+'</p><p style="font-size:12px;color:var(--muted);margin-top:8px">상세 파트너 유형·결혼 타이밍은 프리미엄에서 확인하세요.</p>';
+}
+
+// ═══════════════════════════════════════════════════
+// COUPLE ANALYSIS
+// ═══════════════════════════════════════════════════
+function doCoupleAnalysis() {
+  var aVal=document.getElementById('couple-a').value;
+  var bVal=document.getElementById('couple-b').value;
+  if(!aVal||!bVal){showToast('두 사람의 생년월일을 모두 입력해주세요');return;}
+  var toStr=function(v){var p=v.split('-');return p[0]+p[1]+p[2];};
+  var vcA=computeSaju(toStr(aVal),null);
+  var vcB=computeSaju(toStr(bVal),null);
+  var rel=getElementRelation(vcA.dayEl,vcB.dayEl);
+  var scoreMap={'비화':72,'상생':88,'상생역':82,'상극':55,'상극역':65};
+  var score=scoreMap[rel]||70;
+  var relText={'비화':'동질적 관계 — 서로 이해하지만 경쟁도 있음','상생':'최상의 상생 관계 — 서로 성장시키는 파트너','상생역':'서로 지지하는 안정적 관계','상극':'도전적 관계 — 성장의 계기가 되기도','상극역':'보완적 관계 — 다름이 강점이 되는 조합'};
+  var col=score>=80?'var(--accent2)':score>=65?'var(--accent)':'var(--danger)';
+  document.getElementById('couple-score-detail').innerHTML=
+    '<div style="text-align:center;padding:16px 0">'
+    +'<div style="font-size:52px;font-weight:900;color:'+col+'">'+score+'</div>'
+    +'<div style="font-size:14px;color:var(--muted);margin-top:4px">궁합 점수</div>'
+    +'<div style="margin-top:12px;padding:10px 16px;background:'+EL_BG[vcA.dayEl]+';border-radius:12px">'
+    +'<span style="color:'+EL_COLOR[vcA.dayEl]+'">'+EL_EMOJI[vcA.dayEl]+' '+vcA.dayEl+'</span>'
+    +' × '
+    +'<span style="color:'+EL_COLOR[vcB.dayEl]+'">'+EL_EMOJI[vcB.dayEl]+' '+vcB.dayEl+'</span>'
+    +' · <strong>'+relText[rel]+'</strong>'
+    +'</div>'
+    +'</div>';
+  document.getElementById('couple-result').style.display='block';
+  document.getElementById('gate-couple-detail').style.display='block';
+}
+
+// ═══════════════════════════════════════════════════
+// NAME ANALYSIS
+// ═══════════════════════════════════════════════════
+function doNameAnalysis() {
+  var name=document.getElementById('name-input').value.trim();
+  if(!name){showToast('이름을 입력해주세요');return;}
+  var strokes={'가':3,'나':2,'다':2,'라':5,'마':2,'바':4,'사':3,'아':2,'자':3,'차':3,
+    '강':9,'김':7,'이':6,'박':9,'최':12,'정':8,'조':9,'윤':4,'장':11,'임':9,
+    '원':10,'재':9,'현':10,'진':10,'민':5,'수':4,'지':6,'혜':12,'영':8,'준':9};
+  var chars=name.split('');
+  var nameEl=chars.map(function(c){
+    var n=strokes[c]||Math.floor(Math.random()*12)+1;
+    var els=['木','火','土','金','水'];
+    return {char:c, el:els[(n-1)%5], strokes:n};
+  });
+  var html=nameEl.map(function(item){
+    return '<div class="name-char-card">'
+      +'<div class="char" style="color:'+EL_COLOR[item.el]+'">'+item.char+'</div>'
+      +'<div class="info">'+item.el+'('+EL_KO[item.el]+')<br>'+item.strokes+'획</div>'
+      +'</div>';
+  }).join('');
+  document.getElementById('name-result').innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════
+// DATE PICKING
+// ═══════════════════════════════════════════════════
+function doDatePicking() {
+  if(!state.vCore){showToast('먼저 생년월일을 분석해주세요');return;}
+  var monthVal=document.getElementById('date-month').value;
+  var purpose=document.getElementById('date-purpose').value;
+  var parts=monthVal.split('-');
+  var y=parseInt(parts[0]),m=parseInt(parts[1]);
+  var days=new Date(y,m,0).getDate();
+  var el=state.vCore.dayEl;
+  var generates={木:'火',火:'土',土:'金',金:'水',水:'木'};
+  var goodEl=generates[el];
+  var html='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">';
+  var firstDay=new Date(y,m-1,1).getDay();
+  for(var i=0;i<firstDay;i++) html+='<div></div>';
+  for(var d=1;d<=days;d++){
+    var dt=new Date(y,m-1,d);
+    var dEl=getElementOfDay(dt);
+    var isGood=dEl===goodEl||dEl===el;
+    var isBad=dEl===state.vCore.wealthEl&&purpose==='contract';
+    var cls='date-cell'+(isGood?' good':isBad?' bad':'');
+    html+='<div class="'+cls+'">'+d+'</div>';
+  }
+  html+='</div>';
+  document.getElementById('gate-date').querySelector('.blur-content').innerHTML=
+    '<div class="s-card"><h3>'+m+'월 '+purpose+' 길일</h3>'+html+'<div style="font-size:11px;color:var(--muted);margin-top:10px"><span style="color:var(--accent2)">■</span> 길일 &nbsp;<span style="color:var(--muted);opacity:.5">■</span> 주의일</div></div>';
+  document.getElementById('gate-date').style.display='block';
+}
+
+// ═══════════════════════════════════════════════════
+// DREAM ANALYSIS
+// ═══════════════════════════════════════════════════
+function toggleDream(el,tag) {
+  el.classList.toggle('active');
+  var idx=state.dreamTags.indexOf(tag);
+  if(idx>=0) state.dreamTags.splice(idx,1); else state.dreamTags.push(tag);
+}
+
+function doDreamAnalysis() {
+  var text=document.getElementById('dream-text').value.trim();
+  if(!text&&state.dreamTags.length===0){showToast('꿈 내용을 입력하거나 키워드를 선택해주세요');return;}
+  var el=state.vCore?state.vCore.dayEl:'土';
+  var tags=state.dreamTags;
+  var interpretations={
+    '물·바다':'감정의 흐름과 무의식을 상징합니다. 큰 변화나 감정적 정화가 필요한 시기입니다.',
+    '불·태양':'강한 에너지와 새로운 시작을 암시합니다. 사업·연애에서 긍정적 신호.',
+    '뱀·용':'재물운 상승과 지혜를 상징합니다. 특히 용꿈은 대길몽입니다.',
+    '나무·숲':'성장과 번영을 상징합니다. 건강운이 좋아지는 신호.',
+    '돈·황금':'재물운의 변화를 암시합니다. 현실적 기회가 오고 있습니다.',
+    '사람':'인간관계의 변화를 암시합니다. 꿈속 사람과의 관계를 살펴보세요.',
+    '동물':'본능적 에너지와 직관을 상징합니다. 야생 동물은 자유를, 집동물은 안정을.',
+    '하늘·구름':'원대한 꿈과 이상을 상징합니다. 정신적 성장이 필요한 시기.'
+  };
+  var content=tags.map(function(t){return interpretations[t]||'';}).filter(Boolean).join(' ');
+  if(!content) content='꿈의 내용이 자세할수록 더 정확한 해석이 가능합니다.';
+  var fortune=vc_el_fortune(el, tags);
+  var result=document.getElementById('dream-result');
+  result.style.display='block';
+  result.innerHTML='<div style="font-size:12px;color:var(--muted);margin-bottom:8px">'+EL_EMOJI[el]+' '+el+'('+EL_KO[el]+') 일간 해몽</div>'
+    +'<div style="font-size:13px;line-height:1.7">'+content+'</div>'
+    +(fortune?'<div style="margin-top:10px;font-size:12px;color:var(--accent2)">'+fortune+'</div>':'');
+}
+
+function vc_el_fortune(el, tags) {
+  if(tags.indexOf('돈·황금')>=0||tags.indexOf('뱀·용')>=0) return '재물운 상승 신호. 가까운 시일 내 수입 증가 또는 투자 기회 가능성.';
+  if(tags.indexOf('물·바다')>=0&&el==='水') return '수 일간의 물 꿈: 에너지 충전의 신호. 직관을 믿으세요.';
+  return null;
+}
+
+// ═══════════════════════════════════════════════════
+// AI CHAT (GAS 프록시 또는 직접 Claude API)
+// ═══════════════════════════════════════════════════
+var chatHistory = [];
+
+function sendChat() {
+  var input=document.getElementById('chat-input');
+  var msg=input.value.trim();
+  if(!msg) return;
+  if(state.chatCount>=state.chatLimit&&!state.userPlan){
+    document.getElementById('gate-ai-extra').style.display='block';
+    showToast('무료 상담 횟수 초과. 프리미엄으로 업그레이드하세요.');
+    return;
+  }
+  addChatMsg(msg,'user');
+  input.value='';
+  state.chatCount++;
+  var thinking=addChatMsg('답변을 생각 중입니다<span class="loading-dots"></span>','ai');
+  var systemCtx='';
+  if(state.vCore){
+    systemCtx='사용자 사주: '+state.vCore.dayEl+'('+EL_KO[state.vCore.dayEl]+') 일간, '
+      +(state.vCore.si>0.15?'신강':'신약')+' 체질. 오늘 운세 경향: '+getTodayFortuneText(state.vCore.dayEl,'비화').main;
+  }
+  chatHistory.push({role:'user',content:msg});
+  callAI(systemCtx, chatHistory).then(function(reply){
+    thinking.remove();
+    addChatMsg(reply,'ai');
+    chatHistory.push({role:'assistant',content:reply});
+  }).catch(function(){
+    thinking.remove();
+    var fallback=getLocalAIReply(msg, state.vCore);
+    addChatMsg(fallback,'ai');
+  });
+}
+
+function addChatMsg(text, role) {
+  var msgs=document.getElementById('chat-msgs');
+  var div=document.createElement('div');
+  div.className=role==='ai'?'msg-ai':'msg-user';
+  div.innerHTML=text;
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+  return div;
+}
+
+async function callAI(systemCtx, history) {
+  if(!CLAUDE_API_KEY&&!GAS_URL) throw new Error('No API');
+  var url=GAS_URL?GAS_URL:'https://api.anthropic.com/v1/messages';
+  var headers={'Content-Type':'application/json'};
+  if(!GAS_URL) headers['x-api-key']=CLAUDE_API_KEY, headers['anthropic-version']='2023-06-01';
+  var body={model:'claude-haiku-4-5-20251001',max_tokens:512,system:'당신은 한국 전통 사주·운세 전문 AI 상담사 KAI-ZEN입니다. 따뜻하고 현실적인 조언을 한국어로 간결하게 제공합니다. '+systemCtx,messages:history};
+  var resp=await fetch(url,{method:'POST',headers:headers,body:JSON.stringify(body)});
+  var data=await resp.json();
+  return data.content&&data.content[0]?data.content[0].text:(data.answer||'');
+}
+
+function getLocalAIReply(msg, vc) {
+  var el=vc?vc.dayEl:'土';
+  var replies=['현재 '+el+'('+EL_KO[el]+') 에너지를 중심으로 보면, 지금은 준비와 내실을 다지는 시기입니다.',
+    '사주 흐름상 이 질문은 '+el+'의 기운과 연결되어 있습니다. 인내를 갖고 기다리면 좋은 결과가 옵니다.',
+    '좋은 질문이에요. '+el+' 일간의 특성상 직관을 믿고 행동하되, 무리한 욕심은 내려놓는 것이 현명합니다.'];
+  return replies[Math.floor(msg.length%replies.length)];
+}
+
+// ═══════════════════════════════════════════════════
+// PAYMENT (TossPayments SDK v2)
+// ═══════════════════════════════════════════════════
+var selectedPlan = 'full';
+
+function openPayModal(planKey) {
+  if(planKey) selectPlan(planKey);
+  else selectPlan('full');
+  document.getElementById('pay-modal').classList.add('show');
+}
+function closePayModal(e) {
+  if(!e||e.target===document.getElementById('pay-modal'))
+    document.getElementById('pay-modal').classList.remove('show');
+}
+function selectPlan(key) {
+  selectedPlan=key;
+  ['weekly','full','unlimited'].forEach(function(k){
+    document.getElementById('plan-'+k).classList.toggle('selected',k===key);
+    document.getElementById('radio-'+k).classList.toggle('checked',k===key);
+  });
+  var p=PLANS[key];
+  document.getElementById('btn-pay').textContent='₩'+p.price.toLocaleString()+' 결제하기';
+}
+
+async function doPayment() {
+  var email=document.getElementById('pay-email').value.trim();
+  if(!email||!email.includes('@')){showToast('이메일을 입력해주세요');return;}
+  var p=PLANS[selectedPlan];
+  var orderId='KAIZEN-'+Date.now();
+  try {
+    var tossPayments=TossPayments(TOSS_CLIENT_KEY);
+    var payment=tossPayments.payment({customerKey:'KAIZEN-GUEST-'+Date.now().toString().slice(-8)});
+    if(p.type==='subscription') {
+      await payment.requestBillingAuth({method:'CARD',successUrl:location.origin+location.pathname+'?payment=success&plan='+selectedPlan+'&orderId='+orderId,failUrl:location.origin+location.pathname+'?payment=fail',customerEmail:email,customerName:'KAI-ZEN 회원'});
+    } else {
+      await payment.requestPayment({method:'CARD',amount:{currency:'KRW',value:p.price},orderId:orderId,orderName:p.name,successUrl:location.origin+location.pathname+'?payment=success&plan='+selectedPlan+'&orderId='+orderId,failUrl:location.origin+location.pathname+'?payment=fail',customerEmail:email});
+    }
+  } catch(e) {
+    if(e.code!=='USER_CANCEL') showToast('결제 오류: '+(e.message||'다시 시도해주세요'));
+  }
+}
+
+function handlePaymentCallback() {
+  var params=new URLSearchParams(location.search);
+  if(params.get('payment')==='success') {
+    var plan=params.get('plan')||'full';
+    state.userPlan=plan;
+    if(plan==='unlimited') state.chatLimit=9999;
+    else if(plan==='full') state.chatLimit=5;
+    else state.chatLimit=1;
+    var planLimits={'weekly':['gate-weekly','gate-couple-detail'],'full':['gate-weekly','gate-monthly','gate-couple-detail','gate-date','gate-ai-extra'],'unlimited':['gate-weekly','gate-monthly','gate-couple-detail','gate-date','gate-ai-extra']};
+    (planLimits[plan]||[]).forEach(function(id){
+      var el=document.getElementById(id); if(el) el.style.display='none';
+    });
+    document.getElementById('ai-session-badge').textContent=plan==='unlimited'?'무제한':('잔여 '+state.chatLimit+'회');
+    showToast('결제 완료! '+PLANS[plan].name+' 활성화됨');
+    history.replaceState({},'',location.pathname);
+  } else if(params.get('payment')==='fail') {
+    showToast('결제가 취소되었습니다.');
+    history.replaceState({},'',location.pathname);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════════
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  var panel=document.getElementById('tab-'+tabId);
+  if(panel) panel.classList.add('active');
+  if(btn) btn.classList.add('active');
+  document.getElementById('kz-body').scrollTop=0;
+}
+
+function openMoreMenu() { document.getElementById('more-modal').classList.add('show'); }
+function closeMoreMenu(e) {
+  if(!e||e.target===document.getElementById('more-modal'))
+    document.getElementById('more-modal').classList.remove('show');
+}
+function switchTabFromMore(tabId) {
+  closeMoreMenu();
+  switchTab(tabId, null);
+  document.getElementById('btn-more').classList.add('active');
+}
+
+function showToast(msg) {
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.style.display='block';
+  setTimeout(function(){t.style.display='none';},3000);
+}
+
+function toggleTheme() {
+  var html=document.documentElement;
+  html.dataset.theme=html.dataset.theme==='light'?'dark':'light';
+}
+
+function formatDate(d) {
+  return d.getFullYear()+'년 '+(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+['일','월','화','수','목','금','토'][d.getDay()]+'요일)';
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', function(){
+  selectPlan('full');
+  handlePaymentCallback();
+  // Demo date cal
+  var cal=document.getElementById('date-cal-demo');
+  if(cal){
+    var h='';
+    for(var i=1;i<=30;i++){
+      var g=i%5===0||i%5===1;
+      h+='<div class="date-cell'+(g?' good':'')+'">'+i+'</div>';
+    }
+    cal.innerHTML=h;
+  }
+  var mCal=document.getElementById('monthly-cal-demo');
+  if(mCal){
+    var mh='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">';
+    for(var j=1;j<=31;j++){
+      var gc=j%7===0||j%7===3;
+      mh+='<div class="date-cell'+(gc?' good':'today')+'" style="font-size:11px">'+j+'</div>';
+    }
+    mh+='</div>';
+    mCal.innerHTML=mh;
+  }
+});
+</script>
+</body>
+</html>
