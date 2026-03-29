@@ -186,6 +186,7 @@ select.filter-input option{background:#0D1B2A}
         <span>⚠️</span><span>이상 감지</span>
         <span class="badge br" style="margin-left:auto;font-size:9px;padding:1px 6px">1</span>
       </div>
+      <div class="sb-item" onclick="showAdminPanel('products')"><span>🛍️</span><span>상품 관리</span></div>
     </div>
     <div class="sb-footer">
       <div style="color:var(--gold);font-weight:700;margin-bottom:2px">Partner Mgmt v1.0</div>
@@ -293,6 +294,126 @@ select.filter-input option{background:#0D1B2A}
         </div>
       </div>
 
+      <!-- PRODUCTS -->
+      <div class="panel" id="ap-products">
+        <!-- KPI -->
+        <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+          <div class="kpi-card"><div class="kpi-label">전체 상품</div><div class="kpi-val" style="color:var(--blue)">41</div><div class="kpi-sub">활성 38 / 비활성 3</div></div>
+          <div class="kpi-card"><div class="kpi-label">PB 상품</div><div class="kpi-val" style="color:var(--gold)">2</div><div class="kpi-sub">정미리 파트너</div></div>
+          <div class="kpi-card"><div class="kpi-label">이번달 판매</div><div class="kpi-val" style="color:var(--green)">187</div><div class="kpi-sub">+34% vs 전월</div></div>
+          <div class="kpi-card"><div class="kpi-label">PB 주문 대기</div><div class="kpi-val" style="color:var(--orange)">3</div><div class="kpi-sub">검토 필요</div></div>
+        </div>
+
+        <!-- 탭 내비 -->
+        <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;width:fit-content">
+          <button id="ptab-list" onclick="showProdTab('list')" style="padding:9px 18px;background:var(--blue);color:white;border:none;font-size:12px;font-weight:700;cursor:pointer">전체 상품</button>
+          <button id="ptab-reg" onclick="showProdTab('reg')" style="padding:9px 18px;background:transparent;color:var(--sub);border:none;font-size:12px;cursor:pointer">+ 상품 등록</button>
+          <button id="ptab-pb" onclick="showProdTab('pb')" style="padding:9px 18px;background:transparent;color:var(--sub);border:none;font-size:12px;cursor:pointer">PB 주문 관리</button>
+          <button id="ptab-cat" onclick="showProdTab('cat')" style="padding:9px 18px;background:transparent;color:var(--sub);border:none;font-size:12px;cursor:pointer">카테고리</button>
+        </div>
+
+        <!-- 전체 상품 목록 -->
+        <div id="prod-list-panel">
+          <div class="filter-bar">
+            <input class="filter-input" placeholder="상품명 검색..." style="width:180px" oninput="filterProdTable(this.value)">
+            <select class="filter-input" style="width:120px" onchange="filterProdCat(this.value)">
+              <option value="">전체 카테고리</option>
+              <option value="스킨케어">스킨케어</option><option value="헤어케어">헤어케어</option>
+              <option value="바디케어">바디케어</option><option value="클렌징">클렌징</option>
+              <option value="메이크업">메이크업</option><option value="웰니스">웰니스</option>
+              <option value="식품">식품</option><option value="패션">패션</option>
+              <option value="신발">신발</option><option value="액세서리">액세서리</option>
+            </select>
+          </div>
+          <div class="card">
+            <div class="card-title">상품 목록</div>
+            <div class="tbl-wrap"><table class="tbl"><thead><tr>
+              <th>상품명</th><th>카테고리</th><th>가격</th><th>재고</th><th>판매수</th><th>파트너</th><th>오행태그</th><th>상태</th><th>관리</th>
+            </tr></thead><tbody id="prod-list-tbody"></tbody></table></div>
+          </div>
+        </div>
+
+        <!-- 상품 등록 폼 -->
+        <div id="prod-reg-panel" style="display:none">
+          <div class="card">
+            <div class="card-title">새 상품 등록</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div><div style="font-size:10px;color:var(--sub);margin-bottom:5px;letter-spacing:1px">상품명 *</div><input id="pr-name" class="filter-input" style="width:100%" placeholder="상품명 입력"></div>
+              <div><div style="font-size:10px;color:var(--sub);margin-bottom:5px;letter-spacing:1px">카테고리 *</div>
+                <select id="pr-cat" class="filter-input" style="width:100%">
+                  <option value="">선택</option>
+                  <option>스킨케어</option><option>헤어케어</option><option>바디케어</option>
+                  <option>클렌징</option><option>메이크업</option><option>웰니스</option>
+                  <option>식품</option><option>패션</option><option>신발</option><option>액세서리</option>
+                </select>
+              </div>
+              <div><div style="font-size:10px;color:var(--sub);margin-bottom:5px;letter-spacing:1px">가격 (원) *</div><input id="pr-price" class="filter-input" style="width:100%" type="number" placeholder="예: 32000"></div>
+              <div><div style="font-size:10px;color:var(--sub);margin-bottom:5px;letter-spacing:1px">재고 *</div><input id="pr-stock" class="filter-input" style="width:100%" type="number" placeholder="예: 100"></div>
+              <div><div style="font-size:10px;color:var(--sub);margin-bottom:5px;letter-spacing:1px">오행 태그</div>
+                <select id="pr-el" class="filter-input" style="width:100%">
+                  <option value="">전체</option><option>木</option><option>火</option><option>土</option><option>金</option><option>水</option>
+                </select>
+              </div>
+              <div><div style="font-size:10px;color:var(--sub);margin-bottom:5px;letter-spacing:1px">파트너 (PB 여부)</div>
+                <select id="pr-partner" class="filter-input" style="width:100%">
+                  <option value="">N-KAI 자체</option><option>정미리 뷰티살롱</option><option>파트너 A</option><option>파트너 B</option>
+                </select>
+              </div>
+              <div style="grid-column:1/-1"><div style="font-size:10px;color:var(--sub);margin-bottom:5px;letter-spacing:1px">상품 설명</div><textarea id="pr-desc" class="filter-input" style="width:100%;height:72px;resize:none" placeholder="상품 설명 입력..."></textarea></div>
+              <div style="grid-column:1/-1"><div style="font-size:10px;color:var(--sub);margin-bottom:5px;letter-spacing:1px">이미지 URL</div><input id="pr-img" class="filter-input" style="width:100%" placeholder="https://..."></div>
+            </div>
+            <div style="margin-top:16px;display:flex;gap:10px">
+              <button class="btn btn-primary" onclick="registerProduct()">등록하기</button>
+              <button class="btn btn-ghost" onclick="showProdTab('list')">취소</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PB 주문 관리 -->
+        <div id="prod-pb-panel" style="display:none">
+          <div class="card">
+            <div class="card-title">PB 주문 생산 관리</div>
+            <div class="tbl-wrap"><table class="tbl"><thead><tr>
+              <th>주문번호</th><th>파트너명</th><th>상품명</th><th>수량</th><th>라벨링</th><th>금액</th><th>상태</th><th>액션</th>
+            </tr></thead><tbody id="pb-order-tbody"></tbody></table></div>
+          </div>
+        </div>
+
+        <!-- 카테고리 관리 -->
+        <div id="prod-cat-panel" style="display:none">
+          <div class="card">
+            <div class="card-title">카테고리 관리</div>
+            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">
+              <div style="background:rgba(45,140,255,.08);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;margin-bottom:6px">🧴</div><div style="font-size:12px;font-weight:700">뷰티</div>
+                <div style="font-size:10px;color:var(--sub);margin-top:4px">스킨·헤어·바디·클렌징·메이크업</div>
+                <div style="font-size:13px;font-weight:700;color:var(--blue);margin-top:8px">24종</div>
+              </div>
+              <div style="background:rgba(240,198,116,.08);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;margin-bottom:6px">👗</div><div style="font-size:12px;font-weight:700">패션</div>
+                <div style="font-size:10px;color:var(--sub);margin-top:4px">상의·하의·아우터·원피스</div>
+                <div style="font-size:13px;font-weight:700;color:var(--gold);margin-top:8px">8종</div>
+              </div>
+              <div style="background:rgba(34,197,94,.08);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;margin-bottom:6px">👟</div><div style="font-size:12px;font-weight:700">신발</div>
+                <div style="font-size:10px;color:var(--sub);margin-top:4px">운동화·구두·부츠·샌들</div>
+                <div style="font-size:13px;font-weight:700;color:var(--green);margin-top:8px">6종</div>
+              </div>
+              <div style="background:rgba(167,139,250,.08);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;margin-bottom:6px">👜</div><div style="font-size:12px;font-weight:700">액세서리</div>
+                <div style="font-size:10px;color:var(--sub);margin-top:4px">가방·모자·스카프</div>
+                <div style="font-size:13px;font-weight:700;color:var(--purple);margin-top:8px">5종</div>
+              </div>
+              <div style="background:rgba(34,197,94,.08);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center">
+                <div style="font-size:20px;margin-bottom:6px">🥗</div><div style="font-size:12px;font-weight:700">식품·웰니스</div>
+                <div style="font-size:10px;color:var(--sub);margin-top:4px">건강식품·차·웰니스</div>
+                <div style="font-size:13px;font-weight:700;color:var(--green);margin-top:8px">4종</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- ANOMALY -->
       <div class="panel" id="ap-anomaly">
         <div class="alert">
@@ -329,6 +450,7 @@ select.filter-input option{background:#0D1B2A}
       <div class="sb-item active" onclick="showPartnerPanel('dashboard')"><span>📊</span><span>대시보드</span></div>
       <div class="sb-item" onclick="showPartnerPanel('apistat')"><span>📈</span><span>API 현황</span></div>
       <div class="sb-item" onclick="showPartnerPanel('psettlement')"><span>💰</span><span>정산 내역</span></div>
+      <div class="sb-item" onclick="showPartnerPanel('myproducts')"><span>🛍️</span><span>내 상품 관리</span></div>
       <div class="sb-item" onclick="showPartnerPanel('settings')"><span>⚙️</span><span>설정 / API 키</span></div>
     </div>
     <div class="sb-footer">
@@ -384,6 +506,38 @@ select.filter-input option{background:#0D1B2A}
           </tr></thead><tbody id="p-settlement-tbody"></tbody></table></div>
         </div>
       </div>
+      <!-- P: MY PRODUCTS -->
+      <div class="panel" id="pp-myproducts">
+        <!-- 판매 현황 KPI -->
+        <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi-card"><div class="kpi-label">내 상품 수</div><div class="kpi-val" style="color:var(--blue)" id="pp-prod-cnt">-</div><div class="kpi-sub">등록 상품</div></div>
+          <div class="kpi-card"><div class="kpi-label">이번달 판매</div><div class="kpi-val" style="color:var(--gold)" id="pp-prod-sales">-</div><div class="kpi-sub">건</div></div>
+          <div class="kpi-card"><div class="kpi-label">이번달 정산 예상</div><div class="kpi-val" style="color:var(--green)" id="pp-prod-rev">-</div><div class="kpi-sub">마진 40%</div></div>
+        </div>
+
+        <!-- 일별 판매량 차트 -->
+        <div class="card">
+          <div class="card-title">일별 판매량 <span style="font-size:10px;color:var(--sub);font-weight:400">2026년 3월</span></div>
+          <div class="chart-wrap"><canvas id="chartPartnerSales"></canvas></div>
+        </div>
+
+        <!-- 내 상품 목록 -->
+        <div class="card">
+          <div class="card-title">내 상품 목록 <button class="btn btn-primary" style="font-size:10px" onclick="openPbOrderModal()">+ PB 주문 신청</button></div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr>
+            <th>상품명</th><th>카테고리</th><th>가격</th><th>판매수</th><th>정산액(40%)</th><th>상태</th><th>관리</th>
+          </tr></thead><tbody id="pp-prod-tbody"></tbody></table></div>
+        </div>
+
+        <!-- 정산 내역 -->
+        <div class="card">
+          <div class="card-title">상품 정산 내역</div>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr>
+            <th>정산월</th><th>판매 건수</th><th>판매 금액</th><th>마진(40%)</th><th>정산일</th><th>상태</th>
+          </tr></thead><tbody id="pp-settle-tbody"></tbody></table></div>
+        </div>
+      </div>
+
       <!-- P: SETTINGS -->
       <div class="panel" id="pp-settings">
         <div class="card"><div class="card-title">API 키 정보</div><div id="p-apikey-info"></div></div>
@@ -534,15 +688,16 @@ function initAdminData() {
 }
 
 function showAdminPanel(id) {
-  document.querySelectorAll('#ap-overview,#ap-partners,#ap-apikeys,#ap-settlement,#ap-anomaly').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#ap-overview,#ap-partners,#ap-apikeys,#ap-settlement,#ap-anomaly,#ap-products').forEach(p => p.classList.remove('active'));
   document.getElementById('ap-' + id).classList.add('active');
   const items = document.querySelectorAll('#admin-sb-nav .sb-item');
   items.forEach(i => i.classList.remove('active'));
-  items[{overview:0,partners:1,apikeys:2,settlement:3,anomaly:4}[id]].classList.add('active');
-  const titles = {overview:'📊 파트너 대시보드',partners:'🤝 파트너 현황',apikeys:'🔑 API 키 관리',settlement:'💰 정산 관리',anomaly:'⚠️ 이상 감지'};
+  items[{overview:0,partners:1,apikeys:2,settlement:3,anomaly:4,products:5}[id]].classList.add('active');
+  const titles = {overview:'📊 파트너 대시보드',partners:'🤝 파트너 현황',apikeys:'🔑 API 키 관리',settlement:'💰 정산 관리',anomaly:'⚠️ 이상 감지',products:'🛍️ 상품 관리'};
   document.getElementById('admin-top-title').textContent = titles[id];
   if (id==='settlement' && !charts.monthly) initSettlementChart();
   if (id==='anomaly' && !charts.anomaly) initAnomalyChart();
+  if (id==='products') initProductsPanel();
 }
 
 function initAdminCharts() {
@@ -823,14 +978,15 @@ function addPartner(id, key) {
 
 // ═══ PARTNER VIEW ═══
 function showPartnerPanel(id) {
-  ['dashboard','apistat','psettlement','settings'].forEach(n => document.getElementById('pp-'+n).classList.remove('active'));
+  ['dashboard','apistat','psettlement','myproducts','settings'].forEach(n => document.getElementById('pp-'+n).classList.remove('active'));
   document.getElementById('pp-'+id).classList.add('active');
   const items = document.querySelectorAll('#partner-sb-nav .sb-item');
   items.forEach(i => i.classList.remove('active'));
-  items[{dashboard:0,apistat:1,psettlement:2,settings:3}[id]].classList.add('active');
-  const titles = {dashboard:'📊 파트너 대시보드',apistat:'📈 API 호출 현황',psettlement:'💰 정산 내역',settings:'⚙️ 설정 / API 키'};
+  items[{dashboard:0,apistat:1,psettlement:2,myproducts:3,settings:4}[id]].classList.add('active');
+  const titles = {dashboard:'📊 파트너 대시보드',apistat:'📈 API 호출 현황',psettlement:'💰 정산 내역',myproducts:'🛍️ 내 상품 관리',settings:'⚙️ 설정 / API 키'};
   document.getElementById('partner-top-title').textContent = titles[id];
   if (id==='apistat' && !charts.pBar) initPartnerBarChart();
+  if (id==='myproducts') initPartnerProducts();
 }
 
 function initPartnerView() {
@@ -927,6 +1083,244 @@ function togglePartnerKey(key) {
     partnerKeyVis = true;
     setTimeout(()=>{ if(partnerKeyVis){el.textContent=key.slice(0,14)+'••••••••'+key.slice(-4);partnerKeyVis=false;} }, 5000);
   }
+}
+
+// ═══ 상품 관리 DATA & FUNCTIONS ═══
+const ADMIN_PRODUCTS = [
+  {id:'P001',name:'金 오행 세라마이드 크림',cat:'스킨케어',price:32000,stock:85,sales:42,partner:'N-KAI',el:'金',status:'active'},
+  {id:'P002',name:'木 오행 진정 토너',cat:'스킨케어',price:24000,stock:120,sales:31,partner:'N-KAI',el:'木',status:'active'},
+  {id:'P003',name:'火 오행 쿨링 세럼',cat:'스킨케어',price:38000,stock:60,sales:18,partner:'N-KAI',el:'火',status:'active'},
+  {id:'P004',name:'水 오행 탄력 앰플',cat:'스킨케어',price:45000,stock:45,sales:27,partner:'N-KAI',el:'水',status:'active'},
+  {id:'P005',name:'金 두피 수분 샴푸',cat:'헤어케어',price:28000,stock:90,sales:15,partner:'N-KAI',el:'金',status:'active'},
+  {id:'PB01',name:'金 오행 보습 키트',cat:'스킨케어',price:58000,stock:30,sales:12,partner:'정미리 뷰티살롱',el:'金',status:'active'},
+  {id:'PB02',name:'水 오행 두피 영양 세트',cat:'헤어케어',price:72000,stock:25,sales:8,partner:'정미리 뷰티살롱',el:'水',status:'active'},
+  {id:'P006',name:'木 오행 와이드 팬츠',cat:'패션',price:58000,stock:50,sales:6,partner:'N-KAI',el:'木',status:'active'},
+  {id:'P007',name:'金 오행 첼시 부츠',cat:'신발',price:118000,stock:20,sales:4,partner:'N-KAI',el:'金',status:'active'},
+  {id:'P008',name:'火 오행 체인백',cat:'액세서리',price:125000,stock:15,sales:3,partner:'N-KAI',el:'火',status:'active'},
+];
+
+const PB_ORDERS = [
+  {id:'PBO-001',partner:'정미리 뷰티살롱',product:'金 오행 보습 키트',qty:100,label:'정미리 뷰티살롱 × N-KAI',amount:3200000,status:'생산중'},
+  {id:'PBO-002',partner:'정미리 뷰티살롱',product:'水 오행 두피 영양 세트',qty:80,label:'정미리 뷰티살롱 × N-KAI',amount:2560000,status:'검토중'},
+  {id:'PBO-003',partner:'파트너 A',product:'土 오행 보습 바디로션',qty:200,label:'웰니스앱 × N-KAI',amount:2400000,status:'신청'},
+];
+
+let _prodFilter = '';
+let _prodCatFilter = '';
+
+function initProductsPanel() {
+  renderProdTable();
+  renderPbOrders();
+}
+
+function showProdTab(tab) {
+  ['list','reg','pb','cat'].forEach(t => {
+    const panel = document.getElementById('prod-'+t+'-panel');
+    const btn = document.getElementById('ptab-'+t);
+    if(panel) panel.style.display = t===tab ? '' : 'none';
+    if(btn) { btn.style.background = t===tab ? 'var(--blue)' : 'transparent'; btn.style.color = t===tab ? 'white' : 'var(--sub)'; btn.style.fontWeight = t===tab ? '700' : 'normal'; }
+  });
+}
+
+function renderProdTable() {
+  const data = ADMIN_PRODUCTS.filter(p => {
+    if(_prodFilter && !p.name.includes(_prodFilter) && !p.partner.includes(_prodFilter)) return false;
+    if(_prodCatFilter && p.cat !== _prodCatFilter) return false;
+    return true;
+  });
+  const elCol = {金:'#8EAFC9',木:'#7CB87A',火:'#E8654A',土:'#C4A05A',水:'#5A9BC4'};
+  document.getElementById('prod-list-tbody').innerHTML = data.map(p => `<tr>
+    <td><strong>${p.name}</strong></td>
+    <td><span class="badge bb" style="font-size:10px">${p.cat}</span></td>
+    <td>₩${p.price.toLocaleString()}</td>
+    <td>${p.stock}개</td>
+    <td style="color:var(--green)">${p.sales}건</td>
+    <td style="font-size:11px;color:${p.partner==='N-KAI'?'var(--sub)':'var(--gold)'}">${p.partner==='N-KAI'?'N-KAI 자체':'🏷️ '+p.partner}</td>
+    <td><span style="padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:rgba(${hexToRgbAdmin(elCol[p.el]||'#C4A05A')},0.15);color:${elCol[p.el]||'#C4A05A'}">${p.el} 오행</span></td>
+    <td>${p.status==='active'?'<span class="badge bg">판매중</span>':'<span class="badge bgray">비활성</span>'}</td>
+    <td><button class="btn btn-ghost" style="font-size:10px" onclick="editProduct('${p.id}')">수정</button>
+        <button class="btn btn-danger" style="font-size:10px;margin-left:4px" onclick="deleteProduct('${p.id}')">삭제</button></td>
+  </tr>`).join('');
+}
+
+function renderPbOrders() {
+  document.getElementById('pb-order-tbody').innerHTML = PB_ORDERS.map(o => `<tr>
+    <td style="font-family:monospace;font-size:10px;color:var(--sub)">${o.id}</td>
+    <td><strong>${o.partner}</strong></td>
+    <td>${o.product}</td>
+    <td>${o.qty.toLocaleString()}개</td>
+    <td style="font-size:11px;color:var(--sub)">${o.label}</td>
+    <td class="rev">₩${o.amount.toLocaleString()}</td>
+    <td>${o.status==='생산중'?'<span class="badge bb">생산중</span>':o.status==='검토중'?'<span class="badge bgold">검토중</span>':'<span class="badge bgray">신청</span>'}</td>
+    <td><button class="btn btn-success" style="font-size:10px" onclick="approvePbOrder('${o.id}')">승인</button></td>
+  </tr>`).join('');
+}
+
+function filterProdTable(q) { _prodFilter = q; renderProdTable(); }
+function filterProdCat(c) { _prodCatFilter = c; renderProdTable(); }
+
+function registerProduct() {
+  const name = document.getElementById('pr-name').value;
+  const cat  = document.getElementById('pr-cat').value;
+  const price = parseInt(document.getElementById('pr-price').value)||0;
+  const stock = parseInt(document.getElementById('pr-stock').value)||0;
+  const el    = document.getElementById('pr-el').value || '土';
+  const partner = document.getElementById('pr-partner').value || 'N-KAI';
+  if(!name || !cat || !price) { showToast('❌ 필수 항목을 입력하세요'); return; }
+  const newId = 'P' + String(900 + ADMIN_PRODUCTS.length).padStart(3,'0');
+  ADMIN_PRODUCTS.push({id:newId,name,cat,price,stock,sales:0,partner,el,status:'active'});
+  showToast('✅ 상품 등록 완료: '+name);
+  showProdTab('list');
+  renderProdTable();
+}
+
+function editProduct(id) {
+  const p = ADMIN_PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  showModal(`<div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:16px">✏️ 상품 수정 — ${p.name}</div>
+    <div style="margin-bottom:10px"><label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px">가격</label>
+      <input class="filter-input" id="ep-price" style="width:100%" value="${p.price}" type="number"></div>
+    <div style="margin-bottom:10px"><label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px">재고</label>
+      <input class="filter-input" id="ep-stock" style="width:100%" value="${p.stock}" type="number"></div>
+    <div style="margin-bottom:14px"><label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px">상태</label>
+      <select class="filter-input" id="ep-status" style="width:100%"><option value="active" ${p.status==='active'?'selected':''}>판매중</option><option value="inactive" ${p.status!=='active'?'selected':''}>비활성</option></select></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="saveProduct('${id}')">저장</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">취소</button>
+    </div>
+  </div>`);
+}
+
+function saveProduct(id) {
+  const p = ADMIN_PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  p.price = parseInt(document.getElementById('ep-price').value)||p.price;
+  p.stock = parseInt(document.getElementById('ep-stock').value)||p.stock;
+  p.status = document.getElementById('ep-status').value;
+  closeModal(); renderProdTable(); showToast('✅ 상품 수정 완료');
+}
+
+function deleteProduct(id) {
+  const p = ADMIN_PRODUCTS.find(x=>x.id===id);
+  showModal(`<div style="text-align:center">
+    <div style="font-size:20px;margin-bottom:10px">🗑️</div>
+    <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:8px">상품 삭제</div>
+    <div style="font-size:12px;color:var(--sub);margin-bottom:20px">"${p.name}"을 삭제합니다.</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-danger" style="flex:1" onclick="confirmDeleteProduct('${id}')">삭제 확인</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">취소</button>
+    </div>
+  </div>`);
+}
+
+function confirmDeleteProduct(id) {
+  const idx = ADMIN_PRODUCTS.findIndex(x=>x.id===id);
+  if(idx>=0) ADMIN_PRODUCTS.splice(idx,1);
+  closeModal(); renderProdTable(); showToast('🗑️ 상품 삭제됨');
+}
+
+function approvePbOrder(id) {
+  const o = PB_ORDERS.find(x=>x.id===id);
+  if(!o) return;
+  o.status = '생산중';
+  renderPbOrders();
+  showToast('✅ PB 주문 승인: '+o.product);
+}
+
+function hexToRgbAdmin(hex) {
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return r+','+g+','+b;
+}
+
+// ─ 파트너 내 상품 관리 ─
+const PARTNER_PRODUCTS = {
+  PA: [],
+  PB: [
+    {id:'PB01',name:'金 오행 보습 키트',cat:'스킨케어',price:58000,sales:12,margin:23200,status:'active'},
+    {id:'PB02',name:'水 오행 두피 영양 세트',cat:'헤어케어',price:72000,sales:8,margin:28800,status:'active'},
+  ],
+  PC: [],
+  PD: [],
+};
+
+function initPartnerProducts() {
+  const p = currentPartner;
+  const prods = PARTNER_PRODUCTS[p.id] || [];
+  const totalSales = prods.reduce((s,x)=>s+x.sales,0);
+  const totalRev   = prods.reduce((s,x)=>s+x.sales*x.price,0);
+  const totalMargin= prods.reduce((s,x)=>s+x.sales*x.margin,0);
+
+  document.getElementById('pp-prod-cnt').textContent = prods.length+'개';
+  document.getElementById('pp-prod-sales').textContent = totalSales.toLocaleString();
+  document.getElementById('pp-prod-rev').textContent = '₩'+totalMargin.toLocaleString();
+
+  // 일별 판매 차트
+  const salesData = DAY_LABELS.map((_,i)=> prods.length ? Math.floor(Math.random()*6+1) : 0);
+  if(!charts.pSales) {
+    charts.pSales = new Chart(document.getElementById('chartPartnerSales'),{
+      type:'bar',
+      data:{labels:DAY_LABELS,datasets:[{label:'판매량',data:salesData,backgroundColor:'rgba(240,198,116,.6)',borderRadius:4}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+        scales:{x:{grid:{color:'rgba(26,58,92,.4)'},ticks:{color:'#7A8FA6',maxTicksLimit:10}},y:{grid:{color:'rgba(26,58,92,.4)'},ticks:{color:'#7A8FA6'}}}}
+    });
+  }
+
+  // 상품 목록
+  document.getElementById('pp-prod-tbody').innerHTML = prods.length
+    ? prods.map(x=>`<tr>
+        <td><strong>${x.name}</strong></td>
+        <td><span class="badge bb" style="font-size:10px">${x.cat}</span></td>
+        <td>₩${x.price.toLocaleString()}</td>
+        <td style="color:var(--green)">${x.sales}건</td>
+        <td class="rev">₩${(x.sales*x.margin).toLocaleString()}</td>
+        <td>${x.status==='active'?'<span class="badge bg">판매중</span>':'<span class="badge bgray">비활성</span>'}</td>
+        <td><button class="btn btn-ghost" style="font-size:10px" onclick="showToast('수정 기능 준비 중')">수정</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="7" style="text-align:center;color:var(--sub);padding:20px">등록된 상품이 없습니다. PB 주문 신청으로 시작하세요.</td></tr>';
+
+  // 정산 내역
+  const months = ['2025-12','2026-01','2026-02'];
+  document.getElementById('pp-settle-tbody').innerHTML = months.map((m,i)=>{
+    const s = totalSales * [0.3,0.6,0.85][i];
+    const rev2 = Math.round(totalRev * [0.3,0.6,0.85][i]);
+    const mg = Math.round(rev2 * 0.4);
+    return `<tr><td>${m}</td><td>${Math.round(s)}건</td><td>₩${rev2.toLocaleString()}</td><td class="rev">₩${mg.toLocaleString()}</td><td>${m}-05</td><td><span class="badge bg">완납</span></td></tr>`;
+  }).join('') + (totalSales>0 ? `<tr><td style="color:var(--gold);font-weight:700">2026-03</td><td>${totalSales}건</td><td>₩${totalRev.toLocaleString()}</td><td class="rev">₩${totalMargin.toLocaleString()}</td><td>2026-04-05</td><td><span class="badge bgold">예정</span></td></tr>` : '');
+}
+
+function openPbOrderModal() {
+  showModal(`<div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:4px">📦 PB 주문 생산 신청</div>
+    <div style="font-size:11px;color:var(--sub);margin-bottom:16px">N-KAI가 파트너 브랜드로 오행 맞춤 상품을 생산합니다</div>
+    <div style="margin-bottom:10px"><label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px">상품명 *</label>
+      <input class="filter-input" id="pb-prod-name" style="width:100%" placeholder="예: 木 오행 진정 크림"></div>
+    <div style="margin-bottom:10px"><label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px">예상 수량 *</label>
+      <input class="filter-input" id="pb-prod-qty" style="width:100%" type="number" placeholder="최소 50개"></div>
+    <div style="margin-bottom:10px"><label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px">오행 타입</label>
+      <select class="filter-input" id="pb-prod-el" style="width:100%"><option>木</option><option>火</option><option>土</option><option>金</option><option>水</option></select></div>
+    <div style="margin-bottom:14px"><label style="font-size:11px;color:var(--sub);display:block;margin-bottom:4px">라벨링 옵션</label>
+      <select class="filter-input" id="pb-prod-label" style="width:100%">
+        <option>파트너명 × N-KAI 공동 브랜드</option>
+        <option>파트너 단독 브랜드</option>
+        <option>N-KAI OEM (파트너명 없음)</option>
+      </select></div>
+    <div style="background:rgba(240,198,116,.05);border:1px solid rgba(240,198,116,.2);border-radius:8px;padding:10px;margin-bottom:14px;font-size:11px;color:var(--sub);line-height:1.7">
+      📦 최소 수량: 50개 | 리드타임: 3~4주<br>마진: 판매가의 <span style="color:var(--gold);font-weight:700">40%</span> 파트너 귀속
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="submitPbOrder()">신청하기</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">취소</button>
+    </div>
+  </div>`);
+}
+
+function submitPbOrder() {
+  const name = document.getElementById('pb-prod-name')?.value;
+  const qty  = document.getElementById('pb-prod-qty')?.value;
+  if(!name || !qty) { showToast('❌ 필수 항목 입력'); return; }
+  showToast('✅ PB 주문 신청 완료! 검토 후 연락드립니다.');
+  closeModal();
 }
 
 // ═══ MODAL / TOAST ═══

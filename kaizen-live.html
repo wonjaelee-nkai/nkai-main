@@ -724,16 +724,63 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     </div>
 
     <!-- 카테고리 필터 -->
-    <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:14px;padding-bottom:2px;">
-      <button onclick="filterStore('all',this)" class="store-filter active-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;color:#0a0d14;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">전체</button>
+    <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:6px;padding-bottom:2px;">
+      <button onclick="filterStore('all',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;color:#0a0d14;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">전체</button>
       <button onclick="filterStore('skin',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🧴 스킨케어</button>
-      <button onclick="filterStore('hair',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">💇 헤어</button>
+      <button onclick="filterStore('hair',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">💇 헤어케어</button>
+      <button onclick="filterStore('body',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🛁 바디케어</button>
+      <button onclick="filterStore('cleansing',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🫧 클렌징</button>
+      <button onclick="filterStore('makeup',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">💄 메이크업</button>
       <button onclick="filterStore('wellness',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🌿 웰니스</button>
       <button onclick="filterStore('food',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🥗 식품</button>
+      <button onclick="filterStore('fashion',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">👗 패션</button>
+      <button onclick="filterStore('shoes',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">👟 신발</button>
+      <button onclick="filterStore('acc',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">👜 액세서리</button>
     </div>
+    <!-- 서브 필터 (패션·신발·액세서리) -->
+    <div id="store-sub-filter" style="display:none;gap:5px;overflow-x:auto;scrollbar-width:none;margin-bottom:12px;padding-bottom:2px;flex-wrap:wrap;"></div>
 
     <!-- 상품 목록 -->
     <div id="store-products" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
+
+    <!-- PB 파트너 등록 안내 배너 -->
+    <div style="margin-top:18px;background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(124,184,122,0.05));border:1px solid rgba(201,168,76,0.25);border-radius:16px;padding:16px;">
+      <div style="font-size:10px;color:var(--gold2);font-weight:700;letter-spacing:2px;margin-bottom:6px;">🏷️ PB 주문생산 파트너십</div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px;">파트너 이름으로 PB 상품을 론칭하세요</div>
+      <div style="font-size:10px;color:var(--text2);line-height:1.7;margin-bottom:10px;">정미리 원장 등 파트너가 자기 브랜드로 오행 맞춤 PB 상품을 등록·판매할 수 있습니다. 최소 수량 생산부터 라벨링, 유통까지 N-KAI가 지원합니다.</div>
+      <button onclick="alert('PB 주문생산 문의: admin@neurinkairosai.com\n파트너 관리자 포털(admin-partner.html)에서 신청 가능합니다.')" style="padding:9px 18px;background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(201,168,76,0.1));border:1px solid var(--gold2);color:var(--gold2);border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">📦 PB 주문생산 문의하기</button>
+    </div>
+
+    <!-- 정미리 × N-KAI PB 상품 섹션 -->
+    <div style="margin-top:14px;">
+      <div style="font-size:10px;letter-spacing:2px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px;">정미리 뷰티살롱 × N-KAI PB<span style="flex:1;height:1px;background:var(--border);"></span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="pb-products-section">
+        <!-- 정미리 PB 상품 1 -->
+        <div style="background:linear-gradient(135deg,var(--bg2),var(--bg3));border:2px solid rgba(142,175,201,0.3);border-radius:14px;padding:14px;position:relative;">
+          <div style="position:absolute;top:8px;right:8px;font-size:8px;padding:2px 6px;background:rgba(142,175,201,0.2);color:var(--metal);border-radius:5px;font-weight:700;">PB 한정</div>
+          <div style="font-size:22px;margin-bottom:6px;">✦</div>
+          <div style="font-size:9px;color:var(--metal);margin-bottom:3px;font-weight:700;">정미리 뷰티살롱 × N-KAI</div>
+          <div style="font-size:11px;font-weight:700;margin-bottom:3px;line-height:1.4;">金 오행 보습 키트</div>
+          <div style="font-size:9px;color:var(--text2);margin-bottom:6px;">세라마이드+히알루론산 집중 보습 2종 세트</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:13px;font-weight:700;color:var(--gold2);">₩58,000</span>
+            <button onclick="alert('PB 상품 구매 준비 중입니다.')" style="padding:6px 12px;background:linear-gradient(135deg,var(--metal),#adc8e0);color:#0a0d14;border:none;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">구매하기</button>
+          </div>
+        </div>
+        <!-- 정미리 PB 상품 2 -->
+        <div style="background:linear-gradient(135deg,var(--bg2),var(--bg3));border:2px solid rgba(90,155,196,0.3);border-radius:14px;padding:14px;position:relative;">
+          <div style="position:absolute;top:8px;right:8px;font-size:8px;padding:2px 6px;background:rgba(90,155,196,0.2);color:var(--water);border-radius:5px;font-weight:700;">PB 한정</div>
+          <div style="font-size:22px;margin-bottom:6px;">💧</div>
+          <div style="font-size:9px;color:var(--water);margin-bottom:3px;font-weight:700;">정미리 뷰티살롱 × N-KAI</div>
+          <div style="font-size:11px;font-weight:700;margin-bottom:3px;line-height:1.4;">水 오행 두피 영양 세트</div>
+          <div style="font-size:9px;color:var(--text2);margin-bottom:6px;">탈모 예방+두피 강화 샴푸·앰플 듀오</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:13px;font-weight:700;color:var(--gold2);">₩72,000</span>
+            <button onclick="alert('PB 상품 구매 준비 중입니다.')" style="padding:6px 12px;background:linear-gradient(135deg,var(--water),#7ab4d4);color:#0a0d14;border:none;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">구매하기</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- 미라트 파트너 배너 -->
     <div style="margin-top:16px;background:linear-gradient(135deg,rgba(142,175,201,0.1),rgba(142,175,201,0.03));border:1px solid rgba(142,175,201,0.2);border-radius:14px;padding:14px;text-align:center;">
@@ -2769,22 +2816,71 @@ initBookingDates();
 // 스토어 탭
 // ──────────────────────────────────────
 var STORE_PRODUCTS = [
-  {id:1, name:'金 오행 세라마이드 크림', price:32000, cat:'skin', el:'金', emoji:'✦', desc:'건성·민감 피부 장벽 강화', tag:'金 필수', badge:'BEST'},
-  {id:2, name:'木 오행 진정 토너', price:24000, cat:'skin', el:'木', emoji:'🌿', desc:'지성·트러블 피부 진정', tag:'木 추천', badge:''},
-  {id:3, name:'火 오행 쿨링 세럼', price:38000, cat:'skin', el:'火', emoji:'🔥', desc:'열감·홍조 즉각 진정', tag:'火 필수', badge:'NEW'},
-  {id:4, name:'水 오행 탄력 앰플', price:45000, cat:'skin', el:'水', emoji:'💧', desc:'노화 방지 & 수분 충전', tag:'水 추천', badge:''},
-  {id:5, name:'金 두피 수분 샴푸', price:28000, cat:'hair', el:'金', emoji:'✦', desc:'건성 두피 집중 수분', tag:'金 필수', badge:''},
-  {id:6, name:'木 두피 진정 트리트먼트', price:32000, cat:'hair', el:'木', emoji:'🌿', desc:'지성 두피 밸런싱', tag:'木 추천', badge:'BEST'},
-  {id:7, name:'오행 균형 영양제 세트', price:55000, cat:'wellness', el:'土', emoji:'⛰️', desc:'5가지 오행 균형 영양 공급', tag:'土 필수', badge:'SET'},
-  {id:8, name:'金 폐 건강 도라지차', price:18000, cat:'food', el:'金', emoji:'🍵', desc:'호흡기·폐 기운 보강', tag:'金 식품', badge:''},
-  {id:9, name:'木 간 건강 결명자차', price:16000, cat:'food', el:'木', emoji:'🍵', desc:'간 해독·눈 건강', tag:'木 식품', badge:''},
-  {id:10, name:'오행 웰니스 향초 세트', price:42000, cat:'wellness', el:'土', emoji:'🕯️', desc:'5가지 오행 아로마 테라피', tag:'전체', badge:'NEW'},
+  // 스킨케어
+  {id:1,  name:'金 오행 세라마이드 크림',       price:32000, cat:'skin',      subcat:'',        el:'金', emoji:'✦',  desc:'건성·민감 피부 장벽 강화',        tag:'金 필수', badge:'BEST'},
+  {id:2,  name:'木 오행 진정 토너',             price:24000, cat:'skin',      subcat:'',        el:'木', emoji:'🌿', desc:'지성·트러블 피부 진정',          tag:'木 추천', badge:''},
+  {id:3,  name:'火 오행 쿨링 세럼',             price:38000, cat:'skin',      subcat:'',        el:'火', emoji:'🔥', desc:'열감·홍조 즉각 진정',            tag:'火 필수', badge:'NEW'},
+  {id:4,  name:'水 오행 탄력 앰플',             price:45000, cat:'skin',      subcat:'',        el:'水', emoji:'💧', desc:'노화 방지 & 수분 충전',           tag:'水 추천', badge:''},
+  // 헤어케어
+  {id:5,  name:'金 두피 수분 샴푸',             price:28000, cat:'hair',      subcat:'',        el:'金', emoji:'✦',  desc:'건성 두피 집중 수분',             tag:'金 필수', badge:''},
+  {id:6,  name:'木 두피 진정 트리트먼트',       price:32000, cat:'hair',      subcat:'',        el:'木', emoji:'🌿', desc:'지성 두피 밸런싱',               tag:'木 추천', badge:'BEST'},
+  // 바디케어
+  {id:11, name:'土 오행 보습 바디로션',         price:22000, cat:'body',      subcat:'바디로션', el:'土', emoji:'⛰️', desc:'토 오행 피부 윤기·영양 공급',     tag:'土 추천', badge:''},
+  {id:12, name:'水 오행 쿨링 바디워시',         price:18000, cat:'body',      subcat:'바디워시', el:'水', emoji:'💧', desc:'수 에너지 청량·수분 바디케어',    tag:'水 필수', badge:'NEW'},
+  {id:13, name:'木 오행 그린 바디샤워',         price:19000, cat:'body',      subcat:'바디샤워', el:'木', emoji:'🌿', desc:'목 에너지 해독·진정 샤워젤',     tag:'木 추천', badge:''},
+  // 클렌징
+  {id:14, name:'金 오행 딥클렌징 크림',         price:26000, cat:'cleansing', subcat:'클렌징크림',el:'金', emoji:'✦', desc:'毛孔 깊은 세정 + 건조 방지',      tag:'金 필수', badge:''},
+  {id:15, name:'火 오행 쿨링 클렌징워터',       price:21000, cat:'cleansing', subcat:'클렌징워터',el:'火', emoji:'🔥', desc:'자극 없는 화장 제거 + 진정',     tag:'火 추천', badge:'NEW'},
+  {id:16, name:'水 오행 저자극 폼클렌징',       price:17000, cat:'cleansing', subcat:'폼클렌징', el:'水', emoji:'💧', desc:'노화 피부 저자극 풍성한 거품',   tag:'水 필수', badge:''},
+  // 메이크업
+  {id:17, name:'土 오행 내추럴 파운데이션',     price:38000, cat:'makeup',    subcat:'파운데이션',el:'土', emoji:'⛰️', desc:'웜톤 기반 자연스러운 커버',      tag:'土 추천', badge:''},
+  {id:18, name:'金 오행 쿠션 파운데이션',       price:42000, cat:'makeup',    subcat:'쿠션',     el:'金', emoji:'✦',  desc:'쿨톤 화사함 + 수분 지속',        tag:'金 필수', badge:'BEST'},
+  {id:19, name:'火 오행 레드 립스틱',           price:24000, cat:'makeup',    subcat:'립',       el:'火', emoji:'🔥', desc:'화 에너지 볼드한 레드 컬러',     tag:'火 추천', badge:''},
+  {id:20, name:'水 오행 딥컬러 아이섀도',       price:31000, cat:'makeup',    subcat:'아이',     el:'水', emoji:'💧', desc:'수 에너지 딥 네이비·퍼플 팔레트',tag:'水 추천', badge:'NEW'},
+  // 웰니스
+  {id:7,  name:'오행 균형 영양제 세트',         price:55000, cat:'wellness',  subcat:'',        el:'土', emoji:'⛰️', desc:'5가지 오행 균형 영양 공급',       tag:'土 필수', badge:'SET'},
+  {id:10, name:'오행 웰니스 향초 세트',         price:42000, cat:'wellness',  subcat:'',        el:'土', emoji:'🕯️', desc:'5가지 오행 아로마 테라피',        tag:'전체',   badge:'NEW'},
+  // 식품
+  {id:8,  name:'金 폐 건강 도라지차',           price:18000, cat:'food',      subcat:'',        el:'金', emoji:'🍵', desc:'호흡기·폐 기운 보강',             tag:'金 식품', badge:''},
+  {id:9,  name:'木 간 건강 결명자차',           price:16000, cat:'food',      subcat:'',        el:'木', emoji:'🍵', desc:'간 해독·눈 건강',                tag:'木 식품', badge:''},
+  // 패션
+  {id:21, name:'木 오행 린넨 셔츠',             price:49000, cat:'fashion',   subcat:'상의',     el:'木', emoji:'🌿', desc:'내추럴 그린 / 캐주얼 린넨 상의', tag:'木 코디', badge:''},
+  {id:22, name:'火 오행 레드 자켓',             price:89000, cat:'fashion',   subcat:'아우터',   el:'火', emoji:'🔥', desc:'볼드 트렌디 / 포인트 레드 아우터',tag:'火 코디', badge:'BEST'},
+  {id:23, name:'土 오행 니트 가디건',           price:62000, cat:'fashion',   subcat:'아우터',   el:'土', emoji:'⛰️', desc:'클래식 베이지 / 워밍 니트',      tag:'土 코디', badge:''},
+  {id:24, name:'金 오행 화이트 셔츠',           price:45000, cat:'fashion',   subcat:'상의',     el:'金', emoji:'✦',  desc:'미니멀 시크 / 테일러드 화이트',  tag:'金 코디', badge:''},
+  {id:25, name:'水 오행 블랙 터틀넥',           price:52000, cat:'fashion',   subcat:'상의',     el:'水', emoji:'💧', desc:'모던 시크 / 딥블랙 터틀넥',      tag:'水 코디', badge:'NEW'},
+  {id:26, name:'木 오행 와이드 팬츠',           price:58000, cat:'fashion',   subcat:'하의',     el:'木', emoji:'🌿', desc:'카키 와이드 / 내추럴 캐주얼',    tag:'木 코디', badge:''},
+  {id:27, name:'金 오행 테일러드 팬츠',         price:72000, cat:'fashion',   subcat:'하의',     el:'金', emoji:'✦',  desc:'그레이 미니멀 / 시크 슬랙스',    tag:'金 코디', badge:''},
+  {id:28, name:'土 오행 A라인 스커트',          price:54000, cat:'fashion',   subcat:'원피스',   el:'土', emoji:'⛰️', desc:'카멜 클래식 / 여성스러운 A라인', tag:'土 코디', badge:''},
+  // 신발
+  {id:29, name:'木 오행 캔버스 스니커즈',       price:68000, cat:'shoes',     subcat:'운동화',   el:'木', emoji:'🌿', desc:'그린 캐주얼 / 에코 캔버스',      tag:'木 코디', badge:''},
+  {id:30, name:'火 오행 포인트 힐',             price:95000, cat:'shoes',     subcat:'구두',     el:'火', emoji:'🔥', desc:'레드 포인트 / 트렌디 힐',        tag:'火 코디', badge:'BEST'},
+  {id:31, name:'金 오행 첼시 부츠',             price:118000, cat:'shoes',    subcat:'부츠',     el:'金', emoji:'✦',  desc:'실버 그레이 / 미니멀 첼시',      tag:'金 코디', badge:''},
+  {id:32, name:'水 오행 앵클 부츠',             price:105000, cat:'shoes',    subcat:'부츠',     el:'水', emoji:'💧', desc:'블랙 레더 / 모던 앵클',          tag:'水 코디', badge:'NEW'},
+  {id:33, name:'土 오행 로퍼',                  price:82000, cat:'shoes',     subcat:'구두',     el:'土', emoji:'⛰️', desc:'카멜 클래식 / 머스타드 로퍼',    tag:'土 코디', badge:''},
+  {id:34, name:'木 오행 에스파드리유 샌들',     price:56000, cat:'shoes',     subcat:'샌들',     el:'木', emoji:'🌿', desc:'내추럴 브라운 / 여름 샌들',      tag:'木 코디', badge:''},
+  // 액세서리
+  {id:35, name:'木 오행 에코백',               price:35000, cat:'acc',       subcat:'가방',     el:'木', emoji:'🌿', desc:'그린 내추럴 / 캔버스 토트',      tag:'木 코디', badge:''},
+  {id:36, name:'火 오행 체인백',               price:125000, cat:'acc',      subcat:'가방',     el:'火', emoji:'🔥', desc:'오렌지 포인트 / 트렌디 체인백',  tag:'火 코디', badge:'BEST'},
+  {id:37, name:'土 오행 토트백',               price:98000, cat:'acc',       subcat:'가방',     el:'土', emoji:'⛰️', desc:'베이지 클래식 / 워밍 토트백',    tag:'土 코디', badge:''},
+  {id:38, name:'金 오행 미니멀 클러치',        price:78000, cat:'acc',       subcat:'가방',     el:'金', emoji:'✦',  desc:'실버 미니멀 / 시크 클러치',      tag:'金 코디', badge:''},
+  {id:39, name:'水 오행 레더 숄더백',          price:142000, cat:'acc',      subcat:'가방',     el:'水', emoji:'💧', desc:'블랙 레더 / 모던 숄더백',        tag:'水 코디', badge:''},
+  {id:40, name:'火 오행 버킷 모자',            price:42000, cat:'acc',       subcat:'모자',     el:'火', emoji:'🔥', desc:'핑크 포인트 / 트렌디 버킷',      tag:'火 코디', badge:'NEW'},
+  {id:41, name:'金 오행 실버 스카프',          price:55000, cat:'acc',       subcat:'스카프',   el:'金', emoji:'✦',  desc:'화이트 실버 / 미니멀 스카프',    tag:'金 코디', badge:''},
 ];
 var _cart = [];
 var _currentFilter = 'all';
 
+var _currentSubFilter = 'all';
+var SUB_CATS = {
+  fashion:['상의','하의','아우터','원피스'],
+  shoes:['운동화','구두','부츠','샌들'],
+  acc:['가방','모자','스카프']
+};
+
 function filterStore(cat, btn) {
   _currentFilter = cat;
+  _currentSubFilter = 'all';
   document.querySelectorAll('.store-filter').forEach(function(b){
     b.style.background = 'var(--bg3)';
     b.style.borderColor = 'var(--border)';
@@ -2796,35 +2892,73 @@ function filterStore(cat, btn) {
   btn.style.color = '#0a0d14';
   btn.style.fontWeight = '700';
   btn.style.border = 'none';
+
+  // 서브필터 표시
+  var subWrap = document.getElementById('store-sub-filter');
+  if(subWrap) {
+    if(SUB_CATS[cat]) {
+      var sbHtml = '<button onclick="filterSubStore(\'all\',this)" class="store-sub-filter" style="flex-shrink:0;padding:5px 12px;border-radius:14px;background:rgba(201,168,76,0.15);border:1px solid var(--gold2);color:var(--gold2);font-size:10px;font-weight:700;cursor:pointer;font-family:\'Noto Sans KR\',sans-serif;">전체</button>';
+      SUB_CATS[cat].forEach(function(s){
+        sbHtml += '<button onclick="filterSubStore(\''+s+'\',this)" class="store-sub-filter" style="flex-shrink:0;padding:5px 12px;border-radius:14px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:10px;cursor:pointer;font-family:\'Noto Sans KR\',sans-serif;">'+s+'</button>';
+      });
+      subWrap.innerHTML = sbHtml;
+      subWrap.style.display = 'flex';
+    } else {
+      subWrap.style.display = 'none';
+    }
+  }
+  renderProducts();
+}
+
+function filterSubStore(sub, btn) {
+  _currentSubFilter = sub;
+  document.querySelectorAll('.store-sub-filter').forEach(function(b){
+    b.style.background = 'var(--bg3)';
+    b.style.borderColor = 'var(--border)';
+    b.style.color = 'var(--text2)';
+    b.style.fontWeight = 'normal';
+  });
+  btn.style.background = 'rgba(201,168,76,0.15)';
+  btn.style.borderColor = 'var(--gold2)';
+  btn.style.color = 'var(--gold2)';
+  btn.style.fontWeight = '700';
   renderProducts();
 }
 
 function renderProducts() {
   var core = _currentRes ? _currentRes.core : null;
   var elCol = {金:'#8EAFC9',木:'#7CB87A',火:'#E8654A',土:'#C4A05A',水:'#5A9BC4'};
+  var elLabel = {金:'금(金)',木:'목(木)',火:'화(火)',土:'토(土)',水:'수(水)'};
+  var fashionCats = ['fashion','shoes','acc'];
   var filtered = STORE_PRODUCTS.filter(function(p){
-    return _currentFilter === 'all' || p.cat === _currentFilter;
+    if(_currentFilter !== 'all' && p.cat !== _currentFilter) return false;
+    if(fashionCats.indexOf(p.cat) >= 0 && _currentSubFilter !== 'all' && p.subcat !== _currentSubFilter) return false;
+    return true;
   });
   var html = '';
   filtered.forEach(function(p){
     var isMatch = core && p.el === core;
+    var col = elCol[p.el] || '#C4A05A';
     var borderStyle = isMatch ? '2px solid var(--gold)' : '1px solid var(--border)';
     var badgeHtml = p.badge ? '<span style="position:absolute;top:8px;right:8px;font-size:8px;padding:2px 6px;background:var(--gold);color:#0a0d14;border-radius:5px;font-weight:700;">'+p.badge+'</span>' : '';
-    var matchHtml = isMatch ? '<span style="font-size:8px;padding:1px 6px;background:rgba(201,168,76,0.2);color:var(--gold2);border-radius:5px;font-weight:700;">나의 오행</span> ' : '';
+    var matchHtml = isMatch ? '<span style="font-size:8px;padding:1px 6px;background:rgba(201,168,76,0.25);color:var(--gold2);border-radius:5px;font-weight:700;margin-right:3px;">★ 내 오행</span>' : '';
+    var subcatHtml = p.subcat ? '<span style="font-size:8px;padding:1px 5px;background:rgba(255,255,255,0.06);color:var(--text3);border-radius:4px;margin-right:3px;">'+p.subcat+'</span>' : '';
     html += '<div style="background:var(--bg2);border:'+borderStyle+';border-radius:14px;padding:14px;position:relative;">' +
       badgeHtml +
-      '<div style="font-size:24px;margin-bottom:8px;">'+p.emoji+'</div>' +
+      '<div style="font-size:22px;margin-bottom:6px;">'+p.emoji+'</div>' +
       '<div style="font-size:11px;font-weight:700;margin-bottom:3px;line-height:1.4;">'+p.name+'</div>' +
       '<div style="font-size:9px;color:var(--text2);margin-bottom:6px;line-height:1.4;">'+p.desc+'</div>' +
-      '<div style="margin-bottom:8px;">'+matchHtml+'<span style="font-size:9px;padding:1px 6px;background:rgba('+hexToRgb(elCol[p.el])+',0.12);color:'+elCol[p.el]+';border-radius:5px;">'+p.tag+'</span></div>' +
+      '<div style="margin-bottom:8px;display:flex;flex-wrap:wrap;gap:2px;">'+matchHtml+subcatHtml+'<span style="font-size:8px;padding:1px 5px;background:rgba('+hexToRgb(col)+',0.12);color:'+col+';border-radius:4px;">'+p.tag+'</span></div>' +
       '<div style="display:flex;align-items:center;justify-content:space-between;">' +
       '<span style="font-size:13px;font-weight:700;color:var(--gold2);">₩'+p.price.toLocaleString()+'</span>' +
-      '<button onclick="addToCart('+p.id+')" style="padding:6px 12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0d14;border:none;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;font-family:\'Noto Sans KR\',sans-serif;">담기</button>' +
-      '</div></div>';
+      '<div style="display:flex;gap:5px;">' +
+      '<button onclick="alert(\'구매 페이지 준비 중입니다.\')" style="padding:5px 9px;background:transparent;border:1px solid var(--border2);color:var(--gold2);border-radius:7px;font-size:9px;font-weight:700;cursor:pointer;font-family:\'Noto Sans KR\',sans-serif;">구매</button>' +
+      '<button onclick="addToCart('+p.id+')" style="padding:5px 9px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0d14;border:none;border-radius:7px;font-size:9px;font-weight:700;cursor:pointer;font-family:\'Noto Sans KR\',sans-serif;">담기</button>' +
+      '</div></div></div>';
   });
+  if(!filtered.length) html = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--text3);font-size:12px;">해당 카테고리 상품을 준비 중입니다.</div>';
   var container = document.getElementById('store-products');
   if(container) container.innerHTML = html;
-  // 맞춤 배너 업데이트
   if(core) {
     var banner = document.getElementById('store-recommend-title');
     if(banner) banner.textContent = core+' 에너지에 맞는 상품을 추천해드립니다';
