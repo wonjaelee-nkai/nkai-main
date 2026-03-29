@@ -878,22 +878,16 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       <input type="file" id="cam-gallery-input" accept="image/*"                   style="display:none;" onchange="onCamFileSelected(this)">
 
       <!-- 버튼 2개 -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
         <button onclick="document.getElementById('cam-capture-input').click()"
-          style="padding:12px 8px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0d14;border:none;border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
-          📷 카메라 촬영
+          style="padding:16px 8px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0d14;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;box-shadow:0 4px 16px rgba(201,168,76,0.35);letter-spacing:-0.3px;">
+          📸 탭하여 촬영
         </button>
         <button onclick="document.getElementById('cam-gallery-input').click()"
-          style="padding:12px 8px;background:rgba(201,168,76,0.12);border:1px solid var(--gold);color:var(--gold2);border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+          style="padding:16px 8px;background:rgba(201,168,76,0.12);border:1.5px solid var(--gold);color:var(--gold2);border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;letter-spacing:-0.3px;">
           🖼 갤러리 선택
         </button>
       </div>
-
-      <!-- 분석 버튼 -->
-      <button id="cam-analyze-btn" onclick="runSkinAnalyze()"
-        style="width:100%;padding:13px;background:linear-gradient(135deg,#5A9BC4,#7ab4d4);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;">
-        🔬 AI 오행 분석 시작
-      </button>
 
       <!-- 분석 결과 영역 -->
       <div id="cam-result-area" style="display:none;margin-top:12px;">
@@ -912,9 +906,15 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
       </div>
 
       <!-- 로딩 -->
-      <div id="cam-loading" style="display:none;text-align:center;padding:20px 0;font-size:12px;color:var(--text2);">
-        <div style="font-size:28px;margin-bottom:8px;animation:pulse 1.5s ease-in-out infinite;">🔬</div>
-        AI가 이미지를 분석 중입니다…
+      <div id="cam-loading" style="display:none;text-align:center;padding:24px 0;">
+        <div style="font-size:36px;margin-bottom:10px;animation:pulse 1.2s ease-in-out infinite;">🔬</div>
+        <div style="font-size:13px;font-weight:700;color:var(--gold2);margin-bottom:6px;">AI가 피부를 분석하고 있어요...</div>
+        <div style="font-size:11px;color:var(--text2);">오행 에너지와 이미지를 융합 분석 중</div>
+        <div style="display:flex;justify-content:center;gap:6px;margin-top:12px;">
+          <div style="width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 1.2s ease-in-out infinite;"></div>
+          <div style="width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 1.2s ease-in-out 0.3s infinite;"></div>
+          <div style="width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 1.2s ease-in-out 0.6s infinite;"></div>
+        </div>
       </div>
     </div>
 
@@ -2553,10 +2553,9 @@ function setCamTab(el, type) {
   var tipEl   = document.getElementById('cam-tip-text');
   if (emojiEl) emojiEl.textContent = CAM_EMOJI_MAP[_camAnalysisType];
   if (tipEl)   tipEl.textContent   = '▶ ' + CAM_TIP_MAP[_camAnalysisType];
-  // 이미지 선택된 상태면 분석 버튼 업데이트
+  // 이미지 선택된 상태면 탭 전환 시 재분석
   if (_camImageBase64) {
-    var btn = document.getElementById('cam-analyze-btn');
-    if (btn) btn.style.display = 'block';
+    runSkinAnalyze();
   }
   // 결과 초기화
   document.getElementById('cam-result-area').style.display = 'none';
@@ -2571,18 +2570,18 @@ function onCamFileSelected(input) {
 
   var reader = new FileReader();
   reader.onload = function(e) {
-    _camImageBase64 = e.target.result; // data:image/...;base64,...
+    _camImageBase64 = e.target.result;
 
-    // 프리뷰 표시
+    // 프리뷰 즉시 표시
     var img = document.getElementById('cam-preview-img');
     var placeholder = document.getElementById('cam-placeholder');
     img.src = _camImageBase64;
     img.style.display = 'block';
     placeholder.style.display = 'none';
 
-    // 분석 버튼 노출
-    document.getElementById('cam-analyze-btn').style.display = 'block';
+    // 이전 결과 숨기고 즉시 분석 시작
     document.getElementById('cam-result-area').style.display = 'none';
+    runSkinAnalyze();
   };
   reader.readAsDataURL(file);
 }
@@ -2590,11 +2589,9 @@ function onCamFileSelected(input) {
 function runSkinAnalyze() {
   if (!_camImageBase64) return;
 
-  var btn = document.getElementById('cam-analyze-btn');
   var loading = document.getElementById('cam-loading');
   var resultArea = document.getElementById('cam-result-area');
 
-  btn.disabled = true;
   loading.style.display = 'block';
   resultArea.style.display = 'none';
 
@@ -2625,7 +2622,6 @@ function runSkinAnalyze() {
     loading.style.display = 'none';
     if (data.error) {
       alert('분석 오류: ' + data.error);
-      btn.disabled = false;
       return;
     }
     _renderCamResult(data);
@@ -2633,12 +2629,10 @@ function runSkinAnalyze() {
   .catch(function() {
     loading.style.display = 'none';
     alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
-    btn.disabled = false;
   });
 }
 
 function _renderCamResult(data) {
-  var btn = document.getElementById('cam-analyze-btn');
   var area = document.getElementById('cam-result-area');
 
   // 타입 레이블
@@ -2691,7 +2685,6 @@ function _renderCamResult(data) {
   }
 
   area.style.display = 'block';
-  btn.disabled = false;
   area.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
