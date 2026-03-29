@@ -1,430 +1,436 @@
-"""
-N-Kai YouTube Auto Pipeline
-===========================
-전체 파이프라인:
-  1. Anthropic API → 스크립트 생성
-  2. ElevenLabs TTS → 한국어 음성 MP3
-  3. D-ID → 립싱크 영상 생성
-  4. YouTube Data API v3 → 영상 업로드
-
-실행: python nkai-youtube-auto.py
-"""
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# ============================================================
+#  N-KAI 유튜브 자동화 v1.0
+#  Claude API → 스크립트 생성 → 썸네일 → YouTube 자동 업로드
+#  뉴린카이로스에이아이(주) | Architect: 이원재 | 2026-03-27
+# ============================================================
+#  사용법:
+#    pip install anthropic google-api-python-client google-auth-httplib2
+#         google-auth-oauthlib pillow requests
+#    python nkai-youtube-auto.py --type archetype --code ESTJ
+#    python nkai-youtube-auto.py --type golden    --month 4
+#    python nkai-youtube-auto.py --type mbti      (킬링 카피 영상)
+# ============================================================
 
 import os
-import sys
-import time
 import json
-import requests
-import tempfile
-import logging
-from pathlib import Path
-from datetime import datetime
-
-# ── Google / YouTube ──────────────────────────────────────────────────────────
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
-
-# ── Anthropic ─────────────────────────────────────────────────────────────────
+import argparse
+import time
 import anthropic
+from datetime import datetime
+from PIL import Image, ImageDraw, ImageFont
+import io
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 설정
-# ─────────────────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────
+# 0. 설정
+# ─────────────────────────────────────────
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
+YOUTUBE_CLIENT_SECRET = os.environ.get("YOUTUBE_CLIENT_SECRET_FILE", "client_secret.json")
+CHANNEL_ID = os.environ.get("NKAI_YOUTUBE_CHANNEL_ID", "")
 
-ANTHROPIC_API_KEY   = os.environ.get("ANTHROPIC_API_KEY", "")
-ELEVENLABS_API_KEY  = os.environ.get("ELEVENLABS_API_KEY", "")  # GitHub Secrets: ELEVENLABS_API_KEY
-DID_API_KEY         = os.environ.get("DID_API_KEY", "")         # GitHub Secrets: DID_API_KEY
+BRAND_COLORS = {
+    "primary":    "#2D8CFF",
+    "expression": "#5AA8FF",
+    "success":    "#00D68F",
+    "danger":     "#FF6B6B",
+    "bg":         "#0A0F1E",
+    "text":       "#FFFFFF",
+}
 
-# ElevenLabs 설정
-ELEVENLABS_BASE_URL = "https://api.elevenlabs.io/v1"
-ELEVENLABS_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"   # Rachel (다국어 지원, 한국어 가능)
-ELEVENLABS_MODEL_ID = "eleven_multilingual_v2"  # 한국어 지원 모델
+KILLING_COPY = "MBTI는 입이 말하고 N-KAI는 지갑이 말한다"
 
-# D-ID 설정
-DID_BASE_URL  = "https://api.d-id.com"
-DID_PRESENTER = "amy-jcwCkr1grs"               # 기본 아바타 (D-ID 제공 기본 캐릭터)
-
-# YouTube OAuth
-YOUTUBE_SCOPES         = ["https://www.googleapis.com/auth/youtube.upload"]
-YOUTUBE_CLIENT_SECRET  = "client_secret.json"
-YOUTUBE_TOKEN_FILE     = "youtube_token.json"
-
-# 출력 디렉터리
-OUTPUT_DIR = Path("output")
-OUTPUT_DIR.mkdir(exist_ok=True)
-
-# 로깅
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout),
-        logging.FileHandler(OUTPUT_DIR / "pipeline.log", encoding="utf-8"),
-    ],
-)
-log = logging.getLogger("nkai-pipeline")
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Step 1 — 스크립트 생성 (Anthropic)
-# ─────────────────────────────────────────────────────────────────────────────
-
-def generate_script(topic: str | None = None) -> dict:
-    """
-    Anthropic Claude 로 YouTube 콘텐츠 스크립트를 생성합니다.
-    반환: {"title": str, "description": str, "tags": list[str], "script": str}
-    """
-    log.info("▶ Step 1: 스크립트 생성 시작")
-
-    if not ANTHROPIC_API_KEY:
-        raise EnvironmentError("ANTHROPIC_API_KEY 환경변수가 설정되지 않았습니다.")
-
-    topic = topic or "N-Kai MBTI 사주 분석 AI — 오늘의 운세"
-
+# ─────────────────────────────────────────
+# 1. Claude API — 스크립트 자동 생성
+# ─────────────────────────────────────────
+def generate_script(content_type, params={}):
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
-    prompt = f"""당신은 N-Kai(뉴린카이로스에이아이)의 YouTube 콘텐츠 크리에이터입니다.
-아래 주제로 YouTube 숏폼(60초 이내) 스크립트를 작성하세요.
+    prompts = {
+        "archetype": f"""
+N-KAI 금융 DNA 플랫폼의 유튜브 영상 스크립트를 작성하세요.
+아키타입: {params.get('code', 'ESTJ')}
 
-주제: {topic}
+형식:
+- 총 길이: 3-5분 (약 500-700자)
+- 후킹 오프닝 (10초): 충격적인 질문이나 숫자로 시작
+- 본문: 해당 아키타입의 금융 패턴, 강점, 함정
+- CTA: N-KAI 무료 분석 유도
 
-출력 형식 (JSON만 출력, 코드블록 없이):
+규칙:
+- 초등학생도 이해하는 쉬운 말 사용
+- 사주/운세/생년월일 언급 금지
+- 대신: 소비 DNA, 금융 성격, 지갑 데이터 사용
+- 킬링 카피 포함: "{KILLING_COPY}"
+- 숫자와 구체적 예시 반드시 포함
+
+출력 형식 (JSON):
 {{
-  "title": "YouTube 제목 (60자 이내, SEO 최적화)",
-  "description": "YouTube 설명 (200자 이내, 해시태그 포함)",
-  "tags": ["태그1", "태그2", "태그3", "태그4", "태그5"],
-  "script": "실제 음성 낭독용 스크립트 (자연스러운 한국어, 500자 이내)"
-}}"""
+  "title": "영상 제목 (클릭 유도)",
+  "description": "유튜브 설명 (SEO 최적화, 300자)",
+  "tags": ["태그1", "태그2", ...],
+  "script": "전체 스크립트",
+  "thumbnail_text": "썸네일에 들어갈 핵심 문구 (20자 이내)",
+  "hook_line": "오프닝 후킹 한 줄"
+}}
+""",
+        "golden": f"""
+N-KAI 이번 달 골든타임 예보 유튜브 영상 스크립트를 작성하세요.
+대상 월: {params.get('month', datetime.now().month)}월
 
-    message = client.messages.create(
-        model="claude-opus-4-6",
-        max_tokens=1024,
-        messages=[{"role": "user", "content": prompt}],
-    )
+형식:
+- 총 길이: 2-3분 (약 350-450자)
+- 오프닝: "이번 달 이 타이밍 놓치면 후회합니다"
+- 본문: 16개 아키타입별 골든타임 TOP3
+- CTA: N-KAI 내 골든타임 확인 유도
+
+규칙:
+- 초등학생도 이해하는 쉬운 말
+- 월운/에너지 시프트 → 타이밍/기회/조심 시기 로 표현
+- 킬링 카피 포함: "{KILLING_COPY}"
+
+출력 형식 (JSON):
+{{
+  "title": "영상 제목",
+  "description": "유튜브 설명",
+  "tags": ["태그1", "태그2"],
+  "script": "전체 스크립트",
+  "thumbnail_text": "썸네일 핵심 문구",
+  "hook_line": "오프닝 후킹 한 줄"
+}}
+""",
+        "mbti": f"""
+N-KAI 킬링 콘텐츠 유튜브 영상 스크립트를 작성하세요.
+주제: MBTI vs N-KAI 비교
+
+형식:
+- 총 길이: 4-5분
+- 오프닝: "MBTI가 못 알려주는 당신의 진짜 금융 성격"
+- 본문: MBTI 한계 → N-KAI 차별점 → 실제 사례
+- CTA: 무료 분석 유도
+
+킬링 카피 반드시 포함: "{KILLING_COPY}"
+
+출력 형식 (JSON):
+{{
+  "title": "영상 제목",
+  "description": "유튜브 설명",
+  "tags": ["태그1", "태그2"],
+  "script": "전체 스크립트",
+  "thumbnail_text": "썸네일 핵심 문구",
+  "hook_line": "오프닝 후킹 한 줄"
+}}
+"""
+    }
+
+    prompt = prompts.get(content_type, prompts["mbti"])
+
+    print(f"[스크립트 생성 중] 타입: {content_type}...")
+    message = None
+    for attempt in range(3):
+        try:
+            message = client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=4096,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            break
+        except anthropic._exceptions.OverloadedError:
+            wait = 5 * (attempt + 1)
+            print(f"[API 과부하] {wait}초 후 재시도 ({attempt + 1}/3)...")
+            time.sleep(wait)
+    if message is None:
+        raise RuntimeError("Claude API 3회 재시도 실패")
 
     raw = message.content[0].text.strip()
+    # JSON 파싱
+    if "```json" in raw:
+        raw = raw.split("```json")[1].split("```")[0].strip()
+    elif "```" in raw:
+        raw = raw.split("```")[1].split("```")[0].strip()
 
-    # JSON 파싱 (마크다운 코드블록 제거 방어 처리)
-    if raw.startswith("```"):
-        raw = raw.split("```")[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-    result = json.loads(raw.strip())
+    import re
+    raw = re.sub(r',\s*}', '}', raw)
+    raw = re.sub(r',\s*]', ']', raw)
 
-    # 결과 보존
-    script_path = OUTPUT_DIR / "script.json"
-    script_path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-    log.info(f"✅ Step 1 완료 — 스크립트 저장: {script_path}")
-    log.info(f"   제목: {result['title']}")
-
-    return result
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Step 2 — ElevenLabs TTS
-# ─────────────────────────────────────────────────────────────────────────────
-
-def generate_audio(script_text: str) -> Path:
-    """
-    ElevenLabs API 로 한국어 음성 MP3 를 생성합니다.
-    반환: 저장된 MP3 파일 경로
-    """
-    log.info("▶ Step 2: ElevenLabs TTS 시작")
-
-    if not ELEVENLABS_API_KEY:
-        raise EnvironmentError("ELEVENLABS_API_KEY 환경변수가 설정되지 않았습니다.")
-
-    url = f"{ELEVENLABS_BASE_URL}/text-to-speech/{ELEVENLABS_VOICE_ID}"
-    headers = {
-        "xi-api-key": ELEVENLABS_API_KEY,
-        "Content-Type": "application/json",
-    }
-    payload = {
-        "text": script_text,
-        "model_id": ELEVENLABS_MODEL_ID,
-        "voice_settings": {
-            "stability": 0.5,
-            "similarity_boost": 0.75,
-            "style": 0.0,
-            "use_speaker_boost": True,
-        },
-    }
-
-    resp = requests.post(url, headers=headers, json=payload, timeout=120)
-    if resp.status_code != 200:
-        raise RuntimeError(
-            f"ElevenLabs API 오류 [{resp.status_code}]: {resp.text[:300]}"
-        )
-
-    audio_path = OUTPUT_DIR / "audio.mp3"
-    audio_path.write_bytes(resp.content)
-    size_kb = audio_path.stat().st_size // 1024
-    log.info(f"✅ Step 2 완료 — 음성 저장: {audio_path} ({size_kb} KB)")
-
-    return audio_path
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Step 3 — D-ID 립싱크 영상 생성
-# ─────────────────────────────────────────────────────────────────────────────
-
-def _did_headers() -> dict:
-    import base64
-    token = base64.b64encode(f"{DID_API_KEY}".encode()).decode()
-    return {
-        "Authorization": f"Basic {token}",
-        "Content-Type": "application/json",
-    }
-
-
-def upload_audio_to_did(audio_path: Path) -> str:
-    """
-    D-ID 에 오디오 파일을 업로드하고 URL 을 반환합니다.
-    (D-ID 는 공개 URL 또는 자체 업로드 엔드포인트를 지원)
-    """
-    log.info("   D-ID 오디오 업로드 중...")
-
-    url = f"{DID_BASE_URL}/audios"
-    headers = {"Authorization": _did_headers()["Authorization"]}
-
-    with open(audio_path, "rb") as f:
-        resp = requests.post(
-            url,
-            headers=headers,
-            files={"audio": (audio_path.name, f, "audio/mpeg")},
-            timeout=120,
-        )
-
-    if resp.status_code not in (200, 201):
-        raise RuntimeError(f"D-ID 오디오 업로드 오류 [{resp.status_code}]: {resp.text[:300]}")
-
-    audio_url = resp.json().get("url") or resp.json().get("audio_url", "")
-    log.info(f"   오디오 업로드 완료: {audio_url[:60]}...")
-    return audio_url
-
-
-def generate_video(audio_path: Path) -> Path:
-    """
-    D-ID API 로 립싱크 영상을 생성합니다.
-    반환: 저장된 MP4 파일 경로
-    """
-    log.info("▶ Step 3: D-ID 영상 생성 시작")
-
-    if not DID_API_KEY:
-        raise EnvironmentError("DID_API_KEY 환경변수가 설정되지 않았습니다.")
-
-    # 오디오 업로드
-    audio_url = upload_audio_to_did(audio_path)
-
-    # talks 생성 요청
-    create_url = f"{DID_BASE_URL}/talks"
-    payload = {
-        "source_url": f"https://create-images-results.d-id.com/DefaultPresenters/{DID_PRESENTER}/v1_thumbnail.jpeg",
-        "script": {
-            "type": "audio",
-            "audio_url": audio_url,
-        },
-        "config": {
-            "fluent": True,
-            "pad_audio": 0.0,
-            "result_format": "mp4",
-        },
-    }
-
-    resp = requests.post(create_url, headers=_did_headers(), json=payload, timeout=60)
-    if resp.status_code not in (200, 201):
-        raise RuntimeError(f"D-ID talks 생성 오류 [{resp.status_code}]: {resp.text[:300]}")
-
-    talk_id = resp.json().get("id")
-    log.info(f"   D-ID 작업 생성됨 (id: {talk_id}), 완료 대기 중...")
-
-    # 폴링 — 최대 10분
-    status_url = f"{DID_BASE_URL}/talks/{talk_id}"
-    for attempt in range(60):
-        time.sleep(10)
-        poll = requests.get(status_url, headers=_did_headers(), timeout=30)
-        data = poll.json()
-        status = data.get("status", "")
-        log.info(f"   폴링 {attempt + 1}/60 — status: {status}")
-
-        if status == "done":
-            result_url = data.get("result_url", "")
-            break
-        elif status == "error":
-            raise RuntimeError(f"D-ID 처리 오류: {data.get('error', {})}")
-    else:
-        raise TimeoutError("D-ID 영상 생성 타임아웃 (10분 초과)")
-
-    # 영상 다운로드
-    log.info(f"   영상 다운로드 중: {result_url[:60]}...")
-    video_resp = requests.get(result_url, timeout=120)
-    video_resp.raise_for_status()
-
-    video_path = OUTPUT_DIR / "video.mp4"
-    video_path.write_bytes(video_resp.content)
-    size_mb = video_path.stat().st_size / (1024 * 1024)
-    log.info(f"✅ Step 3 완료 — 영상 저장: {video_path} ({size_mb:.1f} MB)")
-
-    return video_path
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Step 4 — YouTube 업로드
-# ─────────────────────────────────────────────────────────────────────────────
-
-def _get_youtube_credentials() -> Credentials:
-    """OAuth2 인증 (토큰 캐시 지원)"""
-    creds = None
-
-    if Path(YOUTUBE_TOKEN_FILE).exists():
-        creds = Credentials.from_authorized_user_file(YOUTUBE_TOKEN_FILE, YOUTUBE_SCOPES)
-
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError:
+        # 잘린 JSON 복구 시도
+        for suffix in ['"}', '"]}', '"}]}']:
+            try:
+                data = json.loads(raw + suffix)
+                break
+            except json.JSONDecodeError:
+                continue
         else:
-            if not Path(YOUTUBE_CLIENT_SECRET).exists():
-                raise FileNotFoundError(
-                    f"YouTube OAuth 클라이언트 시크릿 파일 없음: {YOUTUBE_CLIENT_SECRET}"
-                )
-            flow = InstalledAppFlow.from_client_secrets_file(
-                YOUTUBE_CLIENT_SECRET, YOUTUBE_SCOPES
-            )
-            creds = flow.run_local_server(port=0)
+            print("[경고] JSON 파싱 실패 — 원본 텍스트로 폴백")
+            data = {
+                "title": "N-KAI " + content_type + " 콘텐츠",
+                "description": raw[:300],
+                "tags": ["N-KAI", "금융DNA"],
+                "script": raw,
+                "thumbnail_text": "N-KAI 금융 DNA",
+                "hook_line": ""
+            }
+    print(f"[스크립트 완료] 제목: {data.get('title', '')}")
+    return data
 
-        Path(YOUTUBE_TOKEN_FILE).write_text(creds.to_json(), encoding="utf-8")
 
-    return creds
+# ─────────────────────────────────────────
+# 2. 썸네일 자동 생성 (PIL)
+# ─────────────────────────────────────────
+def _find_korean_font(bold=False):
+    """Windows/Mac/Linux 한글 폰트 자동 감지"""
+    import platform
+    system = platform.system()
+
+    if system == "Windows":
+        base = os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "Fonts")
+        candidates = [
+            os.path.join(base, "malgunbd.ttf" if bold else "malgun.ttf"),
+            os.path.join(base, "NanumGothicBold.ttf" if bold else "NanumGothic.ttf"),
+            os.path.join(base, "gulim.ttc"),
+            os.path.join(base, "batang.ttc"),
+        ]
+    elif system == "Darwin":
+        candidates = [
+            "/System/Library/Fonts/AppleSDGothicNeo.ttc",
+            "/Library/Fonts/NanumGothicBold.ttf" if bold else "/Library/Fonts/NanumGothic.ttf",
+        ]
+    else:
+        candidates = [
+            "/usr/share/fonts/truetype/nanum/NanumGothicBold.ttf" if bold else "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
+        ]
+
+    for path in candidates:
+        if os.path.exists(path):
+            return path
+    return None
 
 
-def upload_to_youtube(
-    video_path: Path,
-    title: str,
-    description: str,
-    tags: list[str],
-    category_id: str = "22",   # 22 = People & Blogs
-    privacy: str = "private",  # 초기 비공개, 확인 후 공개 전환 권장
-) -> str:
-    """
-    YouTube Data API v3 로 영상을 업로드합니다.
-    반환: YouTube 영상 URL
-    """
-    log.info("▶ Step 4: YouTube 업로드 시작")
+def generate_thumbnail(title_text, sub_text, content_type="archetype", output_path="thumbnail.jpg"):
+    W, H = 1280, 720
 
-    creds = _get_youtube_credentials()
-    youtube = build("youtube", "v3", credentials=creds)
+    # 배경 생성
+    img = Image.new("RGB", (W, H), color=(10, 15, 30))
+    draw = ImageDraw.Draw(img)
 
-    body = {
-        "snippet": {
-            "title": title,
-            "description": description,
-            "tags": tags,
-            "categoryId": category_id,
-            "defaultLanguage": "ko",
-        },
-        "status": {
-            "privacyStatus": privacy,
-            "selfDeclaredMadeForKids": False,
-        },
+    # 그라디언트 효과 (좌상단 → 우하단)
+    for y in range(H):
+        alpha = int(y / H * 40)
+        draw.line([(0, y), (W, y)], fill=(13 + alpha // 4, 21 + alpha // 3, 48 + alpha // 2))
+
+    # 색상 맵핑
+    color_map = {
+        "archetype": (45, 140, 255),    # #2D8CFF
+        "golden":    (0, 214, 143),     # #00D68F
+        "mbti":      (90, 168, 255),    # #5AA8FF
     }
+    accent = color_map.get(content_type, (45, 140, 255))
 
-    media = MediaFileUpload(str(video_path), mimetype="video/mp4", resumable=True)
-    request = youtube.videos().insert(part="snippet,status", body=body, media_body=media)
+    # 사이드 액센트 바
+    draw.rectangle([(0, 0), (8, H)], fill=accent)
+    draw.rectangle([(W - 8, 0), (W, H)], fill=accent)
 
-    response = None
-    while response is None:
-        status, response = request.next_chunk()
-        if status:
-            progress = int(status.progress() * 100)
-            log.info(f"   업로드 진행: {progress}%")
+    # 한글 폰트 자동 감지
+    kr_font = _find_korean_font(bold=False)
+    kr_font_bold = _find_korean_font(bold=True)
+    if kr_font_bold:
+        print(f"[폰트] Bold: {kr_font_bold}")
+    if kr_font:
+        print(f"[폰트] Regular: {kr_font}")
 
-    video_id  = response.get("id", "")
-    video_url = f"https://www.youtube.com/watch?v={video_id}"
-    log.info(f"✅ Step 4 완료 — 업로드 성공: {video_url}")
+    try:
+        font_logo  = ImageFont.truetype(kr_font or "arial.ttf", 36)
+        font_title = ImageFont.truetype(kr_font_bold or kr_font or "arialbd.ttf", 72)
+        font_sub   = ImageFont.truetype(kr_font or "arial.ttf", 38)
+        font_tag   = ImageFont.truetype(kr_font or "arial.ttf", 28)
+    except Exception:
+        font_logo  = ImageFont.load_default()
+        font_title = font_logo
+        font_sub   = font_logo
+        font_tag   = font_logo
 
-    return video_url
+    # N-KAI 브랜드
+    draw.text((40, 40), "N-KAI", font=font_logo, fill=accent)
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# 전체 파이프라인 실행
-# ─────────────────────────────────────────────────────────────────────────────
-
-def run_pipeline(topic: str | None = None) -> None:
-    """
-    전체 파이프라인을 순서대로 실행합니다.
-    각 단계 실패 시 이전 단계 결과물(.json / .mp3 / .mp4)은 output/ 에 보존됩니다.
-    """
-    start = datetime.now()
-    log.info("=" * 60)
-    log.info("N-Kai YouTube Auto Pipeline 시작")
-    log.info(f"시작 시각: {start.strftime('%Y-%m-%d %H:%M:%S')}")
-    log.info("=" * 60)
-
-    # ── Step 1: 스크립트 ──────────────────────────────────────────────────────
-    script_cache = OUTPUT_DIR / "script.json"
-    if script_cache.exists():
-        log.info("ℹ  script.json 캐시 발견 — Step 1 스킵")
-        script_data = json.loads(script_cache.read_text(encoding="utf-8"))
+    # 메인 타이틀 (중앙) — \n 존중 + 자동 줄바꿈
+    if "\n" in title_text:
+        lines = [l.strip() for l in title_text.split("\n") if l.strip()]
     else:
-        script_data = generate_script(topic)
+        lines = []
+        for i in range(0, len(title_text), 14):
+            lines.append(title_text[i:i+14])
+    line_h = 95
+    y_start = H // 2 - (len(lines) * line_h) // 2 - 30
+    for line in lines:
+        bbox = draw.textbbox((0, 0), line, font=font_title)
+        tw = bbox[2] - bbox[0]
+        draw.text(((W - tw) // 2, y_start), line, font=font_title, fill=(255, 255, 255))
+        y_start += line_h
 
-    # ── Step 2: TTS ───────────────────────────────────────────────────────────
-    audio_cache = OUTPUT_DIR / "audio.mp3"
-    if audio_cache.exists():
-        log.info("ℹ  audio.mp3 캐시 발견 — Step 2 스킵")
-        audio_path = audio_cache
-    else:
-        audio_path = generate_audio(script_data["script"])
+    # 서브 텍스트
+    if sub_text:
+        bbox = draw.textbbox((0, 0), sub_text, font=font_sub)
+        tw = bbox[2] - bbox[0]
+        draw.text(((W - tw) // 2, y_start + 20), sub_text, font=font_sub, fill=accent)
 
-    # ── Step 3: D-ID 영상 ─────────────────────────────────────────────────────
-    video_cache = OUTPUT_DIR / "video.mp4"
-    if video_cache.exists():
-        log.info("ℹ  video.mp4 캐시 발견 — Step 3 스킵")
-        video_path = video_cache
-    else:
-        video_path = generate_video(audio_path)
+    # 하단 킬링 카피
+    killing = "MBTI는 입이 말하고 N-KAI는 지갑이 말한다"
+    bbox = draw.textbbox((0, 0), killing, font=font_tag)
+    tw = bbox[2] - bbox[0]
+    draw.text(((W - tw) // 2, H - 70), killing, font=font_tag, fill=(100, 140, 200))
 
-    # ── Step 4: YouTube 업로드 ────────────────────────────────────────────────
-    video_url = upload_to_youtube(
-        video_path=video_path,
-        title=script_data["title"],
-        description=script_data["description"],
-        tags=script_data["tags"],
+    # 하단 구분선
+    draw.rectangle([(40, H - 85), (W - 40, H - 82)], fill=accent)
+
+    img.save(output_path, "JPEG", quality=95)
+    print(f"[썸네일 완료] {output_path} ({W}x{H})")
+    return output_path
+
+
+# ─────────────────────────────────────────
+# 3. YouTube API — 자동 업로드
+# ─────────────────────────────────────────
+def upload_to_youtube(script_data, thumbnail_path, video_path=None):
+    try:
+        from googleapiclient.discovery import build
+        from googleapiclient.http import MediaFileUpload
+        from google_auth_oauthlib.flow import InstalledAppFlow
+        from google.auth.transport.requests import Request
+        import pickle
+
+        SCOPES = [
+            "https://www.googleapis.com/auth/youtube.upload",
+            "https://www.googleapis.com/auth/youtube",
+        ]
+
+        creds = None
+        token_file = "youtube_token.pickle"
+
+        if os.path.exists(token_file):
+            with open(token_file, "rb") as f:
+                creds = pickle.load(f)
+
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file(YOUTUBE_CLIENT_SECRET, SCOPES)
+                creds = flow.run_local_server(port=0)
+            with open(token_file, "wb") as f:
+                pickle.dump(creds, f)
+
+        youtube = build("youtube", "v3", credentials=creds)
+
+        # 영상 메타데이터
+        body = {
+            "snippet": {
+                "title":       script_data.get("title", "N-KAI 금융 DNA"),
+                "description": script_data.get("description", "") + "\n\n#NKAI #금융DNA #MBTI #재테크 #금융",
+                "tags":        script_data.get("tags", ["N-KAI", "금융DNA", "MBTI", "재테크"]),
+                "categoryId":  "22",  # People & Blogs
+                "defaultLanguage": "ko",
+            },
+            "status": {
+                "privacyStatus": "private",  # 검토 후 public으로 변경
+                "selfDeclaredMadeForKids": False,
+            }
+        }
+
+        # 영상 파일 업로드 (있을 경우)
+        if video_path and os.path.exists(video_path):
+            media = MediaFileUpload(video_path, chunksize=-1, resumable=True, mimetype="video/*")
+            request = youtube.videos().insert(part="snippet,status", body=body, media_body=media)
+            response = None
+            while response is None:
+                status, response = request.next_chunk()
+                if status:
+                    print(f"  업로드 진행: {int(status.progress() * 100)}%")
+            video_id = response["id"]
+        else:
+            # 영상 없을 시 더미 업로드 (스크립트+메타데이터만 저장)
+            print("[주의] 영상 파일 없음 — 메타데이터만 저장합니다")
+            video_id = "PREVIEW_ONLY"
+
+        # 썸네일 업로드
+        if video_id != "PREVIEW_ONLY" and os.path.exists(thumbnail_path):
+            youtube.thumbnails().set(
+                videoId=video_id,
+                media_body=MediaFileUpload(thumbnail_path)
+            ).execute()
+            print(f"[썸네일 업로드 완료] video_id: {video_id}")
+
+        print(f"[유튜브 업로드 완료] https://youtube.com/watch?v={video_id}")
+        return video_id
+
+    except ImportError:
+        print("[안내] google-api-python-client 미설치 → 메타데이터만 저장")
+        return None
+
+
+# ─────────────────────────────────────────
+# 4. 전체 파이프라인 실행
+# ─────────────────────────────────────────
+def run_pipeline(content_type, params={}, video_path=None):
+    date_str = datetime.now().strftime("%Y%m%d_%H%M")
+
+    print("\n" + "="*50)
+    print(f" N-KAI 유튜브 자동화 파이프라인 v1.0")
+    print(f" 타입: {content_type} | {date_str}")
+    print("="*50 + "\n")
+
+    # Step 1: 스크립트 생성
+    script_data = generate_script(content_type, params)
+
+    # Step 2: 썸네일 생성
+    thumbnail_path = f"thumbnail_{content_type}_{date_str}.jpg"
+    generate_thumbnail(
+        title_text=script_data.get("thumbnail_text", "N-KAI 금융 DNA"),
+        sub_text=script_data.get("hook_line", ""),
+        content_type=content_type,
+        output_path=thumbnail_path
     )
 
-    # ── 완료 요약 ─────────────────────────────────────────────────────────────
-    elapsed = (datetime.now() - start).seconds
-    log.info("=" * 60)
-    log.info("🎉 파이프라인 완료!")
-    log.info(f"   소요 시간: {elapsed // 60}분 {elapsed % 60}초")
-    log.info(f"   영상 URL : {video_url}")
-    log.info("=" * 60)
+    # Step 3: 스크립트 저장
+    script_path = f"script_{content_type}_{date_str}.json"
+    with open(script_path, "w", encoding="utf-8") as f:
+        json.dump(script_data, f, ensure_ascii=False, indent=2)
+    print(f"[스크립트 저장] {script_path}")
 
-    # 결과 저장
-    result = {
-        "completed_at": datetime.now().isoformat(),
-        "topic": topic,
-        "title": script_data["title"],
-        "video_url": video_url,
-        "files": {
-            "script": str(script_cache),
-            "audio": str(audio_path),
-            "video": str(video_path),
-        },
+    # Step 4: YouTube 업로드
+    video_id = upload_to_youtube(script_data, thumbnail_path, video_path)
+
+    # 결과 요약
+    print("\n" + "="*50)
+    print(" ✅ 파이프라인 완료")
+    print(f" 제목: {script_data.get('title', '')}")
+    print(f" 썸네일: {thumbnail_path}")
+    print(f" 스크립트: {script_path}")
+    print(f" YouTube ID: {video_id or '미업로드'}")
+    print("="*50 + "\n")
+
+    return {
+        "script": script_data,
+        "thumbnail": thumbnail_path,
+        "script_file": script_path,
+        "video_id": video_id
     }
-    (OUTPUT_DIR / "result.json").write_text(
-        json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# 진입점
-# ─────────────────────────────────────────────────────────────────────────────
-
+# ─────────────────────────────────────────
+# 5. 메인 실행
+# ─────────────────────────────────────────
 if __name__ == "__main__":
-    # 커맨드라인 인자로 주제 지정 가능: python nkai-youtube-auto.py "오늘의 MBTI 운세"
-    topic_arg = sys.argv[1] if len(sys.argv) > 1 else None
-    run_pipeline(topic=topic_arg)
+    parser = argparse.ArgumentParser(description="N-KAI 유튜브 자동화")
+    parser.add_argument("--type",  default="mbti",
+                        choices=["archetype", "golden", "mbti"],
+                        help="콘텐츠 타입")
+    parser.add_argument("--code",  default="ESTJ", help="아키타입 코드 (archetype 타입 시)")
+    parser.add_argument("--month", default=str(datetime.now().month), help="월 (golden 타입 시)")
+    parser.add_argument("--video", default=None, help="업로드할 영상 파일 경로")
+    args = parser.parse_args()
+
+    params = {"code": args.code, "month": args.month}
+    run_pipeline(args.type, params, args.video)
