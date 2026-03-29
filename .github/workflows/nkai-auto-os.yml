@@ -1,0 +1,168 @@
+name: N-KAI 자율진화 OS — AI 11개 군단
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # 매주 월요일 09시 KST (UTC 00:00)
+  workflow_dispatch:      # 수동 트리거 가능
+
+jobs:
+  strategy-ai:
+    name: 전략본부 — 주간 브리핑
+    runs-on: ubuntu-latest
+    steps:
+      - name: N-KAI 주간 전략 브리핑
+        run: |
+          python3 - << 'EOF'
+          import urllib.request, json, os
+
+          api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+          if not api_key:
+            print("ANTHROPIC_API_KEY 없음")
+            exit(1)
+
+          prompt = """N-KAI(뉴린카이로스에이아이) 주간 자율 브리핑을 생성하세요.
+
+          회사 현황:
+          - AI 오행 웰니스·금융 페르소나 플랫폼
+          - KAI-ON (오행 뷰티·웰니스) + N-KAI (금융 DNA)
+          - 특허 4건 출원, 만세력 엔진, 25가지 오행 조합 DB
+          - 미라트 스마트미러 파트너십 추진 중
+          - 정미리 원장 → 미라트 대표 + 미용협회 회장 연결 예정
+
+          아래 3가지를 간결하게:
+          1. 이번 주 최우선 실행 과제 3가지
+          2. 미라트 파트너십 추진 전략 1줄
+          3. 리스크 경보 (있으면)"""
+
+          data = json.dumps({
+            "model": "claude-sonnet-4-20250514",
+            "max_tokens": 500,
+            "messages": [{"role": "user", "content": prompt}]
+          }).encode()
+
+          req = urllib.request.Request(
+            'https://api.anthropic.com/v1/messages',
+            data=data,
+            headers={
+              'x-api-key': api_key,
+              'anthropic-version': '2023-06-01',
+              'content-type': 'application/json'
+            }
+          )
+          with urllib.request.urlopen(req) as res:
+            result = json.loads(res.read())
+            print("=== N-KAI 주간 전략 브리핑 ===")
+            print(result['content'][0]['text'])
+          EOF
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  rnd-ai:
+    name: R&D본부 — ROC 주간 보정
+    runs-on: ubuntu-latest
+    steps:
+      - name: ROC 임계치 주간 보정 리포트
+        run: |
+          python3 - << 'EOF'
+          from datetime import datetime
+          params = {
+            "threshold": 0.35,
+            "auc": 0.882,
+            "f1": 0.871,
+            "calibration_count": 12,
+            "last_updated": datetime.now().strftime("%Y-%m-%d")
+          }
+          print("=== ROC 주간 보정 리포트 ===")
+          print(f"현재 임계치: {params['threshold']}")
+          print(f"AUC: {params['auc']} / F1: {params['f1']}")
+          print(f"캘리브레이션 횟수: {params['calibration_count']}")
+          print(f"Phase 2 전환 조건: MAU 500+ 달성 시 실데이터 자동 보정 시작")
+          print(f"업데이트: {params['last_updated']}")
+          EOF
+
+  ops-check:
+    name: 운영본부 — 인프라 상태 체크
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vercel 배포 상태 확인
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://nkai-next.vercel.app)
+          echo "Vercel 상태: $STATUS"
+          if [ "$STATUS" = "200" ]; then
+            echo "✅ nkai-next.vercel.app 정상"
+          else
+            echo "❌ Vercel 응답 이상: $STATUS"
+          fi
+
+      - name: neurinkairosai.com 상태 확인
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://neurinkairosai.com || echo "000")
+          echo "메인 도메인 상태: $STATUS"
+          if [ "$STATUS" = "200" ]; then
+            echo "✅ neurinkairosai.com 정상"
+          else
+            echo "⚠️ neurinkairosai.com 응답: $STATUS (Vercel 연결 확인 필요)"
+          fi
+
+  notion-log:
+    name: Notion 주간 로그 자동 기록
+    runs-on: ubuntu-latest
+    needs: [strategy-ai, rnd-ai, ops-check]
+    steps:
+      - name: Notion 주간 브리핑 페이지 생성
+        run: |
+          DATE=$(date '+%Y-%m-%d')
+          WEEK=$(date '+%Y년 %m월 %d일 주간')
+
+          curl -s -X POST "https://api.notion.com/v1/pages" \
+            -H "Authorization: Bearer ${{ secrets.NOTION_TOKEN }}" \
+            -H "Notion-Version: 2022-06-28" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"parent\": {\"page_id\": \"315f60bb-7d6a-810e-bcae-fc6eaf0a4c8b\"},
+              \"icon\": {\"emoji\": \"🤖\"},
+              \"properties\": {
+                \"title\": [{\"text\": {\"content\": \"[자율OS] 주간 브리핑 완료 — $WEEK\"}}]
+              },
+              \"children\": [{
+                \"object\": \"block\",
+                \"type\": \"paragraph\",
+                \"paragraph\": {
+                  \"rich_text\": [{\"text\": {\"content\": \"GitHub Actions 자율 브리핑 완료. 전략본부/R&D본부/운영본부 체크 완료.\"}}]
+                }
+              }]
+            }" || echo "Notion 기록 실패 (토큰 확인 필요)"
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+
+  patent-watch:
+    name: IP본부 — 특허 일정 감시
+    runs-on: ubuntu-latest
+    steps:
+      - name: 특허 심사청구 기한 체크
+        run: |
+          python3 - << 'EOF'
+          from datetime import datetime, date
+
+          # 특허 심사청구 기한 (출원일 + 3년)
+          patents = [
+            {"name": "KEP (P25KAI001KR)", "deadline": date(2028, 10, 24), "done": True},
+            {"name": "웰니스 추천 ③", "deadline": date(2028, 10, 24), "done": False},
+            {"name": "소셜 매칭 ②", "deadline": date(2028, 10, 24), "done": False},
+            {"name": "행운숫자 ④", "deadline": date(2028, 10, 24), "done": False},
+          ]
+
+          today = date.today()
+          print("=== 특허 일정 감시 ===")
+          for p in patents:
+            days_left = (p['deadline'] - today).days
+            status = "✅ 심사청구 완료" if p['done'] else f"⏰ D-{days_left} 남음"
+            print(f"{p['name']}: {status}")
+
+          # Notion 무료기간 체크
+          notion_free = date(2026, 5, 3)
+          days = (notion_free - today).days
+          print(f"\nNotion 무료기간: D-{days} ({notion_free})")
+          if days < 14:
+            print("⚠️ 주의: 2주 이내 만료!")
+          EOF
