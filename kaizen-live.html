@@ -2603,46 +2603,130 @@ function calcCompat() {
 }
 
 // ──────────────────────────────────────
-// AI 상담
+// AI 상담 — Vercel API 연동
 // ──────────────────────────────────────
+var API_BASE = 'https://nkai-next.vercel.app';
+var _chatSessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+var _chatBillingStart = null;
+var _chatBillingTimer = null;
+var _chatTotalTokens = 0;
+
 function askQuick(msg) {
   document.getElementById('chat-input').value = msg;
   sendChat();
 }
 
-function sendChat() {
-  var input = document.getElementById('chat-input');
-  var msg = input.value.trim();
-  if(!msg) return;
-  input.value = '';
-
-  var wrap = document.getElementById('chat-wrap');
-  // 내 메시지
+function _appendMyMsg(wrap, msg) {
   var myDiv = document.createElement('div');
   myDiv.style.cssText = 'display:flex;gap:8px;align-items:flex-start;flex-direction:row-reverse;';
   myDiv.innerHTML = '<div style="width:30px;height:30px;border-radius:50%;background:rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold2);font-weight:700;flex-shrink:0;">나</div>' +
     '<div style="background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(201,168,76,0.1));border-radius:12px;padding:10px 14px;font-size:12px;color:var(--text);line-height:1.5;max-width:75%;">'+msg+'</div>';
   wrap.appendChild(myDiv);
   wrap.scrollTop = wrap.scrollHeight;
+}
 
-  // AI 응답
-  setTimeout(function(){
-    var core = _currentRes ? _currentRes.core : '土';
-    var name = _currentName || '고객';
-    var replies = [
-      name+'님은 '+core+' 코어 에너지를 가지고 계십니다. '+msg+'에 대해 오행 관점에서 답변드리면, 현재 에너지 흐름상 신중하게 접근하시되 기회가 왔을 때는 과감하게 행동하시는 것이 좋겠습니다.',
-      '오행 '+core+' 에너지가 활발한 시기입니다. '+msg+'에 대한 답은 내면의 직관을 믿으시는 것입니다. 서두르지 말고 준비된 상태에서 움직이시면 좋은 결과가 있을 것입니다.',
-      name+'님의 사주에서 보면 지금은 중요한 전환점에 있습니다. '+msg+' 관련하여, '+core+' 에너지가 강한 분들은 특히 타이밍이 중요합니다. 이번달 중순 이후가 특히 좋은 시기입니다.',
-      '좋은 질문입니다. '+core+' 오행의 특성상 '+msg+' 문제는 꼼꼼한 준비와 인내심이 핵심입니다. 급하게 결정하기보다 충분한 정보를 모은 후 결단하시길 권합니다.'
-    ];
-    var reply = replies[Math.floor(Math.random()*replies.length)];
-    var aiDiv = document.createElement('div');
-    aiDiv.style.cssText = 'display:flex;gap:8px;align-items:flex-start;';
-    aiDiv.innerHTML = '<div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:12px;color:#0a0d14;font-weight:700;flex-shrink:0;">AI</div>' +
-      '<div style="background:var(--bg3);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.6;max-width:80%;">'+reply+'</div>';
-    wrap.appendChild(aiDiv);
-    wrap.scrollTop = wrap.scrollHeight;
-  }, 800);
+function _appendTyping(wrap) {
+  var aiDiv = document.createElement('div');
+  aiDiv.id = 'ai-typing-indicator';
+  aiDiv.style.cssText = 'display:flex;gap:8px;align-items:flex-start;';
+  aiDiv.innerHTML = '<div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:12px;color:#0a0d14;font-weight:700;flex-shrink:0;">AI</div>' +
+    '<div style="background:var(--bg3);border-radius:12px;padding:10px 14px;font-size:12px;color:var(--text3);line-height:1.6;max-width:80%;display:flex;gap:4px;align-items:center;">' +
+    '<span style="animation:blink .8s ease-in-out infinite;">●</span>' +
+    '<span style="animation:blink .8s ease-in-out .2s infinite;">●</span>' +
+    '<span style="animation:blink .8s ease-in-out .4s infinite;">●</span>' +
+    '</div>';
+  wrap.appendChild(aiDiv);
+  wrap.scrollTop = wrap.scrollHeight;
+  return aiDiv;
+}
+
+function _replaceTypingWithReply(typingEl, wrap, reply) {
+  var textEl = typingEl.querySelector('div:last-child');
+  // 타이핑 효과
+  textEl.innerHTML = '';
+  textEl.style.color = 'var(--text2)';
+  var i = 0;
+  function typeNext() {
+    if (i < reply.length) {
+      textEl.textContent += reply[i++];
+      wrap.scrollTop = wrap.scrollHeight;
+      setTimeout(typeNext, 18);
+    }
+  }
+  typeNext();
+}
+
+function _updateBillingTimer() {
+  var timerEl = document.getElementById('chat-billing-timer');
+  if (!timerEl) return;
+  var elapsed = Math.floor((Date.now() - _chatBillingStart) / 1000);
+  var mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+  var secs = String(elapsed % 60).padStart(2, '0');
+  timerEl.textContent = '⏱ ' + mins + ':' + secs + ' · 토큰 ' + _chatTotalTokens;
+}
+
+function _ensureBillingBar() {
+  if (document.getElementById('chat-billing-timer')) return;
+  var bar = document.createElement('div');
+  bar.id = 'chat-billing-timer';
+  bar.style.cssText = 'font-size:10px;color:var(--text3);text-align:right;margin-bottom:4px;';
+  bar.textContent = '⏱ 00:00 · 토큰 0';
+  var wrap = document.getElementById('chat-wrap');
+  wrap.parentNode.insertBefore(bar, wrap);
+  _chatBillingStart = Date.now();
+  _chatBillingTimer = setInterval(_updateBillingTimer, 1000);
+}
+
+function sendChat() {
+  var input = document.getElementById('chat-input');
+  var msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+
+  var sendBtn = document.querySelector('[onclick="sendChat()"]');
+  if (sendBtn) sendBtn.disabled = true;
+
+  var wrap = document.getElementById('chat-wrap');
+  _appendMyMsg(wrap, msg);
+  _ensureBillingBar();
+
+  var typingEl = _appendTyping(wrap);
+
+  // 오행 프로필 수집
+  var ohang_profile = {};
+  if (_currentRes) {
+    ohang_profile = {
+      core:   _currentRes.core  || '',
+      wood:   _currentRes.wood  || 0,
+      fire:   _currentRes.fire  || 0,
+      earth:  _currentRes.earth || 0,
+      metal:  _currentRes.metal || 0,
+      water:  _currentRes.water || 0,
+      name:   _currentName || '',
+    };
+  }
+
+  fetch(API_BASE + '/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: msg, ohang_profile: ohang_profile, session_id: _chatSessionId }),
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.error) {
+      _replaceTypingWithReply(typingEl, wrap, '죄송합니다, 잠시 오류가 발생했습니다. 다시 시도해주세요.');
+    } else {
+      _replaceTypingWithReply(typingEl, wrap, data.reply);
+      _chatTotalTokens += (data.tokens_used || 0);
+      _updateBillingTimer();
+    }
+  })
+  .catch(function() {
+    _replaceTypingWithReply(typingEl, wrap, '네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.');
+  })
+  .finally(function() {
+    if (sendBtn) sendBtn.disabled = false;
+  });
 }
 
 // ──────────────────────────────────────
