@@ -7,6 +7,9 @@ CLAUDE.md
 *.key
 config.js
 toss-key.js
+client_secret.json
+client_secret.json.json
+youtube_token.pickle
 
 # 배포 로그
 deploy_*.log
