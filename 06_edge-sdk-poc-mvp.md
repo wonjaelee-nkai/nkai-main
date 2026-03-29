@@ -183,13 +183,56 @@ jobs:
 
 ## 현재 인프라 스택
 ```
-Frontend:  index.html (ES5, 모놀리식 8,975줄)
-Backend:   Google Apps Script v4.0
-DB:        Google Sheets (6개 시트)
-CDN:       Cloudflare
-Deploy:    FileZilla 수동
-Payment:   Toss Payments (위젯)
+Frontend:  index.html (ES5, 모놀리식 9,300줄+)
+Frontend2: nkai-next (Next.js Phase2, Vercel 배포)
+Backend:   Google Apps Script v5.9 (Code.gs 4,780줄)
+DB:        Google Sheets (14개 시트)
+CDN:       가비아 웹호스팅 FTP (211.47.74.55)
+Deploy:    GitHub Actions deploy-ftp.yml + curl FTP 자동배포
+Payment:   Toss Payments API 개별연동 (toss-key.js .gitignore 분리)
 Email:     EmailJS v5
-PDF:       jsPDF 클라이언트
+PDF:       jsPDF 클라이언트 + GAS 서버사이드
 Analytics: GTM + GA4
+YouTube:   nkai-youtube-auto.py v2.0 (Claude→TTS→D-ID→업로드)
 ```
+
+### 2026.03.29 업데이트 — 인프라 현황
+
+#### GitHub Secrets 6종 등록 완료
+| Secret | 용도 |
+|--------|------|
+| ANTHROPIC_API_KEY | Claude API (전략 브리핑 + 스크립트 생성) |
+| ELEVENLABS_API_KEY | ElevenLabs TTS MP3 생성 |
+| DID_API_KEY | D-ID 아바타 MP4 영상 생성 |
+| FTP_USERNAME / FTP_PASSWORD | 가비아 FTP 자동 배포 |
+| NOTION_TOKEN | Notion 주간 로그 자동 기록 |
+
+#### YouTube 자동화 파이프라인 v2.0
+```
+Step 1: Claude API → 스크립트 JSON 생성
+Step 2: PIL → 썸네일 1280x720
+Step 3a: ElevenLabs → TTS MP3
+Step 3b: D-ID → 아바타 MP4 영상
+Step 4: YouTube API → 비공개 업로드
+```
+
+#### FTP 배포 구조
+```
+실제 웹루트: / (FTP 루트)
+GitHub Actions: deploy-ftp.yml (push 시 자동)
+수동 배포: curl -T [파일] ftp://211.47.74.55/[경로]
+```
+
+#### Toss 라이브키 보안
+```
+toss-key.js → .gitignore (GitHub 미추적)
+window.NKAI_TOSS_CK → 런타임 주입
+4개 HTML에서 하드코딩 제거 완료
+```
+
+#### 추가 배포 페이지
+- neurinkairosai.com/kaizen-live.html (카이젠 라이브)
+- neurinkairosai.com/admin-partner.html (파트너 관리)
+
+#### TODO
+- actions/checkout@v4 → v4.2.2 업그레이드

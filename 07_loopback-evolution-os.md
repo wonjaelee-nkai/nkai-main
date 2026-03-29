@@ -159,4 +159,31 @@ function weeklyROCCalibration(predictions, actuals) {
 □ [6] 모바일 오버플로우
 □ [7] ES5 전용 (optional chaining ?. 금지)
 □ [8] translate="no" 속성 유지
+□ [9] N-Score 0점 방지 (localStorage nkai_full_result 복원)
+□ [10] FAQ 팝업 showPage 래핑 (main.js 로드 확인)
 ```
+
+### 2026.03.29 업데이트 — 자율진화 OS 현황
+
+#### GitHub Actions 워크플로우 3종
+| 워크플로우 | 파일 | 스케줄 |
+|-----------|------|--------|
+| CI Check | ci-check.yml | push/PR 시 |
+| FTP Deploy | deploy-ftp.yml | push 시 (index.html/js 변경) |
+| 자율진화 OS | nkai-auto-os.yml | 매주 월 09시 KST + 수동 |
+
+#### 자율진화 OS — 5개 Job
+```
+strategy-ai:  전략본부 — Claude API 주간 브리핑
+rnd-ai:       R&D본부 — ROC 임계치 주간 보정
+ops-check:    운영본부 — Vercel + 메인도메인 상태체크
+notion-log:   Notion 주간 브리핑 자동 기록
+patent-watch: IP본부 — 특허 심사청구 기한 감시
+```
+
+#### Notion Agent 3종
+| Agent | DB/Page ID | 역할 |
+|-------|-----------|------|
+| 행동로그 | b5557811 | 작업 완료 시 자동 기록 |
+| 통합타임라인 | ed9d9d32 | 주요 이벤트 기록 |
+| Living Profile Hub | 315f60bb | 주간 브리핑 기록 |

@@ -145,3 +145,31 @@ PoC 510건 → 전 세계 단 한 명의 라이브 데이터
 
 "카드 거래 데이터로 사람의 다음 행동을 예측하는 엔진"
 전 세계에 이 데이터를 가진 사람은 이원재 대표 한 명뿐.
+
+---
+
+### 2026.03.29 업데이트 — 수익화 파이프라인 자동화 현황
+
+#### YouTube 자동화 v2.0 (nkai-youtube-auto.py)
+```
+MBTI 킬링 콘텐츠 자동 생성 파이프라인:
+Claude → 스크립트 → 썸네일(PIL) → TTS(ElevenLabs) → 영상(D-ID) → YouTube 업로드
+
+실행: python nkai-youtube-auto.py --type mbti
+타입: archetype / golden / mbti
+```
+
+#### 결제 보안 완료
+```
+Toss 라이브키: toss-key.js (.gitignore)
+GitHub에 키 노출 0건
+window.NKAI_TOSS_CK 런타임 주입 방식
+```
+
+#### 콘텐츠 자동화 현황
+| 콘텐츠 | 자동화 수준 | 도구 |
+|--------|-----------|------|
+| MBTI vs N-KAI 영상 | 95% 자동 | Claude + ElevenLabs + D-ID |
+| 아키타입별 영상 | 95% 자동 | Claude + 썸네일 자동생성 |
+| 골든타임 월간 영상 | 90% 자동 | Claude + 캘린더 데이터 |
+| 주간 전략 브리핑 | 100% 자동 | GitHub Actions cron |
