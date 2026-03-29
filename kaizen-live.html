@@ -184,6 +184,38 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 /* 재분석 버튼 */
 .reset-btn{background:transparent;border:1px solid var(--border);color:var(--text2);padding:7px 14px;border-radius:14px;font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .new-tag{display:inline-block;background:var(--red);color:white;font-size:7px;font-weight:700;padding:1px 4px;border-radius:3px;margin-left:3px;vertical-align:middle;}
+
+/* ──── 오행 에너지 타임라인 ──── */
+.tl-energy-card{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:18px;margin-bottom:12px;}
+.tl-month-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:2px;padding:3px 10px;border-radius:8px;margin-bottom:12px;}
+.tl-chart-wrap{position:relative;height:120px;display:flex;align-items:flex-end;gap:3px;padding:8px 0 24px;}
+.tl-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;}
+.tl-bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .4s ease;position:relative;}
+.tl-bar.current{box-shadow:0 0 8px currentColor;}
+.tl-bar-label{position:absolute;bottom:-20px;font-size:8px;color:var(--text3);white-space:nowrap;}
+.tl-bar-val{position:absolute;top:-16px;font-size:8px;font-weight:700;white-space:nowrap;}
+.tl-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;}
+.tl-leg-item{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--text2);}
+.tl-leg-dot{width:8px;height:8px;border-radius:50%;}
+.tl-cur-card{background:var(--bg3);border-radius:14px;padding:14px;margin-bottom:10px;}
+.tl-cur-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.tl-cur-label{font-size:11px;color:var(--text2);}
+.tl-cur-val{font-size:18px;font-weight:900;}
+.tl-cur-diff{font-size:11px;font-weight:700;}
+.tl-prog-wrap{height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;margin-bottom:6px;}
+.tl-prog{height:100%;border-radius:4px;transition:width .6s ease;}
+.tl-rec-card{border-radius:14px;padding:14px;margin-bottom:10px;position:relative;overflow:hidden;}
+.tl-rec-title{font-size:10px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.tl-rec-row{display:flex;gap:8px;margin-bottom:7px;align-items:flex-start;}
+.tl-rec-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.tl-rec-body{flex:1;}
+.tl-rec-cat{font-size:9px;color:var(--text3);letter-spacing:1px;margin-bottom:2px;}
+.tl-rec-text{font-size:11px;line-height:1.5;}
+.tl-blur{filter:blur(5px);user-select:none;pointer-events:none;}
+.tl-lock-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:rgba(10,13,20,0.55);border-radius:14px;backdrop-filter:blur(2px);}
+.tl-lock-btn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0d14;font-size:11px;font-weight:700;padding:8px 20px;border-radius:10px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.tl-next-card{background:var(--bg2);border:1px solid rgba(90,155,196,0.2);border-radius:14px;padding:14px;position:relative;overflow:hidden;}
+.tl-next-title{font-size:10px;color:var(--water);font-weight:700;margin-bottom:8px;}
 </style>
 </head>
 <body>
@@ -276,6 +308,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     <div class="tt" onclick="showTab('booking')">📅 예약</div>
     <div class="tt" onclick="showTab('store')">🛍️ 스토어</div>
     <div class="tt" onclick="showTab('camera')">📸 AI 카메라<span class="new-tag">NEW</span></div>
+    <div class="tt" onclick="showTab('timeline')">📊 타임라인</div>
     <div class="tt" onclick="showTab('plan')">💰 플랜</div>
   </div>
 
@@ -724,7 +757,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     </div>
 
     <!-- 카테고리 필터 -->
-    <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-bottom:6px;padding-bottom:2px;">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;padding-bottom:2px;">
       <button onclick="filterStore('all',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;color:#0a0d14;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">전체</button>
       <button onclick="filterStore('skin',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🧴 스킨케어</button>
       <button onclick="filterStore('hair',this)" class="store-filter" style="flex-shrink:0;padding:7px 16px;border-radius:20px;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">💇 헤어케어</button>
@@ -904,6 +937,95 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     <div class="plan-card" style="border-color:rgba(232,101,74,0.25);background:linear-gradient(135deg,rgba(232,101,74,0.06),rgba(232,101,74,0.02));"><div class="plan-header"><div class="plan-name">KAI-ON 프리미엄</div><span class="plan-badge" style="background:rgba(232,101,74,0.2);color:var(--fire);">AI 카메라</span></div><div class="plan-price" style="color:var(--fire);">₩39,900 <span class="plan-unit">1회</span></div><div class="plan-feats"><div class="pf">웰니스 리포트 전체</div><div class="pf">AI 카메라 피부·두피 진단</div><div class="pf">오행×카메라 융합 분석</div><div class="pf">맞춤 상품 추천 TOP 5</div><div class="pf">파트너 헤어샵 할인 쿠폰</div></div><button class="plan-btn" style="background:linear-gradient(135deg,var(--fire),#f08060);color:white;">₩39,900 프리미엄</button></div>
     <div class="plan-card" style="background:linear-gradient(135deg,rgba(45,140,255,0.07),rgba(45,140,255,0.02));border-color:rgba(45,140,255,0.2);"><div class="plan-header"><div class="plan-name">💰 금융DNA + 웰니스 번들</div><span class="plan-badge" style="background:rgba(45,140,255,0.2);color:#5AA8FF;">₩4,900 절약</span></div><div class="plan-price" style="color:#5AA8FF;">₩24,900 <span class="plan-unit">번들</span></div><div style="font-size:9px;color:var(--text3);text-decoration:line-through;margin-top:2px;">따로 사면 ₩29,800</div><div class="plan-feats"><div class="pf">N-KAI 금융 DNA 리포트</div><div class="pf">KAI-ON 웰니스 리포트</div><div class="pf">금융+웰니스 통합 인사이트</div></div><button class="plan-btn" style="background:linear-gradient(135deg,#2D8CFF,#5AA8FF);color:white;">₩24,900 번들로 시작</button></div>
     <div class="plan-card"><div class="plan-header"><div class="plan-name">🔄 월 구독</div><span class="plan-badge" style="background:rgba(0,214,143,0.15);color:var(--green);">매월 갱신</span></div><div class="plan-price" style="color:var(--green);">₩14,900 <span class="plan-unit">/월</span></div><div class="plan-feats"><div class="pf">월별 오행 에너지 변화 리포트</div><div class="pf">계절별 케어 루틴 자동 업데이트</div><div class="pf">AI 식단 추천 매일 갱신</div><div class="pf">파트너 헤어샵 10% 할인</div></div><button class="plan-btn pb-outline">구독 시작</button></div>
+  <!-- 타임라인 탭 -->
+  <div id="tab-timeline" class="tab-page">
+    <div class="sec-title">2026 오행 에너지 타임라인</div>
+
+    <!-- 월별 에너지 차트 -->
+    <div class="tl-energy-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div style="font-size:12px;font-weight:700;" id="tl-chart-title">코어 오행 에너지 변화</div>
+        <span class="tl-month-badge" id="tl-month-badge" style="background:rgba(201,168,76,0.15);color:var(--gold2);">2026년</span>
+      </div>
+      <div style="font-size:10px;color:var(--text2);margin-bottom:14px;" id="tl-chart-sub">월주 오행에 따른 에너지 강약</div>
+      <div class="tl-chart-wrap" id="tl-chart"></div>
+      <div class="tl-legend" id="tl-legend">
+        <div class="tl-leg-item"><div class="tl-leg-dot" style="background:var(--green)"></div>강화 (80+)</div>
+        <div class="tl-leg-item"><div class="tl-leg-dot" style="background:var(--gold)"></div>보통 (55~79)</div>
+        <div class="tl-leg-item"><div class="tl-leg-dot" style="background:var(--red)"></div>약화 (~54)</div>
+        <div class="tl-leg-item"><div class="tl-leg-dot" style="background:rgba(201,168,76,0.8);border:1px solid var(--gold2)"></div>이달</div>
+      </div>
+    </div>
+
+    <!-- 이달의 에너지 카드 -->
+    <div class="sec-title">이달의 에너지 현황</div>
+    <div class="tl-cur-card">
+      <div class="tl-cur-row">
+        <div>
+          <div class="tl-cur-label" id="tl-cur-label">이번 달 에너지</div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-top:4px;">
+            <div class="tl-cur-val" id="tl-cur-val">—</div>
+            <div class="tl-cur-diff" id="tl-cur-diff"></div>
+          </div>
+        </div>
+        <div style="font-size:36px;" id="tl-cur-emoji">✦</div>
+      </div>
+      <div class="tl-prog-wrap">
+        <div class="tl-prog" id="tl-cur-prog" style="width:0%;background:var(--gold);"></div>
+      </div>
+      <div style="font-size:10px;color:var(--text2);margin-top:4px;" id="tl-cur-desc"></div>
+    </div>
+
+    <!-- 이달의 맞춤 추천 (유료 블러) -->
+    <div class="sec-title">이달의 맞춤 추천</div>
+    <div class="tl-rec-card" id="tl-rec-card" style="background:var(--bg2);border:1px solid var(--border);">
+      <div class="tl-rec-title">🌿 <span id="tl-rec-title-text">오행 맞춤 케어</span></div>
+      <div id="tl-rec-content">
+        <div class="tl-rec-row">
+          <div class="tl-rec-icon">🧴</div>
+          <div class="tl-rec-body"><div class="tl-rec-cat">피부</div><div class="tl-rec-text" id="tl-rec-skin">—</div></div>
+        </div>
+        <div class="tl-rec-row">
+          <div class="tl-rec-icon">🥗</div>
+          <div class="tl-rec-body"><div class="tl-rec-cat">식단</div><div class="tl-rec-text" id="tl-rec-diet">—</div></div>
+        </div>
+        <div class="tl-rec-row">
+          <div class="tl-rec-icon">🏃</div>
+          <div class="tl-rec-body"><div class="tl-rec-cat">운동</div><div class="tl-rec-text" id="tl-rec-exercise">—</div></div>
+        </div>
+        <div class="tl-rec-row">
+          <div class="tl-rec-icon">✨</div>
+          <div class="tl-rec-body"><div class="tl-rec-cat">제품</div><div class="tl-rec-text" id="tl-rec-product">—</div></div>
+        </div>
+      </div>
+      <div class="tl-lock-overlay" id="tl-rec-lock">
+        <div style="font-size:20px;">🔒</div>
+        <div style="font-size:11px;color:var(--text2);text-align:center;">맞춤 추천은 유료 플랜에서 확인</div>
+        <button class="tl-lock-btn" onclick="showTab('plan')">플랜 보기</button>
+      </div>
+    </div>
+
+    <!-- 다음 달 예측 (유료 블러) -->
+    <div class="sec-title">다음 달 예측</div>
+    <div class="tl-next-card">
+      <div class="tl-next-title">📈 다음 달 에너지 전망</div>
+      <div style="position:relative;">
+        <div id="tl-next-content" class="tl-blur">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-size:13px;font-weight:700;" id="tl-next-val">다음달 에너지: —</div>
+            <div style="font-size:11px;" id="tl-next-diff">—</div>
+          </div>
+          <div style="font-size:10px;color:var(--text2);line-height:1.6;" id="tl-next-desc">다음 달 에너지 흐름 예측</div>
+        </div>
+        <div class="tl-lock-overlay" id="tl-next-lock" style="border-radius:10px;">
+          <div style="font-size:18px;">🔒</div>
+          <div style="font-size:11px;color:var(--text2);">유료 플랜에서 확인</div>
+          <button class="tl-lock-btn" onclick="showTab('plan')">플랜 보기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   </div>
 </div>
 
@@ -2077,6 +2199,10 @@ function analyze() {
   // 식단 오늘 호환
   db.dietToday = db.dietToday || '오행 맞춤 식단을 확인하세요.';
 
+  // 타임라인용 전역 저장
+  window._tlCore = core;
+  window._tlName = name;
+
   // 화면 전환
   document.getElementById('screen-input').style.display = 'none';
   document.getElementById('screen-result').style.display = 'block';
@@ -2373,7 +2499,7 @@ function analyze() {
 // ──────────────────────────────────────
 // 탭 전환
 // ──────────────────────────────────────
-var TAB_IDS = ['oheng','fortune','skin','hair','diet','compat','consult','teacher','booking','store','camera','plan'];
+var TAB_IDS = ['oheng','fortune','skin','hair','diet','compat','consult','teacher','booking','store','camera','timeline','plan'];
 function showTab(id) {
   TAB_IDS.forEach(function(t){
     var page = document.getElementById('tab-'+t);
@@ -3328,6 +3454,188 @@ analyze = function() {
   setTimeout(function(){
     renderProducts();
   }, 1300);
+};
+
+// ──────────────────────────────────────
+// 오행 에너지 타임라인
+// ──────────────────────────────────────
+var MONTH_OHANG_2026 = ['土','木','木','土','火','火','土','金','金','土','水','水'];
+var MONTH_NAMES = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+var MONTH_EARTHLY = ['丑','寅','卯','辰','巳','午','未','申','酉','戌','亥','子'];
+var OHANG_COLOR = {'金':'var(--metal)','木':'var(--wood)','火':'var(--fire)','土':'var(--earth)','水':'var(--water)'};
+var OHANG_EMOJI = {'金':'✦','木':'🌿','火':'🔥','土':'⛰️','水':'💧'};
+
+function getMonthlyEnergy(coreOhang, monthOhang) {
+  var generates = {'木':'火','火':'土','土':'金','金':'水','水':'木'};
+  var controls  = {'木':'土','土':'水','水':'火','火':'金','金':'木'};
+  var seed = coreOhang.charCodeAt(0) * 31 + monthOhang.charCodeAt(0);
+  function pseudoRand(base, range) {
+    return base + ((seed * 9301 + 49297) % 233280) / 233280 * range;
+  }
+  if (coreOhang === monthOhang)          return pseudoRand(92, 8);
+  if (generates[monthOhang] === coreOhang) return pseudoRand(78, 12);
+  if (generates[coreOhang] === monthOhang) return pseudoRand(58, 12);
+  if (controls[monthOhang] === coreOhang)  return pseudoRand(28, 17);
+  if (controls[coreOhang] === monthOhang)  return pseudoRand(48, 12);
+  return pseudoRand(62, 12);
+}
+
+var TL_REC = {
+  '金': { skin:'이번 달 피부 건조 주의. 보습 집중 케어 필요', diet:'배즙, 도라지차, 무 요리 추천', exercise:'격한 운동 피하고 호흡 명상 위주', product:'세라마이드 크림, 히알루론산 에센스' },
+  '木': { skin:'간 해독 케어 집중. 각질 제거 및 재생 루틴', diet:'녹황색 채소, 신맛 식초, 레몬워터 추천', exercise:'스트레칭, 요가, 유연성 운동 위주', product:'비타민C 세럼, 레티놀 크림' },
+  '火': { skin:'열성 피부 진정 집중. 쿨링 팩, 진정 앰플', diet:'쓴맛 음식 (여주, 쑥), 수박, 녹두 추천', exercise:'심폐 강화 유산소 30분 이하, 무리 금지', product:'시카 크림, 판테놀 앰플, 쿨링 토너' },
+  '土': { skin:'복부·소화기 연동 피부 관리. 톤업 케어', diet:'단호박, 고구마, 황색 식품, 미지근한 물', exercise:'걷기, 필라테스, 코어 강화 운동 위주', product:'나이아신아마이드 크림, 자외선 차단제' },
+  '水': { skin:'신장·수분 순환 집중. 안티에이징 케어', diet:'검은콩, 미역, 블루베리, 짠맛 적정 보충', exercise:'수영, 수중 운동, 저충격 유산소 위주', product:'펩타이드 앰플, 수분 크림, 눈가 크림' }
+};
+
+var TL_RELATION = {
+  same:     { label:'같은 오행 — 에너지 최강화',  color:'var(--green)' },
+  receives: { label:'생 받음 — 에너지 충전',       color:'var(--green)' },
+  gives:    { label:'생 줌 — 에너지 소모',         color:'var(--gold)'  },
+  attacked: { label:'극 당함 — 에너지 약화',       color:'var(--red)'   },
+  attacks:  { label:'극 함 — 에너지 소폭 소모',    color:'var(--gold)'  },
+  neutral:  { label:'중립 관계',                   color:'var(--text2)' }
+};
+
+function getRelation(core, monthOhang) {
+  var generates = {'木':'火','火':'土','土':'金','金':'水','水':'木'};
+  var controls  = {'木':'土','土':'水','水':'火','火':'金','金':'木'};
+  if (core === monthOhang)              return 'same';
+  if (generates[monthOhang] === core)   return 'receives';
+  if (generates[core] === monthOhang)   return 'gives';
+  if (controls[monthOhang] === core)    return 'attacked';
+  if (controls[core] === monthOhang)    return 'attacks';
+  return 'neutral';
+}
+
+function renderTimeline(core, name) {
+  var now = new Date();
+  var curMonth = now.getMonth(); // 0-indexed
+  var energies = MONTH_OHANG_2026.map(function(mo, i) {
+    return Math.round(getMonthlyEnergy(core, mo));
+  });
+  var coreColor = OHANG_COLOR[core];
+  var coreEmoji = OHANG_EMOJI[core];
+
+  // ── 차트 제목 ──
+  document.getElementById('tl-chart-title').textContent = name + '님의 ' + core + ' 오행 에너지 변화';
+  document.getElementById('tl-chart-sub').textContent = '2026년 월주 오행에 따른 에너지 강약 (만세력 기반)';
+  document.getElementById('tl-month-badge').textContent = '2026년 · ' + core + ' 코어';
+  document.getElementById('tl-month-badge').style.color = coreColor;
+
+  // ── 막대 차트 렌더링 ──
+  var chartEl = document.getElementById('tl-chart');
+  chartEl.innerHTML = '';
+  var maxE = Math.max.apply(null, energies);
+
+  energies.forEach(function(e, i) {
+    var isCur = (i === curMonth);
+    var barColor = e >= 80 ? 'var(--green)' : e >= 55 ? 'var(--gold)' : 'var(--red)';
+    if (isCur) barColor = coreColor;
+
+    var col = document.createElement('div');
+    col.className = 'tl-bar-col';
+
+    var valDiv = document.createElement('div');
+    valDiv.className = 'tl-bar-val';
+    valDiv.style.color = barColor;
+    valDiv.style.fontSize = isCur ? '9px' : '7px';
+    valDiv.textContent = e + '%';
+
+    var bar = document.createElement('div');
+    bar.className = 'tl-bar' + (isCur ? ' current' : '');
+    bar.style.background = barColor;
+    bar.style.height = Math.round((e / 100) * 80) + 'px';
+    bar.style.width = '100%';
+    if (isCur) {
+      bar.style.outline = '2px solid ' + coreColor;
+      bar.style.outlineOffset = '2px';
+    }
+
+    var lbl = document.createElement('div');
+    lbl.className = 'tl-bar-label';
+    lbl.textContent = MONTH_NAMES[i].replace('월','');
+    if (isCur) { lbl.style.color = coreColor; lbl.style.fontWeight = '700'; }
+
+    col.appendChild(valDiv);
+    col.appendChild(bar);
+    col.appendChild(lbl);
+    chartEl.appendChild(col);
+  });
+
+  // ── 이달의 카드 ──
+  var curE = energies[curMonth];
+  var prevE = curMonth > 0 ? energies[curMonth - 1] : curE;
+  var diff = curE - prevE;
+  var relation = getRelation(core, MONTH_OHANG_2026[curMonth]);
+  var relObj = TL_RELATION[relation];
+  var barGrad = curE >= 80 ? 'linear-gradient(90deg,var(--green),#00e8a0)'
+              : curE >= 55  ? 'linear-gradient(90deg,var(--gold),var(--gold2))'
+              : 'linear-gradient(90deg,var(--red),#ff7090)';
+
+  document.getElementById('tl-cur-label').textContent =
+    MONTH_NAMES[curMonth] + ' ' + core + ' 에너지 · ' + MONTH_EARTHLY[curMonth] + '월 (' + MONTH_OHANG_2026[curMonth] + ')';
+  document.getElementById('tl-cur-val').textContent = curE + '%';
+  document.getElementById('tl-cur-val').style.color = curE >= 80 ? 'var(--green)' : curE >= 55 ? 'var(--gold2)' : 'var(--red)';
+  document.getElementById('tl-cur-emoji').textContent = coreEmoji;
+
+  var diffEl = document.getElementById('tl-cur-diff');
+  if (curMonth > 0) {
+    diffEl.textContent = (diff >= 0 ? '↑' : '↓') + Math.abs(diff) + '% (지난달 대비)';
+    diffEl.style.color = diff >= 0 ? 'var(--green)' : 'var(--red)';
+  } else {
+    diffEl.textContent = '';
+  }
+
+  document.getElementById('tl-cur-prog').style.width = curE + '%';
+  document.getElementById('tl-cur-prog').style.background = barGrad;
+  document.getElementById('tl-cur-desc').textContent = relObj.label + ' · ' + MONTH_OHANG_2026[curMonth] + ' 오행 월주';
+  document.getElementById('tl-cur-desc').style.color = relObj.color;
+
+  // ── 이달의 맞춤 추천 (유료 블러) ──
+  var rec = TL_REC[core];
+  document.getElementById('tl-rec-title-text').textContent = MONTH_NAMES[curMonth] + ' ' + core + ' 코어 맞춤 케어';
+  document.getElementById('tl-rec-skin').textContent = rec.skin;
+  document.getElementById('tl-rec-diet').textContent = rec.diet;
+  document.getElementById('tl-rec-exercise').textContent = rec.exercise;
+  document.getElementById('tl-rec-product').textContent = rec.product;
+
+  // ── 다음 달 예측 ──
+  var nextMonth = (curMonth + 1) % 12;
+  var nextE = energies[nextMonth];
+  var nextDiff = nextE - curE;
+  var nextRel = getRelation(core, MONTH_OHANG_2026[nextMonth]);
+  var nextRelObj = TL_RELATION[nextRel];
+
+  document.getElementById('tl-next-val').textContent =
+    MONTH_NAMES[nextMonth] + ' ' + core + ' 에너지: ' + nextE + '%';
+  document.getElementById('tl-next-val').style.color = nextE >= 80 ? 'var(--green)' : nextE >= 55 ? 'var(--gold2)' : 'var(--red)';
+
+  var nextDiffEl = document.getElementById('tl-next-diff');
+  nextDiffEl.textContent = (nextDiff >= 0 ? '↑' : '↓') + Math.abs(nextDiff) + '%';
+  nextDiffEl.style.color = nextDiff >= 0 ? 'var(--green)' : 'var(--red)';
+
+  document.getElementById('tl-next-desc').textContent =
+    MONTH_NAMES[nextMonth] + '은 ' + MONTH_EARTHLY[nextMonth] + '월 · ' + MONTH_OHANG_2026[nextMonth] + ' 오행. '
+    + nextRelObj.label + '. '
+    + (nextDiff < 0 ? '에너지 하락이 예상됩니다. 컨디션 관리에 유의하세요.' : '에너지 상승이 예상됩니다. 적극적으로 활동하기 좋은 달입니다.');
+}
+
+// analyze 패치 — 타임라인 렌더링
+var _origAnalyzeTL = analyze;
+analyze = function() {
+  _origAnalyzeTL.apply(this, arguments);
+  setTimeout(function(){
+    var name = document.getElementById('inp-name').value || '사용자';
+    // core는 calcCore 결과에서 가져옴 — profile-card data-char 속성으로 추출
+    var profileCard = document.querySelector('.profile-card');
+    if (profileCard) {
+      var coreChar = profileCard.getAttribute('data-char') || '金';
+      // data-char가 한자일 수 있으므로 코어 오행을 별도 추출
+    }
+    // 코어 오행은 tl-cur-label에서 읽는 것 대신 별도 전역 변수 활용
+    if (window._tlCore) renderTimeline(window._tlCore, window._tlName || name);
+  }, 400);
 };
 </script>
 </body>
