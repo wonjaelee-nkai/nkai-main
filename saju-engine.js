@@ -180,8 +180,8 @@ function getSajuYear(year, month, day) {
 function getYearGan(year) { return ['庚','辛','壬','癸','甲','乙','丙','丁','戊','己'][year % 10]; }
 function getYearZhi(year) { return ['申','酉','戌','亥','子','丑','寅','卯','辰','巳','午','未'][year % 12]; }
 function getMonthGan(yIdx, month) { var base = (yIdx % 5) * 2; var g = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸']; return g[(base + month - 1) % 10]; }
-function getDayGan(y, m, d) { var b = new Date(1900, 0, 1); var t = new Date(y, m-1, d); var diff = Math.floor((t-b)/86400000); return ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'][(diff+10)%10]; }
-function getDayZhi(y, m, d) { var b = new Date(1900, 0, 1); var t = new Date(y, m-1, d); var diff = Math.floor((t-b)/86400000); return ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'][(diff+10)%12]; }
+function getDayGan(y, m, d) { var b = new Date(1900, 0, 1); var t = new Date(y, m-1, d); var diff = Math.floor((t-b)/86400000); return ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'][(diff+11)%10]; }
+function getDayZhi(y, m, d) { var b = new Date(1900, 0, 1); var t = new Date(y, m-1, d); var diff = Math.floor((t-b)/86400000); return ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'][(diff+11)%12]; }
 function getElementFromGan(g) { return (ENERGY_ELEMENTS[g] && ENERGY_ELEMENTS[g].element) || '土'; }
 function getElementFromZhi(z) { var m = {'子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'}; return m[z] || '土'; }
 
