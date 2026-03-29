@@ -60,9 +60,11 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 #screen-result{display:none;}
 
 /* 상단 탭 */
-.top-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;position:sticky;top:53px;z-index:100;}
-.top-tabs::-webkit-scrollbar{display:none;}
-.tt{padding:12px 16px;font-size:11px;color:var(--text3);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;font-weight:500;}
+.top-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;position:sticky;top:53px;z-index:100;}
+.top-tabs::-webkit-scrollbar{height:3px;}
+.top-tabs::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px;}
+.top-tabs::-webkit-scrollbar-track{background:transparent;}
+.tt{padding:10px 10px;font-size:10px;color:var(--text3);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;font-weight:500;}
 .tt.active{color:var(--gold2);border-bottom-color:var(--gold);}
 
 /* 탭 페이지 */
