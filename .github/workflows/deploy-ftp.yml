@@ -1,39 +1,43 @@
-name: Deploy to Gabia FTP
+name: FTP Deploy to neurinkairosai.com
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
-      - 'index.html'
+      - '*.html'
+      - '*.css'
+      - '*.js'
       - 'js/**'
-      - 'css/**'
-      - 'style.css'
-      - 'saju-engine.js'
-      - 'nkai-breakdown.js'
-      - 'analysis-flow.js'
-
   workflow_dispatch:
 
 jobs:
   deploy:
-    name: FTP Deploy
+    name: Deploy web files via FTP
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy to Gabia via FTP
+      - name: Deploy via SamKirkland/FTP-Deploy-Action
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: 211.47.74.55
+          server: neurinkairosai.com
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /public_html/
+          # 배포 대상: 루트의 웹 파일 + js/ 폴더
+          # 나머지 비웹 파일은 모두 제외
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
+            **/.claude/**
+            **/.github/**
+            **/skills/**
+            **/archive/**
+            **/nkai-claude-code-setup/**
             **/*.md
             **/*.csv
             **/*.xlsx
@@ -44,13 +48,15 @@ jobs:
             **/*.zip
             **/*.pem
             **/*.key
-            **/archive/**
-            **/nkai-claude-code-setup/**
+            **/*.py
             **/*.jsx
-            **/CLAUDE.md
-            **/config.js
-            **/.claude/**
-            **/.github/**
-            **/organize_downloads.py
+            **/*.png
+            **/*.jpg
+            **/*.txt
             **/회사로고/**
             **/정책자금/**
+
+      - name: Deploy summary
+        run: |
+          echo "✅ FTP 배포 완료 — neurinkairosai.com/public_html/"
+          echo "배포 시각: $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M:%S KST')"
