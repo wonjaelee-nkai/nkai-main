@@ -1,0 +1,72 @@
+name: N-KAI Harness Evolver
+
+on:
+  schedule:
+    - cron: '0 0 * * 1,3,5'  # 매주 월/수/금 09시 KST (UTC 00:00)
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: '실행 모드'
+        required: true
+        default: 'batch'
+        type: choice
+        options:
+          - batch
+          - skill-gen
+          - evolve
+      domain:
+        description: 'SKILL 도메인 (skill-gen 모드)'
+        required: false
+        default: ''
+      skill:
+        description: 'SKILL 번호 (evolve 모드)'
+        required: false
+        default: ''
+
+jobs:
+  harness:
+    name: 3-Agent Harness Loop
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Harness Evolver
+        run: |
+          MODE="${{ github.event.inputs.mode || 'batch' }}"
+          DOMAIN="${{ github.event.inputs.domain || '' }}"
+          SKILL="${{ github.event.inputs.skill || '' }}"
+
+          echo "=== N-KAI Harness Evolver ==="
+          echo "Mode: $MODE"
+
+          if [ "$MODE" = "skill-gen" ] && [ -n "$DOMAIN" ]; then
+            python nkai-harness-evolver.py --mode skill-gen --domain "$DOMAIN"
+          elif [ "$MODE" = "evolve" ] && [ -n "$SKILL" ]; then
+            python nkai-harness-evolver.py --mode evolve --skill "$SKILL"
+          else
+            python nkai-harness-evolver.py --mode batch
+          fi
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          SKILLS_DIR: '.'
+          PYTHONIOENCODING: utf-8
+
+      - name: Commit new SKILLs (if any)
+        run: |
+          git config user.name "N-KAI Harness Bot"
+          git config user.email "nkai-bot@neurinkairosai.com"
+          git add -A "*.md"
+          if git diff --staged --quiet; then
+            echo "No new SKILL files"
+          else
+            git commit -m "auto: Harness Evolver SKILL update $(date '+%Y-%m-%d')"
+            git push
+          fi
