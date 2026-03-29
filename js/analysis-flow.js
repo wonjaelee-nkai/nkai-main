@@ -13,48 +13,40 @@ function startAnalysis() {
     if(birth.length !== 8 || isNaN(birth)) { alert('생년월일을 YYYYMMDD 형식으로 입력해주세요.'); return; }
 
     var answers = {};
-    // Q1~Q8 필수
-    for(var i=1; i<=8; i++) {
-        var s = document.querySelector('input[name="kipa-q'+i+'"]:checked');
-        if(!s) { alert('KIPA Q'+i+'번 문항에 응답해주세요.'); return; }
-        answers['q'+i] = s.value;
+    // Q1~Q16 수집 — .kipa-opt 텍스트 버튼 기반 (v3)
+    for(var i=1; i<=16; i++) {
+        var sel = document.querySelector('.kipa-opt[data-q="'+i+'"].selected');
+        if(!sel && i <= 8) { alert('KIPA Q'+i+'번 문항에 응답해주세요.'); return; }
+        answers['q'+i] = sel ? parseInt(sel.getAttribute('data-v')) : 3;
     }
-    // Q9~Q16 선택적 (정밀 분석 모드 — 있으면 읽고 없으면 중립 처리)
-    var is16Q = !!document.querySelector('input[name="kipa-q9"]:checked');
-    for(var j=9; j<=16; j++) {
-        var sj = document.querySelector('input[name="kipa-q'+j+'"]:checked');
-        answers['q'+j] = sj ? sj.value : null;
-    }
-    var kipaMode = is16Q ? '16q' : '8q';
+    var kipaMode = '16q';
 
-    // ★ KIPA 점수 계산 v2.0 — 금융 DNA 목적 가중치 차별화 (2026.03.19)
-    // A=75(해당축 방향), B=25(반대 방향), null=50(중립)
-    function qVal(q, aVal) { return answers[q] ? (answers[q] === aVal ? 75 : 25) : 50; }
+    // ★ KIPA 점수 계산 v3.0 — 5지선다 스케일 (1~5 → 20~80 변환)
+    function toScore(v) { return (6 - (v || 3)) * 15 + 20; }
 
     // E/I축 (Q1,2,9,10)
-    var EI_W = { q1:1.0, q2:1.0, q9:1.0, q10:1.0 };
-    var EI_T = EI_W.q1 + EI_W.q2 + EI_W.q9 + EI_W.q10;
-    var ei = Math.round((qVal('q1','A')*EI_W.q1 + qVal('q2','A')*EI_W.q2 +
-                         qVal('q9','A')*EI_W.q9 + qVal('q10','A')*EI_W.q10) / EI_T);
+    var EI_W = { q1:1.0, q2:1.0, q9:1.0, q10:1.0 }; var EI_T = 4;
+    var ei = Math.round((toScore(answers.q1)*EI_W.q1 + toScore(answers.q2)*EI_W.q2 +
+                         toScore(answers.q9)*EI_W.q9 + toScore(answers.q10)*EI_W.q10) / EI_T);
 
     // N/S축 (Q3,4,11,12)
-    var NS_W = { q3:1.5, q4:1.5, q11:1.0, q12:1.5 };
-    var NS_T = NS_W.q3 + NS_W.q4 + NS_W.q11 + NS_W.q12;
-    var ns = Math.round((qVal('q3','A')*NS_W.q3 + qVal('q4','A')*NS_W.q4 +
-                         qVal('q11','A')*NS_W.q11 + qVal('q12','A')*NS_W.q12) / NS_T);
+    var NS_W = { q3:1.5, q4:1.5, q11:1.0, q12:1.5 }; var NS_T = 5.5;
+    var ns = Math.round((toScore(answers.q3)*NS_W.q3 + toScore(answers.q4)*NS_W.q4 +
+                         toScore(answers.q11)*NS_W.q11 + toScore(answers.q12)*NS_W.q12) / NS_T);
 
     // T/F축 (Q5,6,13,14)
-    var TF_W = { q5:0.8, q6:1.5, q13:1.5, q14:0.8 };
-    var TF_T = TF_W.q5 + TF_W.q6 + TF_W.q13 + TF_W.q14;
-    var tf = Math.round((qVal('q5','A')*TF_W.q5 + qVal('q6','A')*TF_W.q6 +
-                         qVal('q13','A')*TF_W.q13 + qVal('q14','A')*TF_W.q14) / TF_T);
+    var TF_W = { q5:0.8, q6:1.5, q13:1.5, q14:0.8 }; var TF_T = 4.6;
+    var tf = Math.round((toScore(answers.q5)*TF_W.q5 + toScore(answers.q6)*TF_W.q6 +
+                         toScore(answers.q13)*TF_W.q13 + toScore(answers.q14)*TF_W.q14) / TF_T);
 
     // J/P축 (Q7,8,15,16)
-    var JP_W = { q7:1.5, q8:1.0, q15:0.5, q16:1.5 };
-    var JP_T = JP_W.q7 + JP_W.q8 + JP_W.q15 + JP_W.q16;
-    var jp = Math.round((qVal('q7','A')*JP_W.q7 + qVal('q8','A')*JP_W.q8 +
-                         qVal('q15','A')*JP_W.q15 + qVal('q16','A')*JP_W.q16) / JP_T);
+    var JP_W = { q7:1.5, q8:1.0, q15:0.5, q16:1.5 }; var JP_T = 4.5;
+    var jp = Math.round((toScore(answers.q7)*JP_W.q7 + toScore(answers.q8)*JP_W.q8 +
+                         toScore(answers.q15)*JP_W.q15 + toScore(answers.q16)*JP_W.q16) / JP_T);
 
+    // ★ NaN 방어 — 0이 되면 saju-engine에서 N-Score가 0으로 계산됨
+    if(isNaN(ei)) ei = 50; if(isNaN(ns)) ns = 50; if(isNaN(tf)) tf = 50; if(isNaN(jp)) jp = 50;
+    console.log('[N-KAI] KIPA v3 scores: ei='+ei+' ns='+ns+' tf='+tf+' jp='+jp);
     currentUserBirthDate = birth; currentUserEmail = email; currentUserName = name;
 
     var region = document.getElementById('input-region').value;

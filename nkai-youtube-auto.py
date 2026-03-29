@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # ============================================================
-#  N-KAI 유튜브 자동화 v1.0
-#  Claude API → 스크립트 생성 → 썸네일 → YouTube 자동 업로드
+#  N-KAI 유튜브 자동화 v2.0
+#  Claude API → 스크립트 → 썸네일 → ElevenLabs TTS → D-ID 영상 → YouTube 업로드
 #  뉴린카이로스에이아이(주) | Architect: 이원재 | 2026-03-27
 # ============================================================
 #  사용법:
 #    pip install anthropic google-api-python-client google-auth-httplib2
 #         google-auth-oauthlib pillow requests
+#    환경변수: ANTHROPIC_API_KEY, ELEVENLABS_API_KEY, DID_API_KEY
 #    python nkai-youtube-auto.py --type archetype --code ESTJ
 #    python nkai-youtube-auto.py --type golden    --month 4
 #    python nkai-youtube-auto.py --type mbti      (킬링 카피 영상)
@@ -28,6 +29,9 @@ import io
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
 YOUTUBE_CLIENT_SECRET = os.environ.get("YOUTUBE_CLIENT_SECRET_FILE", "client_secret.json")
 CHANNEL_ID = os.environ.get("NKAI_YOUTUBE_CHANNEL_ID", "")
+ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY", "")
+DID_API_KEY = os.environ.get("DID_API_KEY", "")
+DID_AVATAR_URL = os.environ.get("DID_AVATAR_URL", "https://d-id-public-bucket.s3.us-west-2.amazonaws.com/alice.jpg")
 
 BRAND_COLORS = {
     "primary":    "#2D8CFF",
@@ -291,7 +295,307 @@ def generate_thumbnail(title_text, sub_text, content_type="archetype", output_pa
 
 
 # ─────────────────────────────────────────
-# 3. YouTube API — 자동 업로드
+# 3a. Edge TTS (Microsoft 무료) — 스크립트 → MP3
+# ─────────────────────────────────────────
+def generate_tts(script_text, output_path="voice.mp3"):
+    import asyncio
+
+    async def _run():
+        import edge_tts
+        communicate = edge_tts.Communicate(script_text[:5000], "ko-KR-SunHiNeural")
+        await communicate.save(output_path)
+
+    try:
+        asyncio.run(_run())
+        file_size = os.path.getsize(output_path)
+        print(f"[TTS 완료] {output_path} ({file_size:,} bytes)")
+        return output_path
+    except Exception as e:
+        print(f"[TTS 실패] {e}")
+        return None
+
+
+# ─────────────────────────────────────────
+# 3b. 영상 생성 — Unsplash 배경 + Ken Burns + 크로스페이드
+# ─────────────────────────────────────────
+
+def _extract_key_phrases(script_text):
+    """대본에서 핵심 문구만 추출 — 슬라이드 1장 = 한 메시지"""
+    import re
+    # [섹션명] 제거
+    clean = re.sub(r'\[[^\]]+\]', '', script_text)
+    # 문장 분리
+    sentences = re.split(r'[.!?]\s+|\n\n+', clean)
+    phrases = []
+    for s in sentences:
+        s = s.strip().strip('.!?').strip()
+        if not s or len(s) < 8:
+            continue
+        # 긴 문장 → 핵심 앞부분만 (최대 40자)
+        if len(s) > 40:
+            # 쉼표/마침표 기준 앞부분
+            cut = s[:40]
+            for sep in [', ', '! ', '? ', '. ']:
+                idx = s.find(sep)
+                if 10 < idx < 45:
+                    cut = s[:idx]
+                    break
+            s = cut
+        phrases.append(s)
+    # 중복 제거 + 최대 10장
+    seen = set()
+    result = []
+    for p in phrases:
+        key = p[:15]
+        if key not in seen:
+            seen.add(key)
+            result.append(p)
+        if len(result) >= 10:
+            break
+    return result if result else ["N-KAI 금융 DNA 분석"]
+
+
+_UNSPLASH_KEYWORDS = [
+    "finance investing", "stock market chart", "business strategy",
+    "money wealth", "data analytics", "technology future",
+    "cityscape night", "gold coins", "digital brain",
+    "wallet payment", "growth chart", "luxury lifestyle",
+]
+
+
+def _download_unsplash(keyword, W=1280, H=720):
+    """Unsplash 무료 이미지 다운로드 → PIL Image (실패 시 None)"""
+    import urllib.request
+    url = f"https://source.unsplash.com/{W}x{H}/?{keyword.replace(' ', ',')}"
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "NKAI/2.0"})
+        with urllib.request.urlopen(req, timeout=8) as res:
+            data = res.read()
+        if len(data) < 5000:
+            return None
+        return Image.open(io.BytesIO(data)).convert("RGB").resize((W, H), Image.LANCZOS)
+    except Exception:
+        return None
+
+
+def _text_overlay(img_arr, text, W=1280, H=720):
+    """이미지 위에 반투명 오버레이 + 핵심 문구 렌더링 → numpy"""
+    import numpy as np
+    img = Image.fromarray(img_arr).convert("RGBA")
+
+    # 반투명 어두운 오버레이
+    overlay = Image.new("RGBA", (W, H), (0, 0, 0, 140))
+    img = Image.alpha_composite(img, overlay)
+
+    # 하단 그라데이션 (더 진하게)
+    for y in range(H // 2, H):
+        alpha = int(80 * ((y - H // 2) / (H // 2)))
+        band = Image.new("RGBA", (W, 1), (0, 0, 0, alpha))
+        img.paste(band, (0, y), band)
+
+    draw = ImageDraw.Draw(img)
+    try:
+        font_main = ImageFont.truetype("C:\\WINDOWS\\Fonts\\malgunbd.ttf", 54)
+        font_url = ImageFont.truetype("C:\\WINDOWS\\Fonts\\malgun.ttf", 16)
+    except Exception:
+        font_main = ImageFont.load_default()
+        font_url = font_main
+
+    # 텍스트 줄바꿈 (최대 16자 × 2줄)
+    lines = []
+    remaining = text
+    while remaining and len(lines) < 2:
+        if len(remaining) <= 16:
+            lines.append(remaining)
+            remaining = ""
+        else:
+            cut_at = 16
+            for i in range(min(18, len(remaining) - 1), 8, -1):
+                if remaining[i] in ' ,·\u3000':
+                    cut_at = i + 1
+                    break
+            lines.append(remaining[:cut_at].strip())
+            remaining = remaining[cut_at:].strip()
+
+    line_h = 74
+    total_h = len(lines) * line_h
+    y = (H - total_h) // 2 - 10
+
+    for line in lines:
+        bbox = draw.textbbox((0, 0), line, font=font_main)
+        tw = bbox[2] - bbox[0]
+        x = (W - tw) // 2
+        # 그림자 (2중)
+        draw.text((x + 4, y + 4), line, font=font_main, fill=(0, 0, 0, 200))
+        draw.text((x + 2, y + 2), line, font=font_main, fill=(0, 0, 0, 150))
+        draw.text((x, y), line, font=font_main, fill=(255, 255, 255, 255))
+        y += line_h
+
+    # 하단 워터마크 바
+    accent = (45, 140, 255, 255)
+    draw.rectangle([(0, H - 44), (W, H)], fill=(5, 8, 15, 220))
+    draw.rectangle([(0, H - 44), (W, H - 42)], fill=accent)
+    url_text = "neurinkairosai.com"
+    bbox = draw.textbbox((0, 0), url_text, font=font_url)
+    tw = bbox[2] - bbox[0]
+    draw.text(((W - tw) // 2, H - 32), url_text, font=font_url, fill=(148, 163, 184, 255))
+
+    return np.array(img.convert("RGB"))
+
+
+def generate_video(audio_path, thumbnail_path=None, output_path="video.mp4", script_data=None):
+    if not audio_path or not os.path.exists(audio_path):
+        print("[영상 스킵] 오디오 파일 없음")
+        return None
+
+    try:
+        from moviepy import ImageClip, AudioFileClip, CompositeVideoClip, VideoClip, concatenate_videoclips, vfx
+    except ImportError:
+        print("[영상 스킵] moviepy 미설치 — pip install moviepy")
+        return None
+
+    import numpy as np
+    W, H = 1280, 720
+    FADE = 0.8
+    XFADE = 0.5  # 크로스페이드
+    ZOOM_SCALE = 0.08  # Ken Burns 줌 비율
+
+    try:
+        print("[영상 생성 중] Unsplash + Ken Burns + 크로스페이드...")
+        audio = AudioFileClip(audio_path)
+        duration = audio.duration
+
+        # 스크립트에서 핵심 문구 추출
+        script_text = ""
+        if script_data and isinstance(script_data, dict):
+            script_text = script_data.get("script", script_data.get("narration", ""))
+        phrases = _extract_key_phrases(script_text) if script_text else []
+
+        total = len(phrases) + 2
+        slide_dur = duration / total
+        print(f"  [슬라이드] {total}장, 각 {slide_dur:.1f}초")
+
+        # ── Unsplash 배경 이미지 일괄 다운로드
+        print("  [Unsplash] 배경 이미지 다운로드 중...")
+        bg_images = []
+        for idx in range(len(phrases)):
+            kw = _UNSPLASH_KEYWORDS[idx % len(_UNSPLASH_KEYWORDS)]
+            img = _download_unsplash(kw, W, H)
+            if img:
+                print(f"    [{idx+1}/{len(phrases)}] '{kw}' OK")
+            else:
+                # 폴백: 그라데이션 배경
+                arr = np.zeros((H, W, 3), dtype="uint8")
+                c = ((idx * 37 + 10) % 40, (idx * 23 + 15) % 50, (idx * 41 + 30) % 80)
+                for y in range(H):
+                    t = y / H
+                    arr[y, :] = [int(c[0] * (1 - t * 0.5)), int(c[1] * (1 - t * 0.3)), int(c[2] + t * 40)]
+                img = Image.fromarray(arr)
+                print(f"    [{idx+1}/{len(phrases)}] '{kw}' 폴백(그라데이션)")
+            bg_images.append(np.array(img))
+
+        # ── Ken Burns 효과 (줌인 or 줌아웃)
+        def make_ken_burns(bg_arr, text, dur, zoom_in=True):
+            """배경 줌 + 텍스트 오버레이 → VideoClip"""
+            overlay_arr = _text_overlay(bg_arr, text, W, H)
+            # 줌 없이 정적 이미지 (Ken Burns는 큰 이미지에서 crop)
+            big_W = int(W * (1 + ZOOM_SCALE))
+            big_H = int(H * (1 + ZOOM_SCALE))
+            bg_big = Image.fromarray(bg_arr).resize((big_W, big_H), Image.LANCZOS)
+            overlay_big = Image.fromarray(overlay_arr).resize((big_W, big_H), Image.LANCZOS)
+            bg_big_arr = np.array(overlay_big)
+
+            def frame_at(t):
+                progress = t / max(dur, 0.01)
+                if zoom_in:
+                    scale = 1.0 + ZOOM_SCALE * progress
+                else:
+                    scale = 1.0 + ZOOM_SCALE * (1 - progress)
+                crop_w = int(W / scale * (1 + ZOOM_SCALE))
+                crop_h = int(H / scale * (1 + ZOOM_SCALE))
+                cx, cy = big_W // 2, big_H // 2
+                x1 = max(0, cx - crop_w // 2)
+                y1 = max(0, cy - crop_h // 2)
+                x2 = min(big_W, x1 + crop_w)
+                y2 = min(big_H, y1 + crop_h)
+                cropped = bg_big_arr[y1:y2, x1:x2]
+                if cropped.shape[0] < 2 or cropped.shape[1] < 2:
+                    return overlay_arr
+                return np.array(Image.fromarray(cropped).resize((W, H), Image.LANCZOS))
+
+            return VideoClip(frame_at, duration=dur)
+
+        clips = []
+
+        # ── 인트로: 썸네일
+        if thumbnail_path and os.path.exists(thumbnail_path):
+            intro = ImageClip(thumbnail_path).with_duration(slide_dur).resized((W, H))
+        else:
+            intro = ImageClip(_text_overlay(bg_images[0] if bg_images else np.full((H, W, 3), 15, dtype="uint8"), "N-KAI 금융 DNA 분석")).with_duration(slide_dur)
+        intro = intro.with_effects([vfx.FadeIn(FADE)])
+        clips.append(intro)
+
+        # ── 핵심 문구 슬라이드: Ken Burns + 크로스페이드
+        for idx, phrase in enumerate(phrases):
+            zoom_in = (idx % 2 == 0)
+            clip = make_ken_burns(bg_images[idx], phrase, slide_dur, zoom_in)
+            clip = clip.with_effects([vfx.CrossFadeIn(XFADE)])
+            clips.append(clip)
+
+        # ── 아웃트로: CTA
+        cta_bg = bg_images[-1] if bg_images else np.full((H, W, 3), 15, dtype="uint8")
+        outro_arr = _text_overlay(cta_bg, "무료 분석 받으러 가기")
+        outro = ImageClip(outro_arr).with_duration(slide_dur)
+        outro = outro.with_effects([vfx.CrossFadeIn(XFADE), vfx.FadeOut(FADE)])
+        clips.append(outro)
+
+        main_video = concatenate_videoclips(clips, method="compose", padding=-XFADE)
+
+        # ── 하단 킬링 카피 티커
+        ticker_text = "    MBTI는 입이 말하고 N-KAI는 지갑이 말한다    |    무료 금융 DNA 분석    |    neurinkairosai.com    |    "
+        ticker_text = ticker_text * 3
+        try:
+            _tf = ImageFont.truetype("C:\\WINDOWS\\Fonts\\malgun.ttf", 14)
+            _tw = _tf.getbbox(ticker_text)[2]
+        except Exception:
+            _tw = len(ticker_text) * 8
+
+        ticker_h = 36
+        ticker_y = H - 44
+
+        def make_ticker(t):
+            speed = 80
+            offset = int(W - (t * speed) % (_tw + W))
+            frame = Image.new("RGB", (W, ticker_h), (5, 8, 15))
+            d = ImageDraw.Draw(frame)
+            try:
+                f = ImageFont.truetype("C:\\WINDOWS\\Fonts\\malgun.ttf", 13)
+            except Exception:
+                f = ImageFont.load_default()
+            d.text((offset, 11), ticker_text, font=f, fill=(100, 140, 200))
+            return np.array(frame)
+
+        ticker_clip = VideoClip(make_ticker, duration=duration).with_position((0, ticker_y))
+
+        final = CompositeVideoClip([main_video, ticker_clip], size=(W, H)).with_audio(audio)
+
+        final.write_videofile(output_path, fps=24, codec="libx264", audio_codec="aac", logger=None)
+
+        file_size = os.path.getsize(output_path)
+        print(f"[영상 완료] {output_path} ({file_size:,} bytes, {duration:.1f}초, {total}슬라이드)")
+        audio.close()
+        final.close()
+        return output_path
+
+    except Exception as e:
+        print(f"[영상 실패] {e}")
+        import traceback
+        traceback.print_exc()
+        return None
+
+
+# ─────────────────────────────────────────
+# 4. YouTube API — 자동 업로드
 # ─────────────────────────────────────────
 def upload_to_youtube(script_data, thumbnail_path, video_path=None):
     try:
@@ -398,6 +702,23 @@ def run_pipeline(content_type, params={}, video_path=None):
     with open(script_path, "w", encoding="utf-8") as f:
         json.dump(script_data, f, ensure_ascii=False, indent=2)
     print(f"[스크립트 저장] {script_path}")
+
+    # Step 3a: ElevenLabs TTS (영상 파일 없을 때만)
+    if not video_path:
+        narration = script_data.get("narration", script_data.get("script", ""))
+        if narration:
+            audio_path = f"voice_{content_type}_{date_str}.mp3"
+            audio_result = generate_tts(narration, audio_path)
+
+            # Step 3b: moviepy 영상 합성 (썸네일 + 음성)
+            if audio_result:
+                video_path = f"video_{content_type}_{date_str}.mp4"
+                vid_result = generate_video(audio_result, thumbnail_path, video_path, script_data)
+                if not vid_result:
+                    video_path = None
+                    print("[파이프라인] 영상 합성 실패 -> 메타데이터만 업로드")
+            else:
+                print("[파이프라인] TTS 실패 -> 영상 스킵")
 
     # Step 4: YouTube 업로드
     video_id = upload_to_youtube(script_data, thumbnail_path, video_path)
