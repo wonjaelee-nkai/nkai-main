@@ -28,7 +28,8 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /public_html/
           # state-name 변경 → 캐시 무효화 → 전체 강제 업로드
-          state-name: .ftp-deploy-sync-state-v2.json
+          state-name: .ftp-deploy-sync-state-v3.json
+          dangerous-clean-slate: true
           # 배포 대상: 루트의 웹 파일 + js/ 폴더
           # 나머지 비웹 파일은 모두 제외
           exclude: |
