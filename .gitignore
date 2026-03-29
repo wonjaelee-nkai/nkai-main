@@ -6,6 +6,7 @@ CLAUDE.md
 *.pem
 *.key
 config.js
+toss-key.js
 
 # 배포 로그
 deploy_*.log

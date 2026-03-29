@@ -8544,7 +8544,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
 
         // ★ 실제 토스페이먼츠 결제 위젯 호출
         function handleTossPayment(){
-            var LIVE_CK = 'live_ck_0RnYX2w532DDo9n21JZerNeyqApQ';
+            var LIVE_CK = window.NKAI_TOSS_CK || '';
             var userEmail = (typeof currentUserEmail !== 'undefined' ? currentUserEmail : '')
                          || sessionStorage.getItem('nkai_user_email') || '';
             var userName  = (typeof currentUserName  !== 'undefined' ? currentUserName  : '')
