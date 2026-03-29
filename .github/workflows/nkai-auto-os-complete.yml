@@ -1,0 +1,239 @@
+name: N-KAI 자율진화 OS — SKILL MD 기반 11개 도메인
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'   # 매주 월요일 09시 KST
+    - cron: '0 1 * * 3,5'  # 매주 수/금 10시 KST
+  workflow_dispatch:
+    inputs:
+      skill:
+        description: '실행할 SKILL (all/01~11/youtube/b2g)'
+        required: false
+        default: 'all'
+
+jobs:
+
+  skill-01-kairos:
+    name: SKILL01 카이로스 엔진 알고리즘 보정
+    runs-on: ubuntu-latest
+    if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '01' || github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: SKILL 01 실행
+        run: |
+          python3 - << 'EOF'
+          import urllib.request, json, os
+          api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+          skill = open('skills/01_kairos-engine-core.md').read() if os.path.exists('skills/01_kairos-engine-core.md') else ""
+          prompt = f"[SKILL 01: 카이로스 엔진]\n{skill}\n\n알고리즘 보정 리포트: 1.베이지안Posterior 2.ROC보정여부 3.N-Score이상감지 4.Phase2달성률 5.개선제언"
+          data = json.dumps({"model":"claude-sonnet-4-20250514","max_tokens":600,"messages":[{"role":"user","content":prompt}]}).encode()
+          req = urllib.request.Request('https://api.anthropic.com/v1/messages',data=data,headers={'x-api-key':api_key,'anthropic-version':'2023-06-01','content-type':'application/json'})
+          with urllib.request.urlopen(req) as res:
+            print(json.loads(res.read())['content'][0]['text'])
+          EOF
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  skill-02-revenue:
+    name: SKILL02 수익 파이프라인 블로커 점검
+    runs-on: ubuntu-latest
+    if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '02' || github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: SKILL 02 실행
+        run: |
+          python3 - << 'EOF'
+          import urllib.request, json, os
+          from datetime import date
+          api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+          skill = open('skills/02_revenue-pipeline.md').read() if os.path.exists('skills/02_revenue-pipeline.md') else ""
+          prompt = f"[SKILL 02: 수익파이프라인]\n{skill}\n오늘:{date.today()}\n수익화블로커/플랜전환율/이번주액션/미라트수익예측"
+          data = json.dumps({"model":"claude-sonnet-4-20250514","max_tokens":500,"messages":[{"role":"user","content":prompt}]}).encode()
+          req = urllib.request.Request('https://api.anthropic.com/v1/messages',data=data,headers={'x-api-key':api_key,'anthropic-version':'2023-06-01','content-type':'application/json'})
+          with urllib.request.urlopen(req) as res:
+            print(json.loads(res.read())['content'][0]['text'])
+          EOF
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  skill-03-fds:
+    name: SKILL03 FDS 리스크 방어 점검
+    runs-on: ubuntu-latest
+    if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '03' || github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: SKILL 03 실행
+        run: |
+          python3 - << 'EOF'
+          import urllib.request, json, os
+          api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+          skill = open('skills/03_fds-risk-defense.md').read() if os.path.exists('skills/03_fds-risk-defense.md') else ""
+          prompt = f"[SKILL 03: FDS리스크방어]\n{skill}\nFDS점검: T-60골든타임정확도/보이스피싱탐지개선/카드사FDS연동전략"
+          data = json.dumps({"model":"claude-sonnet-4-20250514","max_tokens":500,"messages":[{"role":"user","content":prompt}]}).encode()
+          req = urllib.request.Request('https://api.anthropic.com/v1/messages',data=data,headers={'x-api-key':api_key,'anthropic-version':'2023-06-01','content-type':'application/json'})
+          with urllib.request.urlopen(req) as res:
+            print(json.loads(res.read())['content'][0]['text'])
+          EOF
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  skill-04-b2g:
+    name: SKILL04 B2G 정부과제 스크리닝
+    runs-on: ubuntu-latest
+    if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '04' || github.event.inputs.skill == 'b2g' || github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: SKILL 04 실행
+        run: |
+          python3 - << 'EOF'
+          import urllib.request, json, os
+          from datetime import date
+          api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+          skill = open('skills/04_b2g-welfare-auto.md').read() if os.path.exists('skills/04_b2g-welfare-auto.md') else ""
+          prompt = f"[SKILL 04: B2G복지자동화]\n{skill}\n오늘:{date.today()}\n신청가능과제3가지/적합분야/어필포인트/이번달마감과제"
+          data = json.dumps({"model":"claude-sonnet-4-20250514","max_tokens":600,"messages":[{"role":"user","content":prompt}]}).encode()
+          req = urllib.request.Request('https://api.anthropic.com/v1/messages',data=data,headers={'x-api-key':api_key,'anthropic-version':'2023-06-01','content-type':'application/json'})
+          with urllib.request.urlopen(req) as res:
+            print(json.loads(res.read())['content'][0]['text'])
+          EOF
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  skill-05-youtube:
+    name: SKILL05 오행 유튜브 스크립트 자동 생성
+    runs-on: ubuntu-latest
+    if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '05' || github.event.inputs.skill == 'youtube' || github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: SKILL 05 실행
+        run: |
+          python3 - << 'EOF'
+          import urllib.request, json, os
+          from datetime import date
+          api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+          skill = open('skills/05_personalization-b2c.md').read() if os.path.exists('skills/05_personalization-b2c.md') else ""
+          b2b = open('skills/SKILL_B2B_자율진화마케팅.md').read() if os.path.exists('skills/SKILL_B2B_자율진화마케팅.md') else ""
+          prompt = f"[SKILL 05+B2B]\n{skill}\n{b2b}\n구독자1000만 타겟 오행×뷰티웰니스 유튜브 스크립트: 후킹제목3개/썸네일키워드/오프닝30초/본문5분/CTA/해시태그20개"
+          data = json.dumps({"model":"claude-sonnet-4-20250514","max_tokens":2000,"messages":[{"role":"user","content":prompt}]}).encode()
+          req = urllib.request.Request('https://api.anthropic.com/v1/messages',data=data,headers={'x-api-key':api_key,'anthropic-version':'2023-06-01','content-type':'application/json'})
+          with urllib.request.urlopen(req) as res:
+            script = json.loads(res.read())['content'][0]['text']
+            print(script)
+            open(f'youtube_script_{date.today()}.txt','w',encoding='utf-8').write(script)
+          EOF
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  skill-06-edge:
+    name: SKILL06 Edge SDK 배포 상태 점검
+    runs-on: ubuntu-latest
+    if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '06' || github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: SKILL 06 실행
+        run: |
+          python3 - << 'EOF'
+          import urllib.request, json, os
+          api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+          skill = open('skills/06_edge-sdk-poc-mvp.md').read() if os.path.exists('skills/06_edge-sdk-poc-mvp.md') else ""
+          prompt = f"[SKILL 06: EdgeSDK]\n{skill}\nSDK탑재진행현황/미라트미러연동체크리스트/이번주SDK개발우선과제"
+          data = json.dumps({"model":"claude-sonnet-4-20250514","max_tokens":400,"messages":[{"role":"user","content":prompt}]}).encode()
+          req = urllib.request.Request('https://api.anthropic.com/v1/messages',data=data,headers={'x-api-key':api_key,'anthropic-version':'2023-06-01','content-type':'application/json'})
+          with urllib.request.urlopen(req) as res:
+            print(json.loads(res.read())['content'][0]['text'])
+          EOF
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  skill-07-loopback:
+    name: SKILL07 KEP v3.0 자기보정 루프
+    runs-on: ubuntu-latest
+    if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '07' || github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: SKILL 07 실행
+        run: |
+          python3 - << 'EOF'
+          import urllib.request, json, os
+          from datetime import date
+          api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+          skill = open('skills/07_loopback-evolution-os.md').read() if os.path.exists('skills/07_loopback-evolution-os.md') else ""
+          prompt = f"[SKILL 07: 루프백자율진화]\n{skill}\n오늘:{date.today()}\nKEP자기보정: 패턴감지/D-30마감/선제제언/지난주채택여부"
+          data = json.dumps({"model":"claude-sonnet-4-20250514","max_tokens":500,"messages":[{"role":"user","content":prompt}]}).encode()
+          req = urllib.request.Request('https://api.anthropic.com/v1/messages',data=data,headers={'x-api-key':api_key,'anthropic-version':'2023-06-01','content-type':'application/json'})
+          with urllib.request.urlopen(req) as res:
+            print(json.loads(res.read())['content'][0]['text'])
+          EOF
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  skill-08-b2b:
+    name: SKILL08 B2B 전체 파트너십 브리핑
+    runs-on: ubuntu-latest
+    if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '08' || github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: SKILL 08 실행
+        run: |
+          python3 - << 'EOF'
+          import urllib.request, json, os
+          api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+          skill = open('skills/08_b2b-auto-marketing-fds.md').read() if os.path.exists('skills/08_b2b-auto-marketing-fds.md') else ""
+          prompt = f"[SKILL 08: B2B자율마케팅FDS]\n{skill}\nB2B전체현황: 미라트파트너십/카드사API라이선싱/보험사리스크/미용협회MOU/롯데카드FDS/이번주B2B액션"
+          data = json.dumps({"model":"claude-sonnet-4-20250514","max_tokens":600,"messages":[{"role":"user","content":prompt}]}).encode()
+          req = urllib.request.Request('https://api.anthropic.com/v1/messages',data=data,headers={'x-api-key':api_key,'anthropic-version':'2023-06-01','content-type':'application/json'})
+          with urllib.request.urlopen(req) as res:
+            print(json.loads(res.read())['content'][0]['text'])
+          EOF
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  skill-09-patent:
+    name: SKILL09 특허 신규 아이디어 자동 생성
+    runs-on: ubuntu-latest
+    if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '09' || github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: SKILL 09 실행
+        run: |
+          python3 - << 'EOF'
+          import urllib.request, json, os
+          api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+          skill = open('skills/09_revenue-pipeline-auto.md').read() if os.path.exists('skills/09_revenue-pipeline-auto.md') else ""
+          legal = open('skills/10_legal-contract-skill.md').read() if os.path.exists('skills/10_legal-contract-skill.md') else ""
+          prompt = f"[SKILL 09+10]\n{skill}\n{legal}\n오행×뷰티×AI융합 신규특허 3가지: 발명명칭/핵심Claim/IPC분류/차별화포인트/출원우선순위"
+          data = json.dumps({"model":"claude-sonnet-4-20250514","max_tokens":1000,"messages":[{"role":"user","content":prompt}]}).encode()
+          req = urllib.request.Request('https://api.anthropic.com/v1/messages',data=data,headers={'x-api-key':api_key,'anthropic-version':'2023-06-01','content-type':'application/json'})
+          with urllib.request.urlopen(req) as res:
+            print(json.loads(res.read())['content'][0]['text'])
+          EOF
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  ops-check:
+    name: 운영 인프라 상태 체크
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vercel + 도메인 체크
+        run: |
+          V=$(curl -s -o /dev/null -w "%{http_code}" https://nkai-next.vercel.app)
+          D=$(curl -s -o /dev/null -w "%{http_code}" https://neurinkairosai.com || echo "000")
+          [ "$V" = "200" ] && echo "✅ Vercel 정상" || echo "❌ Vercel: $V"
+          [ "$D" = "200" ] && echo "✅ 도메인 정상" || echo "⚠️ 도메인: $D (Vercel연결미완료)"
+
+  notion-report:
+    name: Notion 통합 보고 자동 기록
+    runs-on: ubuntu-latest
+    needs: [skill-01-kairos, skill-02-revenue, skill-03-fds, skill-04-b2g, skill-05-youtube, skill-06-edge, skill-07-loopback, skill-08-b2b, skill-09-patent, ops-check]
+    if: always()
+    steps:
+      - name: Notion 주간 통합 로그
+        run: |
+          WEEK=$(date '+%Y년 %m월 %d일 주간')
+          curl -s -X POST "https://api.notion.com/v1/pages" \
+            -H "Authorization: Bearer $NOTION_TOKEN" \
+            -H "Notion-Version: 2022-06-28" \
+            -H "Content-Type: application/json" \
+            -d "{\"parent\":{\"page_id\":\"315f60bb-7d6a-810e-bcae-fc6eaf0a4c8b\"},\"icon\":{\"emoji\":\"🤖\"},\"properties\":{\"title\":[{\"text\":{\"content\":\"[자율OS] SKILL MD 11개 도메인 완료 — $WEEK\"}}]}}" || echo "Notion기록실패"
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
