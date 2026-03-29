@@ -821,18 +821,66 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     </div>
 
     <!-- AI 카메라 촬영 -->
-    <div class="sec-title">AI 카메라 촬영 (파트너 연동 후)</div>
+    <div class="sec-title">AI 카메라 촬영</div>
     <div class="cam-card">
       <div class="cam-tabs">
-        <button class="ct active" onclick="setCamTab(this)">🧴 피부</button>
-        <button class="ct" onclick="setCamTab(this)">💆 두피</button>
-        <button class="ct" onclick="setCamTab(this)">✨ 헤어</button>
+        <button class="ct active" data-type="skin"   onclick="setCamTab(this,'skin')">🧴 피부</button>
+        <button class="ct"        data-type="scalp"  onclick="setCamTab(this,'scalp')">💆 두피</button>
+        <button class="ct"        data-type="hair"   onclick="setCamTab(this,'hair')">✨ 헤어</button>
       </div>
-      <div class="cam-box">
-        <div class="cam-ring"><div class="cam-emoji">📸</div></div>
-        <div class="cam-tip">얼굴을 20~30cm 거리에서<br>자연광 아래 촬영하세요<br><span>▶ 탭하여 촬영 시작</span></div>
+
+      <!-- 프리뷰 박스 -->
+      <div class="cam-box" id="cam-preview-box">
+        <img id="cam-preview-img" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:12px;">
+        <div id="cam-placeholder">
+          <div class="cam-ring"><div class="cam-emoji" id="cam-emoji">🧴</div></div>
+          <div class="cam-tip">얼굴을 20~30cm 거리에서<br>자연광 아래 촬영하세요<br><span id="cam-tip-text">▶ 아래 버튼으로 촬영하세요</span></div>
+        </div>
       </div>
-      <button style="width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0d14;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">📸 AI 카메라 촬영 → 실측 융합 분석</button>
+
+      <!-- 숨겨진 file input들 -->
+      <input type="file" id="cam-capture-input" accept="image/*" capture="user"    style="display:none;" onchange="onCamFileSelected(this)">
+      <input type="file" id="cam-gallery-input" accept="image/*"                   style="display:none;" onchange="onCamFileSelected(this)">
+
+      <!-- 버튼 2개 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+        <button onclick="document.getElementById('cam-capture-input').click()"
+          style="padding:12px 8px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0d14;border:none;border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+          📷 카메라 촬영
+        </button>
+        <button onclick="document.getElementById('cam-gallery-input').click()"
+          style="padding:12px 8px;background:rgba(201,168,76,0.12);border:1px solid var(--gold);color:var(--gold2);border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+          🖼 갤러리 선택
+        </button>
+      </div>
+
+      <!-- 분석 버튼 -->
+      <button id="cam-analyze-btn" onclick="runSkinAnalyze()"
+        style="width:100%;padding:13px;background:linear-gradient(135deg,#5A9BC4,#7ab4d4);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:none;">
+        🔬 AI 오행 분석 시작
+      </button>
+
+      <!-- 분석 결과 영역 -->
+      <div id="cam-result-area" style="display:none;margin-top:12px;">
+        <div style="font-size:11px;color:var(--gold2);font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+          🔬 AI 실측 분석 결과 <span id="cam-result-type-label"></span>
+        </div>
+        <!-- 지표 바 -->
+        <div class="cam-ai-row"><div class="cam-ai-label">수분 지수</div><div class="cam-ai-bar"><div class="cam-ai-fill" id="cam-bar-water"   style="background:linear-gradient(90deg,var(--water),#7ab4d4)"></div></div><div class="cam-ai-val" id="cam-val-water"></div></div>
+        <div class="cam-ai-row"><div class="cam-ai-label">유분 지수</div><div class="cam-ai-bar"><div class="cam-ai-fill" id="cam-bar-oil"     style="background:linear-gradient(90deg,var(--earth),#d4b870)"></div></div><div class="cam-ai-val" id="cam-val-oil"></div></div>
+        <div class="cam-ai-row"><div class="cam-ai-label">탄력 지수</div><div class="cam-ai-bar"><div class="cam-ai-fill" id="cam-bar-elastic" style="background:linear-gradient(90deg,var(--gold),var(--gold2))"></div></div><div class="cam-ai-val" id="cam-val-elastic"></div></div>
+        <!-- 요약 + 문제점 + 추천 -->
+        <div id="cam-result-condition"  style="font-size:11px;color:var(--text2);line-height:1.7;margin:10px 0 6px;padding:10px;background:var(--bg);border-radius:10px;"></div>
+        <div id="cam-result-issues"     style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;"></div>
+        <div id="cam-result-recs"       style="font-size:10px;color:var(--text2);line-height:1.8;"></div>
+        <div id="cam-result-products"   style="margin-top:10px;"></div>
+      </div>
+
+      <!-- 로딩 -->
+      <div id="cam-loading" style="display:none;text-align:center;padding:20px 0;font-size:12px;color:var(--text2);">
+        <div style="font-size:28px;margin-bottom:8px;animation:pulse 1.5s ease-in-out infinite;">🔬</div>
+        AI가 이미지를 분석 중입니다…
+      </div>
     </div>
 
     <div class="card" style="padding:14px;">
@@ -2360,9 +2408,163 @@ function setRP(prefix, panel) {
   navs.forEach(function(n,i){ n.classList.toggle('active', panels[i]===panel); });
 }
 
-function setCamTab(el) {
+// ──────────────────────────────────────
+// AI 카메라 탭 — Vision 분석
+// ──────────────────────────────────────
+var _camAnalysisType = 'skin';
+var _camImageBase64 = null;
+
+var CAM_EMOJI_MAP = { skin: '🧴', scalp: '💆', hair: '✨' };
+var CAM_TIP_MAP   = { skin: '얼굴을 20~30cm 거리에서 촬영', scalp: '두피가 잘 보이게 촬영', hair: '모발 전체가 보이게 촬영' };
+
+function setCamTab(el, type) {
   document.querySelectorAll('.ct').forEach(function(b){ b.classList.remove('active'); });
   el.classList.add('active');
+  _camAnalysisType = type || 'skin';
+  var emojiEl = document.getElementById('cam-emoji');
+  var tipEl   = document.getElementById('cam-tip-text');
+  if (emojiEl) emojiEl.textContent = CAM_EMOJI_MAP[_camAnalysisType];
+  if (tipEl)   tipEl.textContent   = '▶ ' + CAM_TIP_MAP[_camAnalysisType];
+  // 이미지 선택된 상태면 분석 버튼 업데이트
+  if (_camImageBase64) {
+    var btn = document.getElementById('cam-analyze-btn');
+    if (btn) btn.style.display = 'block';
+  }
+  // 결과 초기화
+  document.getElementById('cam-result-area').style.display = 'none';
+  // file input accept 갱신
+  document.getElementById('cam-capture-input').value = '';
+  document.getElementById('cam-gallery-input').value = '';
+}
+
+function onCamFileSelected(input) {
+  var file = input.files && input.files[0];
+  if (!file) return;
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    _camImageBase64 = e.target.result; // data:image/...;base64,...
+
+    // 프리뷰 표시
+    var img = document.getElementById('cam-preview-img');
+    var placeholder = document.getElementById('cam-placeholder');
+    img.src = _camImageBase64;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+
+    // 분석 버튼 노출
+    document.getElementById('cam-analyze-btn').style.display = 'block';
+    document.getElementById('cam-result-area').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function runSkinAnalyze() {
+  if (!_camImageBase64) return;
+
+  var btn = document.getElementById('cam-analyze-btn');
+  var loading = document.getElementById('cam-loading');
+  var resultArea = document.getElementById('cam-result-area');
+
+  btn.disabled = true;
+  loading.style.display = 'block';
+  resultArea.style.display = 'none';
+
+  var ohang_profile = {};
+  if (_currentRes) {
+    ohang_profile = {
+      core:  _currentRes.core  || '',
+      wood:  _currentRes.wood  || 0,
+      fire:  _currentRes.fire  || 0,
+      earth: _currentRes.earth || 0,
+      metal: _currentRes.metal || 0,
+      water: _currentRes.water || 0,
+      name:  _currentName || '',
+    };
+  }
+
+  fetch(API_BASE + '/api/skin-analyze', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      image_base64: _camImageBase64,
+      ohang_profile: ohang_profile,
+      analysis_type: _camAnalysisType,
+    }),
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    loading.style.display = 'none';
+    if (data.error) {
+      alert('분석 오류: ' + data.error);
+      btn.disabled = false;
+      return;
+    }
+    _renderCamResult(data);
+  })
+  .catch(function() {
+    loading.style.display = 'none';
+    alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+    btn.disabled = false;
+  });
+}
+
+function _renderCamResult(data) {
+  var btn = document.getElementById('cam-analyze-btn');
+  var area = document.getElementById('cam-result-area');
+
+  // 타입 레이블
+  var typeLabels = { skin: '피부', scalp: '두피', hair: '헤어' };
+  document.getElementById('cam-result-type-label').textContent = '— ' + (typeLabels[data.analysis_type] || '') + ' 분석';
+
+  // 지표 바
+  function setBar(barId, valId, val) {
+    var v = Math.min(100, Math.max(0, val || 0));
+    document.getElementById(barId).style.width = v + '%';
+    document.getElementById(valId).textContent = v + '%';
+  }
+  setBar('cam-bar-water',   'cam-val-water',   data.moisture_level);
+  setBar('cam-bar-oil',     'cam-val-oil',     data.oil_level);
+  setBar('cam-bar-elastic', 'cam-val-elastic', data.elasticity);
+
+  // 피부 타입 + 상태
+  document.getElementById('cam-result-condition').innerHTML =
+    '<strong style="color:var(--gold2);">' + (data.skin_type || '') + '</strong><br>' + (data.condition || '');
+
+  // 문제점 태그
+  var issuesEl = document.getElementById('cam-result-issues');
+  issuesEl.innerHTML = '';
+  (data.issues || []).forEach(function(issue) {
+    var tag = document.createElement('span');
+    tag.style.cssText = 'font-size:10px;padding:3px 10px;border-radius:20px;background:rgba(232,101,74,0.15);color:var(--fire);border:1px solid rgba(232,101,74,0.3);';
+    tag.textContent = issue;
+    issuesEl.appendChild(tag);
+  });
+
+  // 추천 케어
+  var recsEl = document.getElementById('cam-result-recs');
+  recsEl.innerHTML = '<div style="font-size:10px;color:var(--gold2);font-weight:700;margin-bottom:4px;">💡 케어 추천</div>' +
+    (data.recommendations || []).map(function(r, i) {
+      return '<div style="padding:3px 0;border-bottom:1px solid var(--border);">' + (i+1) + '. ' + r + '</div>';
+    }).join('');
+
+  // 추천 제품
+  var prodsEl = document.getElementById('cam-result-products');
+  if (data.products && data.products.length > 0) {
+    prodsEl.innerHTML = '<div style="font-size:10px;color:var(--gold2);font-weight:700;margin-bottom:6px;">🛒 추천 제품</div>' +
+      data.products.map(function(p) {
+        return '<div style="background:var(--bg);border-radius:10px;padding:8px 10px;margin-bottom:6px;">' +
+          '<div style="font-size:11px;font-weight:700;">' + (p.name || '') + '</div>' +
+          '<div style="font-size:10px;color:var(--text2);">' + (p.type || '') + ' · ' + (p.ingredient || '') + '</div>' +
+          '</div>';
+      }).join('');
+  } else {
+    prodsEl.innerHTML = '';
+  }
+
+  area.style.display = 'block';
+  btn.disabled = false;
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function resetToInput() {
