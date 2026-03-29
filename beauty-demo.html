@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>오행 뷰티 AI — N-KAI × 정미리 뷰티살롱</title>
+<script src="https://js.tosspayments.com/v2/standard"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ─── TOKENS ─── */
+:root {
+  --bg:#0a090f; --card:#131120; --card2:#1c1929; --border:rgba(255,255,255,0.08);
+  --text:#ece8f5; --muted:#9090b0;
+  --wood:#4ade80; --fire:#f87171; --earth:#fbbf24; --metal:#cbd5e1; --water:#60a5fa;
+  --wood-bg:rgba(74,222,128,0.12); --fire-bg:rgba(248,113,113,0.12);
+  --earth-bg:rgba(251,191,36,0.12); --metal-bg:rgba(203,213,225,0.12); --water-bg:rgba(96,165,250,0.12);
+  --pink:#f472b6; --purple:#a78bfa;
+  --accent:var(--pink); --accent2:#34d399;
+  --grad:linear-gradient(135deg,#f472b6,#a78bfa);
+  --grad2:linear-gradient(135deg,#a78bfa,#60a5fa);
+  --shadow:0 8px 32px rgba(244,114,182,0.15);
+}
+[data-theme="light"] {
+  --bg:#faf5ff; --card:#fff; --card2:#f3eeff;
+  --border:rgba(0,0,0,0.08); --text:#1a0a2e; --muted:#7c6b99;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  background:var(--bg);color:var(--text);overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+#app{display:flex;flex-direction:column;min-height:100vh;max-width:540px;margin:0 auto;position:relative}
+
+/* ─── HEADER ─── */
+.bh-header{padding:14px 18px 10px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);background:rgba(10,9,15,0.92);
+  backdrop-filter:blur(16px);position:sticky;top:0;z-index:100}
+.bh-logo{display:flex;flex-direction:column}
+.bh-logo-name{font-size:20px;font-weight:900;background:var(--grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px}
+.bh-logo-sub{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:1px}
+.bh-header-right{display:flex;gap:8px;align-items:center}
+.btn-sm{padding:6px 11px;border-radius:20px;border:1px solid var(--border);
+  background:transparent;color:var(--text);font-size:12px;cursor:pointer;transition:.2s}
+.btn-sm:hover{border-color:var(--accent);color:var(--accent)}
+.btn-premium{background:var(--grad);border:none;color:#fff;font-weight:700}
+.btn-premium:hover{opacity:.9;color:#fff}
+
+/* ─── BODY ─── */
+.bh-body{flex:1;overflow-y:auto;padding-bottom:88px}
+
+/* ─── INPUT SECTION ─── */
+.input-hero{padding:28px 20px 22px;
+  background:linear-gradient(180deg,rgba(167,139,250,0.12) 0%,rgba(244,114,182,0.06) 60%,transparent 100%);
+  text-align:center}
+.input-hero-title{font-size:22px;font-weight:900;line-height:1.35;margin-bottom:6px}
+.input-hero-title span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.input-hero-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
+.input-box{background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:18px 16px;text-align:left}
+.input-row{display:flex;gap:10px;margin-bottom:12px}
+.input-group{flex:1;display:flex;flex-direction:column;gap:5px}
+.input-group label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.bh-input{width:100%;padding:11px 13px;background:var(--card2);border:1px solid var(--border);
+  border-radius:12px;color:var(--text);font-size:14px;outline:none;transition:.2s;-webkit-appearance:none}
+.bh-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(244,114,182,0.15)}
+.bh-input[type=date]::-webkit-calendar-picker-indicator{filter:invert(0.6) sepia(1) hue-rotate(270deg)}
+select.bh-input option{background:var(--card2)}
+.btn-analyze{width:100%;padding:15px;border-radius:14px;border:none;background:var(--grad);
+  color:#fff;font-size:16px;font-weight:800;cursor:pointer;transition:.2s;margin-top:6px;
+  box-shadow:var(--shadow);letter-spacing:-.3px}
+.btn-analyze:hover{opacity:.9;transform:translateY(-1px)}
+.btn-analyze:active{transform:translateY(0)}
+
+/* ─── RESULT BANNER ─── */
+.result-banner{display:none;margin:0 14px 4px;background:var(--card);border:1px solid var(--border);
+  border-radius:18px;overflow:hidden}
+.result-banner.show{display:block}
+.result-top{padding:16px 18px 12px;background:linear-gradient(135deg,rgba(167,139,250,0.15),rgba(244,114,182,0.1));
+  display:flex;align-items:center;gap:14px}
+.el-badge{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;
+  justify-content:center;font-size:24px;flex-shrink:0}
+.result-info .result-main{font-size:17px;font-weight:800;line-height:1.3}
+.result-info .result-desc{font-size:12px;color:var(--muted);margin-top:3px}
+.result-info .result-pill{font-size:11px;color:var(--accent2);background:rgba(52,211,153,0.1);
+  padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px}
+/* ohaeng bars */
+.ohaeng-wrap{padding:10px 16px 14px}
+.ohaeng-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.ohaeng-lbl{width:22px;font-size:12px;font-weight:700;text-align:center}
+.ohaeng-bg{flex:1;height:7px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.ohaeng-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.ohaeng-val{font-size:11px;color:var(--muted);width:30px;text-align:right}
+
+/* ─── TABS NAV ─── */
+.tab-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:540px;background:rgba(10,9,15,0.95);backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(7,1fr);
+  padding:7px 2px 14px;z-index:200;gap:1px}
+.tab-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;
+  border-radius:10px;border:none;background:transparent;color:var(--muted);
+  cursor:pointer;font-size:9px;transition:.2s}
+.tab-btn i{font-size:15px}
+.tab-btn.active{color:var(--accent)}
+.tab-btn .pro-dot{position:absolute;top:3px;right:calc(50% - 13px);width:5px;height:5px;
+  background:var(--accent2);border-radius:50%}
+
+/* ─── TAB PANELS ─── */
+.tab-panel{display:none;padding:14px 14px 0}
+.tab-panel.active{display:block}
+.s-card{background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:16px;margin-bottom:12px}
+.s-card h3{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.s-card h3 i{color:var(--accent);font-size:13px}
+.s-card h3 .h3-el{font-size:13px}
+
+/* ─── PREMIUM GATE ─── */
+.p-gate{position:relative;margin-bottom:12px}
+.p-gate .blur-content{filter:blur(5px);pointer-events:none;user-select:none}
+.p-overlay{position:absolute;inset:0;background:rgba(10,9,15,0.72);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-radius:16px;gap:10px;text-align:center;padding:20px}
+.p-overlay .lock-icon{font-size:28px;color:var(--accent)}
+.p-overlay p{font-size:13px;font-weight:700;color:var(--text)}
+.p-overlay .unlock-price{font-size:12px;color:var(--muted)}
+.btn-unlock{padding:9px 22px;border-radius:12px;border:none;background:var(--grad);
+  color:#fff;font-size:13px;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
+.btn-unlock:hover{opacity:.9}
+
+/* ─── ELEMENT CHIPS ─── */
+.el-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;
+  border-radius:20px;font-size:12px;font-weight:600;border:1px solid transparent}
+.chip-木{background:var(--wood-bg);color:var(--wood);border-color:rgba(74,222,128,0.3)}
+.chip-火{background:var(--fire-bg);color:var(--fire);border-color:rgba(248,113,113,0.3)}
+.chip-土{background:var(--earth-bg);color:var(--earth);border-color:rgba(251,191,36,0.3)}
+.chip-金{background:var(--metal-bg);color:var(--metal);border-color:rgba(203,213,225,0.3)}
+.chip-水{background:var(--water-bg);color:var(--water);border-color:rgba(96,165,250,0.3)}
+
+/* ─── HAIR STYLE CARD ─── */
+.hair-card{display:flex;gap:12px;padding:12px;background:var(--card2);
+  border-radius:14px;margin-bottom:8px;border-left:3px solid transparent}
+.hair-card .hair-icon{width:48px;height:48px;border-radius:12px;display:flex;
+  align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.hair-card .hair-body .hair-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.hair-card .hair-body .hair-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.hair-card .hair-body .hair-colors{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.hair-color-dot{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,0.2)}
+
+/* ─── MONTH FORTUNE ─── */
+.month-card{background:var(--card2);border-radius:14px;padding:14px;margin-bottom:8px}
+.month-card .month-label{font-size:11px;color:var(--muted);margin-bottom:6px}
+.month-card .month-status{font-size:15px;font-weight:700;margin-bottom:6px}
+.month-card .month-tip{font-size:12px;color:var(--muted);line-height:1.5}
+.recommend-chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;
+  border-radius:20px;font-size:11px;font-weight:600;background:rgba(244,114,182,0.12);
+  color:var(--pink);border:1px solid rgba(244,114,182,0.25);margin:3px 3px 0 0}
+
+/* ─── CARE CARD ─── */
+.care-item{display:flex;gap:12px;align-items:flex-start;padding:12px 0;
+  border-bottom:1px solid var(--border)}
+.care-item:last-child{border-bottom:none;padding-bottom:0}
+.care-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-size:16px;flex-shrink:0}
+.care-body .care-title{font-size:13px;font-weight:700;margin-bottom:3px}
+.care-body .care-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.care-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;
+  font-weight:600;margin-top:5px;margin-right:4px}
+.care-tag.warn{background:rgba(248,113,113,0.15);color:var(--fire)}
+.care-tag.ok{background:rgba(52,211,153,0.12);color:var(--accent2)}
+
+/* ─── DIET CARD ─── */
+.diet-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.diet-item{background:var(--card2);border-radius:12px;padding:12px;text-align:center}
+.diet-item .diet-emoji{font-size:24px;margin-bottom:4px}
+.diet-item .diet-name{font-size:12px;font-weight:700;margin-bottom:2px}
+.diet-item .diet-reason{font-size:11px;color:var(--muted)}
+.diet-avoid{background:rgba(248,113,113,0.08);border-radius:12px;padding:10px 14px;margin-top:8px}
+.diet-avoid .avoid-title{font-size:11px;color:var(--fire);font-weight:600;margin-bottom:4px}
+.diet-avoid .avoid-items{font-size:12px;color:var(--muted)}
+
+/* ─── COUPLE ─── */
+.couple-score-wrap{text-align:center;padding:20px 0 10px}
+.couple-score-num{font-size:56px;font-weight:900;background:var(--grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.couple-score-label{font-size:13px;color:var(--muted);margin-top:4px}
+.couple-el-pair{display:flex;align-items:center;justify-content:center;gap:12px;
+  margin-top:14px;padding:12px;background:var(--card2);border-radius:14px}
+.couple-el-box{text-align:center}
+.couple-el-box .el-icon{font-size:28px}
+.couple-el-box .el-name{font-size:13px;font-weight:700;margin-top:3px}
+
+/* ─── PAYMENT ─── */
+.plan-grid{display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.plan-card{background:var(--card2);border:1.5px solid var(--border);border-radius:14px;
+  padding:13px 14px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:12px}
+.plan-card.selected{border-color:var(--accent);background:rgba(244,114,182,0.08)}
+.plan-card.recommended{border-color:var(--accent2)}
+.plan-badge{font-size:9px;background:var(--accent2);color:#000;padding:2px 5px;
+  border-radius:4px;font-weight:700;letter-spacing:.5px}
+.plan-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-left:auto}
+.plan-radio.checked::after{content:'';width:10px;height:10px;background:var(--accent);
+  border-radius:50%;display:block}
+.plan-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.plan-price{font-size:13px;color:var(--accent);font-weight:600}
+.plan-features{font-size:11px;color:var(--muted);margin-top:2px}
+.plan-icon{font-size:22px;flex-shrink:0}
+.btn-pay{width:100%;padding:15px;border-radius:14px;border:none;background:var(--grad);
+  color:#fff;font-size:16px;font-weight:800;cursor:pointer;box-shadow:var(--shadow)}
+.btn-pay:hover{opacity:.9}
+.btn-pay:disabled{opacity:.4;cursor:not-allowed}
+
+/* ─── MODAL ─── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);
+  z-index:500;align-items:flex-end;justify-content:center}
+.modal-bg.show{display:flex}
+.modal-sheet{background:var(--card);border-radius:24px 24px 0 0;padding:22px 18px 32px;
+  width:100%;max-width:540px;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;
+  margin:0 auto 18px;cursor:pointer}
+.modal-title{font-size:18px;font-weight:800;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+
+/* ─── TOAST ─── */
+#toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);
+  background:rgba(52,211,153,0.15);border:1px solid var(--accent2);color:var(--accent2);
+  padding:9px 18px;border-radius:12px;font-size:13px;font-weight:600;
+  z-index:999;display:none;white-space:nowrap;pointer-events:none}
+
+/* ─── FOOTER PARTNER ─── */
+.bh-footer{padding:20px 20px 10px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.footer-partner{font-size:11px;color:var(--muted)}
+.footer-partner strong{color:var(--text)}
+.footer-nkai{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.footer-nkai span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+
+/* ─── MISC ─── */
+.divider{height:1px;background:var(--border);margin:12px 0}
+.badge{display:inline-block;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700}
+.badge-free{background:rgba(55,65,81,0.5);color:#9ca3af}
+.badge-paid{background:rgba(244,114,182,0.18);color:var(--pink)}
+.text-muted{color:var(--muted)}.text-accent{color:var(--accent)}
+.loading-pulse{animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.fade-in{animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── PROFILE TAB SPECIAL ─── */
+.profile-dna{background:linear-gradient(135deg,var(--card),var(--card2));
+  border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:12px;
+  text-align:center;position:relative;overflow:hidden}
+.profile-dna::before{content:'';position:absolute;inset:-1px;
+  background:var(--grad);border-radius:18px;z-index:-1;opacity:.15}
+.profile-dna .dna-el{font-size:52px;margin-bottom:8px}
+.profile-dna .dna-name{font-size:20px;font-weight:900;margin-bottom:4px}
+.profile-dna .dna-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* ─── RESPONSIVE ─── */
+@media (min-width:480px){
+  .tab-btn{font-size:10px}
+  .tab-btn i{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <header class="bh-header">
+    <div class="bh-logo">
+      <div class="bh-logo-name">오행 뷰티 AI</div>
+      <div class="bh-logo-sub">POWERED BY N-KAI</div>
+    </div>
+    <div class="bh-header-right">
+      <button class="btn-sm" onclick="toggleTheme()" title="테마 전환"><i class="fa-solid fa-circle-half-stroke"></i></button>
+      <button class="btn-sm btn-premium" onclick="openPayModal(null)">
+        <i class="fa-solid fa-crown" style="margin-right:4px"></i>구독
+      </button>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="bh-body" id="bh-body">
+
+    <!-- INPUT HERO -->
+    <div class="input-hero" id="input-hero">
+      <div class="input-hero-title">
+        <span>오행 뷰티 DNA</span><br>AI가 분석해드립니다
+      </div>
+      <div class="input-hero-sub">생년월일만 입력하면 3분 안에 나만의 뷰티 처방 완성 ✨</div>
+      <div class="input-box">
+        <div class="input-row">
+          <div class="input-group">
+            <label>생년월일</label>
+            <input type="date" class="bh-input" id="birth-date" min="1940-01-01" max="2010-12-31" value="1990-06-15">
+          </div>
+          <div class="input-group" style="max-width:100px">
+            <label>성별</label>
+            <select class="bh-input" id="birth-gender">
+              <option value="F" selected>여성</option>
+              <option value="M">남성</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-analyze" onclick="doBeautyAnalyze()">
+          <i class="fa-solid fa-wand-magic-sparkles" style="margin-right:8px"></i>오행 뷰티 분석하기
+        </button>
+      </div>
+    </div>
+
+    <!-- RESULT BANNER -->
+    <div class="result-banner" id="result-banner">
+      <div class="result-top">
+        <div class="el-badge" id="el-badge"></div>
+        <div class="result-info">
+          <div class="result-main" id="result-main"></div>
+          <div class="result-desc" id="result-desc"></div>
+          <div class="result-pill" id="result-pill"></div>
+        </div>
+      </div>
+      <div class="ohaeng-wrap" id="ohaeng-bars"></div>
+    </div>
+
+    <!-- ── TAB: 프로필 ── -->
+    <div id="tab-profile" class="tab-panel active">
+      <div id="profile-placeholder" class="s-card" style="text-align:center;padding:30px 20px">
+        <div style="font-size:36px;margin-bottom:12px">💄</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:6px">내 오행 뷰티 DNA 확인하기</div>
+        <div style="font-size:12px;color:var(--muted)">생년월일을 입력하고 분석하면<br>나만의 뷰티 에너지 프로필을 확인할 수 있어요</div>
+      </div>
+      <div id="profile-content" style="display:none" class="fade-in">
+        <div class="profile-dna" id="profile-dna-card"></div>
+        <div class="s-card">
+          <h3><i class="fa-solid fa-chart-pie"></i>오행 에너지 분포</h3>
+          <div id="profile-chart"></div>
+        </div>
+        <div class="s-card">
+          <h3><i class="fa-solid fa-star"></i>뷰티 DNA 키워드</h3>
+          <div id="profile-keywords"></div>
+        </div>
+      </div>
+      <!-- FOOTER in this tab -->
+      <div class="bh-footer">
+        <div class="footer-partner"><strong>정미리 뷰티살롱</strong> × N-KAI 파트너</div>
+        <div class="footer-nkai"><i class="fa-solid fa-brain" style="color:var(--purple)"></i><span>N-KAI</span></div>
+      </div>
+    </div>
+
+    <!-- ── TAB: 이달의 운세 ── -->
+    <div id="tab-month" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-calendar-star"></i>이번 달 뷰티 컨디션 <span class="badge badge-free">FREE</span></h3>
+        <div id="month-free-content" style="font-size:13px;color:var(--muted);line-height:1.7">분석 후 이번 달 컨디션을 확인할 수 있습니다.</div>
+      </div>
+      <div class="p-gate">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3><i class="fa-solid fa-spa"></i>피부 주간 리듬</h3>
+            <div class="month-card">
+              <div class="month-label">1~7일 · 수렴 주간</div>
+              <div class="month-status">피부 결 정돈에 집중 ✨</div>
+              <div class="month-tip">모공 수렴 + 토너 레이어링 추천. 고단백 마스크팩 2회.</div>
+            </div>
+            <div class="month-card">
+              <div class="month-label">8~14일 · 활성 주간</div>
+              <div class="month-status">영양 흡수 최고 🌿</div>
+              <div class="month-tip">앰플·세럼 집중 사용. 두피 스켈링 추천 타이밍.</div>
+            </div>
+          </div>
+          <div class="s-card">
+            <h3><i class="fa-solid fa-scissors"></i>이달 추천 시술</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <span class="recommend-chip"><i class="fa-solid fa-star"></i>볼륨 펌</span>
+              <span class="recommend-chip"><i class="fa-solid fa-star"></i>두피 케어</span>
+              <span class="recommend-chip"><i class="fa-solid fa-star"></i>수분 트리트먼트</span>
+            </div>
+          </div>
+        </div>
+        <div class="p-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>이달의 뷰티 리듬 &amp; 시술 추천</p>
+          <div class="unlock-price">₩3,900 · 전체 뷰티 분석 1회</div>
+          <button class="btn-unlock" onclick="openPayModal('basic')">잠금 해제</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: 헤어 ── -->
+    <div id="tab-hair" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-scissors"></i>오행 맞춤 헤어스타일 <span class="badge badge-free">FREE 미리보기</span></h3>
+        <div id="hair-free-content" style="font-size:13px;color:var(--muted);line-height:1.7">분석 후 나의 오행에 맞는 헤어스타일을 확인하세요.</div>
+      </div>
+      <div class="p-gate" id="gate-hair-detail">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3><i class="fa-solid fa-palette"></i>오행별 헤어 가이드</h3>
+            <!-- static blur preview -->
+            <div class="hair-card">
+              <div class="hair-icon" style="background:var(--wood-bg)">🌿</div>
+              <div class="hair-body">
+                <div class="hair-title" style="color:var(--wood)">木 — 자연주의 레이어드</div>
+                <div class="hair-desc">자연스러운 웨이브, 레이어드 컷. 생기 있는 브라운 계열.</div>
+              </div>
+            </div>
+            <div class="hair-card">
+              <div class="hair-icon" style="background:var(--fire-bg)">🔥</div>
+              <div class="hair-body">
+                <div class="hair-title" style="color:var(--fire)">火 — 볼드 컬러 스타일</div>
+                <div class="hair-desc">개성 있는 레드/버건디 컬러. 볼드한 스타일링.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>내 오행 맞춤 헤어 & 컬러 가이드</p>
+          <div class="unlock-price">₩3,900 · 전체 뷰티 분석</div>
+          <button class="btn-unlock" onclick="openPayModal('basic')">잠금 해제</button>
+        </div>
+      </div>
+      <div id="hair-full-content" style="display:none" class="fade-in"></div>
+    </div>
+
+    <!-- ── TAB: 피부케어 ── -->
+    <div id="tab-skin" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-face-smile-beam"></i>오행 피부 케어 <span class="badge badge-free">FREE</span></h3>
+        <div id="skin-free-content" style="font-size:13px;color:var(--muted);line-height:1.7">분석 후 나의 피부 타입과 관리법을 확인할 수 있습니다.</div>
+      </div>
+      <div class="p-gate">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3><i class="fa-solid fa-droplet"></i>취약 장기 & 뷰티 연결</h3>
+            <div class="care-item">
+              <div class="care-icon" style="background:var(--water-bg);color:var(--water)">💧</div>
+              <div class="care-body">
+                <div class="care-title">신장·방광 — 다크서클·탈모</div>
+                <div class="care-desc">수분 섭취 2L/일. 두피 영양 앰플 주 2회.</div>
+                <span class="care-tag warn">탈모 주의</span>
+                <span class="care-tag ok">두피케어 추천</span>
+              </div>
+            </div>
+          </div>
+          <div class="s-card">
+            <h3><i class="fa-solid fa-jar"></i>추천 스킨케어 루틴</h3>
+            <div style="font-size:12px;color:var(--muted);line-height:2">
+              아침: 저자극 클렌저 → 토너 → 히알루론산 세럼 → 선크림<br>
+              저녁: 더블클렌징 → 앰플 → 크림 → 수면팩
+            </div>
+          </div>
+        </div>
+        <div class="p-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>오행별 피부 케어 플랜 + 루틴</p>
+          <div class="unlock-price">₩3,900 · 전체 뷰티 분석</div>
+          <button class="btn-unlock" onclick="openPayModal('basic')">잠금 해제</button>
+        </div>
+      </div>
+      <div id="skin-full-content" style="display:none" class="fade-in"></div>
+    </div>
+
+    <!-- ── TAB: 식단 ── -->
+    <div id="tab-diet" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-bowl-food"></i>오행 웰니스 식단 <span class="badge badge-paid">PREMIUM</span></h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">내 오행 에너지를 보완하는 이달의 추천 식단입니다.</p>
+      </div>
+      <div class="p-gate">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3>이달의 뷰티 식단</h3>
+            <div class="diet-grid">
+              <div class="diet-item"><div class="diet-emoji">🫐</div><div class="diet-name">블루베리</div><div class="diet-reason">항산화 · 피부 광채</div></div>
+              <div class="diet-item"><div class="diet-emoji">🥑</div><div class="diet-name">아보카도</div><div class="diet-reason">지방산 · 피부 탄력</div></div>
+              <div class="diet-item"><div class="diet-emoji">🐟</div><div class="diet-name">연어</div><div class="diet-reason">오메가3 · 두피 영양</div></div>
+              <div class="diet-item"><div class="diet-emoji">🥦</div><div class="diet-name">브로콜리</div><div class="diet-reason">비타민C · 콜라겐</div></div>
+            </div>
+            <div class="diet-avoid">
+              <div class="avoid-title">⚠ 이달 주의 식품</div>
+              <div class="avoid-items">차가운 음식·튀김류·과도한 카페인 제한 권장</div>
+            </div>
+          </div>
+        </div>
+        <div class="p-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>오행 맞춤 뷰티 식단 플랜</p>
+          <div class="unlock-price">₩9,900 · AI 뷰티 상담 포함</div>
+          <button class="btn-unlock" onclick="openPayModal('premium')">잠금 해제</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: 궁합 ── -->
+    <div id="tab-couple" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-heart"></i>뷰티 궁합 분석</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px">두 사람의 오행을 비교해 케미스트리를 확인합니다.</p>
+        <div class="input-group" style="margin-bottom:10px">
+          <label>나의 생년월일</label>
+          <input type="date" class="bh-input" id="couple-a">
+        </div>
+        <div class="input-group" style="margin-bottom:14px">
+          <label>상대방 생년월일</label>
+          <input type="date" class="bh-input" id="couple-b">
+        </div>
+        <button class="btn-analyze" style="font-size:14px;padding:13px" onclick="doBeautyCoupleAnalysis()">
+          <i class="fa-solid fa-heart" style="margin-right:8px"></i>뷰티 궁합 분석하기
+        </button>
+      </div>
+      <div id="couple-result" style="display:none" class="fade-in">
+        <div class="s-card">
+          <h3><i class="fa-solid fa-chart-pie"></i>궁합 점수</h3>
+          <div id="couple-score-detail"></div>
+        </div>
+      </div>
+      <div class="p-gate" id="gate-couple-detail" style="display:none">
+        <div class="blur-content">
+          <div class="s-card">
+            <h3>뷰티 케미스트리 상세</h3>
+            <div style="font-size:13px;line-height:1.8">두 사람이 함께 방문하면 시너지가 극대화되는 시술이 있어요. 같은 날 패키지 예약 시 할인 혜택도 놓치지 마세요!</div>
+          </div>
+        </div>
+        <div class="p-overlay">
+          <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+          <p>상세 뷰티 케미스트리 리포트</p>
+          <div class="unlock-price">₩3,900 · 전체 뷰티 분석</div>
+          <button class="btn-unlock" onclick="openPayModal('basic')">잠금 해제</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: 결제 ── -->
+    <div id="tab-pay" class="tab-panel">
+      <div class="s-card">
+        <h3><i class="fa-solid fa-crown"></i>뷰티 AI 플랜 선택</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px">나에게 딱 맞는 플랜으로 시작하세요.</p>
+        <div class="plan-grid">
+          <div class="plan-card" id="plan-free-card">
+            <span class="plan-icon">🆓</span>
+            <div style="flex:1">
+              <div class="plan-name">무료 체험</div>
+              <div class="plan-price">₩0</div>
+              <div class="plan-features">기본 오행 프로필 + 이달의 한줄 운세</div>
+            </div>
+            <div style="font-size:11px;color:var(--accent2);font-weight:600">현재</div>
+          </div>
+          <div class="plan-card" id="plan-basic-card" onclick="selectPayPlan('basic')">
+            <span class="plan-icon">💄</span>
+            <div style="flex:1">
+              <div class="plan-name">뷰티 분석 <span class="plan-badge" style="background:var(--pink);color:#fff">인기</span></div>
+              <div class="plan-price">₩3,900 <span style="font-size:11px;color:var(--muted);font-weight:400">1회</span></div>
+              <div class="plan-features">전체 뷰티 분석 + 맞춤 시술 추천</div>
+            </div>
+            <div class="plan-radio" id="radio-basic"></div>
+          </div>
+          <div class="plan-card recommended" id="plan-premium-card" onclick="selectPayPlan('premium')">
+            <span class="plan-icon">✨</span>
+            <div style="flex:1">
+              <div class="plan-name">AI 뷰티 상담 <span class="plan-badge">추천</span></div>
+              <div class="plan-price">₩9,900 <span style="font-size:11px;color:var(--muted);font-weight:400">1회</span></div>
+              <div class="plan-features">전체 분석 + AI 1:1 뷰티 상담 5회</div>
+            </div>
+            <div class="plan-radio" id="radio-premium"></div>
+          </div>
+        </div>
+        <div class="input-group" style="margin-bottom:14px">
+          <label>이메일 (결과 발송)</label>
+          <input type="email" class="bh-input" id="pay-email-tab" placeholder="your@email.com">
+        </div>
+        <button class="btn-pay" id="btn-pay-tab" onclick="doTabPayment()" disabled>
+          <i class="fa-solid fa-credit-card" style="margin-right:8px"></i>결제하기
+        </button>
+        <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:10px">
+          <i class="fa-solid fa-shield" style="color:var(--accent2)"></i> TossPayments 안전결제 · 환불 3일 이내
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.bh-body -->
+
+  <!-- TABS NAV -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="profile" onclick="switchTab('profile',this)">
+      <i class="fa-solid fa-user-circle"></i>프로필
+    </button>
+    <button class="tab-btn" data-tab="month" onclick="switchTab('month',this)">
+      <i class="fa-solid fa-calendar-star"></i>이달운세
+    </button>
+    <button class="tab-btn" data-tab="hair" onclick="switchTab('hair',this)">
+      <i class="fa-solid fa-scissors"></i>헤어
+    </button>
+    <button class="tab-btn" data-tab="skin" onclick="switchTab('skin',this)">
+      <i class="fa-solid fa-face-smile-beam"></i>피부
+    </button>
+    <button class="tab-btn" data-tab="diet" onclick="switchTab('diet',this)">
+      <i class="fa-solid fa-bowl-food"></i>식단
+    </button>
+    <button class="tab-btn" data-tab="couple" onclick="switchTab('couple',this)">
+      <i class="fa-solid fa-heart"></i>궁합
+    </button>
+    <button class="tab-btn" data-tab="pay" onclick="switchTab('pay',this)">
+      <i class="fa-solid fa-crown"></i>구독
+    </button>
+  </nav>
+
+  <!-- PAYMENT MODAL -->
+  <div class="modal-bg" id="pay-modal" onclick="closePayModal(event)">
+    <div class="modal-sheet" onclick="event.stopPropagation()">
+      <div class="modal-handle" onclick="closePayModal()"></div>
+      <div class="modal-title">뷰티 AI 플랜 선택</div>
+      <div class="modal-sub">오행 뷰티 분석을 완전히 경험하세요</div>
+      <div class="plan-grid">
+        <div class="plan-card" id="modal-plan-basic" onclick="selectModalPlan('basic')">
+          <span class="plan-icon">💄</span>
+          <div style="flex:1">
+            <div class="plan-name">전체 뷰티 분석 <span class="plan-badge" style="background:var(--pink);color:#fff">인기</span></div>
+            <div class="plan-price">₩3,900</div>
+            <div class="plan-features">오행 분석 전체 + 맞춤 헤어·피부 시술 추천</div>
+          </div>
+          <div class="plan-radio" id="modal-radio-basic"></div>
+        </div>
+        <div class="plan-card recommended" id="modal-plan-premium" onclick="selectModalPlan('premium')">
+          <span class="plan-icon">✨</span>
+          <div style="flex:1">
+            <div class="plan-name">AI 1:1 뷰티 상담 <span class="plan-badge">추천</span></div>
+            <div class="plan-price">₩9,900</div>
+            <div class="plan-features">전체 분석 + AI 뷰티 상담 5회 포함</div>
+          </div>
+          <div class="plan-radio" id="modal-radio-premium"></div>
+        </div>
+      </div>
+      <div class="input-group" style="margin-bottom:14px">
+        <label>이메일 (결과 발송)</label>
+        <input type="email" class="bh-input" id="pay-email-modal" placeholder="your@email.com">
+      </div>
+      <button class="btn-pay" id="btn-pay-modal" onclick="doModalPayment()" disabled>
+        <i class="fa-solid fa-credit-card" style="margin-right:8px"></i>결제하기
+      </button>
+      <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:10px">
+        <i class="fa-solid fa-shield" style="color:var(--accent2)"></i> TossPayments 안전결제 · 환불 3일 이내
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+</div><!-- /#app -->
+
+<script>
+// ═══════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════
+var TOSS_CLIENT_KEY = 'test_ck_oEjb0gm23P4vBwp96WJk3pGwBJn5';
+var GAS_URL = ''; // config.js의 WEB_APP_URL
+
+var PLANS = {
+  basic:   { name:'전체 뷰티 분석', price:3900 },
+  premium: { name:'AI 뷰티 상담',   price:9900 }
+};
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+var state = {
+  birth: null, birthStr: null, gender: 'F',
+  vCore: null,
+  selectedPlan: null,     // modal
+  selectedTabPlan: null   // tab pay
+};
+
+// ═══════════════════════════════════════════════════
+// MANSERYEOK ENGINE
+// ═══════════════════════════════════════════════════
+var GANS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+var ZHIS = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+var GAN_EL = {甲:'木',乙:'木',丙:'火',丁:'火',戊:'土',己:'土',庚:'金',辛:'金',壬:'水',癸:'水'};
+var ZHI_EL = {子:'水',丑:'土',寅:'木',卯:'木',辰:'土',巳:'火',午:'火',未:'土',申:'金',酉:'金',戌:'土',亥:'水'};
+var EL_KO  = {木:'목',火:'화',土:'토',金:'금',水:'수'};
+var EL_COLOR = {木:'var(--wood)',火:'var(--fire)',土:'var(--earth)',金:'var(--metal)',水:'var(--water)'};
+var EL_BG = {木:'var(--wood-bg)',火:'var(--fire-bg)',土:'var(--earth-bg)',金:'var(--metal-bg)',水:'var(--water-bg)'};
+var EL_EMOJI = {木:'🌿',火:'🔥',土:'🌾',金:'💎',水:'💧'};
+
+var LICHUN = {
+  1940:[2,5],1950:[2,4],1960:[2,5],1970:[2,4],1980:[2,5],
+  1981:[2,4],1982:[2,4],1983:[2,4],1984:[2,4],1985:[2,4],1986:[2,4],1987:[2,4],1988:[2,4],
+  1989:[2,4],1990:[2,4],1991:[2,4],1992:[2,4],1993:[2,4],1994:[2,4],1995:[2,4],1996:[2,4],
+  1997:[2,4],1998:[2,4],1999:[2,4],2000:[2,4],2001:[2,4],2002:[2,4],2003:[2,4],2004:[2,4],
+  2005:[2,4],2006:[2,4],2007:[2,4],2008:[2,4],2009:[2,4],2010:[2,4]
+};
+
+var BRANCH_RATIO = {
+  子:[0,0,0,0,1],丑:[0,0,.6,.2,.2],寅:[.6,.3,.1,0,0],卯:[1,0,0,0,0],
+  辰:[.2,0,.6,0,.2],巳:[0,.6,.1,.3,0],午:[0,.7,.3,0,0],未:[.2,.2,.6,0,0],
+  申:[0,0,.1,.6,.3],酉:[0,0,0,1,0],戌:[0,.1,.7,.2,0],亥:[.3,0,0,0,.7]
+};
+
+function getSajuYear(y,m,d){ var lc=LICHUN[y]||[2,4]; return (m<lc[0]||(m===lc[0]&&d<lc[1]))?y-1:y; }
+function getYearGan(y){ return GANS[((y-4)%10+10)%10]; }
+function getYearZhi(y){ return ZHIS[((y-4)%12+12)%12]; }
+function getMonthGan(yIdx,m){ return GANS[((yIdx%5)*2+(m-1))%10]; }
+function getMonthZhi(m){ return ['丑','寅','卯','辰','巳','午','未','申','酉','戌','亥','子'][m-1]; }
+function getDayGan(y,m,d){ var b=new Date(1900,0,1),t=new Date(y,m-1,d),diff=Math.floor((t-b)/86400000); return GANS[((diff+10)%10+10)%10]; }
+function getDayZhi(y,m,d){ var b=new Date(1900,0,1),t=new Date(y,m-1,d),diff=Math.floor((t-b)/86400000); return ZHIS[((diff+10)%12+12)%12]; }
+
+function computeSaju(birthStr) {
+  var y=parseInt(birthStr.slice(0,4)),m=parseInt(birthStr.slice(4,6)),d=parseInt(birthStr.slice(6,8));
+  var sy=getSajuYear(y,m,d);
+  var yGan=getYearGan(sy), yZhi=getYearZhi(sy);
+  var yIdx=GANS.indexOf(yGan);
+  var mGan=getMonthGan(yIdx,m), mZhi=getMonthZhi(m);
+  var dGan=getDayGan(y,m,d), dZhi=getDayZhi(y,m,d);
+
+  var oh={木:0,火:0,土:0,金:0,水:0};
+  var stems=[yGan,mGan,dGan];
+  var branches=[{z:yZhi,w:1.2},{z:mZhi,w:2.5},{z:dZhi,w:1.2}];
+  stems.forEach(function(g){ oh[GAN_EL[g]]+=1.0; });
+  branches.forEach(function(item){
+    var r=BRANCH_RATIO[item.z]||[.2,.2,.2,.2,.2];
+    ['木','火','土','金','水'].forEach(function(e,i){ oh[e]+=r[i]*item.w; });
+  });
+
+  var dayEl=GAN_EL[dGan];
+  var generates={木:'火',火:'土',土:'金',金:'水',水:'木'};
+  var controls={木:'土',土:'水',水:'火',火:'金',金:'木'};
+
+  return { saju:{yGan,yZhi,mGan,mZhi,dGan,dZhi}, dayEl, oh,
+           wealthEl:controls[dayEl], exprEl:generates[dayEl] };
+}
+
+// ═══════════════════════════════════════════════════
+// BEAUTY DATA
+// ═══════════════════════════════════════════════════
+var BEAUTY_PROFILE = {
+  木: {
+    dna:'자연주의 생명력 타입',
+    desc:'새로운 것에 도전하는 트렌디한 감각. 자연스러운 아름다움이 빛나는 타입입니다.',
+    skinType:'지성·복합성 피부, 두피 과민',
+    keywords:['#내추럴뷰티','#생기있는','#그린뷰티','#트렌디'],
+    hair:{ style:'자연스러운 레이어드 컷, S웨이브 펌', color:'브라운·애쉬브라운·올리브',
+           colors:['#7B5544','#A0785A','#6B7C47'], advice:'과도한 열 스타일링 자제. 천연 오일 세럼 추천.' },
+    skinCare:{ type:'지성·복합성', organ:'간·담낭·눈·두피',
+               caution:'두피 과민, 피부 트러블, 눈 피로',
+               routine:'약산성 클렌저 → 진정 토너 → 가벼운 세럼 → 무겔 수분크림',
+               tips:'두피 스켈링 월 1회 추천. 알로에·녹차 성분 선호.' },
+    diet:{ good:['🥦 브로콜리','🍋 레몬','🌿 새싹채소','🥝 키위'],
+           reason:'간 기능 지원. 항산화 비타민 공급.',
+           avoid:'기름진 음식·알코올·인스턴트' },
+    monthFortune:'봄 에너지 강화 시기. 두피와 모발 관리에 특히 집중하세요. 새로운 헤어스타일 도전에 좋은 달입니다.'
+  },
+  火: {
+    dna:'열정 카리스마 타입',
+    desc:'강렬한 존재감과 표현력이 강점. 볼드한 스타일이 잘 어울리는 타입입니다.',
+    skinType:'민감성·홍조 피부, 안색 불균형',
+    keywords:['#볼드뷰티','#강렬한','#레드립','#글로우'],
+    hair:{ style:'볼드한 원랭스 or 레이어드, 굵은 웨이브', color:'레드·버건디·와인·코퍼',
+           colors:['#8B1A1A','#6B2737','#B54A3F'], advice:'색을 살리는 컬러 트리트먼트 정기 관리 필요.' },
+    skinCare:{ type:'민감성·홍조', organ:'심장·혈관·안색',
+               caution:'홍조·혈색 불균형·자외선 민감',
+               routine:'진정 클렌징 → 병풀 토너 → 보습 앰플 → 선크림 SPF50+',
+               tips:'레드 성분(장미·히비스커스) 활용. 강한 열·자외선 주의.' },
+    diet:{ good:['🍓 딸기','🍒 체리','🫑 빨간 파프리카','🍅 토마토'],
+           reason:'혈관 건강, 안색 개선. 항산화 플라보노이드.',
+           avoid:'맵고 자극적인 음식·카페인 과다' },
+    monthFortune:'활력이 최고조에 달하는 시기. 과감한 컬러 변신이 잘 어울립니다. 화색 관리와 자외선 차단에 신경 쓰세요.'
+  },
+  土: {
+    dna:'따뜻한 안정감 타입',
+    desc:'포근하고 신뢰감을 주는 자연스러운 아름다움. 웜톤 컬러가 잘 어울립니다.',
+    skinType:'건성·칙칙함, 각질·색소침착',
+    keywords:['#웜뷰티','#포근한','#내추럴글로우','#클래식'],
+    hair:{ style:'따뜻한 볼륨 웨이브, 미디움 레이어', color:'카라멜·허니 블론드·골든브라운',
+           colors:['#C8863C','#D4A44C','#B87333'], advice:'보습 트리트먼트 정기 관리. 볼륨감 살리는 드라이.' },
+    skinCare:{ type:'건성·색소침착', organ:'비장·위장·피부칙칙',
+               caution:'칙칙한 안색·각질·색소침착',
+               routine:'영양 클렌저 → 미백 토너 → 비타민C 세럼 → 영양 크림',
+               tips:'각질 관리 주 1회. 영양팩+황토·허니 마스크 추천.' },
+    diet:{ good:['🍯 꿀','🌽 옥수수','🥕 당근','🍠 고구마'],
+           reason:'비장·위 기능 강화. 피부 윤기.',
+           avoid:'차가운 음식·날것·밀가루 과다' },
+    monthFortune:'피부 재생 사이클이 안정적인 시기. 영양 공급과 각질 관리를 집중하세요. 따뜻한 웜톤 메이크업이 특히 잘 어울립니다.'
+  },
+  金: {
+    dna:'깔끔 섬세함 타입',
+    desc:'정갈하고 세련된 분위기가 강점. 쿨톤·애쉬 계열이 완벽하게 어울립니다.',
+    skinType:'건성·예민성, 피부 건조·당김',
+    keywords:['#쿨뷰티','#세련된','#미니멀','#애쉬'],
+    hair:{ style:'깔끔한 직모·원랭스, 블런트 컷', color:'애쉬·실버·플래티넘·딥그레이',
+           colors:['#A8A8B8','#C0C0C0','#9090A8'], advice:'철분 성분 헤어 트리트먼트. 수분 부족 주의.' },
+    skinCare:{ type:'건성·예민성', organ:'폐·대장·피부건조',
+               caution:'건조함·예민·피부 당김·호흡기 연계',
+               routine:'수분 클렌저 → 히알루론산 토너 → 보습 앰플 2겹 → 오일 크림',
+               tips:'수분 집중 트리트먼트. 히알루론산·세라마이드 성분.' },
+    diet:{ good:['🐟 연어','🥛 우유','🧀 치즈','🫙 요거트'],
+           reason:'폐·피부 보습 강화. 단백질·지방산 공급.',
+           avoid:'매운 음식·건조한 환경·과도한 냉방' },
+    monthFortune:'피부 건조감이 심해질 수 있는 시기. 보습에 최우선 집중. 딥 모이스처 트리트먼트를 강력 추천합니다.'
+  },
+  水: {
+    dna:'신비 감성 심도 타입',
+    desc:'깊고 독특한 매력을 지닌 타입. 차가운 딥 컬러와 자연스러운 윤기가 잘 어울립니다.',
+    skinType:'수분 불균형, 다크서클·탈모',
+    keywords:['#딥뷰티','#신비로운','#블루블랙','#글로시'],
+    hair:{ style:'볼륨 웨이브·히피펌, 자연스러운 텍스처', color:'블루블랙·딥네이비·다크초코',
+           colors:['#1A1A3E','#2C2C5A','#1C1C2E'], advice:'두피 영양 앰플 주기적 사용. 탈모 예방 관리.' },
+    skinCare:{ type:'수분불균형·다크서클', organ:'신장·방광·다크서클·탈모',
+               caution:'다크서클·탈모·수분 순환 저하',
+               routine:'저자극 클렌저 → 수분 에센스 → 아이크림 필수 → 수면팩',
+               tips:'두피 영양 주 2회. 아이케어 매일. 물 2L 이상.' },
+    diet:{ good:['🫐 블루베리','🐙 오징어·미역','🫘 검은콩','🍇 포도'],
+           reason:'신장 기능 지원. 항산화 + 콜라겐 강화.',
+           avoid:'짠 음식·과도한 수분 부족·야식' },
+    monthFortune:'깊은 감성이 극대화되는 시기. 헤어 볼륨감과 두피 케어가 핵심입니다. 아이케어를 절대 빠뜨리지 마세요.'
+  }
+};
+
+// 오행 관계
+function getElRelation(a,b){
+  var gen={木:'火',火:'土',土:'金',金:'水',水:'木'};
+  var ctl={木:'土',土:'水',水:'火',火:'金',金:'木'};
+  var genBy={火:'木',土:'火',金:'土',水:'金',木:'水'};
+  var ctlBy={土:'木',水:'土',火:'水',金:'火',木:'金'};
+  if(a===b) return {rel:'비화',score:72,desc:'같은 오행 — 서로 잘 이해하지만 경쟁도 생겨요',
+                    beauty:'비슷한 뷰티 취향. 같은 시술 패키지 추천!'};
+  if(gen[a]===b) return {rel:'상생',score:91,desc:'최상의 상생 — 서로를 성장시키는 환상의 조합',
+                          beauty:'서로의 스타일을 완성시켜주는 케미. 커플 패키지 최적!'};
+  if(genBy[a]===b) return {rel:'상생역',score:85,desc:'안정적 지지 — 든든한 버팀목이 되어주는 관계',
+                             beauty:'서로 보완하는 뷰티 조합. 함께 방문하면 시너지 UP!'};
+  if(ctl[a]===b) return {rel:'상극',score:58,desc:'도전적 관계 — 자극을 통해 서로 성장',
+                          beauty:'다른 스타일이지만 대비로 더 빛나는 조합.'};
+  return {rel:'상극역',score:68,desc:'보완적 관계 — 다름이 강점이 되는 조합',
+          beauty:'독립적인 스타일이 각자의 매력을 돋보이게 해요.'};
+}
+
+// ═══════════════════════════════════════════════════
+// ANALYZE
+// ═══════════════════════════════════════════════════
+function doBeautyAnalyze() {
+  var dVal = document.getElementById('birth-date').value;
+  if(!dVal){ showToast('생년월일을 입력해주세요'); return; }
+  var parts = dVal.split('-');
+  state.birthStr = parts[0]+parts[1]+parts[2];
+  state.birth = new Date(dVal);
+  state.gender = document.getElementById('birth-gender').value;
+  state.vCore = computeSaju(state.birthStr);
+
+  renderResultBanner();
+  renderProfileTab();
+  renderMonthTab();
+  renderHairFree();
+  renderSkinFree();
+
+  document.getElementById('result-banner').classList.add('show');
+  document.getElementById('bh-body').scrollTop = 0;
+  switchTab('profile', document.querySelector('[data-tab="profile"]'));
+  showToast(EL_EMOJI[state.vCore.dayEl] + ' ' + BEAUTY_PROFILE[state.vCore.dayEl].dna + ' 분석 완료!');
+}
+
+function renderResultBanner() {
+  var vc = state.vCore, el = vc.dayEl, bp = BEAUTY_PROFILE[el];
+  var badge = document.getElementById('el-badge');
+  badge.style.background = EL_BG[el];
+  badge.style.color = EL_COLOR[el];
+  badge.textContent = EL_EMOJI[el];
+
+  document.getElementById('result-main').innerHTML =
+    '<span style="color:'+EL_COLOR[el]+'">'+el+'('+EL_KO[el]+')</span> 오행 · ' + bp.dna;
+  document.getElementById('result-desc').textContent = bp.skinType;
+  document.getElementById('result-pill').textContent = '✨ ' + bp.keywords[0];
+
+  // ohaeng bars
+  var oh = vc.oh, maxOh = Math.max.apply(null, Object.values(oh)) || 1;
+  var html = '';
+  ['木','火','土','金','水'].forEach(function(e){
+    var pct = Math.round(oh[e]/maxOh*100);
+    html += '<div class="ohaeng-row">'
+      +'<span class="ohaeng-lbl" style="color:'+EL_COLOR[e]+'">'+e+'</span>'
+      +'<div class="ohaeng-bg"><div class="ohaeng-fill" style="width:'+pct+'%;background:'+EL_COLOR[e]+'"></div></div>'
+      +'<span class="ohaeng-val">'+oh[e].toFixed(1)+'</span>'
+      +'</div>';
+  });
+  document.getElementById('ohaeng-bars').innerHTML = html;
+}
+
+function renderProfileTab() {
+  var el = state.vCore.dayEl, bp = BEAUTY_PROFILE[el];
+
+  // DNA 카드
+  document.getElementById('profile-dna-card').innerHTML =
+    '<div class="dna-el">'+EL_EMOJI[el]+'</div>'
+    +'<div class="dna-name" style="color:'+EL_COLOR[el]+'">'+bp.dna+'</div>'
+    +'<div class="dna-desc">'+bp.desc+'</div>'
+    +'<div style="margin-top:12px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">'
+    +bp.keywords.map(function(k){ return '<span style="background:'+EL_BG[el]+';color:'+EL_COLOR[el]+';padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600">'+k+'</span>'; }).join('')
+    +'</div>';
+
+  // ohaeng chart (mini)
+  var oh = state.vCore.oh, maxOh = Math.max.apply(null, Object.values(oh)) || 1;
+  var chartHtml = '';
+  ['木','火','土','金','水'].forEach(function(e){
+    var pct = Math.round(oh[e]/maxOh*100);
+    chartHtml += '<div class="ohaeng-row">'
+      +'<span class="ohaeng-lbl" style="color:'+EL_COLOR[e]+'">'+e+'</span>'
+      +'<div class="ohaeng-bg"><div class="ohaeng-fill" style="width:'+pct+'%;background:'+EL_COLOR[e]+'"></div></div>'
+      +'<span class="ohaeng-val">'+oh[e].toFixed(1)+'</span>'
+      +'</div>';
+  });
+  document.getElementById('profile-chart').innerHTML = chartHtml;
+
+  // keywords section
+  var kHtml = '<div style="display:flex;gap:8px;flex-wrap:wrap">';
+  var allKeywords = [bp.keywords[0], bp.keywords[1], bp.keywords[2],
+    '피부:'+bp.skinCare.type, '헤어:'+bp.hair.style.split(',')[0]];
+  allKeywords.forEach(function(k){
+    kHtml += '<span class="el-chip chip-'+el+'">'+k+'</span>';
+  });
+  kHtml += '</div><div style="margin-top:12px;font-size:13px;color:var(--muted);line-height:1.6">'
+    +'<strong style="color:var(--text)">관장 부위:</strong> '+bp.skinCare.organ+'<br>'
+    +'<strong style="color:var(--text)">주의 포인트:</strong> '+bp.skinCare.caution+'</div>';
+  document.getElementById('profile-keywords').innerHTML = kHtml;
+
+  document.getElementById('profile-placeholder').style.display = 'none';
+  document.getElementById('profile-content').style.display = 'block';
+}
+
+function renderMonthTab() {
+  var el = state.vCore.dayEl, bp = BEAUTY_PROFILE[el];
+  var now = new Date();
+  var monthStr = (now.getMonth()+1) + '월';
+
+  document.getElementById('month-free-content').innerHTML =
+    '<div style="background:'+EL_BG[el]+';border-radius:12px;padding:14px;margin-bottom:12px">'
+    +'<div style="font-size:11px;color:var(--muted);margin-bottom:6px">'+now.getFullYear()+'년 '+monthStr+' 뷰티 운세</div>'
+    +'<div style="font-size:14px;font-weight:700;color:'+EL_COLOR[el]+';margin-bottom:6px">'+EL_EMOJI[el]+' '+bp.dna+'</div>'
+    +'<div style="font-size:13px;line-height:1.7">'+bp.monthFortune+'</div>'
+    +'</div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    +'<span class="recommend-chip"><i class="fa-solid fa-scissors"></i>추천시술 잠금 해제 후 확인</span>'
+    +'</div>';
+}
+
+function renderHairFree() {
+  var el = state.vCore.dayEl, bp = BEAUTY_PROFILE[el];
+  var colorDots = bp.hair.colors.map(function(c){
+    return '<div class="hair-color-dot" style="background:'+c+'"></div>';
+  }).join('');
+
+  document.getElementById('hair-free-content').innerHTML =
+    '<div class="hair-card" style="border-left-color:'+EL_COLOR[el]+'">'
+    +'<div class="hair-icon" style="background:'+EL_BG[el]+';color:'+EL_COLOR[el]+'">'+EL_EMOJI[el]+'</div>'
+    +'<div class="hair-body">'
+    +'<div class="hair-title" style="color:'+EL_COLOR[el]+'">'+el+'('+EL_KO[el]+') 추천 헤어스타일</div>'
+    +'<div class="hair-desc">'+bp.hair.style+'</div>'
+    +'<div class="hair-colors">'+colorDots+'<span style="font-size:11px;color:var(--muted);margin-left:4px">'+bp.hair.color+'</span></div>'
+    +'</div></div>';
+
+  // reveal full hair content (unlocked preview)
+  var fullHtml = '';
+  ['木','火','土','金','水'].forEach(function(e){
+    var b = BEAUTY_PROFILE[e];
+    var dots = b.hair.colors.map(function(c){ return '<div class="hair-color-dot" style="background:'+c+'"></div>'; }).join('');
+    fullHtml += '<div class="hair-card" style="border-left-color:'+EL_COLOR[e]+'">'
+      +'<div class="hair-icon" style="background:'+EL_BG[e]+';color:'+EL_COLOR[e]+'">'+EL_EMOJI[e]+'</div>'
+      +'<div class="hair-body">'
+      +'<div class="hair-title" style="color:'+EL_COLOR[e]+'">'+e+'('+EL_KO[e]+') — '+b.hair.style.split(',')[0]+'</div>'
+      +'<div class="hair-desc">'+b.hair.style+'</div>'
+      +'<div style="font-size:12px;color:var(--muted);margin-top:4px">'+b.hair.advice+'</div>'
+      +'<div class="hair-colors">'+dots+'<span style="font-size:11px;color:var(--muted);margin-left:4px">'+b.hair.color+'</span></div>'
+      +'</div></div>';
+  });
+  document.getElementById('hair-full-content').innerHTML =
+    '<div class="s-card"><h3><i class="fa-solid fa-palette"></i>오행별 헤어 가이드 전체</h3>'
+    +fullHtml+'</div>';
+}
+
+function renderSkinFree() {
+  var el = state.vCore.dayEl, bp = BEAUTY_PROFILE[el];
+  document.getElementById('skin-free-content').innerHTML =
+    '<div style="display:flex;gap:8px;align-items:flex-start;padding-bottom:10px;border-bottom:1px solid var(--border)">'
+    +'<div style="width:40px;height:40px;border-radius:12px;background:'+EL_BG[el]+';display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">'+EL_EMOJI[el]+'</div>'
+    +'<div>'
+    +'<div style="font-size:13px;font-weight:700;margin-bottom:3px;color:'+EL_COLOR[el]+'">'+bp.skinCare.type+'</div>'
+    +'<div style="font-size:12px;color:var(--muted)">관장 부위: '+bp.skinCare.organ+'</div>'
+    +'<span class="care-tag warn">'+bp.skinCare.caution.split('·')[0]+' 주의</span>'
+    +'</div></div>'
+    +'<div style="margin-top:12px;font-size:12px;color:var(--muted)">상세 루틴 및 추천 성분은 프리미엄에서 확인하세요.</div>';
+}
+
+// ═══════════════════════════════════════════════════
+// COUPLE ANALYSIS
+// ═══════════════════════════════════════════════════
+function doBeautyCoupleAnalysis() {
+  var aVal = document.getElementById('couple-a').value;
+  var bVal = document.getElementById('couple-b').value;
+  if(!aVal||!bVal){ showToast('두 사람의 생년월일을 모두 입력해주세요'); return; }
+  var toStr = function(v){ var p=v.split('-'); return p[0]+p[1]+p[2]; };
+  var vcA = computeSaju(toStr(aVal));
+  var vcB = computeSaju(toStr(bVal));
+  var res = getElRelation(vcA.dayEl, vcB.dayEl);
+  var col = res.score>=85?'var(--accent2)':res.score>=70?'var(--accent)':'var(--fire)';
+
+  document.getElementById('couple-score-detail').innerHTML =
+    '<div class="couple-score-wrap">'
+    +'<div class="couple-score-num" style="-webkit-text-fill-color:'+col+'">'+res.score+'</div>'
+    +'<div class="couple-score-label">뷰티 케미스트리 점수</div>'
+    +'<div class="couple-el-pair">'
+    +'<div class="couple-el-box"><div class="el-icon">'+EL_EMOJI[vcA.dayEl]+'</div><div class="el-name" style="color:'+EL_COLOR[vcA.dayEl]+'">'+vcA.dayEl+'('+EL_KO[vcA.dayEl]+')</div></div>'
+    +'<div style="font-size:20px;color:var(--muted)">×</div>'
+    +'<div class="couple-el-box"><div class="el-icon">'+EL_EMOJI[vcB.dayEl]+'</div><div class="el-name" style="color:'+EL_COLOR[vcB.dayEl]+'">'+vcB.dayEl+'('+EL_KO[vcB.dayEl]+')</div></div>'
+    +'</div>'
+    +'<div style="margin-top:12px;font-size:13px;font-weight:700">'+res.desc+'</div>'
+    +'<div style="margin-top:6px;font-size:12px;color:var(--muted);background:var(--card2);border-radius:10px;padding:10px">'+res.beauty+'</div>'
+    +'</div>';
+
+  document.getElementById('couple-result').style.display = 'block';
+  document.getElementById('gate-couple-detail').style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════
+// PAYMENT
+// ═══════════════════════════════════════════════════
+function selectPayPlan(plan) {
+  state.selectedTabPlan = plan;
+  ['basic','premium'].forEach(function(p){
+    document.getElementById('plan-'+p+'-card').classList.toggle('selected', p===plan);
+    var r = document.getElementById('radio-'+p);
+    if(r){ r.classList.toggle('checked', p===plan); }
+  });
+  document.getElementById('btn-pay-tab').disabled = false;
+}
+
+function selectModalPlan(plan) {
+  state.selectedPlan = plan;
+  ['basic','premium'].forEach(function(p){
+    document.getElementById('modal-plan-'+p).classList.toggle('selected', p===plan);
+    var r = document.getElementById('modal-radio-'+p);
+    if(r){ r.classList.toggle('checked', p===plan); }
+  });
+  document.getElementById('btn-pay-modal').disabled = false;
+}
+
+function doTabPayment() {
+  if(!state.selectedTabPlan){ showToast('플랜을 선택해주세요'); return; }
+  var email = document.getElementById('pay-email-tab').value;
+  processTossPayment(state.selectedTabPlan, email);
+}
+
+function doModalPayment() {
+  if(!state.selectedPlan){ showToast('플랜을 선택해주세요'); return; }
+  var email = document.getElementById('pay-email-modal').value;
+  processTossPayment(state.selectedPlan, email);
+}
+
+function processTossPayment(planKey, email) {
+  var plan = PLANS[planKey];
+  if(!plan){ return; }
+  try {
+    var toss = TossPayments(TOSS_CLIENT_KEY);
+    var orderId = 'NKAI-BEAUTY-' + Date.now();
+    toss.requestPayment({
+      method: 'CARD',
+      amount: { currency:'KRW', value:plan.price },
+      orderId: orderId,
+      orderName: plan.name,
+      customerEmail: email || undefined,
+      successUrl: 'https://www.neurinkairosai.com?payment=success&plan='+planKey,
+      failUrl:    'https://www.neurinkairosai.com?payment=fail'
+    });
+  } catch(e) {
+    showToast('결제 창을 여는 중 오류가 발생했습니다');
+  }
+}
+
+// ─── URL params 처리 (결제 후 리턴)
+(function(){
+  var sp = new URLSearchParams(location.search);
+  if(sp.get('payment')==='success'){
+    setTimeout(function(){ showToast('결제 완료! 풀 분석이 활성화되었습니다 ✨'); }, 500);
+  } else if(sp.get('payment')==='fail'){
+    setTimeout(function(){ showToast('결제가 취소되었습니다.'); }, 500);
+  }
+})();
+
+// ═══════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════
+function openPayModal(hint) {
+  if(hint){ selectModalPlan(hint); }
+  document.getElementById('pay-modal').classList.add('show');
+}
+function closePayModal(e) {
+  if(!e || e.target.id==='pay-modal' || !e.target)
+    document.getElementById('pay-modal').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('tab-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  document.getElementById('bh-body').scrollTop = 0;
+}
+
+// ═══════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════
+function toggleTheme() {
+  var html = document.documentElement;
+  html.setAttribute('data-theme', html.getAttribute('data-theme')==='dark' ? 'light' : 'dark');
+}
+
+// ═══════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(function(){ t.style.display = 'none'; }, 3000);
+}
+</script>
+</body>
+</html>
