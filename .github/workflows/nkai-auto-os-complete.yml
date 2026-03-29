@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '01' || github.event_name == 'schedule'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2.2.2
       - name: SKILL 01 실행
         run: |
           python3 - << 'EOF'
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '02' || github.event_name == 'schedule'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - name: SKILL 02 실행
         run: |
           python3 - << 'EOF'
@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '03' || github.event_name == 'schedule'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - name: SKILL 03 실행
         run: |
           python3 - << 'EOF'
@@ -82,7 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '04' || github.event.inputs.skill == 'b2g' || github.event_name == 'schedule'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - name: SKILL 04 실행
         run: |
           python3 - << 'EOF'
@@ -104,7 +104,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '05' || github.event.inputs.skill == 'youtube' || github.event_name == 'schedule'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - name: SKILL 05 실행
         run: |
           python3 - << 'EOF'
@@ -129,7 +129,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '06' || github.event_name == 'schedule'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - name: SKILL 06 실행
         run: |
           python3 - << 'EOF'
@@ -150,7 +150,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '07' || github.event_name == 'schedule'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - name: SKILL 07 실행
         run: |
           python3 - << 'EOF'
@@ -172,7 +172,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '08' || github.event_name == 'schedule'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - name: SKILL 08 실행
         run: |
           python3 - << 'EOF'
@@ -193,7 +193,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.inputs.skill == 'all' || github.event.inputs.skill == '09' || github.event_name == 'schedule'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - name: SKILL 09 실행
         run: |
           python3 - << 'EOF'
