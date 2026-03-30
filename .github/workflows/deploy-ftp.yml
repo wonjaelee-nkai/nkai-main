@@ -59,6 +59,9 @@ jobs:
             **/회사로고/**
             **/정책자금/**
             index.html
+            kaizen-live.html
+            admin-partner.html
+            beauty-demo.html
             css/**
             js/**
 
