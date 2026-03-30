@@ -8683,7 +8683,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
               + '<span style="font-size:28px;">💳</span>'
               + '<div style="text-align:left;"><div style="font-size:14px;font-weight:700;color:#2D8CFF;">카드 / 간편결제</div>'
               + '<div style="font-size:11px;color:#64748B;margin-top:2px;">신용·체크카드, 토스페이, 네이버페이, 카카오페이</div></div></button>'
-              + '<button data-method="휴대폰" disabled style="background:rgba(90,168,255,0.04);border:1px solid rgba(90,168,255,0.12);border-radius:12px;padding:16px;cursor:not-allowed;display:flex;align-items:center;gap:14px;opacity:0.5;position:relative;">'
+              + '<button data-method="휴대폰" style="background:rgba(90,168,255,0.08);border:1px solid rgba(90,168,255,0.25);border-radius:12px;padding:16px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all 0.2s;">'
               + '<span style="font-size:28px;">📱</span>'
               + '<div style="text-align:left;"><div style="font-size:14px;font-weight:700;color:#5AA8FF;">휴대폰 결제</div>'
               + '<div style="font-size:11px;color:#64748B;margin-top:2px;">통신사 소액결제 (SKT, KT, LG U+)</div></div>'
@@ -8990,5 +8990,50 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
     </script>
     <script src="js/nkai-patch.js?v=20260322"></script>
       <script src="js/nkai-breakdown.js"></script>
+    <!-- ★ KIPA Q1~Q16 + 소비행동 Q17~Q20 카운터 -->
+    <script>
+    (function(){
+        /* KIPA Q1~Q16 라디오 */
+        var kRadios = document.querySelectorAll('input[type="radio"][name^="kipa-q"]');
+        for(var i=0;i<kRadios.length;i++){
+            kRadios[i].addEventListener('change',function(){
+                var cnt=0;
+                for(var q=1;q<=16;q++){
+                    if(document.querySelector('input[name="kipa-q'+q+'"]:checked')) cnt++;
+                }
+                var el=document.getElementById('kipa-answered');
+                if(el) el.textContent=String(cnt);
+                sessionStorage.setItem('nkai_'+this.name.replace(/-/g,'_'),this.value);
+                localStorage.setItem('nkai_'+this.name.replace(/-/g,'_'),this.value);
+            });
+        }
+        /* 소비행동 Q17~Q20 */
+        var bqNames=['behavior-spending','behavior-impulse','behavior-windfall','behavior-tracking'];
+        var bqRadios=document.querySelectorAll('#behavior-quiz-section input[type="radio"]');
+        for(var j=0;j<bqRadios.length;j++){
+            bqRadios[j].addEventListener('change',function(){
+                var cnt=0;
+                for(var k=0;k<bqNames.length;k++){
+                    if(document.querySelector('input[name="'+bqNames[k]+'"]:checked')) cnt++;
+                }
+                var badge=document.getElementById('behavior-quiz-badge');
+                if(badge) badge.textContent=cnt+'/4';
+                var countEl=document.getElementById('behavior-quiz-count');
+                if(countEl) countEl.textContent=String(cnt);
+                var name=this.name;
+                var cards=document.querySelectorAll('#behavior-quiz-section .bq-card');
+                for(var m=0;m<cards.length;m++){
+                    var r=cards[m].querySelector('input[name="'+name+'"]');
+                    if(r){
+                        if(r.checked){cards[m].style.borderColor='#2D8CFF';cards[m].style.background='#eff6ff';cards[m].style.color='#1d4ed8';cards[m].style.fontWeight='700';}
+                        else{cards[m].style.borderColor='#e2e8f0';cards[m].style.background='#f8fafc';cards[m].style.color='#334155';cards[m].style.fontWeight='600';}
+                    }
+                }
+                sessionStorage.setItem('nkai_'+name.replace(/-/g,'_'),this.value);
+                localStorage.setItem('nkai_'+name.replace(/-/g,'_'),this.value);
+            });
+        }
+    })();
+    </script>
     </body>
     </html>
