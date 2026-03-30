@@ -58,6 +58,9 @@ jobs:
             **/*.txt
             **/회사로고/**
             **/정책자금/**
+            index.html
+            css/**
+            js/**
 
       - name: Deploy summary
         run: |
