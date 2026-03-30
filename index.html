@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" translate="no">
 <head>
-    <!-- ★ Toss 키 — toss-key.js에서 로드 (.gitignore 등록, FTP만 배포) -->
-    <script src="toss-key.js"></script>
 
     <!-- Google tag (gtag.js) - GA4 DAU/MAU 측정 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8KB519NP8C"></script>
@@ -613,38 +611,6 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                 padding: 5px 9px !important;
             }
         }
-        /* ═══ 사전 안내 팝업 ═══ */
-        .nkai-faq-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:9998;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);}
-        .nkai-faq-box{background:#0D1117;border:1px solid rgba(45,140,255,0.3);border-radius:20px;max-width:420px;width:100%;max-height:85vh;overflow-y:auto;padding:28px 22px 22px;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
-        .nkai-faq-box h3{color:#fff;font-size:18px;font-weight:900;text-align:center;margin-bottom:18px;}
-        .nkai-faq-item{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;margin-bottom:10px;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
-        .nkai-faq-item:hover{border-color:rgba(45,140,255,0.3);}
-        .nkai-faq-q{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;color:#E2E8F0;}
-        .nkai-faq-q i{color:#2D8CFF;font-size:10px;transition:transform 0.2s;}
-        .nkai-faq-item.open .nkai-faq-q i{transform:rotate(180deg);}
-        .nkai-faq-a{display:none;padding:0 14px 12px;font-size:12px;color:#94A3B8;line-height:1.7;}
-        .nkai-faq-item.open .nkai-faq-a{display:block;}
-        /* ═══ 무료 결과 공개 / 잠금 ═══ */
-        .nkai-free-unlocked{position:relative;}
-        .nkai-locked-wrap{position:relative;overflow:hidden;border-radius:16px;margin-bottom:12px;}
-        .nkai-locked-blur{filter:blur(7px);pointer-events:none;user-select:none;opacity:0.5;}
-        .nkai-lock-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);backdrop-filter:blur(2px);border-radius:16px;z-index:2;}
-        .nkai-lock-icon{width:40px;height:40px;border-radius:50%;background:rgba(45,140,255,0.15);border:1.5px solid rgba(45,140,255,0.3);display:flex;align-items:center;justify-content:center;margin-bottom:6px;}
-        .nkai-lock-icon i{color:#fff;font-size:16px;}
-        .nkai-lock-overlay p{color:#94A3B8;font-size:11px;font-weight:600;}
-        /* ═══ 결제 유도 버튼 ═══ */
-        .nkai-pay-cta-wrap{display:flex;flex-direction:column;gap:10px;margin:20px 0 10px;}
-        .nkai-pay-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px;border-radius:14px;font-size:15px;font-weight:800;cursor:pointer;transition:all 0.2s;border:none;}
-        .nkai-pay-cta:hover{opacity:0.9;transform:translateY(-1px);}
-        .nkai-pay-cta-std{background:linear-gradient(135deg,#7C5BF0,#9B7FF8);color:#fff;box-shadow:0 4px 20px rgba(124,91,240,0.3);}
-        .nkai-pay-cta-prm{background:linear-gradient(135deg,#2D8CFF,#5AA8FF);color:#fff;box-shadow:0 4px 20px rgba(45,140,255,0.3);}
-        /* ═══ KIPA v3 — 텍스트 5지선다 ═══ */
-        .kipa-q{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:12px}
-        .kipa-label{color:#1a1a2e;font-size:14px;font-weight:600;margin-bottom:4px}
-        .kipa-opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-        .kipa-opt{padding:8px 16px;border-radius:20px;border:1.5px solid #2D8CFF;background:transparent;color:#2D8CFF;cursor:pointer;font-size:13px;font-weight:500;transition:all .2s}
-        .kipa-opt.selected{background:#2D8CFF;color:#fff;font-weight:700}
-        .kipa-opt:hover{background:rgba(45,140,255,0.1)}
     </style>
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>window.OneSignalDeferred=window.OneSignalDeferred||[];OneSignalDeferred.push(async function(O){await O.init({appId:"de7a8e7d-c95e-4d2b-9853-df9fb7ee0905",notifyButton:{enable:false},serviceWorkerParam:{scope:"/"}});});</script>
@@ -2931,66 +2897,39 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                             </select>
                         </div>
 
-                        <!-- KIPA 16문항 + 소비DNA 4Q -->
+                        <!-- KIPA 16문항 -->
                         <!-- KIPA-16Q-START: 아래 16문항 블록을 삭제하거나 8문항으로 축소하지 마세요. 특허 P25KAI001KR의 핵심 구성요소입니다. -->
                         <div class="mt-5 pt-4 border-t border-gray-200">
-                            <label style="display:block;font-weight:900;margin-bottom:6px;font-size:14px;color:#2D8CFF;">
-                                <span data-i18n-html="kipa_title"><i class="fa-solid fa-dna"></i> 금융 행동 성향 진단 (16문항)</span>
+                            <label style="display: block; font-weight: 900; margin-bottom: 6px; font-size: 14px; color: #2D8CFF;">
+                                <span data-i18n-html="kipa_title"><i class="fa-solid fa-dna"></i> 행동 성향 진단 (16문항)</span>
                             </label>
-                            <p style="font-size:11px;color:#888;margin-bottom:12px;" data-i18n="kipa_sub">각 문항에서 본인에게 가장 가까운 보기를 골라주세요.</p>
+                            <p style="font-size:11px; color:#888; margin-bottom:12px;" data-i18n="kipa_sub">각 문항에서 본인에게 더 가까운 쪽을 선택해주세요.</p>
 
-                            <div class="kipa-q" id="kq1"><p class="kipa-label">Q1. 새로운 투자 기회를 발견하면?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="1" data-v="1">바로 알아본다</button><button type="button" class="kipa-opt" data-q="1" data-v="2">관심갖는다</button><button type="button" class="kipa-opt" data-q="1" data-v="3">살펴본다</button><button type="button" class="kipa-opt" data-q="1" data-v="4">신중히 본다</button><button type="button" class="kipa-opt" data-q="1" data-v="5">신중히 관망한다</button></div></div>
-                            <div class="kipa-q" id="kq2"><p class="kipa-label">Q2. 투자 정보를 주로 어떻게 얻나요?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="2" data-v="1">사람들과 대화</button><button type="button" class="kipa-opt" data-q="2" data-v="2">주로 대화</button><button type="button" class="kipa-opt" data-q="2" data-v="3">반반</button><button type="button" class="kipa-opt" data-q="2" data-v="4">주로 자료</button><button type="button" class="kipa-opt" data-q="2" data-v="5">혼자 자료 조사</button></div></div>
-                            <div class="kipa-q" id="kq3"><p class="kipa-label">Q3. 투자 결정 시 더 믿는 것은?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="3" data-v="1">직관을 믿는다</button><button type="button" class="kipa-opt" data-q="3" data-v="2">직관 위주</button><button type="button" class="kipa-opt" data-q="3" data-v="3">반반</button><button type="button" class="kipa-opt" data-q="3" data-v="4">데이터 위주</button><button type="button" class="kipa-opt" data-q="3" data-v="5">데이터를 믿는다</button></div></div>
-                            <div class="kipa-q" id="kq4"><p class="kipa-label">Q4. 5년 후 자산 계획이 있나요?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="4" data-v="1">큰 그림만</button><button type="button" class="kipa-opt" data-q="4" data-v="2">대략 있음</button><button type="button" class="kipa-opt" data-q="4" data-v="3">보통</button><button type="button" class="kipa-opt" data-q="4" data-v="4">꽤 구체적</button><button type="button" class="kipa-opt" data-q="4" data-v="5">숫자로 구체화</button></div></div>
-                            <div class="kipa-q" id="kq5"><p class="kipa-label">Q5. 손실이 났을 때 반응은?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="5" data-v="1">수치로 판단</button><button type="button" class="kipa-opt" data-q="5" data-v="2">주로 수치</button><button type="button" class="kipa-opt" data-q="5" data-v="3">반반</button><button type="button" class="kipa-opt" data-q="5" data-v="4">주로 감정</button><button type="button" class="kipa-opt" data-q="5" data-v="5">불안해서 물어봄</button></div></div>
-                            <div class="kipa-q" id="kq6"><p class="kipa-label">Q6. 투자 결정 시 가장 중요한 것?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="6" data-v="1">논리 분석</button><button type="button" class="kipa-opt" data-q="6" data-v="2">주로 분석</button><button type="button" class="kipa-opt" data-q="6" data-v="3">반반</button><button type="button" class="kipa-opt" data-q="6" data-v="4">주로 추천</button><button type="button" class="kipa-opt" data-q="6" data-v="5">신뢰하는 추천</button></div></div>
-                            <div class="kipa-q" id="kq7"><p class="kipa-label">Q7. 한 달 지출 계획을 세우나요?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="7" data-v="1">항목별 꼼꼼히</button><button type="button" class="kipa-opt" data-q="7" data-v="2">꽤 꼼꼼히</button><button type="button" class="kipa-opt" data-q="7" data-v="3">보통</button><button type="button" class="kipa-opt" data-q="7" data-v="4">대략</button><button type="button" class="kipa-opt" data-q="7" data-v="5">대충 감으로</button></div></div>
-                            <div class="kipa-q" id="kq8"><p class="kipa-label">Q8. 투자 원칙(손절선 등)을 정해두나요?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="8" data-v="1">명확히 정해둠</button><button type="button" class="kipa-opt" data-q="8" data-v="2">대부분 정해둠</button><button type="button" class="kipa-opt" data-q="8" data-v="3">보통</button><button type="button" class="kipa-opt" data-q="8" data-v="4">상황 봐서</button><button type="button" class="kipa-opt" data-q="8" data-v="5">그때그때</button></div></div>
+                            <div class="kipa-q" data-kipa="1"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q1. 새로운 사람들과의 모임 후 나는?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q1" value="A" style="accent-color:#2D8CFF;"> A. 에너지가 충전되어 더 활기찬 느낌이다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q1" value="B" style="accent-color:#2D8CFF;"> B. 에너지가 소모되어 혼자만의 시간이 필요하다</label></div>
+                            <div class="kipa-q" data-kipa="2"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q2. 중요한 결정을 내릴 때 나는?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q2" value="A" style="accent-color:#2D8CFF;"> A. 여러 사람의 의견을 적극적으로 구한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q2" value="B" style="accent-color:#2D8CFF;"> B. 충분히 혼자 생각한 후 결정한다</label></div>
+                            <div class="kipa-q" data-kipa="3"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q3. 투자 정보를 분석할 때 나는?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q3" value="A" style="accent-color:#2D8CFF;"> A. 구체적인 숫자와 실적 데이터를 먼저 본다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q3" value="B" style="accent-color:#2D8CFF;"> B. 전체적인 트렌드와 미래 가능성을 먼저 본다</label></div>
+                            <div class="kipa-q" data-kipa="4"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q4. 새로운 사업 기회를 평가할 때?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q4" value="A" style="accent-color:#2D8CFF;"> A. 검증된 비즈니스 모델인지 확인한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q4" value="B" style="accent-color:#2D8CFF;"> B. 아직 아무도 안 한 혁신적 아이디어에 끌린다</label></div>
+                            <div class="kipa-q" data-kipa="5"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q5. 팀원이 실수로 손실이 발생했다면?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q5" value="A" style="accent-color:#2D8CFF;"> A. 원인을 객관적으로 분석하고 재발 방지책을 만든다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q5" value="B" style="accent-color:#2D8CFF;"> B. 팀원의 상황을 이해하고 격려한 뒤 함께 해결한다</label></div>
+                            <div class="kipa-q" data-kipa="6"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q6. 수익률 높은 투자와 사회적 가치 투자 중?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q6" value="A" style="accent-color:#2D8CFF;"> A. 수익률이 압도적이면 수익을 우선한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q6" value="B" style="accent-color:#2D8CFF;"> B. 수익이 좀 적더라도 가치있는 곳에 투자한다</label></div>
+                            <div class="kipa-q" data-kipa="7"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q7. 한 달 예산 관리를 할 때?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q7" value="A" style="accent-color:#2D8CFF;"> A. 카테고리별 예산을 정해놓고 철저히 지킨다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q7" value="B" style="accent-color:#2D8CFF;"> B. 대략적인 범위만 정하고 유연하게 쓴다</label></div>
+                            <div class="kipa-q" data-kipa="8"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q8. 마감이 있는 프로젝트에서 나는?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q8" value="A" style="accent-color:#2D8CFF;"> A. 계획을 세워 미리미리 진행한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q8" value="B" style="accent-color:#2D8CFF;"> B. 마감 직전 집중력이 폭발하는 편이다</label></div>
 
-                            <div style="margin:14px 0 10px;padding:6px 10px;background:linear-gradient(90deg,#2D8CFF22,transparent);border-left:3px solid #2D8CFF;border-radius:4px;"><span style="font-size:11px;font-weight:700;color:#2D8CFF;">심층 진단 문항 (Q9~Q16)</span></div>
+                            <div style="margin:14px 0 10px; padding:6px 10px; background:linear-gradient(90deg,#2D8CFF22,transparent); border-left:3px solid #2D8CFF; border-radius:4px;"><span style="font-size:11px; font-weight:700; color:#2D8CFF;">심층 진단 문항 (Q9~Q16)</span></div>
 
-                            <div class="kipa-q" id="kq9"><p class="kipa-label">Q9. 금융 결정 전 주변 의견을 구하나요?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="9" data-v="1">적극적으로 물어봄</button><button type="button" class="kipa-opt" data-q="9" data-v="2">자주 물어봄</button><button type="button" class="kipa-opt" data-q="9" data-v="3">반반</button><button type="button" class="kipa-opt" data-q="9" data-v="4">가끔 물어봄</button><button type="button" class="kipa-opt" data-q="9" data-v="5">혼자 결정</button></div></div>
-                            <div class="kipa-q" id="kq10"><p class="kipa-label">Q10. 재테크 모임·커뮤니티 참여는?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="10" data-v="1">자주 참여</button><button type="button" class="kipa-opt" data-q="10" data-v="2">가끔 참여</button><button type="button" class="kipa-opt" data-q="10" data-v="3">보통</button><button type="button" class="kipa-opt" data-q="10" data-v="4">거의 안함</button><button type="button" class="kipa-opt" data-q="10" data-v="5">전혀 안함</button></div></div>
-                            <div class="kipa-q" id="kq11"><p class="kipa-label">Q11. 새로운 금융 상품을 접하면?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="11" data-v="1">가능성에 설렘</button><button type="button" class="kipa-opt" data-q="11" data-v="2">꽤 설렘</button><button type="button" class="kipa-opt" data-q="11" data-v="3">반반</button><button type="button" class="kipa-opt" data-q="11" data-v="4">꽤 신중</button><button type="button" class="kipa-opt" data-q="11" data-v="5">검증된 것 선호</button></div></div>
-                            <div class="kipa-q" id="kq12"><p class="kipa-label">Q12. 투자 아이디어는 주로 어디서?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="12" data-v="1">트렌드·상상력</button><button type="button" class="kipa-opt" data-q="12" data-v="2">주로 트렌드</button><button type="button" class="kipa-opt" data-q="12" data-v="3">반반</button><button type="button" class="kipa-opt" data-q="12" data-v="4">주로 실적</button><button type="button" class="kipa-opt" data-q="12" data-v="5">과거 실적·통계</button></div></div>
-                            <div class="kipa-q" id="kq13"><p class="kipa-label">Q13. 지인이 강력 추천하는 투자라면?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="13" data-v="1">직접 분석 후</button><button type="button" class="kipa-opt" data-q="13" data-v="2">주로 분석</button><button type="button" class="kipa-opt" data-q="13" data-v="3">반반</button><button type="button" class="kipa-opt" data-q="13" data-v="4">주로 신뢰</button><button type="button" class="kipa-opt" data-q="13" data-v="5">믿으면 따라감</button></div></div>
-                            <div class="kipa-q" id="kq14"><p class="kipa-label">Q14. 포트폴리오 조정 기준은?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="14" data-v="1">수익률 수치</button><button type="button" class="kipa-opt" data-q="14" data-v="2">주로 수치</button><button type="button" class="kipa-opt" data-q="14" data-v="3">반반</button><button type="button" class="kipa-opt" data-q="14" data-v="4">주로 감</button><button type="button" class="kipa-opt" data-q="14" data-v="5">마음 불편할 때</button></div></div>
-                            <div class="kipa-q" id="kq15"><p class="kipa-label">Q15. 예상치 못한 목돈 500만원이 생기면?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="15" data-v="1">미리 세운 계획</button><button type="button" class="kipa-opt" data-q="15" data-v="2">계획 위주</button><button type="button" class="kipa-opt" data-q="15" data-v="3">반반</button><button type="button" class="kipa-opt" data-q="15" data-v="4">상황 봐서</button><button type="button" class="kipa-opt" data-q="15" data-v="5">그때 좋은 곳에</button></div></div>
-                            <div class="kipa-q" id="kq16"><p class="kipa-label">Q16. 시장이 급변할 때 전략은?</p><div class="kipa-opts"><button type="button" class="kipa-opt" data-q="16" data-v="1">원칙대로 유지</button><button type="button" class="kipa-opt" data-q="16" data-v="2">주로 원칙</button><button type="button" class="kipa-opt" data-q="16" data-v="3">반반</button><button type="button" class="kipa-opt" data-q="16" data-v="4">어느정도 유연</button><button type="button" class="kipa-opt" data-q="16" data-v="5">유연하게 바꿈</button></div></div>
+                            <div class="kipa-q" data-kipa="9"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q9. 주말에 에너지를 충전하는 방식은?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q9" value="A" style="accent-color:#2D8CFF;"> A. 친구·지인과 활동적인 시간을 보낸다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q9" value="B" style="accent-color:#2D8CFF;"> B. 집에서 독서·영화 등 혼자만의 시간을 갖는다</label></div>
+                            <div class="kipa-q" data-kipa="10"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q10. 새로운 프로젝트를 시작할 때?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q10" value="A" style="accent-color:#2D8CFF;"> A. 팀원들과 바로 브레인스토밍을 시작한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q10" value="B" style="accent-color:#2D8CFF;"> B. 혼자 충분히 구상을 정리한 뒤 공유한다</label></div>
+                            <div class="kipa-q" data-kipa="11"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q11. 리포트를 작성할 때 주로?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q11" value="A" style="accent-color:#2D8CFF;"> A. 과거 데이터와 실적 수치를 근거로 쓴다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q11" value="B" style="accent-color:#2D8CFF;"> B. 미래 비전과 가능성을 중심으로 쓴다</label></div>
+                            <div class="kipa-q" data-kipa="12"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q12. 위험 신호를 감지하는 방식은?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q12" value="A" style="accent-color:#2D8CFF;"> A. 수치·지표의 이상 패턴으로 판단한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q12" value="B" style="accent-color:#2D8CFF;"> B. 분위기나 직감적 느낌으로 먼저 감지한다</label></div>
+                            <div class="kipa-q" data-kipa="13"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q13. 투자에서 손실이 발생했을 때?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q13" value="A" style="accent-color:#2D8CFF;"> A. 사전에 정한 손절 기준대로 즉시 정리한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q13" value="B" style="accent-color:#2D8CFF;"> B. 상황을 좀 더 지켜보며 감정적으로 판단한다</label></div>
+                            <div class="kipa-q" data-kipa="14"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q14. 성과를 평가할 때 기준은?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q14" value="A" style="accent-color:#2D8CFF;"> A. 객관적 수치와 KPI 달성률이 중요하다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q14" value="B" style="accent-color:#2D8CFF;"> B. 과정에서의 노력과 팀 분위기가 더 중요하다</label></div>
+                            <div class="kipa-q" data-kipa="15"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q15. 여행 계획을 세울 때?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q15" value="A" style="accent-color:#2D8CFF;"> A. 일정표를 미리 작성하고 예약까지 완료한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q15" value="B" style="accent-color:#2D8CFF;"> B. 현지에서 그때그때 즉흥적으로 결정한다</label></div>
+                            <div class="kipa-q" data-kipa="16"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q16. 포트폴리오 리밸런싱 시기는?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q16" value="A" style="accent-color:#2D8CFF;"> A. 정해진 주기에 맞춰 규칙적으로 한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q16" value="B" style="accent-color:#2D8CFF;"> B. 시장 상황을 보면서 탄력적으로 조정한다</label></div>
 
-                            <div id="kipa-status" style="text-align:center;font-size:11px;color:#8A95AB;padding:6px;background:#f1f5f9;border-radius:8px;margin-top:8px;">
+                            <div id="kipa-status" style="text-align:center; font-size:11px; color:#8A95AB; padding:6px; background:#f1f5f9; border-radius:8px; margin-top:8px;">
                                 <span data-i18n="kipa_status">응답 완료</span>: <span id="kipa-answered">0</span>/16
                             </div>
-
-
                             <!-- KIPA-16Q-END: 위 Q1~Q16 총 16문항을 절대 축소하지 마세요. -->
                         </div>
-                        <script>
-                        /* ═══ KIPA v3 — 텍스트 5지선다 이벤트 (ES5) ═══ */
-                        (function(){
-                            window._kipaAnswers = window._kipaAnswers || {};
-                            document.querySelectorAll('.kipa-opt').forEach(function(btn){
-                                btn.addEventListener('click', function(){
-                                    var q = this.getAttribute('data-q');
-                                    var v = this.getAttribute('data-v');
-                                    document.querySelectorAll('.kipa-opt[data-q="'+q+'"]').forEach(function(b){ b.classList.remove('selected'); });
-                                    this.classList.add('selected');
-                                    window._kipaAnswers[parseInt(q)] = parseInt(v);
-                                    /* 기존 radio 호환: sessionStorage + hidden radio 동기화 */
-                                    var mapVal = parseInt(v) <= 2 ? 'A' : parseInt(v) >= 4 ? 'B' : 'A';
-                                    sessionStorage.setItem('nkai_kipa_q' + q, mapVal);
-                                    localStorage.setItem('nkai_kipa_q' + q, mapVal);
-                                    var radio = document.querySelector('input[name="kipa-q'+q+'"][value="'+mapVal+'"]');
-                                    if(radio) radio.checked = true;
-                                    /* 카운터 업데이트 */
-                                    var cnt = Object.keys(window._kipaAnswers).length;
-                                    var el = document.getElementById('kipa-answered');
-                                    if(el) el.textContent = String(cnt);
-                                });
-                            });
-                        })();
-                        </script>
 
                         <!-- BEHAVIOR-4Q-START: v1.5 Living Profile 소비행동 미니퀴즈 -->
                         <div id="behavior-quiz-section" style="margin-top:16px;padding:16px;background:#ffffff;border:1.5px solid #2D8CFF40;border-radius:12px;" translate="no">
@@ -3195,117 +3134,86 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                         </div>
                     </div>
 
-                    <!-- ========== 🆓 무료 결과 5가지 공개 ========== -->
-                    <div id="free-result-section" class="mb-6">
-
-                        <!-- ✅ 1. N-Score (무료 공개) -->
-                        <div class="bg-black/30 rounded-2xl p-5 mb-4 border border-white/8">
-                            <div class="flex items-center justify-center gap-6 flex-wrap">
-                                <div class="text-center">
-                                    <p class="text-gray-400 text-[10px] uppercase tracking-wider mb-1">N-Score</p>
-                                    <div class="flex items-end justify-center gap-1">
-                                        <span class="text-4xl md:text-5xl font-black text-white font-urbanist" id="free-score-display">0</span>
-                                        <span class="text-gray-400 text-sm mb-2">/ 1000</span>
+                    <!-- ========== 🔒 GATED TEASER (공유 전 표시) ========== -->
+                    <div id="gated-teaser" class="mb-6">
+                        <!-- 블러처리된 N-Score 미리보기 -->
+                        <div class="relative rounded-2xl overflow-hidden mb-5">
+                            <div class="bg-black/30 p-5 border border-white/8 rounded-2xl" style="filter:blur(6px); pointer-events:none; user-select:none;">
+                                <div class="flex items-center justify-center gap-6 flex-wrap">
+                                    <div class="text-center">
+                                        <p class="text-gray-400 text-[10px] uppercase tracking-wider mb-1">N-Score</p>
+                                        <span class="text-4xl font-black text-white font-urbanist">???</span>
+                                        <span class="text-gray-400 text-sm">/ 1000</span>
+                                    </div>
+                                    <div class="hidden md:block w-px h-16 bg-white/10"></div>
+                                    <div class="text-center">
+                                        <p class="text-gray-400 text-[10px] uppercase">Grade</p>
+                                        <div class="text-2xl font-black text-[#2D8CFF]">N?</div>
+                                    </div>
+                                    <div class="hidden md:block w-px h-16 bg-white/10"></div>
+                                    <div class="text-center">
+                                        <p class="text-gray-400 text-[10px] uppercase">Ranking</p>
+                                        <div class="text-2xl font-black text-[#5AA8FF]">상위 ??%</div>
                                     </div>
                                 </div>
-                                <div class="hidden md:block w-px h-16 bg-white/10"></div>
-                                <div class="text-center">
-                                    <p class="text-gray-400 text-[10px] uppercase tracking-wider mb-1">Grade</p>
-                                    <div id="free-grade-badge" class="text-2xl font-black text-[#2D8CFF]">N5</div>
-                                </div>
-                                <div class="hidden md:block w-px h-16 bg-white/10"></div>
-                                <div class="text-center">
-                                    <p class="text-gray-400 text-[10px] uppercase tracking-wider mb-1">Ranking</p>
-                                    <div id="free-percentile" style="font-size:14px;color:#00D68F;font-weight:700;margin-top:4px;">상위 —%</div>
+                                <div class="grid grid-cols-3 gap-3 mt-4">
+                                    <div class="bg-[#0F1524] rounded-xl p-3 text-center"><p class="text-[10px] text-gray-400">💰 재물 에너지</p><p class="text-xl font-black text-[#2D8CFF]">??%</p></div>
+                                    <div class="bg-[#0F1524] rounded-xl p-3 text-center"><p class="text-[10px] text-gray-400">⚡ 기회 포착력</p><p class="text-xl font-black text-[#5AA8FF]">??%</p></div>
+                                    <div class="bg-[#0F1524] rounded-xl p-3 text-center"><p class="text-[10px] text-gray-400">🛡️ 리스크 내성</p><p class="text-xl font-black text-[#00D68F]">??%</p></div>
                                 </div>
                             </div>
-                            <div class="mt-3 max-w-md mx-auto">
-                                <div class="w-full h-2 bg-gray-700 rounded-full overflow-hidden relative">
-                                    <div class="absolute left-0 top-0 h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 w-full opacity-20"></div>
-                                    <div id="free-grade-fill" class="h-full bg-gradient-to-r from-[#2D8CFF] to-[#5AA8FF] transition-all duration-1000" style="width:0%"></div>
+                            <!-- 잠금 오버레이 -->
+                            <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-[2px] rounded-2xl">
+                                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[#2D8CFF]/30 to-[#7C5BF0]/30 flex items-center justify-center mb-3 border border-white/20">
+                                    <i class="fa-solid fa-lock text-2xl text-white/80"></i>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- 3대 지표: gated-detail-section 내부에서 공유 후 표시 -->
-
-                        <!-- 기회/조심: action-risk-section(gated-detail 내부)에서 1회만 표시 -->
-
-                        <!-- 🔒 잠긴 콘텐츠 미리보기 (blur) -->
-                        <div class="nkai-locked-wrap">
-                            <div class="nkai-locked-blur">
-                                <div class="grid grid-cols-2 gap-2 mb-3">
-                                    <div class="bg-[#0F1524] rounded-xl p-3 text-center border border-[#5AA8FF]/20">
-                                        <p class="text-[10px] text-gray-400">⚡ 표현에너지</p>
-                                        <p class="text-xl font-black text-[#5AA8FF]">72%</p>
-                                    </div>
-                                    <div class="bg-[#0F1524] rounded-xl p-3 text-center border border-[#00D68F]/20">
-                                        <p class="text-[10px] text-gray-400">🛡️ 위기대응력</p>
-                                        <p class="text-xl font-black text-[#00D68F]">65%</p>
-                                    </div>
-                                </div>
-                                <div class="bg-black/30 rounded-xl p-3 mb-3 border border-white/5">
-                                    <p class="text-[10px] text-gray-400 mb-1">🧭 부의 궤적</p>
-                                    <p class="text-xs text-gray-300">████████ ██████ █████████ ██████████</p>
-                                </div>
-                                <div class="bg-black/30 rounded-xl p-3 mb-3 border border-white/5">
-                                    <p class="text-[10px] text-gray-400 mb-1">📅 12개월 골든타임</p>
-                                    <div class="grid grid-cols-6 gap-1">
-                                        <div class="text-center p-1 rounded" style="background:#00D68F20;"><span class="text-[8px]">1월</span></div>
-                                        <div class="text-center p-1 rounded" style="background:#2D8CFF20;"><span class="text-[8px]">2월</span></div>
-                                        <div class="text-center p-1 rounded" style="background:#00D68F20;"><span class="text-[8px]">3월</span></div>
-                                        <div class="text-center p-1 rounded" style="background:#FF4D6A20;"><span class="text-[8px]">4월</span></div>
-                                        <div class="text-center p-1 rounded" style="background:#82e0aa20;"><span class="text-[8px]">5월</span></div>
-                                        <div class="text-center p-1 rounded" style="background:#2D8CFF20;"><span class="text-[8px]">6월</span></div>
-                                    </div>
-                                </div>
-                                <div class="bg-black/30 rounded-xl p-3 border border-white/5">
-                                    <p class="text-[10px] text-gray-400 mb-1">🧠 XAI 투명성 분석</p>
-                                    <p class="text-xs text-gray-300">████ ███████ ██████ ████████</p>
-                                </div>
-                            </div>
-                            <div class="nkai-lock-overlay">
-                                <div class="nkai-lock-icon"><i class="fa-solid fa-lock"></i></div>
-                                <p style="color:#fff;font-size:13px;font-weight:800;">유료 리포트에서 전부 확인 가능</p>
-                                <p style="color:#64748B;font-size:10px;margin-top:2px;">4축 분석 · XAI · 골든타임 · 포트폴리오 등 20+ 항목</p>
+                                <p class="text-white font-bold text-sm mb-1">
+                                    <span class="ko">전체 분석 결과가 준비되었어요!</span><span class="en">Full analysis results are ready!</span><span class="ja">全分析結果の準備ができました！</span><span class="zh">完整分析结果已准备好！</span>
+                                </p>
+                                <p class="text-gray-400 text-xs">
+                                    <span class="ko">아래에서 친구에게 공유하면 바로 확인 가능</span><span class="en">Share with a friend below to unlock</span><span class="ja">下から友達にシェアして確認</span><span class="zh">分享给朋友即可解锁</span>
+                                </p>
                             </div>
                         </div>
 
-                        <!-- 💳 결제 버튼: gated-detail-section 내부 1세트만 사용 (중복 제거) -->
-
-                        <!-- 공유 버튼 (하단 보조) -->
-                        <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);">
-                            <p style="text-align:center;font-size:11px;color:#64748B;font-weight:700;margin-bottom:8px;">친구에게 공유하기</p>
+                        <!-- 공유 CTA + 버튼 (게이트 키) -->
+                        <div class="bg-gradient-to-r from-[#2D8CFF]/15 via-[#7C5BF0]/15 to-[#2D8CFF]/15 border border-[#7C5BF0]/40 rounded-2xl p-5 animate-pulse-slow">
+                            <div class="text-center mb-4">
+                                <p class="text-xl font-black text-white mb-2">
+                                    <span class="ko">🔓 공유하고 전체 분석 확인!</span><span class="en">🔓 Share to Unlock Full Analysis!</span><span class="ja">🔓 シェアして全分析を確認！</span><span class="zh">🔓 分享解锁完整分析！</span>
+                                </p>
+                                <p class="text-gray-400 text-xs mb-1">
+                                    <span class="ko">N-Score · 4축 상세분석 · 포트폴리오 추천</span><span class="en">N-Score · 4-Axis Analysis · Portfolio</span><span class="ja">N-Score · 4軸分析 · ポートフォリオ</span><span class="zh">N-Score · 4轴分析 · 投资组合</span>
+                                </p>
+                            </div>
+                            
                             <div class="grid grid-cols-4 gap-2">
-                                <button onclick="handleFreeShare('kakao')" class="py-2.5 bg-[#FEE500] text-[#3C1E1E] font-bold rounded-xl text-[10px] hover:opacity-90 transition flex flex-col items-center gap-1">
-                                    <i class="fa-solid fa-comment text-base"></i>
-                                    <span>카카오톡</span>
+                                <button onclick="handleFreeShare('kakao')" class="py-3 bg-[#FEE500] text-[#3C1E1E] font-bold rounded-xl text-xs hover:opacity-90 transition flex flex-col items-center gap-1 shadow-lg shadow-[#FEE500]/20">
+                                    <i class="fa-solid fa-comment text-lg"></i>
+                                    <span class="text-[10px]">카카오톡</span>
                                 </button>
-                                <button onclick="handleFreeShare('toss')" class="py-2.5 bg-[#0064FF] text-white font-bold rounded-xl text-[10px] hover:opacity-90 transition flex flex-col items-center gap-1">
-                                    <i class="fa-solid fa-t text-base"></i>
-                                    <span>토스</span>
+                                <button onclick="handleFreeShare('toss')" class="py-3 bg-[#0064FF] text-white font-bold rounded-xl text-xs hover:opacity-90 transition flex flex-col items-center gap-1 shadow-lg shadow-[#0064FF]/20">
+                                    <i class="fa-solid fa-t text-lg"></i>
+                                    <span class="text-[10px]">토스</span>
                                 </button>
-                                <button onclick="handleFreeShare('sms')" class="py-2.5 bg-[#34C759] text-white font-bold rounded-xl text-[10px] hover:opacity-90 transition flex flex-col items-center gap-1">
-                                    <i class="fa-solid fa-message text-base"></i>
-                                    <span>문자</span>
+                                <button onclick="handleFreeShare('sms')" class="py-3 bg-[#34C759] text-white font-bold rounded-xl text-xs hover:opacity-90 transition flex flex-col items-center gap-1 shadow-lg shadow-[#34C759]/20">
+                                    <i class="fa-solid fa-message text-lg"></i>
+                                    <span class="text-[10px]">문자</span>
                                 </button>
-                                <button onclick="handleFreeShare('copy')" class="py-2.5 bg-[#7C5BF0] text-white font-bold rounded-xl text-[10px] hover:opacity-90 transition flex flex-col items-center gap-1">
-                                    <i class="fa-solid fa-link text-base"></i>
-                                    <span>링크복사</span>
+                                <button onclick="handleFreeShare('copy')" class="py-3 bg-[#7C5BF0] text-white font-bold rounded-xl text-xs hover:opacity-90 transition flex flex-col items-center gap-1 shadow-lg shadow-[#7C5BF0]/20">
+                                    <i class="fa-solid fa-link text-lg"></i>
+                                    <span class="text-[10px]">링크복사</span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <!-- END FREE RESULT SECTION -->
+                    <!-- END GATED TEASER -->
 
                     <!-- ========== 🔓 GATED DETAIL SECTION (공유 후 표시) ========== -->
                     <div id="gated-detail-section" style="display:none;">
-
-                    <!-- ========== 1장 요약 카드 (Report v2.0) ========== -->
-                    <div id="nkai-summary-card-mount" class="mb-6"></div>
-
-                    <!-- ========== N-Score 핵심 (무료 카드와 중복 — 숨김 처리, JS ID 참조용 유지) ========== -->
-                    <div class="bg-black/30 rounded-2xl p-5 mb-6 border border-white/8" style="display:none">
+                    
+                    <!-- ========== N-Score 핵심 (간결하게) ========== -->
+                    <div class="bg-black/30 rounded-2xl p-5 mb-6 border border-white/8">
                         <div class="flex items-center justify-center gap-6 flex-wrap">
                             <!-- N-Score 점수 -->
                             <div class="text-center">
@@ -3333,7 +3241,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                             <div class="text-center">
                                 <p class="text-gray-400 text-[10px] uppercase tracking-wider mb-1">Ranking</p>
                                 <div id="result-percentile" class="text-2xl font-black text-[#5AA8FF]">상위 32%</div>
-                                <p id="result-ranking-desc" class="text-[10px] text-[#5AA8FF]/70 mt-1 font-bold" style="word-break:keep-all;"></p>
+                                <p class="text-[10px] text-gray-600" data-i18n="res_percentile_suffix">전체 분석자 중</p>
                             </div>
                         </div>
                         
@@ -3376,15 +3284,6 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                             <p id="result-risk-tolerance" class="metric-value font-black text-[#00D68F]">-%</p>
                         </div>
                     </div>
-
-                    <!-- ========== 지금 할 것 / 조심할 것 (Report v2.0) ========== -->
-                    <div id="action-risk-section" class="mb-6"></div>
-
-                    <!-- ========== 오행별 몸 관리 (Report v2.0) ========== -->
-                    <div id="ohang-body-section" class="mb-6"></div>
-
-                    <!-- ========== 오행별 웰니스 식단 (Report v2.0) ========== -->
-                    <div id="ohang-wellness-section" class="mb-6"></div>
 
                     <!-- ========== 🩸⭐ 혈액형 · 별자리 · 띠 뱃지 ========== -->
                     <div id="trait-badges-section" class="mb-6" style="display:none;">
@@ -3849,12 +3748,6 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                     <!-- ★ 2026.03.17 결제 버튼 — 무료분석 결과 화면 직접 삽입 -->
                     <div id="result-pay-section" class="mb-6 rounded-2xl border border-[#7C5BF0]/30 bg-gradient-to-br from-[#0F1524] to-[#1a1a2e] p-4">
 
-                        <!-- 킬링 카피 -->
-                        <div class="text-center mb-4">
-                            <p class="text-white font-black text-base leading-snug" style="word-break:keep-all;">지갑이 증명하는 당신의 진짜 모습 →</p>
-                            <p class="text-gray-500 text-[11px] mt-1">무료 결과는 핵심 1줄만. 전략·식단·골든타임은 아래에서 해금</p>
-                        </div>
-
                         <!-- ★ 3단계 사다리 — 한 눈에 차이 인식 -->
                         <div style="display:flex;gap:6px;margin-bottom:16px;">
                             <!-- 무료 -->
@@ -3904,8 +3797,8 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                                     </div>
                                     <span class="text-[#9B7FF8] text-xs font-bold">합계: <span id="result-std-total">₩9,900</span></span>
                                 </div>
-                                <button onclick="resultPay('standard')" class="w-full py-4 bg-gradient-to-r from-[#7C5BF0] to-[#9B7FF8] text-white font-black text-base rounded-xl hover:opacity-90 transition flex items-center justify-center gap-2 shadow-lg shadow-[#7C5BF0]/30" style="font-size:15px;letter-spacing:0.3px;">
-                                    <i class="fa-solid fa-credit-card"></i> ₩9,900 — 전략 리포트 받기
+                                <button onclick="resultPay('standard')" class="w-full py-3 bg-gradient-to-r from-[#7C5BF0] to-[#9B7FF8] text-white font-black text-sm rounded-xl hover:opacity-90 transition flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-credit-card"></i> Standard 결제하기
                                 </button>
                             </div>
 
@@ -6005,11 +5898,10 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
         /* ── 카카오톡 공유 ── PROTECTED: KAKAO-SHARE */
         function shareKakao(url){
             var r = window._nkaiResult || {};
-            var archName = r.archetype || r.title || '';
-            var title = '나의 금융 DNA 분석 결과 공유';
-            var desc = r.code
-                ? '나 AI로 금융 DNA 분석했는데\n내 아키타입이 ' + archName + '래!\n너도 무료로 해봐 \uD83D\uDC47'
-                : 'AI가 분석하는 16가지 투자 성향 — 무료 분석!';
+            var title = r.code ? '🧬 ' + r.code + ' ' + (r.archetype||'') : getShareTitle();
+            var desc = r.code 
+                ? r.code + ' ' + (r.archetype||'') + ' | N-Score ' + (r.nGrade||'N5') + ' (' + (r.nScore||500) + '점) — 카드 거래 데이터로 분석하는 나의 금융 DNA, 무료로 확인!'
+                : getShareText();
 
             if(window.Kakao && Kakao.isInitialized()){
                 Kakao.Share.sendDefault({
@@ -6023,7 +5915,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                         link:{ mobileWebUrl: url, webUrl: url }
                     },
                     buttons:[{
-                        title:'무료 분석하기',
+                        title:'내 금융 DNA 무료 분석',
                         link:{ mobileWebUrl: url, webUrl: url }
                     }]
                 });
@@ -6054,17 +5946,16 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
         function shareCopy(url, inputId){
             var el = document.getElementById(inputId);
             if(el){ el.value = url; }
-            var _msg = '추천 링크가 복사되었습니다!\n\n친구에게 이렇게 전달해보세요:\n\n\"나 AI로 금융 DNA 분석했는데 신기해!\nMBTI는 입이 말하고 N-KAI는 지갑이 말한다 \uD83D\uDE04\n무료로 해봐! \u2192 ' + url + '\"';
             if(navigator.clipboard){
                 navigator.clipboard.writeText(url).then(function(){
-                    alert(_msg);
+                    alert('추천 링크가 복사되었습니다!');
                 });
             } else {
                 var ta = document.createElement('textarea');
                 ta.value = url; document.body.appendChild(ta);
                 ta.select(); document.execCommand('copy');
                 document.body.removeChild(ta);
-                alert(_msg);
+                alert('추천 링크가 복사되었습니다!');
             }
         }
 
@@ -6417,81 +6308,6 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
             var gatedSection = document.getElementById('gated-detail-section');
             if(teaser) teaser.style.display = 'none';
             if(gatedSection) gatedSection.style.display = 'block';
-
-            /* ★ Report v2.0 — 1장 요약 카드 (unlockPremium 시점) */
-            if(window.NKAIReportV2 && window.NKAIReportV2.renderSummaryCard){
-                var mountEl = document.getElementById('nkai-summary-card-mount');
-                if(mountEl && !mountEl.innerHTML){
-                    if(!document.getElementById('nkai-report-v2-css')){
-                        var styleTag = document.createElement('style');
-                        styleTag.id = 'nkai-report-v2-css';
-                        styleTag.textContent = window.NKAIReportV2.SUMMARY_CARD_CSS;
-                        document.head.appendChild(styleTag);
-                    }
-                    mountEl.innerHTML = window.NKAIReportV2.renderSummaryCard({
-                        nScore: r.nScore || 0,
-                        economic: r.wealthEnergy || 50,
-                        expression: r.expressionScore || 50,
-                        risk: r.riskTolerance || 50,
-                        archetype: r.code || 'ESTJ',
-                        name: r.userName || '고객',
-                        goldenTime: (r.goldenCalendar && r.goldenCalendar.length > 0) ? { phase: 'peak', score: 75 } : null
-                    });
-                }
-            }
-
-            /* ★ Report v2.0 — 오행 CSS 주입 */
-            if(window.NKAIReportV2 && window.NKAIReportV2.OHANG_CSS && !document.getElementById('nkai-ohang-css')){
-                var ohangStyle = document.createElement('style');
-                ohangStyle.id = 'nkai-ohang-css';
-                ohangStyle.textContent = window.NKAIReportV2.OHANG_CSS;
-                document.head.appendChild(ohangStyle);
-            }
-
-            /* ★ Report v2.0 — 100명 중 X번째 랭킹 표현 */
-            try {
-                if(window.NKAIReportV2 && window.NKAIReportV2.getNScoreSimpleText){
-                    var _scoreInfo = window.NKAIReportV2.getNScoreSimpleText(r.nScore || 0);
-                    var _rankDescEl = document.getElementById('result-ranking-desc');
-                    if(_rankDescEl) _rankDescEl.textContent = '100명 중 ' + _scoreInfo.raw + '번째로 강한 사람';
-                }
-            } catch(_re){}
-
-            /* ★ Report v2.0 — 지금 할 것 / 조심할 것 */
-            try {
-                if(window.NKAIReportV2 && window.NKAIReportV2.renderActionRisk){
-                    var _arEl = document.getElementById('action-risk-section');
-                    if(_arEl && !_arEl.innerHTML){
-                        _arEl.innerHTML = window.NKAIReportV2.renderActionRisk({
-                            economic:   r.wealthEnergy || 50,
-                            expression: r.expressionScore || 50,
-                            risk:       r.riskTolerance || 50,
-                            archetype:  r.code || 'ESTJ',
-                            goldenTime: r.goldenTime || null
-                        });
-                    }
-                }
-            } catch(_are){}
-
-            /* ★ Report v2.0 — 오행별 몸 관리 */
-            try {
-                if(window.NKAIReportV2 && window.NKAIReportV2.renderOhangBody){
-                    var _obEl = document.getElementById('ohang-body-section');
-                    if(_obEl && !_obEl.innerHTML){
-                        _obEl.innerHTML = window.NKAIReportV2.renderOhangBody(r.dayElement || '土');
-                    }
-                }
-            } catch(_obe){}
-
-            /* ★ Report v2.0 — 오행별 웰니스 식단 */
-            try {
-                if(window.NKAIReportV2 && window.NKAIReportV2.renderOhangWellness){
-                    var _owEl = document.getElementById('ohang-wellness-section');
-                    if(_owEl && !_owEl.innerHTML){
-                        _owEl.innerHTML = window.NKAIReportV2.renderOhangWellness(r.dayElement || '土');
-                    }
-                }
-            } catch(_owe){}
 
             /* ── 혈액형/별자리/띠 뱃지 표시 ── */
             showTraitBadges();
@@ -7702,9 +7518,6 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                 vCore: vCore, vBehavior: vBehavior, vFused: vFused, precision: vCore.precision || '94%'
             };
 
-            /* ★ 공유/새탭 복귀 시 N-Score 복원용 localStorage 저장 */
-            try { localStorage.setItem('nkai_full_result', JSON.stringify({nScore:finalScore, grade:rg.grade, archetype:archetypeCode, title:result.title})); } catch(e){}
-
             /* ★ 2026.03.17 분석 완료 → 분석데이터 시트 적재 (type:analyze) */
             try {
                 var _gasAnalyzeUrl = (typeof CONFIG !== 'undefined' && CONFIG.WEB_APP_URL)
@@ -7828,20 +7641,6 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
             if(oEl) oEl.innerText = opportunityScore + '%';
             if(rkEl) rkEl.innerText = riskTolerance + '%';
 
-            /* ═══ 무료 결과 5가지 업데이트 ═══ */
-            var _fsd = document.getElementById('free-score-display');
-            if(_fsd) _fsd.innerText = finalScore;
-            var _fgf = document.getElementById('free-grade-fill');
-            if(_fgf) _fgf.style.width = (finalScore/1000*100) + '%';
-            var _fgb = document.getElementById('free-grade-badge');
-            if(_fgb){ _fgb.innerText = rg.grade + ' ' + rg.label; _fgb.style.color = rg.color; }
-            var _fws = document.getElementById('free-wealth-score');
-            if(_fws) _fws.innerText = wealthEnergy + '%';
-            var _fpct = document.getElementById('free-percentile');
-            if(_fpct) _fpct.innerText = '상위 ' + Math.max(5, Math.min(95, Math.round(100 - (finalScore/10)))) + '%';
-            /* 이번 달 기회 + 조심할 것 → action-risk-section(gated-detail)에서 표시 */
-            /* gated-detail-section — 공유 후에만 표시 (자동 열기 제거) */
-
             /* ★ METRIC-GUARD: 시간업그레이드 후 3대 지표 강제 덮어쓰기 */
             sessionStorage.setItem('nkai_wealthEnergy', wealthEnergy);
             sessionStorage.setItem('nkai_opportunityScore', opportunityScore);
@@ -7894,60 +7693,6 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
             /* ★ v77: pendingPlan 자동오픈 비활성 */
             sessionStorage.removeItem('nkai_pending_plan');
             if(window.renderBloodArchetypeCard) setTimeout(function(){ window.renderBloodArchetypeCard(); }, 250);
-
-            /* ★ Report v2.0 — 1장 요약 카드 렌더링 */
-            setTimeout(function(){
-                if(window.NKAIReportV2 && window.NKAIReportV2.renderSummaryCard){
-                    var r = window._nkaiResult || {};
-                    var mountEl = document.getElementById('nkai-summary-card-mount');
-                    if(mountEl){
-                        /* CSS 주입 (1회) */
-                        if(!document.getElementById('nkai-report-v2-css')){
-                            var styleTag = document.createElement('style');
-                            styleTag.id = 'nkai-report-v2-css';
-                            styleTag.textContent = window.NKAIReportV2.SUMMARY_CARD_CSS;
-                            document.head.appendChild(styleTag);
-                        }
-                        mountEl.innerHTML = window.NKAIReportV2.renderSummaryCard({
-                            nScore: r.nScore || 0,
-                            economic: r.wealthEnergy || 50,
-                            expression: r.expressionScore || 50,
-                            risk: r.riskTolerance || 50,
-                            archetype: r.code || 'ESTJ',
-                            name: r.userName || '고객',
-                            goldenTime: (r.goldenCalendar && r.goldenCalendar.length > 0) ? { phase: 'peak', score: 75 } : null
-                        });
-                        console.log('[N-KAI] ★ Report v2.0 요약 카드 렌더링 완료');
-
-                        /* ★ Report v2.0 — 오행 CSS 주입 */
-                        if(window.NKAIReportV2.OHANG_CSS && !document.getElementById('nkai-ohang-css')){
-                            var os = document.createElement('style'); os.id = 'nkai-ohang-css';
-                            os.textContent = window.NKAIReportV2.OHANG_CSS; document.head.appendChild(os);
-                        }
-                        /* ★ Report v2.0 — 100명 중 X번째 */
-                        try {
-                            var _si = window.NKAIReportV2.getNScoreSimpleText(r.nScore || 0);
-                            var _rdEl = document.getElementById('result-ranking-desc');
-                            if(_rdEl) _rdEl.textContent = '100명 중 ' + _si.raw + '번째로 강한 사람';
-                        } catch(e2){}
-                        /* ★ Report v2.0 — 지금 할 것 / 조심할 것 */
-                        try {
-                            var _arEl = document.getElementById('action-risk-section');
-                            if(_arEl && !_arEl.innerHTML) _arEl.innerHTML = window.NKAIReportV2.renderActionRisk({ economic: r.wealthEnergy||50, expression: r.expressionScore||50, risk: r.riskTolerance||50, archetype: r.code||'ESTJ', goldenTime: r.goldenTime||null });
-                        } catch(e3){}
-                        /* ★ Report v2.0 — 오행별 몸 관리 */
-                        try {
-                            var _obEl = document.getElementById('ohang-body-section');
-                            if(_obEl && !_obEl.innerHTML) _obEl.innerHTML = window.NKAIReportV2.renderOhangBody(r.dayElement||'土');
-                        } catch(e4){}
-                        /* ★ Report v2.0 — 오행별 웰니스 식단 */
-                        try {
-                            var _owEl = document.getElementById('ohang-wellness-section');
-                            if(_owEl && !_owEl.innerHTML) _owEl.innerHTML = window.NKAIReportV2.renderOhangWellness(r.dayElement||'土');
-                        } catch(e5){}
-                    }
-                }
-            }, 350);
 
             /* ★ [HOUR-SYNC] Living Profile N-Score 강제 동기화 — 시간업그레이드 후 */
             setTimeout(function(){
@@ -8579,18 +8324,15 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
         }
         function _kakaoShare(url){
             var r = window._nkaiResult || {};
-            var archName = r.archetype || r.title || '';
-            var title = '나의 금융 DNA 분석 결과 공유';
-            var desc  = r.code
-                ? '나 AI로 금융 DNA 분석했는데\n내 아키타입이 ' + archName + '래!\n너도 무료로 해봐 \uD83D\uDC47'
-                : 'AI가 분석하는 16가지 투자 성향 — 무료 분석!';
+            var title = r.code ? r.code + ' ' + (r.archetype||'') + ' | N-KAI 금융 DNA 분석' : '나의 금융 DNA는? — N-KAI 무료 분석';
+            var desc  = r.code ? r.code + ' | N-Score ' + (r.nGrade||'N5') + ' (' + (r.nScore||500) + '점) — 카드 거래 기반 행동 예측 AI' : 'AI가 분석하는 16가지 투자 성향 — 무료 분석';
             try {
                 if(window.Kakao){
                     if(!Kakao.isInitialized()) Kakao.init(KAKAO_KEY);
                     Kakao.Share.sendDefault({
                         objectType:'feed',
                         content:{ title:title, description:desc, imageUrl:'https://www.neurinkairosai.com/og-image-nkai.png?v=20260325b', imageWidth:800, imageHeight:400, link:{mobileWebUrl:url, webUrl:url} },
-                        buttons:[{ title:'무료 분석하기', link:{mobileWebUrl:url, webUrl:url} }]
+                        buttons:[{ title:'내 금융 DNA 무료 분석', link:{mobileWebUrl:url, webUrl:url} }]
                     });
                     return;
                 }
@@ -8630,9 +8372,8 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                     window.location.href = 'sms:' + sep + 'body=' + encodeURIComponent('나의 금융 DNA 분석 결과\n' + url);
                     break;
                 case 'copy':
-                    var _copyMsg = '추천 링크가 복사되었습니다!\n\n친구에게 이렇게 전달해보세요:\n\n\"나 AI로 금융 DNA 분석했는데 신기해!\nMBTI는 입이 말하고 N-KAI는 지갑이 말한다 \uD83D\uDE04\n무료로 해봐! \u2192 ' + url + '\"';
-                    if(navigator.clipboard){ navigator.clipboard.writeText(url).then(function(){ alert(_copyMsg); }).catch(function(){ var ta=document.createElement('textarea'); ta.value=url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert(_copyMsg); }); }
-                    else { var ta=document.createElement('textarea'); ta.value=url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert(_copyMsg); }
+                    if(navigator.clipboard){ navigator.clipboard.writeText(url).then(function(){ alert('추천 링크가 복사되었습니다!'); }).catch(function(){ var ta=document.createElement('textarea'); ta.value=url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert('추천 링크가 복사되었습니다!'); }); }
+                    else { var ta=document.createElement('textarea'); ta.value=url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); alert('추천 링크가 복사되었습니다!'); }
                     break;
             }
         }
@@ -8813,7 +8554,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
 
         // ★ 실제 토스페이먼츠 결제 위젯 호출
         function handleTossPayment(){
-            var LIVE_CK = window.NKAI_TOSS_CK || '';
+            var LIVE_CK = 'live_ck_0RnYX2w532DDo9n21JZerNeyqApQ';
             var userEmail = (typeof currentUserEmail !== 'undefined' ? currentUserEmail : '')
                          || sessionStorage.getItem('nkai_user_email') || '';
             var userName  = (typeof currentUserName  !== 'undefined' ? currentUserName  : '')
@@ -9247,168 +8988,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
 /* float-pay-btn 중복 제거 */
         })();
     </script>
-    <!-- ═══ 사전 안내 FAQ 팝업 ═══ -->
-    <div id="nkai-faq-popup" class="nkai-faq-overlay" style="display:none;">
-        <div class="nkai-faq-box">
-            <h3>📋 분석 전 꼭 확인하세요</h3>
-
-            <!-- ① 서비스 소개 -->
-            <div class="nkai-faq-item open" onclick="this.classList.toggle('open')">
-                <div class="nkai-faq-q">① 이건 어떤 서비스인가요? <i class="fa-solid fa-chevron-down"></i></div>
-                <div class="nkai-faq-a">
-                    N-KAI는 <b>특허 출원 AI 알고리즘</b>으로 당신의 <b>금융 DNA</b>를 분석합니다.<br><br>
-                    <span style="color:#2D8CFF;">MBTI가 성격을 4글자로 말해준다면,</span><br>
-                    <b style="color:#f0c674;">N-KAI는 당신의 '돈 성격'을 4글자로 말해줍니다.</b><br><br>
-                    생년월일(선천 기질) + 16문항(후천 행동)을 AI가 융합 분석하여<br>
-                    <b>1000점 만점 N-Score</b>와 <b>16가지 금융 아키타입</b>을 알려드립니다.
-                </div>
-            </div>
-
-            <!-- ② 16문항 설명 -->
-            <div class="nkai-faq-item" onclick="this.classList.toggle('open')">
-                <div class="nkai-faq-q">② 16가지 질문은 무엇인가요? <i class="fa-solid fa-chevron-down"></i></div>
-                <div class="nkai-faq-a">
-                    <b>KIPA</b>(Kairos Investment Psychology Assessment)는<br>
-                    N-KAI 독자 개발 <b>금융 행동 성향 진단</b> 도구입니다.<br><br>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:11px;">
-                        <span>🎯 투자 결정 방식 4문항</span><span>💰 소비 패턴 4문항</span>
-                        <span>⚡ 위험 감수 성향 4문항</span><span>🛡️ 위기 대응 4문항</span>
-                    </div>
-                    <br>각 문항 <b>3~5초</b>면 답할 수 있어요. 총 <b>약 2분</b> 소요.
-                </div>
-            </div>
-
-            <!-- ③ 생년월일 이유 -->
-            <div class="nkai-faq-item" onclick="this.classList.toggle('open')">
-                <div class="nkai-faq-q">③ 생년월일은 왜 필요한가요? <i class="fa-solid fa-chevron-down"></i></div>
-                <div class="nkai-faq-a">
-                    생년월일로 <b>선천적 에너지 밸런스</b>(5가지 기질 분포)를 계산합니다.<br><br>
-                    동양 천문학 데이터를 <b>베이지안 추론 알고리즘</b>으로 재해석한 것으로,<br>
-                    점술이 아닌 <b>통계 기반 데이터 분석</b>입니다.<br><br>
-                    <span style="color:#00D68F;">🔒 개인정보는 암호화 처리되며, 분석 외 목적으로 사용하지 않습니다.</span>
-                </div>
-            </div>
-
-            <!-- ④ 상품 비교표 -->
-            <div class="nkai-faq-item" onclick="this.classList.toggle('open')">
-                <div class="nkai-faq-q">④ 무료 / 유료 차이가 뭔가요? <i class="fa-solid fa-chevron-down"></i></div>
-                <div class="nkai-faq-a">
-                    <table style="width:100%;border-collapse:collapse;font-size:10px;line-height:1.5;">
-                        <thead>
-                            <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
-                                <th style="text-align:left;padding:6px 4px;color:#64748B;">포함 항목</th>
-                                <th style="text-align:center;padding:6px 4px;color:#00D68F;width:52px;">무료</th>
-                                <th style="text-align:center;padding:6px 4px;color:#9B7FF8;width:52px;">₩9,900</th>
-                                <th style="text-align:center;padding:6px 4px;color:#2D8CFF;width:52px;">₩19,900</th>
-                            </tr>
-                        </thead>
-                        <tbody style="color:#94A3B8;">
-                            <tr><td style="padding:3px 4px;">N-Score (1000점)</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
-                            <tr><td style="padding:3px 4px;">16형 아키타입</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
-                            <tr><td style="padding:3px 4px;">💰 경제감각 점수</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
-                            <tr><td style="padding:3px 4px;">이번 달 기회 / 조심할 것</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
-                            <tr style="border-top:1px solid rgba(255,255,255,0.06);"><td style="padding:3px 4px;">4축 상세 분석</td><td style="text-align:center;color:#475569;">🔒</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
-                            <tr><td style="padding:3px 4px;">XAI 투명성 보고서</td><td style="text-align:center;color:#475569;">🔒</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
-                            <tr><td style="padding:3px 4px;">PDF 리포트 (10p)</td><td style="text-align:center;color:#475569;">🔒</td><td style="text-align:center;">✅</td><td style="text-align:center;">✅</td></tr>
-                            <tr style="border-top:1px solid rgba(255,255,255,0.06);"><td style="padding:3px 4px;">12개월 골든타임</td><td style="text-align:center;color:#475569;">🔒</td><td style="text-align:center;color:#475569;">🔒</td><td style="text-align:center;">✅</td></tr>
-                            <tr><td style="padding:3px 4px;">리스크 히트맵 6종</td><td style="text-align:center;color:#475569;">🔒</td><td style="text-align:center;color:#475569;">🔒</td><td style="text-align:center;">✅</td></tr>
-                            <tr><td style="padding:3px 4px;">맞춤 포트폴리오</td><td style="text-align:center;color:#475569;">🔒</td><td style="text-align:center;color:#475569;">🔒</td><td style="text-align:center;">✅</td></tr>
-                            <tr><td style="padding:3px 4px;">오행별 건강·식단</td><td style="text-align:center;color:#475569;">🔒</td><td style="text-align:center;color:#475569;">🔒</td><td style="text-align:center;">✅</td></tr>
-                            <tr><td style="padding:3px 4px;">PDF 리포트 (20p)</td><td style="text-align:center;color:#475569;">🔒</td><td style="text-align:center;color:#475569;">🔒</td><td style="text-align:center;">✅</td></tr>
-                        </tbody>
-                    </table>
-                    <p style="text-align:center;margin-top:8px;font-size:10px;color:#5AA8FF;font-weight:700;">분석은 완전 무료 → 결과 보고 결정하세요!</p>
-                </div>
-            </div>
-
-            <button onclick="closeFaqAndStartAnalysis()" style="width:100%;padding:14px;margin-top:14px;background:linear-gradient(135deg,#0F1524,#162033);color:#fff;font-weight:800;border:1.5px solid #2D8CFF;border-radius:12px;cursor:pointer;font-size:15px;transition:all 0.3s;box-shadow:0 4px 15px rgba(45,140,255,0.15);">
-                <i class="fa-solid fa-atom"></i> 확인했어요, 분석 시작!
-            </button>
-            <p style="text-align:center;margin-top:8px;font-size:10px;color:#64748B;">완전 무료 · 카드 등록 없음 · 약 3분 소요</p>
-        </div>
-    </div>
-    <script>
-    /* ═══ FAQ 팝업 v4 — showPage 의존 없이 완전 독립 ═══ */
-    (function(){
-      var _faqDone = !!sessionStorage.getItem('nkai_faq_done');
-
-      function _showFaq(){
-        var m = document.getElementById('nkai-faq-popup');
-        if(!m) return;
-        m.style.cssText = 'display:flex!important;position:fixed!important;top:0!important;left:0!important;width:100%!important;height:100%!important;background:rgba(0,0,0,0.85)!important;z-index:99999!important;align-items:center!important;justify-content:center!important;padding:16px!important;';
-      }
-
-      window.closeFaqAndStartAnalysis = function(){
-        var m = document.getElementById('nkai-faq-popup');
-        if(m) m.style.display = 'none';
-        _faqDone = true;
-        sessionStorage.setItem('nkai_faq_done','1');
-        /* mvp 페이지로 이동 */
-        if(typeof showPage === 'function') showPage('mvp');
-        setTimeout(function(){
-          var form = document.getElementById('sim-input');
-          if(form) form.scrollIntoView({behavior:'smooth', block:'start'});
-        }, 300);
-      };
-
-      document.addEventListener('DOMContentLoaded', function(){
-        /* 모든 CTA 버튼 래핑 */
-        var btns = document.querySelectorAll('button, a[href], [onclick]');
-        for(var i=0; i<btns.length; i++){
-          var txt = (btns[i].textContent || '').trim();
-          var oc = btns[i].getAttribute('onclick') || '';
-          var isMvpBtn = oc.indexOf("showPage('mvp')") >= 0 || oc.indexOf('showPage("mvp")') >= 0;
-          /* 결과/다시/보기 버튼은 절대 래핑 제외 */
-          if(txt.indexOf('결과') >= 0 || txt.indexOf('다시') >= 0 || txt.indexOf('보기') >= 0) isMvpBtn = false;
-          var isAnalysisText = !isMvpBtn && (
-            (txt.indexOf('무료') >= 0 && txt.indexOf('분석') >= 0 && txt.indexOf('결과') < 0) ||
-            (txt.indexOf('DNA') >= 0 && txt.indexOf('분석') >= 0) ||
-            txt.indexOf('무료로 시작') >= 0
-          );
-          if(isMvpBtn || isAnalysisText){
-            (function(btn, origOnclick){
-              btn.setAttribute('onclick','');
-              btn.onclick = function(e){
-                if(_faqDone || sessionStorage.getItem('nkai_faq_done')){
-                  /* FAQ 완료 → 원래 동작 */
-                  if(typeof showPage === 'function') showPage('mvp');
-                  return;
-                }
-                if(e) { e.preventDefault(); e.stopPropagation(); }
-                _showFaq();
-              };
-            })(btns[i], btns[i].getAttribute('onclick'));
-          }
-        }
-
-        /* 모달 배경 클릭 닫기 */
-        var modal = document.getElementById('nkai-faq-popup');
-        if(modal){
-          modal.addEventListener('click', function(e){
-            if(e.target === modal) closeFaqAndStartAnalysis();
-          });
-        }
-      });
-    })();
-    </script>
-
     <script src="js/nkai-patch.js?v=20260322"></script>
       <script src="js/nkai-breakdown.js"></script>
-      <script src="js/nkai-report-v2.js?v=20260328"></script>
-    <!-- ★ 공유/새탭 복귀 시 N-Score 0 방지 — localStorage 복원 -->
-    <script>
-    document.addEventListener('DOMContentLoaded', function(){
-        try {
-            var saved = localStorage.getItem('nkai_full_result');
-            if(saved){
-                var r = JSON.parse(saved);
-                var sd = document.getElementById('score-display');
-                if(sd && (!sd.innerText || sd.innerText === '0') && r.nScore) sd.innerText = r.nScore;
-                var fsd = document.getElementById('free-score-display');
-                if(fsd && (!fsd.innerText || fsd.innerText === '0') && r.nScore) fsd.innerText = r.nScore;
-            }
-        } catch(e){}
-    });
-    </script>
     </body>
     </html>
