@@ -327,43 +327,39 @@ function computeInnateVector(birthStr, hourIdx) {
 
 function computeBehaviorVector(ei, ns, tf, jp) { return { EI: (ei-50)/50, NS: (ns-50)/50, TF: (tf-50)/50, JP: (jp-50)/50 }; }
 
-// ── PROTECTED: computeWeightedKipaScores v1.0 — KIPA 가중치 차별화
-// Q1~16 A/B 답변을 직접 받아 금융 DNA 목적에 맞는 가중 점수 산출
+// ── PROTECTED: computeWeightedKipaScores v2.0 — KIPA 8Q 가중치 재보정
+// Q1~8 A/B 답변을 직접 받아 금융 DNA 목적에 맞는 가중 점수 산출
 // A=1(E/N/T/J 방향), B=0(I/S/F/P 방향)
+// v2.0: 16Q→8Q 축소 — 축별 2문항, 가중치 보정으로 판별력 유지
 function computeWeightedKipaScores(answers) {
-    // answers: { q1:'A', q2:'B', ... q16:'A' }
+    // answers: { q1:'A', q2:'B', ... q8:'A' }
     function val(q) { return (answers[q] === 'A') ? 1 : (answers[q] === 'B') ? 0 : 0.5; }
 
-    // ── E/I 축 (Q1,2,9,10) — 에너지 방향 균등 가중치
-    // 금융 맥락에서 내/외향은 투자 결정 방식에 동등하게 영향
-    var EI_W = { q1: 1.0, q2: 1.0, q9: 1.0, q10: 1.0 };
-    var EI_total = EI_W.q1 + EI_W.q2 + EI_W.q9 + EI_W.q10;
-    var EI_score = (val('q1')*EI_W.q1 + val('q2')*EI_W.q2 +
-                   val('q9')*EI_W.q9 + val('q10')*EI_W.q10) / EI_total * 100;
+    // ── E/I 축 (Q1,Q2) — 에너지 방향
+    // Q1(모임 후 에너지), Q2(결정 방식) — 균등 가중, 보정계수 1.5배
+    var EI_W = { q1: 1.5, q2: 1.5 };
+    var EI_total = EI_W.q1 + EI_W.q2;
+    var EI_score = (val('q1')*EI_W.q1 + val('q2')*EI_W.q2) / EI_total * 100;
 
-    // ── N/S 축 (Q3,4,11,12) — 투자 정보 인식 방식
-    // Q3(투자 정보 분석), Q4(사업 기회 평가), Q11(리포트 작성), Q12(위험 감지)
-    // Q3,4,12는 직접 투자 의사결정 → 높은 가중치
-    var NS_W = { q3: 1.5, q4: 1.5, q11: 1.0, q12: 1.5 };
-    var NS_total = NS_W.q3 + NS_W.q4 + NS_W.q11 + NS_W.q12;
-    var NS_score = (val('q3')*NS_W.q3 + val('q4')*NS_W.q4 +
-                   val('q11')*NS_W.q11 + val('q12')*NS_W.q12) / NS_total * 100;
+    // ── N/S 축 (Q3,Q4) — 투자 정보 인식 방식
+    // Q3(투자 정보 분석), Q4(사업 기회 평가) — 핵심 투자 의사결정 문항
+    var NS_W = { q3: 1.8, q4: 1.8 };
+    var NS_total = NS_W.q3 + NS_W.q4;
+    var NS_score = (val('q3')*NS_W.q3 + val('q4')*NS_W.q4) / NS_total * 100;
 
-    // ── T/F 축 (Q5,6,13,14) — 투자 판단 기준
-    // Q6(수익 vs 가치), Q13(손절 기준) → 핵심 투자 행동 → 높은 가중치
-    // Q5(팀 실수 대응), Q14(성과 평가) → 일반 성향 → 기본 가중치
-    var TF_W = { q5: 0.8, q6: 1.5, q13: 1.5, q14: 0.8 };
-    var TF_total = TF_W.q5 + TF_W.q6 + TF_W.q13 + TF_W.q14;
-    var TF_score = (val('q5')*TF_W.q5 + val('q6')*TF_W.q6 +
-                   val('q13')*TF_W.q13 + val('q14')*TF_W.q14) / TF_total * 100;
+    // ── T/F 축 (Q5,Q6) — 투자 판단 기준
+    // Q5(팀 실수 대응→논리/공감), Q6(수익 vs 가치→핵심 투자 행동)
+    // Q6 가중치 2.0배 — 금융 DNA 핵심 변별력
+    var TF_W = { q5: 1.0, q6: 2.0 };
+    var TF_total = TF_W.q5 + TF_W.q6;
+    var TF_score = (val('q5')*TF_W.q5 + val('q6')*TF_W.q6) / TF_total * 100;
 
-    // ── J/P 축 (Q7,8,15,16) — 재무 생활 양식
-    // Q7(예산 관리), Q16(포트폴리오 리밸런싱) → 직접 재무 행동 → 높은 가중치
-    // Q8(마감 관리), Q15(여행 계획) → 일반 계획성 → 기본/낮은 가중치
-    var JP_W = { q7: 1.5, q8: 1.0, q15: 0.5, q16: 1.5 };
-    var JP_total = JP_W.q7 + JP_W.q8 + JP_W.q15 + JP_W.q16;
-    var JP_score = (val('q7')*JP_W.q7 + val('q8')*JP_W.q8 +
-                   val('q15')*JP_W.q15 + val('q16')*JP_W.q16) / JP_total * 100;
+    // ── J/P 축 (Q7,Q8) — 재무 생활 양식
+    // Q7(예산 관리→직접 재무 행동), Q8(마감 관리→계획성)
+    // Q7 가중치 2.0배 — 예산 관리가 재무 DNA 핵심
+    var JP_W = { q7: 2.0, q8: 1.5 };
+    var JP_total = JP_W.q7 + JP_W.q8;
+    var JP_score = (val('q7')*JP_W.q7 + val('q8')*JP_W.q8) / JP_total * 100;
 
     return {
         ei: Math.round(EI_score),

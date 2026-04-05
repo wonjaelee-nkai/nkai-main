@@ -13,36 +13,32 @@ function startAnalysis() {
     if(birth.length !== 8 || isNaN(birth)) { alert('생년월일을 YYYYMMDD 형식으로 입력해주세요.'); return; }
 
     var answers = {};
-    // Q1~Q16 수집 — .kipa-opt 텍스트 버튼 기반 (v3)
-    for(var i=1; i<=16; i++) {
+    // Q1~Q8 수집 — .kipa-opt 텍스트 버튼 기반 (v4: 8Q 축소)
+    for(var i=1; i<=8; i++) {
         var sel = document.querySelector('.kipa-opt[data-q="'+i+'"].selected');
-        if(!sel && i <= 8) { alert('KIPA Q'+i+'번 문항에 응답해주세요.'); return; }
+        if(!sel) { alert('KIPA Q'+i+'번 문항에 응답해주세요.'); return; }
         answers['q'+i] = sel ? parseInt(sel.getAttribute('data-v')) : 3;
     }
-    var kipaMode = '16q';
+    var kipaMode = '8q';
 
-    // ★ KIPA 점수 계산 v3.0 — 5지선다 스케일 (1~5 → 20~80 변환)
+    // ★ KIPA 점수 계산 v4.0 — 8Q 재보정, 5지선다 스케일 (1~5 → 20~80 변환)
     function toScore(v) { return (6 - (v || 3)) * 15 + 20; }
 
-    // E/I축 (Q1,2,9,10)
-    var EI_W = { q1:1.0, q2:1.0, q9:1.0, q10:1.0 }; var EI_T = 4;
-    var ei = Math.round((toScore(answers.q1)*EI_W.q1 + toScore(answers.q2)*EI_W.q2 +
-                         toScore(answers.q9)*EI_W.q9 + toScore(answers.q10)*EI_W.q10) / EI_T);
+    // E/I축 (Q1,Q2) — 보정계수 1.5배
+    var EI_W = { q1:1.5, q2:1.5 }; var EI_T = 3.0;
+    var ei = Math.round((toScore(answers.q1)*EI_W.q1 + toScore(answers.q2)*EI_W.q2) / EI_T);
 
-    // N/S축 (Q3,4,11,12)
-    var NS_W = { q3:1.5, q4:1.5, q11:1.0, q12:1.5 }; var NS_T = 5.5;
-    var ns = Math.round((toScore(answers.q3)*NS_W.q3 + toScore(answers.q4)*NS_W.q4 +
-                         toScore(answers.q11)*NS_W.q11 + toScore(answers.q12)*NS_W.q12) / NS_T);
+    // N/S축 (Q3,Q4) — 핵심 투자 의사결정 문항
+    var NS_W = { q3:1.8, q4:1.8 }; var NS_T = 3.6;
+    var ns = Math.round((toScore(answers.q3)*NS_W.q3 + toScore(answers.q4)*NS_W.q4) / NS_T);
 
-    // T/F축 (Q5,6,13,14)
-    var TF_W = { q5:0.8, q6:1.5, q13:1.5, q14:0.8 }; var TF_T = 4.6;
-    var tf = Math.round((toScore(answers.q5)*TF_W.q5 + toScore(answers.q6)*TF_W.q6 +
-                         toScore(answers.q13)*TF_W.q13 + toScore(answers.q14)*TF_W.q14) / TF_T);
+    // T/F축 (Q5,Q6) — Q6(수익 vs 가치) 핵심 가중
+    var TF_W = { q5:1.0, q6:2.0 }; var TF_T = 3.0;
+    var tf = Math.round((toScore(answers.q5)*TF_W.q5 + toScore(answers.q6)*TF_W.q6) / TF_T);
 
-    // J/P축 (Q7,8,15,16)
-    var JP_W = { q7:1.5, q8:1.0, q15:0.5, q16:1.5 }; var JP_T = 4.5;
-    var jp = Math.round((toScore(answers.q7)*JP_W.q7 + toScore(answers.q8)*JP_W.q8 +
-                         toScore(answers.q15)*JP_W.q15 + toScore(answers.q16)*JP_W.q16) / JP_T);
+    // J/P축 (Q7,Q8) — Q7(예산 관리) 핵심 가중
+    var JP_W = { q7:2.0, q8:1.5 }; var JP_T = 3.5;
+    var jp = Math.round((toScore(answers.q7)*JP_W.q7 + toScore(answers.q8)*JP_W.q8) / JP_T);
 
     // ★ NaN 방어 — 0이 되면 saju-engine에서 N-Score가 0으로 계산됨
     if(isNaN(ei)) ei = 50; if(isNaN(ns)) ns = 50; if(isNaN(tf)) tf = 50; if(isNaN(jp)) jp = 50;
@@ -69,7 +65,7 @@ function startAnalysis() {
     sessionStorage.setItem('nkai_user_job',     job);
     var btEl = document.getElementById('input-bloodtype');
     if(btEl && btEl.value) sessionStorage.setItem('nkai_user_bloodtype', btEl.value);
-    for(var qi=1; qi<=16; qi++) sessionStorage.setItem('nkai_kipa_q'+qi, answers['q'+qi] || '');
+    for(var qi=1; qi<=8; qi++) sessionStorage.setItem('nkai_kipa_q'+qi, answers['q'+qi] || '');
     sessionStorage.setItem('nkai_kipa_mode', kipaMode);
     // ── END PROTECTED ──
 
@@ -211,10 +207,7 @@ function startAnalysis() {
             kipa_energy: ei, kipa_perception: ns, kipa_judgment: tf, kipa_lifestyle: jp,
             kipa_q1:  answers.q1,  kipa_q2:  answers.q2,  kipa_q3:  answers.q3,
             kipa_q4:  answers.q4,  kipa_q5:  answers.q5,  kipa_q6:  answers.q6,
-            kipa_q7:  answers.q7,  kipa_q8:  answers.q8,  kipa_q9:  answers.q9,
-            kipa_q10: answers.q10, kipa_q11: answers.q11, kipa_q12: answers.q12,
-            kipa_q13: answers.q13, kipa_q14: answers.q14, kipa_q15: answers.q15,
-            kipa_q16: answers.q16,
+            kipa_q7:  answers.q7,  kipa_q8:  answers.q8,
             sq1: behaviorQuiz ? String(behaviorQuiz.spending)  : '',
             sq2: behaviorQuiz ? String(behaviorQuiz.impulse)   : '',
             sq3: behaviorQuiz ? String(behaviorQuiz.windfall)  : '',

@@ -64,7 +64,7 @@
 
         // ④ KIPA Q1~Q16 전체 응답 필수
         var _kipaUnanswered = [];
-        for(var _qi=1; _qi<=16; _qi++){
+        for(var _qi=1; _qi<=8; _qi++){
           if(!document.querySelector('input[name="kipa-q'+_qi+'"]:checked')){
             _kipaUnanswered.push('Q'+_qi);
           }
@@ -141,14 +141,14 @@
         }
       } catch(_ve){ console.warn('[N-KAI] validation 오류:', _ve); }
 
-      if(typeof gtag === 'function') gtag('event', 'kipa_start', { event_category: 'funnel', event_label: 'KIPA 16문항 시작' });
+      if(typeof gtag === 'function') gtag('event', 'kipa_start', { event_category: 'funnel', event_label: 'KIPA 8문항 시작' });
       /* ★ v76: KIPA Q1~Q16 답변 sessionStorage 저장 — 분析데이터 DB 적재용 */
       try {
-        for(var _qi=1; _qi<=16; _qi++){
+        for(var _qi=1; _qi<=8; _qi++){
           var _qEl = document.querySelector('input[name="kipa-q'+_qi+'"]:checked');
           if(_qEl) sessionStorage.setItem('nkai_kipa_q'+_qi, _qEl.value); localStorage.setItem('nkai_kipa_q'+_qi, _qEl.value); /* ★ v79: localStorage 이중저장 — 결제창 새탭 이동 시 소실 방지 */
         }
-        console.log('[N-KAI] ★ KIPA Q1~Q16 sessionStorage 저장 완료');
+        console.log('[N-KAI] ★ KIPA Q1~Q8 sessionStorage 저장 완료');
 try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O){if(!await O.User.PushSubscription.optedIn)setTimeout(function(){O.Slidedown.promptPush();},3000);});}}catch(e){}
       } catch(_e){ console.warn('[N-KAI] KIPA 저장 오류:', _e); }
       /* ★ v77: 생년월일 → birth_year/month sessionStorage 저장 — 오행% 정확도 수술 */
@@ -310,8 +310,8 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
         "@type": "Organization",
         "name": "뉴린카이로스에이아이 주식회사",
         "alternateName": "N-KAI",
-        "url": "https://www.neurinkairosai.com",
-        "logo": "https://www.neurinkairosai.com/logo.png",
+        "url": "https://www.neurinkairosai.ai",
+        "logo": "https://www.neurinkairosai.ai/logo.png",
         "description": "특허 AI 알고리즘 기반 금융 DNA 아키타입 분석 엔진. 선천적 기질 데이터와 후천적 행동 패턴을 융합하여 16가지 금융 성격 유형을 진단합니다.",
         "foundingDate": "2024",
         "sameAs": []
@@ -322,7 +322,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "N-KAI 금융 DNA 분석",
-        "url": "https://www.neurinkairosai.com",
+        "url": "https://www.neurinkairosai.ai",
         "applicationCategory": "FinanceApplication",
         "operatingSystem": "Web",
         "offers": {
@@ -336,7 +336,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="N-KAI: 당신의 부의 궤적을 데이터로 증명하다">
     <meta name="twitter:description" content="특허받은 AI 알고리즘으로 분석하는 나의 금융 DNA 아키타입. 무료 분석 시작.">
-    <meta name="twitter:image" content="https://www.neurinkairosai.com/og-image-nkai.png?v=20260325b">
+    <meta name="twitter:image" content="https://www.neurinkairosai.ai/og-image-nkai.png?v=20260325b">
     <meta name="robots" content="index, follow">
     <meta name="keywords" content="금융 DNA, 금융 아키타입, AI 금융 분석, 투자 성향 분석, N-KAI, 뉴린카이로스, 카이로스 페르소나 엔진, 금융 성격 유형, 무료 AI 분석">
     <!-- ═══ SEO Patch v2 END ═══ -->
@@ -347,14 +347,14 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
     <meta name="naver-site-verification" content="f5fd8f27b5eec243438c909fd68617a81bade243" />
 
     <title>N-KAI: 당신의 부의 궤적을 데이터로 증명하다</title>
-    <link rel="canonical" href="https://www.neurinkairosai.com">
+    <link rel="canonical" href="https://www.neurinkairosai.ai">
 
     <meta name="description" content="N-Kai(뉴린카이로스)는 45년 생존 데이터와 특허받은 AI 알고리즘으로 당신의 숨겨진 부와 경제적 궤적을 분석합니다.">
     
     <meta property="og:type" content="website">
     <meta property="og:title" content="N-KAI: 당신의 부의 궤적을 데이터로 증명하다">
     <meta property="og:description" content="특허받은 AI 알고리즘으로 분석하는 나의 숨겨진 잠재력과 미래 예측.">
-    <meta property="og:image" content="https://www.neurinkairosai.com/og-image-nkai.png?v=20260325b">
+    <meta property="og:image" content="https://www.neurinkairosai.ai/og-image-nkai.png?v=20260325b">
     <meta property="og:image:width" content="800">
     <meta property="og:image:height" content="400">
 
@@ -2174,7 +2174,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                 <!-- CTA -->
                 <div class="text-center">
                     <p class="text-gray-400 text-xs mb-4">
-                        <span class="ko">🔒 골든타임 12개월 전체는 Standard(₩9,900)에서 확인</span><span class="en">🔒 Full 12-month Golden Time available from Standard(₩9,900)</span><span class="ja">🔒 ゴールデンタイム12ヶ月全体はStandard(₩9,900)で確認</span><span class="zh">🔒 黄金时间12个月完整版从Standard(₩9,900)起</span>
+                        <span class="ko">🔒 골든타임 12개월 전체는 Standard(₩4,900)에서 확인</span><span class="en">🔒 Full 12-month Golden Time available from Standard(₩4,900)</span><span class="ja">🔒 ゴールデンタイム12ヶ月全体はStandard(₩4,900)で確認</span><span class="zh">🔒 黄金时间12个月完整版从Standard(₩4,900)起</span>
                     </p>
                     <button onclick="if(typeof showPage==='function')showPage('mvp')" class="bg-white/5 hover:bg-white/10 border border-[#2D8CFF]/30 text-[#2D8CFF] px-6 py-3 text-sm font-bold rounded-xl transition-all inline-flex items-center gap-2">
                         <i class="fa-solid fa-clock"></i>
@@ -2343,7 +2343,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                         <!-- CTA -->
                         <div class="flex-shrink-0">
                             <!-- ★ OVERVIEW-BTN-GUARD: Cloudflare가 mailto:를 /cdn-cgi/로 인코딩하므로 onclick 방식 사용. 절대 href="mailto:" 로 변경 금지 -->
-                            <a href="javascript:void(0)" onclick="window.location.href='mail'+'to:'+'support'+'@neurinkairosai.com?subject='+encodeURIComponent('[N-KAI] 기술 개요서 요청')+'&body='+encodeURIComponent('기업/기관명:\n담당자:\n연락처:\n요청 목적:\n');" class="btn-gold px-6 py-3.5 text-sm font-black rounded-xl flex items-center gap-2 whitespace-nowrap no-underline" style="text-decoration:none;color:inherit;">
+                            <a href="javascript:void(0)" onclick="window.location.href='mail'+'to:'+'support'+'@neurinkairosai.ai?subject='+encodeURIComponent('[N-KAI] 기술 개요서 요청')+'&body='+encodeURIComponent('기업/기관명:\n담당자:\n연락처:\n요청 목적:\n');" class="btn-gold px-6 py-3.5 text-sm font-black rounded-xl flex items-center gap-2 whitespace-nowrap no-underline" style="text-decoration:none;color:inherit;">
                                 <i class="fa-solid fa-envelope"></i>
                                 <span class="ko">개요서 요청</span><span class="en">Request Overview</span><span class="ja">概要書リクエスト</span><span class="zh">请求概述</span>
                             </a>
@@ -2744,14 +2744,14 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                 <div class="info-item"><span class="info-label" data-i18n="fi_opendate">개업일</span><span class="info-value">2025.09.11</span></div>
                 <div class="info-item"><span class="info-label" data-i18n="fi_address">소재지</span><span class="info-value" data-i18n="fi_address_val">서울특별시 강남구 테헤란로77길 11-15, 712호(삼성동)</span></div>
                 <div class="info-item"><span class="info-label" data-i18n="fi_industry">업종</span><span class="info-value"><span class="ko">AI · 핀테크 · 전자상거래 · 콘텐츠 · 컨설팅 · IP (등록 업종 15개)</span><span class="en">AI · Fintech · E-Commerce · Contents · Consulting · IP (15 registered)</span><span class="ja">AI · フィンテック · EC · コンテンツ · コンサル · IP (登録業種15件)</span><span class="zh">AI · 金融科技 · 电商 · 内容 · 咨询 · IP (注册业种15项)</span></span></div>
-                <div class="info-item"><span class="info-label" data-i18n="fi_email">이메일</span><span class="info-value"><span onclick="window.location.href='support'+ '@' +'neurinkairosai'+'.'+'com'" style="color:#5AA8FF;text-decoration:none;cursor:pointer;">support@neurinkairosai.com</span></span></div>
+                <div class="info-item"><span class="info-label" data-i18n="fi_email">이메일</span><span class="info-value"><span onclick="window.location.href='support'+ '@' +'neurinkairosai'+'.'+'ai'" style="color:#5AA8FF;text-decoration:none;cursor:pointer;">support@neurinkairosai.ai</span></span></div>
                 <div class="info-item"><span class="info-label">고객센터</span><span class="info-value">010-2284-2172</span></div>
               </div>
               <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);font-size:11px;color:rgba(255,255,255,0.35);line-height:1.8;">
                 <span data-i18n-html="fi_brand_desc"><strong style="color:rgba(255,255,255,0.50);">N-KAI</strong>는 뉴린카이로스에이아이 주식회사의 AI 금융 분석 서비스 브랜드입니다.</span>
               </div>
               <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.04);font-size:10px;color:rgba(255,255,255,0.25);line-height:1.7;">
-                <span data-i18n="fi_refund_policy">환불 규정: PDF 리포트 발송 완료 후 환불 불가 (전자상거래법 제17조 제2항 제5호) | 미수신 시 24시간 내 재발송 요청: <span onclick="window.location.href='support'+ '@' +'neurinkairosai'+'.'+'com'" style="color:#5AA8FF;text-decoration:none;cursor:pointer;">support@neurinkairosai.com</span></span>
+                <span data-i18n="fi_refund_policy">환불 규정: PDF 리포트 발송 완료 후 환불 불가 (전자상거래법 제17조 제2항 제5호) | 미수신 시 24시간 내 재발송 요청: <span onclick="window.location.href='support'+ '@' +'neurinkairosai'+'.'+'ai'" style="color:#5AA8FF;text-decoration:none;cursor:pointer;">support@neurinkairosai.ai</span></span>
               </div>
             </div>
             <div class="footer-security">
@@ -2916,14 +2916,6 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
 
                             <div style="margin:14px 0 10px; padding:6px 10px; background:linear-gradient(90deg,#2D8CFF22,transparent); border-left:3px solid #2D8CFF; border-radius:4px;"><span style="font-size:11px; font-weight:700; color:#2D8CFF;">심층 진단 문항 (Q9~Q16)</span></div>
 
-                            <div class="kipa-q" data-kipa="9"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q9. 주말에 에너지를 충전하는 방식은?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q9" value="A" style="accent-color:#2D8CFF;"> A. 친구·지인과 활동적인 시간을 보낸다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q9" value="B" style="accent-color:#2D8CFF;"> B. 집에서 독서·영화 등 혼자만의 시간을 갖는다</label></div>
-                            <div class="kipa-q" data-kipa="10"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q10. 새로운 프로젝트를 시작할 때?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q10" value="A" style="accent-color:#2D8CFF;"> A. 팀원들과 바로 브레인스토밍을 시작한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q10" value="B" style="accent-color:#2D8CFF;"> B. 혼자 충분히 구상을 정리한 뒤 공유한다</label></div>
-                            <div class="kipa-q" data-kipa="11"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q11. 리포트를 작성할 때 주로?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q11" value="A" style="accent-color:#2D8CFF;"> A. 과거 데이터와 실적 수치를 근거로 쓴다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q11" value="B" style="accent-color:#2D8CFF;"> B. 미래 비전과 가능성을 중심으로 쓴다</label></div>
-                            <div class="kipa-q" data-kipa="12"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q12. 위험 신호를 감지하는 방식은?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q12" value="A" style="accent-color:#2D8CFF;"> A. 수치·지표의 이상 패턴으로 판단한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q12" value="B" style="accent-color:#2D8CFF;"> B. 분위기나 직감적 느낌으로 먼저 감지한다</label></div>
-                            <div class="kipa-q" data-kipa="13"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q13. 투자에서 손실이 발생했을 때?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q13" value="A" style="accent-color:#2D8CFF;"> A. 사전에 정한 손절 기준대로 즉시 정리한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q13" value="B" style="accent-color:#2D8CFF;"> B. 상황을 좀 더 지켜보며 감정적으로 판단한다</label></div>
-                            <div class="kipa-q" data-kipa="14"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q14. 성과를 평가할 때 기준은?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q14" value="A" style="accent-color:#2D8CFF;"> A. 객관적 수치와 KPI 달성률이 중요하다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q14" value="B" style="accent-color:#2D8CFF;"> B. 과정에서의 노력과 팀 분위기가 더 중요하다</label></div>
-                            <div class="kipa-q" data-kipa="15"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q15. 여행 계획을 세울 때?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q15" value="A" style="accent-color:#2D8CFF;"> A. 일정표를 미리 작성하고 예약까지 완료한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q15" value="B" style="accent-color:#2D8CFF;"> B. 현지에서 그때그때 즉흥적으로 결정한다</label></div>
-                            <div class="kipa-q" data-kipa="16"><p class="kipa-q-title" style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">Q16. 포트폴리오 리밸런싱 시기는?</p><label class="kipa-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;margin-bottom:3px;"><input type="radio" name="kipa-q16" value="A" style="accent-color:#2D8CFF;"> A. 정해진 주기에 맞춰 규칙적으로 한다</label><label class="kipa-opt-b" style="display:flex;align-items:center;gap:6px;font-size:12px;color:#555;cursor:pointer;"><input type="radio" name="kipa-q16" value="B" style="accent-color:#2D8CFF;"> B. 시장 상황을 보면서 탄력적으로 조정한다</label></div>
 
                             <div id="kipa-status" style="text-align:center; font-size:11px; color:#8A95AB; padding:6px; background:#f1f5f9; border-radius:8px; margin-top:8px;">
                                 <span data-i18n="kipa_status">응답 완료</span>: <span id="kipa-answered">0</span>/16
@@ -3048,11 +3040,11 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                                     <b style="color:#333;font-size:12px;" class="zh">[必填] 退款政策确认同意</b><br>
                                     <span class="ko" style="font-size:10px;color:#666;">
                                         • 무료 분석은 환불 규정 미적용 (무료 서비스)<br>
-                                        • 유료 결제(Standard ₩9,900 / Premium ₩19,900): PDF 리포트 발송 완료 후 환불 불가 (전자상거래법 제17조 제2항 제5호)<br>
-                                        • 리포트 미수신 시 24시간 이내 재발송 요청 가능: <span onclick="window.location.href='support'+ '@' +'neurinkairosai'+'.'+'com'" style="color:#5AA8FF;text-decoration:none;cursor:pointer;">support@neurinkairosai.com</span><br>
+                                        • 유료 결제(Standard ₩4,900 / Premium ₩14,900): PDF 리포트 발송 완료 후 환불 불가 (전자상거래법 제17조 제2항 제5호)<br>
+                                        • 리포트 미수신 시 24시간 이내 재발송 요청 가능: <span onclick="window.location.href='support'+ '@' +'neurinkairosai'+'.'+'ai'" style="color:#5AA8FF;text-decoration:none;cursor:pointer;">support@neurinkairosai.ai</span><br>
                                         • <a href="refund.html" style="color:#2D8CFF;text-decoration:underline;">환불정책 전문 보기</a>
                                     </span>
-                                    <span class="en" style="font-size:10px;color:#666;">• Free analysis: no refund policy applies • Paid (Standard ₩9,900 / Premium ₩19,900): No refund after PDF report is sent • Re-send within 24hrs if not received: <span onclick="window.location.href='support'+ '@' +'neurinkairosai'+'.'+'com'" style="color:#5AA8FF;text-decoration:none;cursor:pointer;">support@neurinkairosai.com</span> • <a href="refund.html" style="color:#2D8CFF;">Refund Policy</a></span>
+                                    <span class="en" style="font-size:10px;color:#666;">• Free analysis: no refund policy applies • Paid (Standard ₩4,900 / Premium ₩14,900): No refund after PDF report is sent • Re-send within 24hrs if not received: <span onclick="window.location.href='support'+ '@' +'neurinkairosai'+'.'+'ai'" style="color:#5AA8FF;text-decoration:none;cursor:pointer;">support@neurinkairosai.ai</span> • <a href="refund.html" style="color:#2D8CFF;">Refund Policy</a></span>
                                     <span class="ja" style="font-size:10px;color:#666;">• 有料決済後PDFレポート発送後は返金不可 • 未受信の場合24時間以内に再送申請可能 • <a href="refund.html" style="color:#2D8CFF;">返金ポリシー全文</a></span>
                                     <span class="zh" style="font-size:10px;color:#666;">• 付费后PDF报告发送后不可退款 • 24小时内可申请重新发送 • <a href="refund.html" style="color:#2D8CFF;">退款政策全文</a></span>
                                 </span>
@@ -3402,7 +3394,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                                     <span class="ko">궁합 분석 시작</span><span class="en">Start Compatibility Analysis</span><span class="ja">相性分析開始</span><span class="zh">开始兼容性分析</span>
                                 </button>
                                 <p class="text-center text-[10px] text-gray-600 mt-2">
-                                    <span class="ko">Standard(₩9,900) 이상 구매 시 Top 3 · Premium Top 3 상세 분석 · Evolution 무제한</span>
+                                    <span class="ko">Standard(₩4,900) 이상 구매 시 Top 3 · Premium Top 3 상세 분석 · Evolution 무제한</span>
                                 </p>
                             </div>
 
@@ -3420,7 +3412,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                                     <p id="compat-summary" class="text-gray-400 text-xs mt-1">서로의 약점을 보완하는 최고의 파트너</p>
                                 </div>
 
-                                <!-- ★ PROTECTED: COMPAT-GATING — 5축 상세 잠금 (Standard ₩9,900) ★ -->
+                                <!-- ★ PROTECTED: COMPAT-GATING — 5축 상세 잠금 (Standard ₩4,900) ★ -->
                                 <div id="compat-locked-section" class="relative cursor-pointer" onclick="showCompatUnlockPopup()">
                                     <!-- 블러 오버레이 -->
                                     <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm rounded-2xl border border-[#7C5BF0]/30">
@@ -3430,7 +3422,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                                         <p class="text-white font-bold text-sm">5축 케미스트리 상세</p>
                                         <p class="text-gray-400 text-[10px] mt-1">Standard 플랜으로 잠금 해제</p>
                                         <div class="mt-2 px-4 py-1.5 bg-gradient-to-r from-[#7C5BF0] to-[#FF6B6B] rounded-full text-white text-[10px] font-bold">
-                                            <i class="fa-solid fa-key mr-1"></i> ₩9,900으로 해금
+                                            <i class="fa-solid fa-key mr-1"></i> ₩4,900으로 해금
                                         </div>
                                     </div>
                                     <!-- 블러된 5축 바 (시각적 티저) -->
@@ -3760,7 +3752,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                             <div style="display:flex;align-items:center;color:#4B5563;font-size:18px;font-weight:900;padding:0 1px;">›</div>
                             <!-- Standard -->
                             <div style="flex:1;background:rgba(124,91,240,0.15);border:1px solid rgba(124,91,240,0.4);border-radius:12px;padding:14px 6px;text-align:center;">
-                                <div style="font-size:11px;color:#9B7FF8;font-weight:800;margin-bottom:6px;">₩9,900</div>
+                                <div style="font-size:11px;color:#9B7FF8;font-weight:800;margin-bottom:6px;">₩4,900</div>
                                 <div style="font-size:24px;margin-bottom:6px;">💰</div>
                                 <div style="font-size:12px;color:#9B7FF8;font-weight:700;line-height:1.4;">돈을<br>어떻게?</div>
                             </div>
@@ -3769,7 +3761,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                             <!-- Premium -->
                             <div style="flex:1;background:rgba(45,140,255,0.15);border:2px solid rgba(45,140,255,0.5);border-radius:12px;padding:14px 6px;text-align:center;position:relative;">
                                 <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#2D8CFF,#5AA8FF);color:#fff;font-size:8px;font-weight:900;padding:2px 8px;border-radius:10px;white-space:nowrap;">BEST</div>
-                                <div style="font-size:11px;color:#5AA8FF;font-weight:800;margin-bottom:6px;">₩19,900</div>
+                                <div style="font-size:11px;color:#5AA8FF;font-weight:800;margin-bottom:6px;">₩14,900</div>
                                 <div style="font-size:24px;margin-bottom:6px;">⚡</div>
                                 <div style="font-size:12px;color:#5AA8FF;font-weight:700;line-height:1.4;">돈+언제<br>움직여야?</div>
                             </div>
@@ -3781,7 +3773,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
                                     <div>
                                         <div style="font-size:11px;color:#9B7FF8;font-weight:800;letter-spacing:0.5px;">STANDARD</div>
-                                        <div style="font-size:22px;color:#fff;font-weight:900;line-height:1;">₩9,900</div>
+                                        <div style="font-size:22px;color:#fff;font-weight:900;line-height:1;">₩4,900</div>
                                     </div>
                                     <div style="text-align:right;">
                                         <div style="font-size:12px;color:#fff;font-weight:700;">💰 돈을 어떻게 쓸지</div>
@@ -3795,7 +3787,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                                         <span id="result-std-qty" class="text-white font-black text-sm min-w-[24px] text-center">1</span>
                                         <button onclick="resultQtyChange('std',1)" class="w-7 h-7 rounded-md bg-[#7C5BF0]/20 border border-[#7C5BF0]/40 text-[#7C5BF0] font-black text-base leading-none flex items-center justify-center">+</button>
                                     </div>
-                                    <span class="text-[#9B7FF8] text-xs font-bold">합계: <span id="result-std-total">₩9,900</span></span>
+                                    <span class="text-[#9B7FF8] text-xs font-bold">합계: <span id="result-std-total">₩4,900</span></span>
                                 </div>
                                 <button onclick="resultPay('standard')" class="w-full py-3 bg-gradient-to-r from-[#7C5BF0] to-[#9B7FF8] text-white font-black text-sm rounded-xl hover:opacity-90 transition flex items-center justify-center gap-2">
                                     <i class="fa-solid fa-credit-card"></i> Standard 결제하기
@@ -3808,7 +3800,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
                                     <div>
                                         <div style="font-size:11px;color:#5AA8FF;font-weight:800;letter-spacing:0.5px;">PREMIUM</div>
-                                        <div style="font-size:22px;color:#fff;font-weight:900;line-height:1;">₩19,900</div>
+                                        <div style="font-size:22px;color:#fff;font-weight:900;line-height:1;">₩14,900</div>
                                     </div>
                                     <div style="text-align:right;">
                                         <div style="font-size:12px;color:#fff;font-weight:700;">⚡ 돈 + 언제 움직일지</div>
@@ -3822,7 +3814,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                                         <span id="result-prm-qty" class="text-white font-black text-sm min-w-[24px] text-center">1</span>
                                         <button onclick="resultQtyChange('prm',1)" class="w-7 h-7 rounded-md bg-[#2D8CFF]/20 border border-[#2D8CFF]/40 text-[#2D8CFF] font-black text-base leading-none flex items-center justify-center">+</button>
                                     </div>
-                                    <span class="text-[#5AA8FF] text-xs font-bold">합계: <span id="result-prm-total">₩19,900</span></span>
+                                    <span class="text-[#5AA8FF] text-xs font-bold">합계: <span id="result-prm-total">₩14,900</span></span>
                                 </div>
                                 <button onclick="resultPay('premium')" class="w-full py-3 bg-gradient-to-r from-[#2D8CFF] to-[#5AA8FF] text-white font-black text-sm rounded-xl hover:opacity-90 transition flex items-center justify-center gap-2">
                                     <i class="fa-solid fa-crown"></i> Premium 결제하기
@@ -3845,7 +3837,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                         <!-- ★ 골든타임 티저 (무료) — 분석 완료 메시지만 표시 ★ -->
                         <div id="golden-teaser" class="text-center py-4 mb-3">
                             <p id="golden-teaser-text" class="text-gray-300 text-sm font-bold">✨ 12개월 골든타임 분석 완료 — BEST 구간 확인 ↓</p>
-                            <p class="text-gray-500 text-[10px] mt-1">Standard(₩9,900)로 3개월 해금 · Premium(₩19,900)으로 12개월 전체 해금</p>
+                            <p class="text-gray-500 text-[10px] mt-1">Standard(₩4,900)로 3개월 해금 · Premium(₩14,900)으로 12개월 전체 해금</p>
                         </div>
 
                         <!-- ★ 잠금 오버레이 (Lite 미결제 시) ★ -->
@@ -3857,7 +3849,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                                 <p class="text-white font-bold text-sm">12개월 골든타임 캘린더</p>
                                 <p class="text-gray-400 text-[10px] mt-1">월별 투자 적기 · 리스크 구간 · 전략 전환</p>
                                 <div class="mt-2 px-4 py-1.5 bg-gradient-to-r from-[#2D8CFF] to-[#5AA8FF] rounded-full text-white text-[10px] font-bold">
-                                    <i class="fa-solid fa-key mr-1"></i> Standard ₩9,900으로 해금
+                                    <i class="fa-solid fa-key mr-1"></i> Standard ₩4,900으로 해금
                                 </div>
                             </div>
                             <!-- 블러된 더미 캘린더 -->
@@ -4263,10 +4255,10 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                                 <span class="zh">黄金时间每月变化。想看下个月的吗？</span>
                             </p>
                             <p class="text-gray-400 text-xs mb-4">
-                                <span class="ko">Standard(₩9,900)로 12개월 골든타임 + 5축 크로스 분석 + 케미스트리 궁합 Top 3</span>
-                                <span class="en">Standard(₩9,900) includes 12-month Golden Time + 5-axis cross analysis + Chemistry Top 3</span>
-                                <span class="ja">Standard(₩9,900)で12ヶ月ゴールデンタイム＋5軸クロス分析＋ケミストリー Top 3</span>
-                                <span class="zh">Standard(₩9,900)含12个月黄金时间+5轴交叉分析+合拍体验1次</span>
+                                <span class="ko">Standard(₩4,900)로 12개월 골든타임 + 5축 크로스 분석 + 케미스트리 궁합 Top 3</span>
+                                <span class="en">Standard(₩4,900) includes 12-month Golden Time + 5-axis cross analysis + Chemistry Top 3</span>
+                                <span class="ja">Standard(₩4,900)で12ヶ月ゴールデンタイム＋5軸クロス分析＋ケミストリー Top 3</span>
+                                <span class="zh">Standard(₩4,900)含12个月黄金时间+5轴交叉分析+合拍体验1次</span>
                             </p>
                             <div class="flex gap-2 justify-center flex-wrap">
                                 <button onclick="showPage('premium-landing');setTimeout(function(){document.getElementById('pricing-section').scrollIntoView({behavior:'smooth'})},300)" class="px-5 py-2.5 bg-gradient-to-r from-[#7C5BF0] to-[#2D8CFF] text-white font-bold rounded-xl text-xs">
@@ -4296,7 +4288,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                         </h3>
                         <p class="text-gray-400 text-sm mb-4">10페이지 PDF 리포트 + 맞춤 전략 조언</p>
                         <div class="flex items-center justify-center gap-3 mb-4">
-                            <span class="text-gray-400 line-through text-lg">₩9,900</span>
+                            <span class="text-gray-400 line-through text-lg">₩4,900</span>
                             <span class="text-[#5AA8FF]/50 font-black text-4xl">₩100</span>
                         </div>
                         <button disabled class="w-full max-w-xs mx-auto py-4 bg-[#5AA8FF]/20 text-[#5AA8FF]/60 font-black rounded-xl text-base cursor-not-allowed flex items-center justify-center gap-2 border border-[#5AA8FF]/15 whitespace-nowrap overflow-hidden">
@@ -4666,7 +4658,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                                 </th>
                                 <th class="py-3 px-3 text-center text-[#7C5BF0] font-bold text-xs uppercase tracking-wider">
                                     <i class="fa-solid fa-crown mr-1 hidden md:inline"></i><span class="ko">프리미엄</span><span class="en">Premium</span><span class="ja">プレミアム</span><span class="zh">高级版</span><br>
-                                    <span class="text-[10px] font-normal hidden md:inline">₩19,900<span class="text-gray-400">/1회</span></span>
+                                    <span class="text-[10px] font-normal hidden md:inline">₩14,900<span class="text-gray-400">/1회</span></span>
                                 </th>
                                 <th class="py-3 px-3 text-center text-[#2D8CFF] font-bold text-xs uppercase tracking-wider">
                                     <i class="fa-solid fa-gem mr-1 hidden md:inline"></i><span class="ko">VIP</span><span class="en">VIP</span><span class="ja">VIP</span><span class="zh">VIP</span><br>
@@ -4843,9 +4835,9 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                 </div>
 
 
-                <!-- ★ LITE 카드 제거됨 (2026.02.27) — Standard ₩9,900이 첫 유료 진입점 -->
+                <!-- ★ LITE 카드 제거됨 (2026.02.27) — Standard ₩4,900이 첫 유료 진입점 -->
 
-                <!-- ★ STANDARD ₩9,900 (1회) — 추천 -->
+                <!-- ★ STANDARD ₩4,900 (1회) — 추천 -->
                 <div class="pricing-card featured" style="border-color:rgba(124,91,240,0.5);position:relative;overflow:hidden;transform:none!important;zoom:1!important;margin-top:0!important;">
                     <div style="position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#7C5BF0,#A78BFA,#7C5BF0);"></div>
                     <div class="absolute top-4 right-4 bg-[#7C5BF0]/30 text-[#7C5BF0] text-[9px] font-black px-2.5 py-0.5 rounded-full">BEST VALUE</div>
@@ -4854,7 +4846,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                         <h3 class="text-white font-black text-xl mt-2 mb-1">Standard</h3>
                         <p class="text-[#7C5BF0] text-[11px] font-bold mb-1"><span class="ko">내 돈을 어떻게 써야 하는지</span><span class="en">How to spend my money</span></p><p class="text-gray-400 text-[10px] mb-4"><span class="ko">10페이지 금융 리포트</span><span class="en">10-page Financial Report</span><span class="ja">10ページ金融レポート</span><span class="zh">10页金融报告</span></p>
                         <div class="mb-6">
-                            <span class="text-white font-black text-4xl font-urbanist">₩9,900</span>
+                            <span class="text-white font-black text-4xl font-urbanist">₩4,900</span>
                             <span class="text-gray-400 text-xs ml-1"><span class="ko">/ 1회</span><span class="en">/ once</span><span class="ja">/ 1回</span><span class="zh">/ 单次</span></span>
                         </div>
                     </div>
@@ -4909,12 +4901,12 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                             </div>
                         </div>
                         <div style="text-align:right;font-size:12px;color:#7C5BF0;font-weight:700;">
-                            합계: <span id="standard-total">₩9,900</span>
+                            합계: <span id="standard-total">₩4,900</span>
                         </div>
                     </div>
                     <button onclick="premiumLandingPay('standard')" class="nkai-pay-btn w-full py-3 bg-[#7C5BF0]/20 text-[#7C5BF0] font-bold rounded-xl hover:bg-[#7C5BF0]/30 transition text-sm border border-[#7C5BF0]/30">
                         <i class="fa-solid fa-credit-card mr-1"></i>
-                        <span class="ko">₩9,900 결제하기</span><span class="en">Pay ₩9,900</span><span class="ja">₩9,900を決済する</span><span class="zh">支付₩9,900</span>
+                        <span class="ko">₩4,900 결제하기</span><span class="en">Pay ₩4,900</span><span class="ja">₩4,900を決済する</span><span class="zh">支付₩4,900</span>
                     </button>
                     <button onclick="var _pe=document.getElementById('premium-landing-email');if(_pe){_pe.focus();_pe.scrollIntoView({behavior:'smooth'});}" class="nkai-notify-btn w-full py-3 bg-[#7C5BF0]/20 text-[#7C5BF0] font-bold rounded-xl hover:bg-[#7C5BF0]/30 transition text-sm border border-[#7C5BF0]/30">
                         <i class="fa-solid fa-bell mr-1"></i>
@@ -4922,7 +4914,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                     </button>
                 </div>
 
-                <!-- ★ PREMIUM ₩19,900 (1회) -->
+                <!-- ★ PREMIUM ₩14,900 (1회) -->
                 <div class="pricing-card" style="border-color: rgba(255,200,50,0.4); opacity: 0.9; position:relative; overflow:hidden;">
                     <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#F5A623,#FFD93D,#F5A623);"></div>
                     <div class="absolute top-4 right-4 bg-[#FFD93D]/20 text-[#FFD93D] text-[9px] font-black px-2.5 py-0.5 rounded-full">1회 구매</div>
@@ -4931,7 +4923,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                         <h3 class="text-white font-black text-xl mt-2 mb-1">Premium</h3>
                         <p class="text-[#FFD93D] text-[11px] font-bold mb-1"><span class="ko">내 돈 + 언제 움직여야 하는지</span><span class="en">My money + when to move</span></p><p class="text-gray-400 text-[10px] mb-4"><span class="ko">20페이지 골든타임 전략</span><span class="en">20-page Golden Time Strategy</span><span class="ja">20ページゴールデンタイム戦略</span><span class="zh">20页黄金时间战略</span></p>
                         <div class="mb-6">
-                            <span class="text-white font-black text-4xl font-urbanist">₩19,900</span>
+                            <span class="text-white font-black text-4xl font-urbanist">₩14,900</span>
                             <span class="text-gray-400 text-xs ml-1"><span class="ko">/ 1회</span><span class="en">/ once</span><span class="ja">/ 1回</span><span class="zh">/ 单次</span></span>
                         </div>
                     </div>
@@ -4996,12 +4988,12 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                             </div>
                         </div>
                         <div style="text-align:right;font-size:12px;color:#2D8CFF;font-weight:700;">
-                            합계: <span id="premium-total">₩19,900</span>
+                            합계: <span id="premium-total">₩14,900</span>
                         </div>
                     </div>
                     <button onclick="premiumLandingPay('premium')" class="nkai-pay-btn w-full py-3 bg-[#2D8CFF]/20 text-[#2D8CFF] font-bold rounded-xl hover:bg-[#2D8CFF]/30 transition text-sm border border-[#2D8CFF]/30">
                         <i class="fa-solid fa-credit-card mr-1"></i>
-                        <span class="ko">₩19,900 결제하기</span><span class="en">Pay ₩19,900</span><span class="ja">₩19,900を決済する</span><span class="zh">支付₩19,900</span>
+                        <span class="ko">₩14,900 결제하기</span><span class="en">Pay ₩14,900</span><span class="ja">₩14,900を決済する</span><span class="zh">支付₩14,900</span>
                     </button>
                     <button onclick="var _pe=document.getElementById('premium-landing-email');if(_pe){_pe.focus();_pe.scrollIntoView({behavior:'smooth'});}" class="nkai-notify-btn w-full py-3 bg-[#2D8CFF]/20 text-[#2D8CFF] font-bold rounded-xl hover:bg-[#2D8CFF]/30 transition text-sm border border-[#2D8CFF]/30">
                         <i class="fa-solid fa-bell mr-1"></i>
@@ -5190,7 +5182,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                         <div class="border-t border-white/10 pt-3">
                             <div class="flex justify-between items-center">
                                 <span class="text-[#2D8CFF] font-bold text-sm" data-i18n="pm_amount">결제 금액</span>
-                                <span class="text-white font-black text-xl" id="toss-amount-display">₩9,900</span>
+                                <span class="text-white font-black text-xl" id="toss-amount-display">₩4,900</span>
                             </div>
                         </div>
                     </div>
@@ -5220,7 +5212,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                     </div>
                     <button id="pay-button" onclick="handleTossPayment()" class="btn-premium w-full py-4 text-sm font-black rounded-xl flex items-center justify-center gap-2">
                         <i class="fa-solid fa-lock text-xs"></i>
-                        <span id="pay-button-text" class="ko">₩9,900 결제하기</span><span class="en">Pay ₩9,900</span><span class="ja">₩9,900を決済する</span><span class="zh">支付₩9,900</span>
+                        <span id="pay-button-text" class="ko">₩4,900 결제하기</span><span class="en">Pay ₩4,900</span><span class="ja">₩4,900を決済する</span><span class="zh">支付₩4,900</span>
                     </button>
                     <div class="flex items-center justify-center gap-3 mt-3">
                         <img src="https://img.icons8.com/color/32/visa.png" alt="Visa" class="h-4 opacity-50">
@@ -5249,7 +5241,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                         <p class="text-[#00D68F]/70 text-xs" data-i18n="pm_all_done">결제 + PDF 생성 + 이메일 발송 모두 완료</p>
                     </div>
                     <div class="bg-black/30 rounded-xl p-3 mb-4 text-left space-y-1.5">
-                        <div class="flex items-center gap-2 text-xs"><i class="fa-solid fa-circle-check text-[#00D68F]"></i><span class="text-gray-300" data-i18n="pm_paid">결제 금액:</span><span class="text-white font-bold ml-auto" id="success-amount-display">₩9,900</span></div>
+                        <div class="flex items-center gap-2 text-xs"><i class="fa-solid fa-circle-check text-[#00D68F]"></i><span class="text-gray-300" data-i18n="pm_paid">결제 금액:</span><span class="text-white font-bold ml-auto" id="success-amount-display">₩4,900</span></div>
                         <div class="flex items-center gap-2 text-xs"><i class="fa-solid fa-circle-check text-[#00D68F]"></i><span class="text-gray-300">리포트 발송:</span><span class="text-[#7C5BF0] font-bold ml-auto" id="success-email-display"></span></div>
                         <div class="flex items-center gap-2 text-xs"><i class="fa-solid fa-circle-check text-[#00D68F]"></i><span class="text-gray-300">주문번호:</span><span class="text-gray-400 font-mono text-[9px] ml-auto" id="success-payment-id"></span></div>
                     </div>
@@ -5274,7 +5266,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                         <div class="flex items-center gap-2 mb-3">
                             <input type="text" id="share-link-display" readonly
                                 class="flex-1 px-3 py-2 bg-black/40 border border-white/10 rounded-lg text-[#5AA8FF] text-[10px] font-mono"
-                                value="https://www.neurinkairosai.com?ref=...">
+                                value="https://www.neurinkairosai.ai?ref=...">
                             <button onclick="handleShare('copy')" class="px-3 py-2 bg-[#2D8CFF]/20 text-[#2D8CFF] rounded-lg hover:bg-[#2D8CFF]/30 transition">
                                 <i class="fa-solid fa-copy"></i>
                             </button>
@@ -5406,7 +5398,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                     var rem = 12 - visibleCount;
                     html += '<div class="col-span-full mt-3 text-center">'
                         + '<button onclick="resultPay(\'premium\')" class="px-4 py-2 bg-gradient-to-r from-[#2D8CFF] to-[#5AA8FF] text-white text-[10px] font-bold rounded-full hover:opacity-90 transition">'
-                        + '<i class="fa-solid fa-lock-open mr-1"></i>Premium ₩19,900으로 '+rem+'개월 전체 해제</button></div>';
+                        + '<i class="fa-solid fa-lock-open mr-1"></i>Premium ₩14,900으로 '+rem+'개월 전체 해제</button></div>';
                 }
                 if(grid) grid.innerHTML = html;
             } else {
@@ -5416,7 +5408,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                 if(teaserEl && best){
                     var bm = best.monthName||best;
                     var bs = best.goldenScore>=5?'★★★★★ BEST':best.goldenScore>=4?'★★★★☆ 우호':'★★★☆☆ 중립';
-                    teaserEl.textContent = '✨ BEST 골든타임: '+bm+' '+bs+' — ₩9,900으로 해금';
+                    teaserEl.textContent = '✨ BEST 골든타임: '+bm+' '+bs+' — ₩4,900으로 해금';
                     teaserEl.style.color='#F0C674'; teaserEl.style.fontWeight='800';
                 }
             }
@@ -5530,7 +5522,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
             if(nI){ nI.addEventListener('change', saveN); nI.addEventListener('blur', saveN); nI.addEventListener('input', saveN); }
         })();
 
-        var SITE_URL = 'https://www.neurinkairosai.com';
+        var SITE_URL = 'https://www.neurinkairosai.ai';
         var OG_IMAGE = SITE_URL + '/og-image-nkai.png?v=20260325b';
         var EMAILJS_SERVICE = 'service_t9qg1oa';
         var EMAILJS_TEMPLATE = 'template_7ob3djf';
@@ -5909,7 +5901,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                     content:{
                         title: title,
                         description: desc,
-                        imageUrl: 'https://www.neurinkairosai.com/og-image-nkai.png?v=20260325b',
+                        imageUrl: 'https://www.neurinkairosai.ai/og-image-nkai.png?v=20260325b',
                         imageWidth: 800,
                         imageHeight: 400,
                         link:{ mobileWebUrl: url, webUrl: url }
@@ -6901,7 +6893,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
 
                 /* 10. PDF 안내 */
                 label_pdf_title: '📄 PDF 리포트 안내',
-                label_pdf_desc: 'Standard(₩9,900) 구매 시 SNAPSHOT PDF + 12개월 골든타임 + 5축 크로스 분석 + 케미스트리 궁합 Top 3가 포함됩니다.',
+                label_pdf_desc: 'Standard(₩4,900) 구매 시 SNAPSHOT PDF + 12개월 골든타임 + 5축 크로스 분석 + 케미스트리 궁합 Top 3가 포함됩니다.',
 
                 /* 11. CTA */
                 label_cta: 'N-KAI 사이트 바로가기',
@@ -7442,7 +7434,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                 // ★ v79 FIX: KIPA 답변에서 가중치 차별화 점수 재산출
                 if(typeof computeWeightedKipaScores === 'function'){
                     var _kipaAnswers = {};
-                    for(var _ki=1; _ki<=16; _ki++){
+                    for(var _ki=1; _ki<=8; _ki++){
                         _kipaAnswers['q'+_ki] = sessionStorage.getItem('nkai_kipa_q'+_ki) || localStorage.getItem('nkai_kipa_q'+_ki) || '';
                     }
                     var _hasAnswers = Object.values(_kipaAnswers).some(function(v){ return v === 'A' || v === 'B'; });
@@ -7560,7 +7552,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                         breakdown_dynamic: sessionStorage.getItem('nkai_breakdown_dynamic') || '',
                         behavior_bonus:    sessionStorage.getItem('nkai_breakdown_bonus')   || ''
                     };
-                    for(var _qi=1; _qi<=16; _qi++) _analyzePayload['q'+_qi] = (sessionStorage.getItem('nkai_kipa_q'+_qi) || localStorage.getItem('nkai_kipa_q'+_qi)) || '';
+                    for(var _qi=1; _qi<=8; _qi++) _analyzePayload['q'+_qi] = (sessionStorage.getItem('nkai_kipa_q'+_qi) || localStorage.getItem('nkai_kipa_q'+_qi)) || '';
                     fetch(_gasAnalyzeUrl, {
                         method:'POST', mode:'no-cors', keepalive:true,
                         headers:{'Content-Type':'text/plain'},
@@ -7668,7 +7660,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
             /* ★ 추천 링크 사전 표시 */
             try {
                 var uid = (sessionStorage.getItem('nkai_sid') || localStorage.getItem('nkai_sid') || 'anon');
-                var refUrl = 'https://www.neurinkairosai.com/?ref=' + uid;
+                var refUrl = 'https://www.neurinkairosai.ai/?ref=' + uid;
                 var refLinkEl = document.getElementById('free-share-link');
                 if(refLinkEl && (!refLinkEl.value || refLinkEl.value.indexOf('http') === -1)) refLinkEl.value = refUrl;
             } catch(e){}
@@ -7901,7 +7893,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
 
         /* 궁합 섹션 열기/닫기 */
         function openCompatibilitySection(){
-            /* ★ 입력은 무료 — 결과(5축 상세)만 ₩9,900 게이팅 ★ */
+            /* ★ 입력은 무료 — 결과(5축 상세)만 ₩4,900 게이팅 ★ */
             var sec = document.getElementById('compatibility-section');
             if(sec){
                 sec.style.display = 'block';
@@ -8126,7 +8118,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                 '<p style="color:#9ca3af;font-size:11px;margin-bottom:16px;line-height:1.5;">금융DNA · 오행 · 띠 · 혈액형 · 별자리<br>5가지 축의 궁합 점수와 맞춤 처방을 확인하세요</p>' +
                 '<div style="background:rgba(124,91,240,0.1);border:1px solid rgba(124,91,240,0.2);border-radius:12px;padding:12px;margin-bottom:16px;">' +
                     '<p style="color:#7C5BF0;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Standard 플랜</p>' +
-                    '<p style="color:white;font-size:24px;font-weight:900;">₩9,900</p>' +
+                    '<p style="color:white;font-size:24px;font-weight:900;">₩4,900</p>' +
                     '<p style="color:#6b7280;font-size:10px;">궁합 5축 상세 + 케미스트리 처방 + 골든타임 포함</p>' +
                 '</div>' +
                 '<button onclick="handleCompatPurchase()" style="width:100%;padding:14px;background:linear-gradient(135deg,#7C5BF0,#FF6B6B);color:white;font-weight:800;font-size:14px;border:none;border-radius:12px;cursor:pointer;margin-bottom:8px;">' +
@@ -8186,7 +8178,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                 '<p style="color:#9ca3af;font-size:11px;margin-bottom:16px;line-height:1.5;">월별 투자 적기 · 리스크 주의 구간 · 전략 전환 시점<br>12개월 에너지 리듬으로 최적 타이밍을 포착하세요</p>' +
                 '<div style="background:rgba(45,140,255,0.1);border:1px solid rgba(45,140,255,0.2);border-radius:12px;padding:12px;margin-bottom:16px;">' +
                     '<p style="color:#7C5BF0;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Standard 플랜</p>' +
-                    '<p style="color:white;font-size:24px;font-weight:900;">₩9,900</p>' +
+                    '<p style="color:white;font-size:24px;font-weight:900;">₩4,900</p>' +
                     '<p style="color:#6b7280;font-size:10px;">골든타임 12개월 + 5축 크로스 분석 + 케미스트리 Top 3 + PDF</p>' +
                 '</div>' +
                 '<button onclick="handleGoldenPurchase()" style="width:100%;padding:14px;background:linear-gradient(135deg,#2D8CFF,#00D68F);color:white;font-weight:800;font-size:14px;border:none;border-radius:12px;cursor:pointer;margin-bottom:8px;">' +
@@ -8281,8 +8273,8 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
             if(!isPremium){
                 var remaining = 12 - visibleCount;
                 var upgradeMsg = isStandard
-                    ? '<div class="mt-3 text-center"><button onclick="resultPay(\'premium\')" class="px-4 py-2 bg-gradient-to-r from-[#2D8CFF] to-[#5AA8FF] text-white text-[10px] font-bold rounded-full hover:opacity-90 transition"><i class="fa-solid fa-lock-open mr-1"></i>Premium ₩19,900으로 ' + remaining + '개월 전체 해제</button></div>'
-                    : '<div class="mt-3 text-center"><button onclick="resultPay(\'standard\')" class="px-4 py-2 bg-gradient-to-r from-[#7C5BF0] to-[#9B7FF8] text-white text-[10px] font-bold rounded-full hover:opacity-90 transition"><i class="fa-solid fa-lock-open mr-1"></i>Standard ₩9,900으로 3개월 해제</button><span class="text-gray-600 text-[9px] mx-2">|</span><button onclick="resultPay(\'premium\')" class="px-4 py-2 bg-gradient-to-r from-[#2D8CFF] to-[#5AA8FF] text-white text-[10px] font-bold rounded-full hover:opacity-90 transition">Premium ₩19,900으로 전체 해제</button></div>';
+                    ? '<div class="mt-3 text-center"><button onclick="resultPay(\'premium\')" class="px-4 py-2 bg-gradient-to-r from-[#2D8CFF] to-[#5AA8FF] text-white text-[10px] font-bold rounded-full hover:opacity-90 transition"><i class="fa-solid fa-lock-open mr-1"></i>Premium ₩14,900으로 ' + remaining + '개월 전체 해제</button></div>'
+                    : '<div class="mt-3 text-center"><button onclick="resultPay(\'standard\')" class="px-4 py-2 bg-gradient-to-r from-[#7C5BF0] to-[#9B7FF8] text-white text-[10px] font-bold rounded-full hover:opacity-90 transition"><i class="fa-solid fa-lock-open mr-1"></i>Standard ₩4,900으로 3개월 해제</button><span class="text-gray-600 text-[9px] mx-2">|</span><button onclick="resultPay(\'premium\')" class="px-4 py-2 bg-gradient-to-r from-[#2D8CFF] to-[#5AA8FF] text-white text-[10px] font-bold rounded-full hover:opacity-90 transition">Premium ₩14,900으로 전체 해제</button></div>';
                 html += upgradeMsg;
             }
 
@@ -8297,9 +8289,9 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
         function shareCompatibility(){
             var score = document.getElementById('compat-total-score').textContent;
             var grade = document.getElementById('compat-grade').textContent;
-            var text = '💜 나와 파트너의 금융 케미스트리: ' + score + '점 ' + grade + '\\n지금 확인해보세요! → https://www.neurinkairosai.com';
+            var text = '💜 나와 파트너의 금융 케미스트리: ' + score + '점 ' + grade + '\\n지금 확인해보세요! → https://www.neurinkairosai.ai';
             if(navigator.share){
-                navigator.share({title:'N-KAI 금융 케미스트리', text: text, url:'https://www.neurinkairosai.com'});
+                navigator.share({title:'N-KAI 금융 케미스트리', text: text, url:'https://www.neurinkairosai.ai'});
             } else {
                 navigator.clipboard.writeText(text).then(function(){ alert('결과가 복사되었습니다!'); });
             }
@@ -8315,7 +8307,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
     <!-- ★ 공유 함수 + 잠금해제 강제 override (hotfix.js 이후) -->
     <script>
     (function(){
-        var SITE = 'https://www.neurinkairosai.com';
+        var SITE = 'https://www.neurinkairosai.ai';
         var KAKAO_KEY = '198128dbe89caca32051651ccaa4230b';
 
         function _makeURL(ch, src){
@@ -8331,7 +8323,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                     if(!Kakao.isInitialized()) Kakao.init(KAKAO_KEY);
                     Kakao.Share.sendDefault({
                         objectType:'feed',
-                        content:{ title:title, description:desc, imageUrl:'https://www.neurinkairosai.com/og-image-nkai.png?v=20260325b', imageWidth:800, imageHeight:400, link:{mobileWebUrl:url, webUrl:url} },
+                        content:{ title:title, description:desc, imageUrl:'https://www.neurinkairosai.ai/og-image-nkai.png?v=20260325b', imageWidth:800, imageHeight:400, link:{mobileWebUrl:url, webUrl:url} },
                         buttons:[{ title:'내 금융 DNA 무료 분석', link:{mobileWebUrl:url, webUrl:url} }]
                     });
                     return;
@@ -8444,7 +8436,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
             var el = document.getElementById('standard-qty');
             if(el) el.textContent = standardQty;
             var tot = document.getElementById('standard-total');
-            if(tot) tot.textContent = '₩' + (9900 * standardQty).toLocaleString();
+            if(tot) tot.textContent = '₩' + (4900 * standardQty).toLocaleString();
         }
         var premiumQty = 1;
         function premiumQtyChange(delta){
@@ -8457,7 +8449,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
         // ★ 2026.03.17 토스 라이브 승인 — handlePremiumPurchase → 실제 결제 모달 오픈
         var _nkaiPayPlan = 'standard';
         var _nkaiPayQty  = 1;
-        var _nkaiPayAmt  = 9900;
+        var _nkaiPayAmt  = 4900;
 
         /* ★ 분석 미완료 상태에서 결제 버튼 클릭 시 분석 유도 팝업 */
         function showAnalysisFirstPopup(plan){
@@ -8466,7 +8458,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
             var popup = document.createElement('div');
             popup.id = 'analysis-first-popup';
             popup.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);';
-            var planLabel = plan === 'premium' ? 'Premium \u20a919,900' : 'Standard \u20a99,900';
+            var planLabel = plan === 'premium' ? 'Premium \u20a919,900' : 'Standard \u20a94,900';
             var planColor = plan === 'premium' ? '#2D8CFF' : '#7C5BF0';
             /* DOM 직접 생성 — innerHTML 따옴표 충돌 완전 방지 */
             var wrap = document.createElement('div');
@@ -8520,7 +8512,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
             }
             _nkaiPayPlan = plan;
             _nkaiPayQty  = (plan === 'standard') ? standardQty : premiumQty;
-            _nkaiPayAmt  = (plan === 'standard') ? 9900 * _nkaiPayQty : 19900 * _nkaiPayQty;
+            _nkaiPayAmt  = (plan === 'standard') ? 4900 * _nkaiPayQty : 14900 * _nkaiPayQty;
             var planLabel = (plan === 'standard') ? 'N-KAI Standard 리포트' : 'N-KAI Premium 리포트';
             var userEmail = (typeof currentUserEmail !== 'undefined' ? currentUserEmail : '')
                          || sessionStorage.getItem('nkai_user_email') || '';
@@ -8660,10 +8652,10 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
             /* ★ successUrl/failUrl 확정값 */
             var _successUrl = (typeof CONFIG !== 'undefined' && CONFIG.TOSS_SUCCESS_URL)
                 ? CONFIG.TOSS_SUCCESS_URL
-                : 'https://www.neurinkairosai.com/?payment=success';
+                : 'https://www.neurinkairosai.ai/?payment=success';
             var _failUrl = (typeof CONFIG !== 'undefined' && CONFIG.TOSS_FAIL_URL)
                 ? CONFIG.TOSS_FAIL_URL
-                : 'https://www.neurinkairosai.com/?payment=fail';
+                : 'https://www.neurinkairosai.ai/?payment=fail';
 
             console.log('[N-KAI] 결제 호출 — amount:', amount, 'orderId:', orderId, 'successUrl:', _successUrl);
 
@@ -8686,8 +8678,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
               + '<button data-method="휴대폰" style="background:rgba(90,168,255,0.08);border:1px solid rgba(90,168,255,0.25);border-radius:12px;padding:16px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all 0.2s;">'
               + '<span style="font-size:28px;">📱</span>'
               + '<div style="text-align:left;"><div style="font-size:14px;font-weight:700;color:#5AA8FF;">휴대폰 결제</div>'
-              + '<div style="font-size:11px;color:#64748B;margin-top:2px;">통신사 소액결제 (SKT, KT, LG U+)</div></div>'
-              + '<span style="position:absolute;top:8px;right:10px;background:#334155;color:#94A3B8;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;">준비중</span></button>'
+              + '<div style="font-size:11px;color:#64748B;margin-top:2px;">통신사 소액결제 (SKT, KT, LG U+)</div></div></button>'
               + '<button data-method="계좌이체" style="background:rgba(0,214,143,0.08);border:1px solid rgba(0,214,143,0.25);border-radius:12px;padding:16px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all 0.2s;">'
               + '<span style="font-size:28px;">🏦</span>'
               + '<div style="text-align:left;"><div style="font-size:14px;font-weight:700;color:#00D68F;">계좌이체</div>'
@@ -8756,7 +8747,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
             var params   = new URLSearchParams(window.location.search);
             var payKey   = params.get('paymentKey');
             var orderId  = params.get('orderId') || sessionStorage.getItem('nkai_pay_orderId') || '';
-            var amount   = parseInt(params.get('amount') || sessionStorage.getItem('nkai_pay_amount') || '9900');
+            var amount   = parseInt(params.get('amount') || sessionStorage.getItem('nkai_pay_amount') || '4900');
             var plan     = sessionStorage.getItem('nkai_pay_plan')  || 'standard';
             var userEmail= sessionStorage.getItem('nkai_pay_email') || '';
             var userName = sessionStorage.getItem('nkai_pay_name')  || '고객';
@@ -8955,7 +8946,7 @@ try{if(window.OneSignalDeferred){window.OneSignalDeferred.push(async function(O)
                 var el = document.getElementById('result-std-qty');
                 var tot = document.getElementById('result-std-total');
                 if(el) el.textContent = _resultStdQty;
-                if(tot) tot.textContent = '₩' + (9900 * _resultStdQty).toLocaleString();
+                if(tot) tot.textContent = '₩' + (4900 * _resultStdQty).toLocaleString();
             } else {
                 _resultPrmQty = Math.max(1, Math.min(99, _resultPrmQty + delta));
                 var el2 = document.getElementById('result-prm-qty');
