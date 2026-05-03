@@ -1,0 +1,2139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-KAI · 당신만을 위한 96가지 라이프 시그니처</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Caveat:wght@400;500;600;700&family=Nanum+Myeongjo:wght@400;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:#f8f3e7; --paper-2:#f3ecd9; --paper-3:#ede4d1; --paper-edge:#d9ccaa;
+  --ink-900:#2c241b; --ink-700:#4a3f30; --ink-500:#6b5e48; --ink-300:#9a8b6f;
+  --gold-700:#a07a26; --gold-500:#c89832; --gold-400:#d4a84a; --gold-300:#e0c171; --gold-100:#f5e9cc;
+  --wine:#8b2332; --wine-light:#a64659;
+  --brand:#2563B8; --brand-light:#4a90e2;
+  --dark-900:#1a1410; --dark-700:#2c241b;
+  --line:rgba(44,36,27,0.12); --line-strong:rgba(44,36,27,0.25);
+  --risk-1:#f5e9cc; --risk-3:#e8c878; --risk-5:#d49b3a; --risk-7:#a85d2e; --risk-9:#8b2332;
+  --font-display:"Cormorant Garamond","Nanum Myeongjo",serif;
+  --font-hand:"Caveat",cursive;
+  --font-mono:"JetBrains Mono",monospace;
+  --font-body:-apple-system,"Pretendard","Apple SD Gothic Neo",sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink-900);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(139,35,50,0.03) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 90%, rgba(37,99,184,0.025) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+}
+main { position: relative; z-index: 2; }
+
+/* ===== 상단 카이 시간대 인사 바 (NEW) ===== */
+.kai-greeting-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: linear-gradient(90deg, rgba(248,243,231,0.95), rgba(243,236,217,0.95));
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--gold-300);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  font-family: var(--font-hand);
+  font-size: 18px;
+  color: var(--wine);
+  text-align: center;
+  flex-wrap: wrap;
+}
+.kai-greeting-bar .mini-kai {
+  width: 28px; height: 28px;
+  background: radial-gradient(circle at 35% 30%, var(--brand-light), var(--brand));
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+.kai-greeting-bar .mini-kai::after {
+  content: '';
+  position: absolute;
+  top: -3px; left: 50%;
+  transform: translateX(-50%);
+  width: 5px; height: 5px;
+  background: var(--gold-400);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--gold-400);
+}
+.kai-greeting-bar .gb-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.kai-greeting-bar .gb-time {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-500);
+  letter-spacing: 0.1em;
+  margin-left: 8px;
+}
+
+.chapter {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 5vw;
+}
+.chapter-num {
+  position: absolute;
+  top: 80px;
+  left: 5vw;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--ink-500);
+}
+.chapter-num strong { color: var(--gold-500); font-weight: 500; }
+.chapter::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--paper-edge) 30%, var(--paper-edge) 70%, transparent);
+}
+
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--wine);
+  margin-bottom: 16px;
+  text-align: center;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  color: var(--ink-900);
+  text-align: center;
+}
+.section-title em { font-style: italic; color: var(--wine); }
+.section-subtitle {
+  font-family: var(--font-hand);
+  font-size: 24px;
+  color: var(--gold-500);
+  margin-bottom: 48px;
+  text-align: center;
+}
+
+/* ===== HERO ===== */
+.hero {
+  background: radial-gradient(ellipse at 70% 20%, rgba(245,197,88,0.15) 0%, transparent 50%),
+              linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+}
+.hero-inner {
+  max-width: 1200px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 60px;
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--gold-500);
+  padding: 8px 18px;
+  border: 1px solid var(--gold-300);
+  border-radius: 999px;
+  background: rgba(245,233,204,0.4);
+  margin-bottom: 28px;
+}
+.hero-eyebrow::before { content: '✦'; color: var(--gold-500); }
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(40px, 6vw, 76px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 28px;
+  color: var(--ink-900);
+}
+.hero h1 .accent { font-style: italic; color: var(--wine); }
+.hero h1 .hand {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  color: var(--gold-500);
+  font-style: normal;
+  position: relative;
+}
+.hero h1 .hand::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0; right: 0; height: 8px;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 4 Q 25 0 50 4 T 100 4 T 150 4 T 200 4' fill='none' stroke='%23c89832' stroke-width='2'/%3E%3C/svg%3E") no-repeat center / 100% 100%;
+  opacity: 0.6;
+}
+
+.hero-sub {
+  font-size: 18px;
+  color: var(--ink-700);
+  margin-bottom: 40px;
+  max-width: 480px;
+  line-height: 1.8;
+}
+@media (max-width: 900px) { .hero-sub { margin: 0 auto 40px; } }
+
+/* ===== ✅ FIX: 생년월일 입력 영역 (테두리 안에 들어오게) ===== */
+.birth-input {
+  background: rgba(255,255,255,0.5);
+  border: 1px solid var(--gold-300);
+  border-radius: 4px;
+  padding: 24px;
+  max-width: 480px;
+  position: relative;
+  box-shadow: 0 4px 24px rgba(139,109,75,0.08);
+}
+.birth-input::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 8px; right: 8px; bottom: 8px;
+  border: 1px solid var(--gold-300);
+  border-radius: 2px;
+  pointer-events: none;
+  opacity: 0.4;
+}
+@media (max-width: 900px) { .birth-input { margin: 0 auto; } }
+
+.birth-label {
+  font-family: var(--font-hand);
+  font-size: 24px;
+  color: var(--wine);
+  margin-bottom: 4px;
+  position: relative;
+}
+.birth-label-sub {
+  font-size: 12px;
+  color: var(--ink-500);
+  letter-spacing: 0.1em;
+  margin-bottom: 18px;
+  font-family: var(--font-mono);
+  position: relative;
+}
+
+/* ✅ FIX: 2x2 그리드로 변경, 안전 패딩 */
+.birth-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+  position: relative;
+}
+.birth-row.row-time {
+  grid-template-columns: 1fr;
+}
+.birth-row input {
+  width: 100%;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--line);
+  color: var(--ink-900);
+  padding: 14px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  text-align: center;
+  outline: none;
+  transition: all 0.2s;
+  min-width: 0;
+}
+.birth-row input:focus {
+  border-color: var(--gold-500);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(200,152,50,0.15);
+}
+.birth-row input::placeholder { color: var(--ink-300); }
+
+.cta-btn {
+  width: 100%;
+  background: var(--ink-900);
+  color: var(--paper);
+  border: none;
+  padding: 18px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  letter-spacing: 0.05em;
+  position: relative;
+  overflow: hidden;
+  margin-top: 10px;
+}
+.cta-btn:hover {
+  background: var(--wine);
+  transform: translateY(-1px);
+}
+
+/* ===== 카이 마스코트 (Hero) ===== */
+.kai-presence {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 480px;
+}
+@media (max-width: 900px) { .kai-presence { height: 320px; } }
+
+.kai-orbit {
+  position: absolute;
+  inset: 30px;
+  border: 1px dashed var(--gold-300);
+  border-radius: 50%;
+  animation: orbit-rotate 30s linear infinite;
+}
+.kai-orbit-2 {
+  position: absolute;
+  inset: 70px;
+  border: 1px solid rgba(200,152,50,0.2);
+  border-radius: 50%;
+  animation: orbit-rotate 20s linear infinite reverse;
+}
+@keyframes orbit-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.kai-mascot {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  z-index: 2;
+}
+.kai-body {
+  width: 100%; height: 100%;
+  background: radial-gradient(circle at 35% 30%, var(--brand-light), var(--brand) 70%);
+  border-radius: 50%;
+  position: relative;
+  box-shadow:
+    0 16px 40px rgba(37,99,184,0.25),
+    inset -16px -24px 32px rgba(10,37,64,0.3),
+    inset 8px 12px 24px rgba(255,255,255,0.15);
+  animation: kai-breathe 3s ease-in-out infinite;
+}
+@keyframes kai-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+
+.kai-antenna {
+  position: absolute;
+  top: -26px; left: 50%;
+  transform: translateX(-50%);
+  width: 3px; height: 28px;
+  background: linear-gradient(180deg, var(--gold-500), transparent);
+}
+.kai-antenna::before {
+  content: '';
+  position: absolute;
+  top: -8px; left: 50%;
+  transform: translateX(-50%);
+  width: 14px; height: 14px;
+  background: radial-gradient(circle, var(--gold-300), var(--gold-500));
+  border-radius: 50%;
+  box-shadow: 0 0 16px var(--gold-400);
+  animation: signal-pulse 1.5s ease-in-out infinite;
+}
+@keyframes signal-pulse {
+  0%,100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.25); }
+}
+.kai-eyes {
+  position: absolute;
+  top: 38%; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 28px;
+}
+.kai-eye {
+  width: 20px; height: 26px;
+  background: var(--ink-900);
+  border-radius: 50%;
+  position: relative;
+}
+.kai-eye::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 5px;
+  width: 7px; height: 7px;
+  background: white;
+  border-radius: 50%;
+}
+.kai-blush {
+  position: absolute;
+  top: 52%;
+  width: 16px; height: 9px;
+  background: #e8a5b3;
+  border-radius: 50%;
+  opacity: 0.7;
+}
+.kai-blush.left { left: 22%; }
+.kai-blush.right { right: 22%; }
+.kai-mouth {
+  position: absolute;
+  top: 60%; left: 50%;
+  transform: translateX(-50%);
+  width: 30px; height: 14px;
+  border-bottom: 3px solid var(--ink-900);
+  border-radius: 0 0 14px 14px;
+}
+
+/* ✅ FIX: 카이 말풍선 동적 변경 가능 */
+.kai-speech {
+  position: absolute;
+  top: 8%; right: -10px;
+  background: white;
+  color: var(--ink-900);
+  padding: 14px 22px;
+  border-radius: 20px 20px 4px 20px;
+  font-family: var(--font-hand);
+  font-size: 22px;
+  box-shadow: 0 8px 20px rgba(139,109,75,0.15);
+  border: 1px solid var(--gold-300);
+  max-width: 260px;
+  animation: speech-in 1s ease-out 0.8s backwards;
+  transition: opacity 0.3s;
+}
+@keyframes speech-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 96 매트릭스 ===== */
+.matrix-section { background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 100%); }
+.matrix-inner { max-width: 1200px; width: 100%; }
+
+.matrix-board {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 48px 32px 32px;
+  box-shadow: 0 8px 32px rgba(139,109,75,0.1);
+  margin: 0 auto;
+  max-width: 1100px;
+  position: relative;
+}
+.matrix-board::before {
+  content: '';
+  position: absolute;
+  top: 12px; left: 12px; right: 12px; bottom: 12px;
+  border: 1px solid var(--gold-300);
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ✅ FIX: Patent → 일반 사용자도 인지할 수 있는 표현 */
+.patent-watermark {
+  position: absolute;
+  top: 18px; left: 24px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--ink-300);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 3;
+}
+.patent-watermark::before {
+  content: '';
+  width: 8px; height: 8px;
+  border: 1px solid var(--gold-500);
+  border-radius: 50%;
+  background: var(--gold-100);
+}
+
+/* ✅ FIX: NEURAL CDE v6 → 개인화 표시로 변경 */
+.live-indicator {
+  position: absolute;
+  top: 18px; right: 24px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--wine);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  z-index: 3;
+}
+.live-indicator::before {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--wine);
+  border-radius: 50%;
+  animation: live-pulse 1.2s ease-in-out infinite;
+}
+@keyframes live-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.mrow { display: flex; align-items: center; position: relative; }
+.mhead { border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 8px; margin-top: 24px; }
+.mdata { margin-bottom: 6px; }
+.mlabel {
+  width: 120px; flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: 14px; color: var(--ink-700);
+  padding: 8px 12px; text-align: right;
+  border-right: 1px solid var(--line);
+}
+.mlabel strong {
+  color: var(--gold-500); font-weight: 600;
+  margin-right: 8px;
+  font-family: var(--font-mono); font-size: 11px;
+}
+.mhead .mlabel {
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--ink-500); letter-spacing: 0.1em;
+  border-right: 0; padding-bottom: 4px;
+}
+.mcells { flex: 1; display: flex; gap: 4px; padding-left: 8px; position: relative; }
+.mdom {
+  flex: 1; text-align: center;
+  font-family: var(--font-display); font-size: 13px;
+  color: var(--ink-700); padding: 4px 2px;
+}
+.mcell {
+  flex: 1; height: 52px;
+  background: var(--paper-2);
+  border: 1px solid transparent;
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.25s;
+  overflow: hidden;
+}
+.mcell.r1 { background: var(--risk-1); }
+.mcell.r3 { background: var(--risk-3); }
+.mcell.r5 { background: var(--risk-5); }
+.mcell.r7 { background: var(--risk-7); }
+.mcell.r9 { background: var(--risk-9); }
+.mcell.cur {
+  background: linear-gradient(135deg, var(--wine), var(--wine-light));
+  box-shadow: 0 0 0 3px rgba(139,35,50,0.3), 0 6px 16px rgba(139,35,50,0.4);
+  z-index: 2;
+}
+.mcell.cur::after {
+  content: 'YOU';
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-mono); font-size: 9px;
+  color: white; letter-spacing: 0.1em; font-weight: 600;
+}
+.mcell.cur::before {
+  content: ''; position: absolute; inset: -4px;
+  border: 2px solid var(--wine); border-radius: 6px;
+  animation: current-pulse 1.5s ease-in-out infinite;
+}
+@keyframes current-pulse {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.4; }
+}
+.mcell.fut {
+  background: rgba(200,152,50,0.12);
+  border: 1px dashed var(--gold-500);
+}
+.mcell:hover {
+  transform: translateY(-3px) scale(1.05);
+  z-index: 5;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.mlegend {
+  display: flex; justify-content: center; gap: 24px;
+  margin-top: 32px; flex-wrap: wrap;
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--ink-500); position: relative;
+}
+.mli { display: flex; align-items: center; gap: 6px; }
+.mdot { width: 14px; height: 14px; border-radius: 3px; }
+.mdot.r1 { background: var(--risk-1); }
+.mdot.r5 { background: var(--risk-5); }
+.mdot.r9 { background: var(--risk-9); }
+.mdot.cur { background: linear-gradient(135deg, var(--wine), var(--wine-light)); }
+.mdot.fut { background: rgba(200,152,50,0.12); border: 1px dashed var(--gold-500); }
+.mdot.emp { background: var(--paper-2); border: 1px solid var(--line); }
+
+.detail-panel {
+  margin: 24px auto 0; max-width: 900px;
+  background: white;
+  border: 1px solid var(--gold-300);
+  border-radius: 8px; padding: 24px 28px;
+  display: grid; grid-template-columns: 1fr 240px;
+  gap: 32px; align-items: center;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(139,109,75,0.08);
+}
+.detail-panel::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0; width: 4px;
+  background: linear-gradient(180deg, var(--gold-500), var(--wine));
+  border-radius: 8px 0 0 8px;
+}
+.dp-coord { font-family: var(--font-mono); font-size: 11px; color: var(--wine); letter-spacing: 0.12em; margin-bottom: 6px; font-weight: 600; }
+.dp-title { font-family: var(--font-display); font-size: 26px; color: var(--ink-900); font-style: italic; margin-bottom: 10px; }
+.dp-desc { font-size: 14px; color: var(--ink-700); line-height: 1.7; margin-bottom: 14px; }
+.dp-stats { display: flex; gap: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.dp-stat { flex: 1; }
+.dp-stat-label { font-family: var(--font-mono); font-size: 9px; color: var(--ink-500); letter-spacing: 0.1em; margin-bottom: 4px; }
+.dp-stat-value { font-family: var(--font-display); font-size: 22px; color: var(--gold-500); font-weight: 500; }
+.dp-stat-value.up { color: #5a8c3a; }
+.dp-stat-value.warn { color: var(--wine); }
+
+.mini-graph {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px; padding: 14px;
+}
+.mini-graph-title {
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--ink-500); letter-spacing: 0.1em;
+  margin-bottom: 6px;
+  display: flex; justify-content: space-between;
+}
+.mini-graph-title .live-mini { color: var(--wine); }
+@media (max-width: 800px) { .detail-panel { grid-template-columns: 1fr; } }
+
+.signature-id-box {
+  margin: 32px auto 0; max-width: 700px;
+  background: linear-gradient(135deg, var(--ink-900), #3d3328);
+  color: var(--paper);
+  padding: 20px 28px; border-radius: 6px;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+  position: relative; overflow: hidden;
+}
+.signature-id-box::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, var(--gold-400) 0%, transparent 70%);
+  opacity: 0.15;
+}
+.sid-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; color: var(--gold-300); margin-bottom: 6px; }
+.sid-value { font-family: var(--font-mono); font-size: 18px; letter-spacing: 0.08em; color: var(--gold-400); font-weight: 500; }
+.sid-meta { font-family: var(--font-hand); font-size: 18px; color: var(--paper); opacity: 0.85; }
+
+.matrix-caption { margin-top: 24px; font-family: var(--font-hand); font-size: 22px; color: var(--wine); text-align: center; }
+
+/* ===== Pricing ===== */
+.pricing-section { background: linear-gradient(180deg, var(--paper) 0%, var(--paper-3) 100%); }
+.pricing-inner { max-width: 1200px; width: 100%; }
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+@media (max-width: 900px) { .pricing-grid { grid-template-columns: 1fr; } }
+
+.tier-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 36px 32px;
+  position: relative;
+  transition: all 0.4s;
+  overflow: hidden;
+}
+.tier-card::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 8px; right: 8px; bottom: 8px;
+  border: 1px solid var(--gold-300);
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0.5;
+}
+.tier-card.featured {
+  border-color: var(--wine);
+  background: linear-gradient(180deg, var(--gold-100) 0%, white 30%);
+  box-shadow: 0 12px 36px rgba(139,35,50,0.12);
+  transform: translateY(-12px);
+}
+.tier-card.featured::before { border-color: var(--wine); opacity: 0.8; }
+.tier-badge {
+  position: absolute;
+  top: -12px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--wine);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  padding: 6px 16px;
+  border-radius: 999px;
+  z-index: 2;
+}
+.tier-name {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-style: italic;
+  color: var(--wine);
+  margin-bottom: 4px;
+  position: relative;
+}
+.tier-tagline {
+  font-family: var(--font-hand);
+  font-size: 18px;
+  color: var(--gold-500);
+  margin-bottom: 24px;
+  position: relative;
+}
+.tier-price {
+  font-family: var(--font-display);
+  font-size: 48px;
+  color: var(--ink-900);
+  margin-bottom: 4px;
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.tier-price .currency { font-size: 24px; color: var(--ink-500); }
+.tier-price small {
+  font-size: 14px; color: var(--ink-500);
+  font-family: var(--font-body);
+  font-weight: 400; margin-left: 4px;
+}
+.tier-period {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-500);
+  letter-spacing: 0.1em;
+  margin-bottom: 24px;
+  position: relative;
+}
+.tier-features {
+  list-style: none; padding: 0;
+  margin-bottom: 28px; position: relative;
+}
+.tier-features li {
+  padding: 10px 0; font-size: 14px;
+  color: var(--ink-700);
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: flex-start;
+  gap: 10px; line-height: 1.5;
+}
+.tier-features li::before {
+  content: '✦'; color: var(--gold-500);
+  font-weight: 700; flex-shrink: 0;
+}
+.tier-cta {
+  width: 100%;
+  background: var(--ink-900);
+  color: var(--paper);
+  border: none; padding: 16px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-weight: 600; font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  letter-spacing: 0.05em;
+  position: relative;
+}
+.tier-card.featured .tier-cta { background: var(--wine); }
+.tier-cta:hover {
+  background: var(--gold-500);
+  color: var(--ink-900);
+  transform: translateY(-1px);
+}
+
+/* ===== Flow ===== */
+.flow-section { background: linear-gradient(180deg, var(--paper-3) 0%, var(--paper) 100%); }
+.flow-inner { max-width: 1100px; width: 100%; }
+.flow-steps {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 12px; margin: 40px 0; position: relative;
+}
+@media (max-width: 800px) { .flow-steps { grid-template-columns: 1fr; } }
+.flow-step {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 20px 16px;
+  text-align: center;
+  position: relative;
+}
+.flow-step::after {
+  content: '→';
+  position: absolute;
+  right: -16px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: var(--gold-500);
+  font-weight: 700;
+  z-index: 2;
+}
+.flow-step:last-child::after { display: none; }
+@media (max-width: 800px) {
+  .flow-step::after { right: 50%; top: auto; bottom: -16px; transform: translateX(50%) rotate(90deg); }
+}
+.flow-num {
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--gold-500);
+  font-weight: 600; margin-bottom: 8px;
+  letter-spacing: 0.1em;
+}
+.flow-title {
+  font-family: var(--font-display);
+  font-size: 17px; color: var(--ink-900);
+  font-style: italic; margin-bottom: 6px;
+}
+.flow-time {
+  font-family: var(--font-hand);
+  font-size: 14px; color: var(--wine);
+}
+
+/* ===== 카이톡 위젯 (✅ FIX: 눈 추가) ===== */
+.kaitalk-widget {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  width: 380px;
+  max-width: calc(100vw - 48px);
+  background: linear-gradient(180deg, var(--dark-700), var(--dark-900));
+  border: 1px solid var(--gold-300);
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(44,36,27,0.3);
+  z-index: 100;
+  overflow: hidden;
+  transform: translateY(calc(100% - 64px));
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  color: var(--paper);
+}
+.kaitalk-widget.open { transform: translateY(0); }
+
+.kaitalk-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(245,233,204,0.15);
+  background: rgba(245,197,88,0.05);
+}
+
+/* ✅ FIX: 미니 마스코트에 눈·블러시·입 추가 */
+.kaitalk-mini-mascot {
+  width: 40px; height: 40px;
+  background: radial-gradient(circle at 35% 30%, var(--brand-light), var(--brand));
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: inset -4px -6px 8px rgba(10,37,64,0.3);
+}
+.kaitalk-mini-mascot::after {
+  content: '';
+  position: absolute;
+  top: -5px; left: 50%;
+  transform: translateX(-50%);
+  width: 6px; height: 6px;
+  background: var(--gold-400);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--gold-400);
+}
+.mini-eyes {
+  position: absolute;
+  top: 38%; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 6px;
+}
+.mini-eye {
+  width: 4px; height: 6px;
+  background: var(--ink-900);
+  border-radius: 50%;
+}
+.mini-blush {
+  position: absolute;
+  top: 55%;
+  width: 5px; height: 3px;
+  background: #e8a5b3;
+  border-radius: 50%;
+  opacity: 0.7;
+}
+.mini-blush.l { left: 22%; }
+.mini-blush.r { right: 22%; }
+.mini-mouth {
+  position: absolute;
+  top: 60%; left: 50%;
+  transform: translateX(-50%);
+  width: 8px; height: 4px;
+  border-bottom: 1.5px solid var(--ink-900);
+  border-radius: 0 0 4px 4px;
+}
+
+.kaitalk-info { flex: 1; min-width: 0; }
+.kaitalk-name {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--gold-300);
+  margin-bottom: 2px;
+}
+.kaitalk-status {
+  font-size: 11px;
+  color: rgba(248,243,231,0.6);
+  font-family: var(--font-mono);
+}
+.kaitalk-toggle {
+  color: var(--gold-300);
+  font-size: 18px;
+  transition: transform 0.3s;
+}
+.kaitalk-widget.open .kaitalk-toggle { transform: rotate(180deg); }
+
+.agi-stages {
+  display: flex; padding: 14px 20px; gap: 4px;
+  border-bottom: 1px solid rgba(245,233,204,0.1);
+  background: rgba(0,0,0,0.25);
+}
+.agi-stage {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 6px; position: relative;
+}
+.agi-stage-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: rgba(248,243,231,0.15);
+  border: 2px solid transparent;
+  transition: all 0.4s;
+}
+.agi-stage.active .agi-stage-dot {
+  background: var(--gold-400);
+  box-shadow: 0 0 12px var(--gold-400);
+  border-color: rgba(245,197,88,0.3);
+  animation: stage-pulse 1.2s ease-in-out infinite;
+}
+.agi-stage.done .agi-stage-dot { background: var(--brand-light); }
+@keyframes stage-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+.agi-stage-label {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: rgba(248,243,231,0.5);
+  letter-spacing: 0.05em;
+}
+.agi-stage.active .agi-stage-label,
+.agi-stage.done .agi-stage-label { color: var(--gold-300); }
+.agi-stage:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 60%;
+  width: 80%; height: 2px;
+  background: rgba(248,243,231,0.1);
+}
+.agi-stage.done:not(:last-child)::after { background: var(--brand-light); }
+
+.kaitalk-body {
+  padding: 20px;
+  height: 280px;
+  overflow-y: auto;
+}
+.kaitalk-msg {
+  margin-bottom: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.kaitalk-msg.kai {
+  background: rgba(245,197,88,0.08);
+  border-left: 2px solid var(--gold-400);
+  padding: 12px 14px;
+  border-radius: 0 12px 12px 12px;
+}
+.kaitalk-msg.kai .micro {
+  font-size: 11px;
+  color: var(--gold-300);
+  font-family: var(--font-mono);
+  margin-bottom: 4px;
+  letter-spacing: 0.05em;
+}
+.kaitalk-msg.user {
+  background: rgba(37,99,184,0.18);
+  border-radius: 12px 0 12px 12px;
+  padding: 10px 14px;
+  text-align: right;
+}
+.kaitalk-input {
+  display: flex;
+  gap: 8px;
+  padding: 14px 20px;
+  border-top: 1px solid rgba(245,233,204,0.1);
+  background: rgba(0,0,0,0.2);
+}
+.kaitalk-input input {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--paper);
+  padding: 10px 14px;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+}
+.kaitalk-input button {
+  background: var(--gold-400);
+  color: var(--ink-900);
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+/* 결제 모달 */
+.payment-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(44,36,27,0.6);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.payment-modal.open { display: flex; }
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+  border: 1px solid var(--gold-300);
+}
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--ink-500);
+  cursor: pointer;
+  line-height: 1;
+}
+.modal-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--wine);
+  margin-bottom: 12px;
+}
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 30px;
+  color: var(--ink-900);
+  font-style: italic;
+  margin-bottom: 10px;
+}
+.modal-desc {
+  font-size: 14px;
+  color: var(--ink-700);
+  margin-bottom: 28px;
+  line-height: 1.7;
+}
+.modal-sigid {
+  background: linear-gradient(135deg, var(--ink-900), #3d3328);
+  color: var(--gold-400);
+  font-family: var(--font-mono);
+  padding: 16px 20px;
+  border-radius: 6px;
+  margin-bottom: 24px;
+  letter-spacing: 0.08em;
+  font-size: 16px;
+}
+.modal-payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.modal-payment-btn {
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--ink-900);
+}
+.modal-payment-btn:hover {
+  border-color: var(--wine);
+  background: white;
+  transform: translateY(-1px);
+}
+.modal-payment-btn.kakao {
+  background: #FEE500;
+  border-color: #FEE500;
+  color: #3C1E1E;
+  font-weight: 700;
+}
+.modal-payment-btn.stripe {
+  background: var(--ink-900);
+  color: var(--paper);
+  border-color: var(--ink-900);
+}
+.modal-meta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-500);
+  letter-spacing: 0.1em;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--ink-500);
+  animation: scroll-bounce 2s ease-in-out infinite;
+}
+@keyframes scroll-bounce {
+  0%,100% { transform: translate(-50%,0); opacity: 0.5; }
+  50% { transform: translate(-50%,8px); opacity: 0.9; }
+}
+
+/* ============================================ */
+/* ✅ v5 NEW: 모바일 반응형 가독성 강화 */
+/* ============================================ */
+@media (max-width: 768px) {
+  /* 본문 글씨 크기 키움 */
+  body { font-size: 16px; line-height: 1.75; }
+
+  /* 챕터 패딩 축소 + 콘텐츠 공간 확보 */
+  .chapter { padding: 60px 20px; min-height: auto; }
+  .chapter-num { top: 70px; left: 20px; font-size: 11px; }
+
+  /* 상단 인사 바 - 모바일 더 크게 */
+  .kai-greeting-bar {
+    padding: 14px 16px;
+    font-size: 16px;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .kai-greeting-bar .gb-text { font-size: 16px; line-height: 1.5; }
+  .kai-greeting-bar .gb-time { font-size: 10px; margin-left: 0; }
+
+  /* Hero 텍스트 가독성 */
+  .hero h1 {
+    font-size: 36px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 20px;
+  }
+  .hero-sub {
+    font-size: 17px !important;
+    line-height: 1.85;
+    margin-bottom: 28px;
+  }
+  .hero-eyebrow { font-size: 10px; padding: 7px 14px; margin-bottom: 20px; }
+
+  /* 생년월일 입력 - 모바일에서 더 큰 터치 영역 */
+  .birth-input { padding: 20px; }
+  .birth-label { font-size: 22px; }
+  .birth-row input {
+    padding: 16px 8px;
+    font-size: 16px;  /* iOS 자동확대 방지 */
+  }
+  .cta-btn { padding: 18px; font-size: 16px; }
+
+  /* 96 매트릭스 - 모바일 가독성 */
+  .matrix-board { padding: 32px 16px 20px; }
+  .patent-watermark, .live-indicator {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+  }
+  .mlabel { width: 80px; font-size: 12px; padding: 6px 8px; }
+  .mlabel strong { font-size: 9px; margin-right: 4px; }
+  .mhead .mlabel { font-size: 8px; }
+  .mdom { font-size: 9px; padding: 2px 0; }
+  .mcell { height: 32px; }
+  .mlegend {
+    gap: 12px;
+    font-size: 10px;
+    margin-top: 24px;
+  }
+
+  /* 디테일 패널 - 모바일에서 세로 배치 */
+  .detail-panel {
+    grid-template-columns: 1fr;
+    padding: 20px 18px;
+    gap: 20px;
+  }
+  .dp-title { font-size: 22px; }
+  .dp-desc { font-size: 15px; line-height: 1.75; }
+  .dp-stats { gap: 10px; }
+  .dp-stat-value { font-size: 18px; }
+  .dp-stat-label { font-size: 8px; }
+
+  /* 시그니처 ID 박스 - 모바일에서 세로 */
+  .signature-id-box {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+  .sid-value { font-size: 16px; word-break: break-all; }
+  .sid-meta { font-size: 16px; }
+
+  /* 섹션 타이틀 - 모바일 가독성 */
+  .section-title {
+    font-size: 30px !important;
+    line-height: 1.3 !important;
+    padding: 0 8px;
+  }
+  .section-subtitle {
+    font-size: 20px;
+    margin-bottom: 32px;
+    padding: 0 16px;
+    line-height: 1.5;
+  }
+  .section-eyebrow { font-size: 10px; }
+
+  /* Pricing 카드 - 모바일 */
+  .tier-card { padding: 28px 22px; }
+  .tier-card.featured { transform: none; margin-top: 16px; }
+  .tier-name { font-size: 22px; }
+  .tier-price { font-size: 40px; }
+  .tier-features li {
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 12px 0;
+  }
+  .tier-cta { padding: 18px; font-size: 15px; }
+
+  /* Flow steps - 모바일 세로 + 큰 터치 */
+  .flow-step { padding: 20px 16px; }
+  .flow-title { font-size: 18px; }
+  .flow-num { font-size: 12px; }
+  .flow-time { font-size: 16px; }
+
+  /* 카이톡 위젯 - 모바일 풀폭 */
+  .kaitalk-widget {
+    width: calc(100vw - 32px);
+    bottom: 16px;
+    right: 16px;
+  }
+  .kaitalk-name { font-size: 16px; }
+  .kaitalk-status { font-size: 11px; }
+  .kaitalk-msg { font-size: 15px; line-height: 1.7; }
+  .kaitalk-input input { padding: 12px 14px; font-size: 16px; }
+
+  /* 결제 모달 - 모바일 가독성 */
+  .modal-content { padding: 32px 24px; }
+  .modal-title { font-size: 26px; }
+  .modal-desc { font-size: 15px; line-height: 1.7; }
+  .modal-payment-btn { padding: 16px; font-size: 15px; }
+}
+
+/* 더 작은 모바일 (320~480) */
+@media (max-width: 480px) {
+  .hero h1 { font-size: 30px !important; }
+  .section-title { font-size: 26px !important; }
+  .matrix-board { padding: 28px 8px 16px; }
+  .mlabel { width: 65px; padding: 4px 4px; }
+  .mlabel strong { display: none; }
+  .mcells { padding-left: 4px; gap: 2px; }
+  .mcell { height: 28px; }
+  .patent-watermark { font-size: 7px; }
+  .live-indicator { font-size: 7px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ✅ NEW: 상단 카이 시간대 인사 바 -->
+<div class="kai-greeting-bar" id="greetingBar">
+  <div class="mini-kai"></div>
+  <div class="gb-text" id="greetingText">— 카이가 인사를 준비하고 있어요 —</div>
+  <div class="gb-time" id="greetingTime">00:00</div>
+</div>
+
+<main>
+
+<!-- HERO -->
+<section class="chapter hero">
+  <div class="chapter-num">001 <strong>/</strong> 005</div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">N-KAI · BEHAVIORAL PREDICTION AGI</div>
+      <h1>
+        당신의 인생은<br>
+        이미 <span class="accent">시작점</span>이 있고,<br>
+        <span class="hand">96가지의 결</span>이 있습니다.
+      </h1>
+      <p class="hero-sub">
+        선천 기질, 카드 결제, 라이프로그를 융합한 AI가
+        당신의 8단계 × 12 카테고리, 96가지 라이프 시그니처를
+        한 장의 지도로 그려냅니다.
+      </p>
+      <div class="birth-input">
+        <div class="birth-label">시작점을 알려주세요</div>
+        <div class="birth-label-sub">YOUR ORIGIN COORDINATES</div>
+        <div class="birth-row">
+          <input type="text" placeholder="YYYY" maxlength="4" id="bYear">
+          <input type="text" placeholder="MM" maxlength="2" id="bMonth">
+          <input type="text" placeholder="DD" maxlength="2" id="bDay">
+        </div>
+        <div class="birth-row row-time">
+          <input type="text" placeholder="태어난 시간 (HH:MM, 모르면 비워두세요)" id="bTime">
+        </div>
+        <button class="cta-btn" onclick="startJourney()">
+          ✦ 나의 시그니처 만나기
+        </button>
+      </div>
+    </div>
+    <div class="kai-presence">
+      <div class="kai-orbit"></div>
+      <div class="kai-orbit-2"></div>
+      <div class="kai-mascot">
+        <div class="kai-body">
+          <div class="kai-antenna"></div>
+          <div class="kai-eyes">
+            <div class="kai-eye"></div>
+            <div class="kai-eye"></div>
+          </div>
+          <div class="kai-blush left"></div>
+          <div class="kai-blush right"></div>
+          <div class="kai-mouth"></div>
+        </div>
+      </div>
+      <!-- ✅ FIX: 동적 멘트로 변경 -->
+      <div class="kai-speech" id="kaiSpeech">안녕하세요,<br>저는 카이예요 ✦</div>
+    </div>
+  </div>
+  <div class="scroll-hint">SCROLL · 96 매트릭스로</div>
+</section>
+
+<!-- 96 MATRIX -->
+<section class="chapter matrix-section">
+  <div class="chapter-num">002 <strong>/</strong> 005 · MATRIX</div>
+  <div class="matrix-inner">
+    <div class="section-eyebrow">— THE 96 LIFE SIGNATURE MATRIX™ —</div>
+    <h2 class="section-title">당신의 인생 좌표는 <em>여기</em>에 있습니다</h2>
+    <div class="section-subtitle">— 8단계 × 12 카테고리 = 96가지의 결 —</div>
+
+    <div class="matrix-board">
+      <div class="patent-watermark">N-KAI 특허 자산 · 2026</div>
+      <!-- ✅ FIX: NEURAL CDE v6 → 개인화 표시 -->
+      <div class="live-indicator" id="matrixLiveLabel">LIVE · 당신의 좌표</div>
+
+      <div class="mrow mhead">
+        <div class="mlabel">시기 / 영역</div>
+        <div class="mcells">
+          <div class="mdom">재무</div><div class="mdom">건강</div><div class="mdom">관계</div><div class="mdom">진로</div><div class="mdom">주거</div><div class="mdom">소비</div><div class="mdom">교육</div><div class="mdom">여가</div><div class="mdom">가족</div><div class="mdom">자기계발</div><div class="mdom">디지털</div><div class="mdom">여행</div>
+        </div>
+      </div>
+
+      <!-- ✅ FIX: 8단계 재정의 (100세 시대) -->
+      <div class="mrow mdata"><div class="mlabel"><strong>S1</strong>학생기</div><div class="mcells">
+        <div class="mcell r1"></div><div class="mcell r1"></div><div class="mcell r3"></div><div class="mcell r5"></div><div class="mcell r1"></div><div class="mcell r3"></div><div class="mcell r1"></div><div class="mcell r1"></div><div class="mcell r3"></div><div class="mcell r3"></div><div class="mcell r1"></div><div class="mcell r1"></div>
+      </div></div>
+
+      <div class="mrow mdata"><div class="mlabel"><strong>S2</strong>청년기</div><div class="mcells">
+        <div class="mcell r3"></div><div class="mcell r3"></div><div class="mcell r5"></div><div class="mcell r5"></div><div class="mcell r3"></div><div class="mcell r5"></div><div class="mcell r3"></div><div class="mcell r3"></div><div class="mcell r5"></div><div class="mcell r5"></div><div class="mcell r3"></div><div class="mcell r3"></div>
+      </div></div>
+
+      <div class="mrow mdata"><div class="mlabel"><strong>S3</strong>결합기</div><div class="mcells">
+        <div class="mcell r5"></div><div class="mcell r5"></div><div class="mcell r7"></div><div class="mcell r7"></div><div class="mcell r5"></div><div class="mcell r5"></div><div class="mcell r3"></div><div class="mcell r5"></div><div class="mcell r7"></div><div class="mcell r7"></div><div class="mcell r5"></div><div class="mcell r3"></div>
+      </div></div>
+
+      <div class="mrow mdata"><div class="mlabel"><strong>S4</strong>도약기</div><div class="mcells">
+        <div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell cur"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div>
+      </div></div>
+
+      <div class="mrow mdata"><div class="mlabel"><strong>S5</strong>정착기</div><div class="mcells">
+        <div class="mcell fut"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell fut"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell fut"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div>
+      </div></div>
+
+      <div class="mrow mdata"><div class="mlabel"><strong>S6</strong>전환기</div><div class="mcells">
+        <div class="mcell fut"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell fut"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell fut"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div>
+      </div></div>
+
+      <div class="mrow mdata"><div class="mlabel"><strong>S7</strong>성숙기</div><div class="mcells">
+        <div class="mcell fut"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell fut"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell fut"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div>
+      </div></div>
+
+      <!-- ✅ FIX: 노을기 70대 → 80대 (100세 시대) -->
+      <div class="mrow mdata"><div class="mlabel"><strong>S8</strong>노을기</div><div class="mcells">
+        <div class="mcell fut"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell fut"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell fut"></div><div class="mcell"></div><div class="mcell"></div><div class="mcell"></div>
+      </div></div>
+
+      <div class="mlegend">
+        <div class="mli"><div class="mdot r1"></div><span>안정 1-3단계</span></div>
+        <div class="mli"><div class="mdot r5"></div><span>주의 5단계</span></div>
+        <div class="mli"><div class="mdot r9"></div><span>경고 7-9단계</span></div>
+        <div class="mli"><div class="mdot cur"></div><span>현재 좌표</span></div>
+        <div class="mli"><div class="mdot fut"></div><span>예측 경로</span></div>
+        <div class="mli"><div class="mdot emp"></div><span>탐색 가능</span></div>
+      </div>
+    </div>
+
+    <div class="detail-panel">
+      <div>
+        <div class="dp-coord">◆ S4-D04 · 도약기 × 진로 시그니처</div>
+        <div class="dp-title">커리어의 정점</div>
+        <div class="dp-desc">
+          도약기의 진로는 전문성과 위험 감수의 균형. 당신의 위기대응력 88이 강점입니다.
+          카이가 지금 이 좌표에서 함께 걷고 있어요. 다음 6개월간 정착기로 진입하며 재무·진로·가족 영역의 갱신이 예상됩니다.
+        </div>
+        <div class="dp-stats">
+          <div class="dp-stat"><div class="dp-stat-label">N-SCORE</div><div class="dp-stat-value up">726</div></div>
+          <div class="dp-stat"><div class="dp-stat-label">RISK</div><div class="dp-stat-value">4단계</div></div>
+          <div class="dp-stat"><div class="dp-stat-label">30일 추세</div><div class="dp-stat-value up">+3.2%</div></div>
+          <div class="dp-stat"><div class="dp-stat-label">다음 알림</div><div class="dp-stat-value warn">7일</div></div>
+        </div>
+      </div>
+      <div class="mini-graph">
+        <div class="mini-graph-title"><span>30일 N-SCORE</span><span class="live-mini">● LIVE</span></div>
+        <svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="mg-grad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#c89832" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#c89832" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M 5 60 Q 30 55 50 50 T 90 40 T 130 35 T 170 28 L 195 25 L 195 80 L 5 80 Z" fill="url(#mg-grad)"/>
+          <path d="M 5 60 Q 30 55 50 50 T 90 40 T 130 35 T 170 28 L 195 25" fill="none" stroke="#c89832" stroke-width="2"/>
+          <circle cx="195" cy="25" r="4" fill="#8b2332" stroke="white" stroke-width="2">
+            <animate attributeName="r" values="4;6;4" dur="1.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="5" cy="60" r="3" fill="#c89832"/>
+          <text x="5" y="75" font-family="JetBrains Mono" font-size="7" fill="#9a8b6f">D-30</text>
+          <text x="178" y="75" font-family="JetBrains Mono" font-size="7" fill="#9a8b6f">TODAY</text>
+          <text x="170" y="20" font-family="JetBrains Mono" font-size="8" fill="#8b2332" font-weight="600">726</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="signature-id-box">
+      <div>
+        <div class="sid-label">YOUR LIFE SIGNATURE ID</div>
+        <div class="sid-value" id="sigIdDisplay">NK-7261-S4D04-2026</div>
+      </div>
+      <div class="sid-meta">— 평생 단 하나의 좌표 —</div>
+    </div>
+
+    <div class="matrix-caption">— 카이가 매주 좌표를 갱신합니다 —</div>
+  </div>
+</section>
+
+<!-- ✅ FIX: Pricing 9,900 / 19,900 / 49,900 -->
+<section class="chapter pricing-section">
+  <div class="chapter-num">003 <strong>/</strong> 005 · PRICING</div>
+  <div class="pricing-inner">
+    <div class="section-eyebrow">— CHOOSE YOUR JOURNEY —</div>
+    <h2 class="section-title">당신만의 <em>시그니처 ID</em>를 발급받으세요</h2>
+    <div class="section-subtitle">— 평생 단 하나의 인생 좌표 —</div>
+
+    <div class="pricing-grid">
+      <div class="tier-card">
+        <div class="tier-name">Spark</div>
+        <div class="tier-tagline">— 첫 발견 —</div>
+        <div class="tier-price">
+          <span class="currency">₩</span>9,900<small>/회</small>
+        </div>
+        <div class="tier-period">ONE-TIME · LIFETIME ACCESS</div>
+        <ul class="tier-features">
+          <li>96 매트릭스 좌표 평생 열람</li>
+          <li>시그니처 ID 발급 (NK-XXXX-XXXX)</li>
+          <li>출생 시그니처 + 4대 에너지 진단</li>
+          <li>PDF 리포트 1회 다운로드</li>
+          <li>카이톡 5회 대화</li>
+        </ul>
+        <button class="tier-cta" onclick="openPayment('spark', 9900)">
+          ✦ Spark 시작하기
+        </button>
+      </div>
+
+      <div class="tier-card featured">
+        <div class="tier-badge">MOST POPULAR · 두 배 가치</div>
+        <div class="tier-name">Living</div>
+        <div class="tier-tagline">— 평생 동반자 —</div>
+        <div class="tier-price">
+          <span class="currency">₩</span>19,900<small>/월</small>
+        </div>
+        <div class="tier-period">MONTHLY · AUTO RENEW</div>
+        <ul class="tier-features">
+          <li>Spark의 모든 기능 포함</li>
+          <li>매월 1일 자동 좌표 갱신</li>
+          <li>카이톡 무제한 대화</li>
+          <li>골든타임 7일 사전 알림</li>
+          <li>96 시그니처 진화 추적</li>
+          <li>월간 리포트 자동 발송</li>
+          <li>카이톡 우선 알림 + 카카오톡 푸시 보조</li>
+        </ul>
+        <button class="tier-cta" onclick="openPayment('living', 19900)">
+          ✦ Living 시작하기
+        </button>
+      </div>
+
+      <div class="tier-card">
+        <div class="tier-name">VIP</div>
+        <div class="tier-tagline">— 가족 안전망 —</div>
+        <div class="tier-price">
+          <span class="currency">₩</span>49,900<small>/주</small>
+        </div>
+        <div class="tier-period">WEEKLY · PREMIUM</div>
+        <ul class="tier-features">
+          <li>Living의 모든 기능 포함</li>
+          <li>주간 골든타임 푸시 (7일/주)</li>
+          <li>가족 안전망 8회선 등록</li>
+          <li>SOS 즉시 알림 시스템</li>
+          <li>1:1 카이 컨시어지 상담</li>
+          <li>분기별 오프라인 진단</li>
+        </ul>
+        <button class="tier-cta" onclick="openPayment('vip', 49900)">
+          ✦ VIP 시작하기
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 결제 후 흐름 -->
+<section class="chapter flow-section">
+  <div class="chapter-num">004 <strong>/</strong> 005 · FLOW</div>
+  <div class="flow-inner">
+    <div class="section-eyebrow">— AFTER YOUR FIRST PAYMENT —</div>
+    <h2 class="section-title">결제 후 <em>3초 안에</em> 카이가 찾아갑니다</h2>
+    <div class="section-subtitle">— 더는 "리포트가 어디 갔지?" 없습니다 —</div>
+
+    <div class="flow-steps">
+      <div class="flow-step"><div class="flow-num">STEP 01</div><div class="flow-title">결제 완료</div><div class="flow-time">즉시</div></div>
+      <div class="flow-step"><div class="flow-num">STEP 02</div><div class="flow-title">카이톡 입장</div><div class="flow-time">3초 내</div></div>
+      <div class="flow-step"><div class="flow-num">STEP 03</div><div class="flow-title">시그니처 ID 발급</div><div class="flow-time">10초 내</div></div>
+      <div class="flow-step"><div class="flow-num">STEP 04</div><div class="flow-title">PDF 자동 발송</div><div class="flow-time">30초 내</div></div>
+      <div class="flow-step"><div class="flow-num">STEP 05</div><div class="flow-title">카톡 푸시 연결</div><div class="flow-time">1분 내</div></div>
+    </div>
+
+    <p style="text-align:center; font-family: var(--font-hand); font-size: 22px; color: var(--wine); margin-top: 24px;">
+      — 카이가 손을 잡고 끝까지 안내합니다 —
+    </p>
+  </div>
+</section>
+
+</main>
+
+<!-- ✅ v5 NEW: 4대 그룹 페르소나 (16 아키타입 단순화) -->
+<section class="chapter persona-section" style="background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper-3) 100%);">
+  <div class="chapter-num">003 <strong>/</strong> 006 · PERSONA</div>
+  <div style="max-width: 1200px; width: 100%;">
+    <div class="section-eyebrow">— FOUR PERSONA GROUPS —</div>
+    <h2 class="section-title">당신은 <em>4대 그룹</em> 중 어디에 속하나요?</h2>
+    <div class="section-subtitle">— 분석가 · 실용주의 · 항해사 · 비전가 —</div>
+
+    <div class="persona-grid">
+      <!-- 그룹 1: 분석가 (이름 동일) -->
+      <div class="persona-card">
+        <div class="persona-icon">⚖️</div>
+        <div class="persona-name">분석가 그룹</div>
+        <div class="persona-tagline">— 신중하게 결정하는 사람 —</div>
+        <div class="persona-stat-row">
+          <div class="persona-stat-pill"><span class="ps-label">판단력</span><span class="ps-val">85+</span></div>
+          <div class="persona-stat-pill"><span class="ps-label">위기대응</span><span class="ps-val">80+</span></div>
+        </div>
+        <p class="persona-desc">
+          데이터로 결정하고, 위험을 미리 보는 사람. 안정적인 자산 형성과 장기 계획에 강함.
+          <strong>당신의 강점: 큰 실수가 적음.</strong>
+        </p>
+        <div class="persona-archetype">아키타입 #01~#04</div>
+      </div>
+
+      <!-- 그룹 2: 실용주의 (실행가 → 실용주의로 SSOT 갱신) -->
+      <div class="persona-card">
+        <div class="persona-icon">🔥</div>
+        <div class="persona-name">실용주의 그룹</div>
+        <div class="persona-tagline">— 현실에 발 딛고 행동하는 사람 —</div>
+        <div class="persona-stat-row">
+          <div class="persona-stat-pill"><span class="ps-label">실행력</span><span class="ps-val">85+</span></div>
+          <div class="persona-stat-pill"><span class="ps-label">경제감각</span><span class="ps-val">75+</span></div>
+        </div>
+        <p class="persona-desc">
+          머리보다 현실. 실행 가능한 것만 골라 빠르게 움직이는 사람.
+          창업·전직·투자에서 기회를 만들어냄.
+          <strong>당신의 강점: 시기를 놓치지 않음.</strong>
+        </p>
+        <div class="persona-archetype">아키타입 #05~#08</div>
+      </div>
+
+      <!-- 그룹 3: 항해사 (균형가 → 항해사로 SSOT 갱신, YOU 위치) -->
+      <div class="persona-card featured-persona">
+        <div class="persona-badge">YOU</div>
+        <div class="persona-icon">🧭</div>
+        <div class="persona-name">항해사 그룹</div>
+        <div class="persona-tagline">— 흐름을 읽고 키를 잡는 사람 —</div>
+        <div class="persona-stat-row">
+          <div class="persona-stat-pill"><span class="ps-label">판단력</span><span class="ps-val">79</span></div>
+          <div class="persona-stat-pill"><span class="ps-label">경제감각</span><span class="ps-val">82</span></div>
+          <div class="persona-stat-pill"><span class="ps-label">실행력</span><span class="ps-val">71</span></div>
+          <div class="persona-stat-pill"><span class="ps-label">위기대응</span><span class="ps-val">88</span></div>
+        </div>
+        <p class="persona-desc">
+          <strong style="color: var(--wine);">당신이 여기에 속합니다.</strong>
+          4가지 자질이 고르게 발달, 상황에 맞춰 방향을 조정하는 사람. 어떤 시기든 키를 놓지 않음.
+          <strong>당신의 강점: 흐름을 읽고 능동적으로 항해함.</strong>
+        </p>
+        <div class="persona-archetype">아키타입 #09~#12 (현재 #07)</div>
+      </div>
+
+      <!-- 그룹 4: 비전가 (직관가 → 비전가로 SSOT 갱신) -->
+      <div class="persona-card">
+        <div class="persona-icon">🌌</div>
+        <div class="persona-name">비전가 그룹</div>
+        <div class="persona-tagline">— 보이지 않는 것을 먼저 보는 사람 —</div>
+        <div class="persona-stat-row">
+          <div class="persona-stat-pill"><span class="ps-label">위기대응</span><span class="ps-val">85+</span></div>
+          <div class="persona-stat-pill"><span class="ps-label">실행력</span><span class="ps-val">75+</span></div>
+        </div>
+        <p class="persona-desc">
+          미래를 먼저 보고, 직관과 통찰로 방향을 제시하는 사람.
+          위험 신호를 가장 먼저 감지하고 변동성 속에서 페이스를 유지.
+          <strong>당신의 강점: 미래를 먼저 그림.</strong>
+        </p>
+        <div class="persona-archetype">아키타입 #13~#16</div>
+      </div>
+    </div>
+
+    <div class="four-traits-box">
+      <div class="four-traits-title">— 카이가 측정하는 4대 자질 —</div>
+      <div class="four-traits-grid">
+        <div class="trait-item">
+          <div class="trait-emoji">⚖️</div>
+          <div class="trait-name">판단력</div>
+          <div class="trait-desc">데이터로 결정하는 능력</div>
+        </div>
+        <div class="trait-item">
+          <div class="trait-emoji">💎</div>
+          <div class="trait-name">경제감각</div>
+          <div class="trait-desc">자산을 보는 직관</div>
+        </div>
+        <div class="trait-item">
+          <div class="trait-emoji">🔥</div>
+          <div class="trait-name">실행력</div>
+          <div class="trait-desc">기회를 잡는 속도</div>
+        </div>
+        <div class="trait-item">
+          <div class="trait-emoji">🛡️</div>
+          <div class="trait-name">위기대응력</div>
+          <div class="trait-desc">위험을 미리 보는 힘</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ✅ v5 NEW: 4대 그룹 페르소나 CSS -->
+<style>
+.persona-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 48px;
+}
+@media (max-width: 1100px) { .persona-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .persona-grid { grid-template-columns: 1fr; gap: 16px; } }
+
+.persona-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 32px 24px;
+  position: relative;
+  transition: all 0.4s;
+  box-shadow: 0 4px 16px rgba(139,109,75,0.08);
+}
+.persona-card::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 8px; right: 8px; bottom: 8px;
+  border: 1px solid var(--gold-300);
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0.4;
+}
+.persona-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--gold-500);
+  box-shadow: 0 16px 36px rgba(200,152,50,0.15);
+}
+.persona-card.featured-persona {
+  border-color: var(--wine);
+  background: linear-gradient(180deg, var(--gold-100) 0%, white 40%);
+  transform: translateY(-12px);
+  box-shadow: 0 16px 40px rgba(139,35,50,0.15);
+}
+.persona-card.featured-persona::before { border-color: var(--wine); opacity: 0.7; }
+
+.persona-badge {
+  position: absolute;
+  top: -14px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--wine);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  padding: 6px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  z-index: 2;
+}
+
+.persona-icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+  position: relative;
+}
+.persona-name {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-style: italic;
+  color: var(--wine);
+  margin-bottom: 6px;
+  position: relative;
+}
+.persona-tagline {
+  font-family: var(--font-hand);
+  font-size: 18px;
+  color: var(--gold-500);
+  margin-bottom: 18px;
+  position: relative;
+}
+.persona-stat-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+  position: relative;
+}
+.persona-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gold-100);
+  border: 1px solid var(--gold-300);
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.ps-label { color: var(--ink-500); }
+.ps-val { color: var(--wine); font-weight: 700; }
+
+.persona-desc {
+  font-size: 14px;
+  color: var(--ink-700);
+  line-height: 1.7;
+  margin-bottom: 14px;
+  position: relative;
+}
+.persona-desc strong { color: var(--ink-900); }
+
+.persona-archetype {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-500);
+  letter-spacing: 0.1em;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  position: relative;
+}
+
+/* 4대 자질 박스 */
+.four-traits-box {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 32px;
+  position: relative;
+}
+.four-traits-box::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 8px; right: 8px; bottom: 8px;
+  border: 1px solid var(--gold-300);
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.four-traits-title {
+  font-family: var(--font-hand);
+  font-size: 22px;
+  color: var(--wine);
+  text-align: center;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.four-traits-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  position: relative;
+}
+@media (max-width: 700px) { .four-traits-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.trait-item {
+  text-align: center;
+  padding: 16px;
+}
+.trait-emoji {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+.trait-name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--ink-900);
+  font-style: italic;
+  margin-bottom: 6px;
+}
+.trait-desc {
+  font-size: 14px;
+  color: var(--ink-500);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .persona-name { font-size: 22px; }
+  .persona-desc { font-size: 15px; line-height: 1.75; }
+  .four-traits-title { font-size: 20px; }
+  .trait-name { font-size: 20px; }
+  .trait-desc { font-size: 13px; }
+}
+</style>
+
+<!-- 결제 모달 -->
+<div class="payment-modal" id="paymentModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closePayment()">×</button>
+    <div class="modal-eyebrow">YOUR LIFE SIGNATURE</div>
+    <div class="modal-title" id="modalTier">Living</div>
+    <div class="modal-desc">
+      결제 즉시 당신만의 시그니처 ID가 발급되며,<br>
+      카이가 3초 안에 찾아옵니다.
+    </div>
+    <div class="modal-sigid">
+      NK-7261-<span id="modalSigCode">S4D04</span>-2026
+    </div>
+    <div class="modal-payment-options">
+      <button class="modal-payment-btn kakao" onclick="processPayment('kakao')">
+        💛 카카오페이로 결제 <span id="modalPrice1">₩19,900</span>
+      </button>
+      <button class="modal-payment-btn stripe" onclick="processPayment('stripe')">
+        ✦ 카드 결제 (Stripe) <span id="modalPrice2">₩19,900</span>
+      </button>
+    </div>
+    <div class="modal-meta">N-KAI · NEURIN KAIROS AI · SEOUL · 2026</div>
+  </div>
+</div>
+
+<!-- ✅ FIX: 카이톡 위젯 (눈 추가) -->
+<div class="kaitalk-widget" id="kaitalk">
+  <div class="kaitalk-header" onclick="toggleKai()">
+    <div class="kaitalk-mini-mascot">
+      <div class="mini-eyes">
+        <div class="mini-eye"></div>
+        <div class="mini-eye"></div>
+      </div>
+      <div class="mini-blush l"></div>
+      <div class="mini-blush r"></div>
+      <div class="mini-mouth"></div>
+    </div>
+    <div class="kaitalk-info">
+      <div class="kaitalk-name">카이</div>
+      <div class="kaitalk-status" id="kaitalk-status">대기 중</div>
+    </div>
+    <div class="kaitalk-toggle">▲</div>
+  </div>
+  <div class="agi-stages" id="agi-stages">
+    <div class="agi-stage" data-stage="input"><div class="agi-stage-dot"></div><div class="agi-stage-label">입력</div></div>
+    <div class="agi-stage" data-stage="fusion"><div class="agi-stage-dot"></div><div class="agi-stage-label">융합</div></div>
+    <div class="agi-stage" data-stage="evolve"><div class="agi-stage-dot"></div><div class="agi-stage-label">진화</div></div>
+    <div class="agi-stage" data-stage="output"><div class="agi-stage-dot"></div><div class="agi-stage-label">출력</div></div>
+  </div>
+  <div class="kaitalk-body" id="kaitalk-body">
+    <div class="kaitalk-msg kai" id="firstGreeting">
+      <div class="micro">◇ FIRST GREETING</div>
+      <span id="firstGreetingText">안녕하세요, 카이예요. 위에서 생년월일을 입력하시면 당신의 96가지 라이프 시그니처를 함께 펼쳐볼게요. ✦</span>
+    </div>
+  </div>
+  <div class="kaitalk-input">
+    <input type="text" placeholder="카이에게 말 걸기..." id="kaitalk-input"
+           onkeydown="if(event.key==='Enter') sendKai()">
+    <button onclick="sendKai()">전송</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// ✅ NEW: 시간대 동적 인사 시스템 (카이톡 SSOT)
+// ============================================================
+function getTimeContext() {
+  const now = new Date();
+  const hour = now.getHours();
+  const day = now.getDay(); // 0=일, 6=토
+  const isWeekend = (day === 0 || day === 6);
+  // 한국 공휴일 간이 체크 (확장 가능)
+  const month = now.getMonth() + 1;
+  const date = now.getDate();
+  const holidays = ['1-1', '3-1', '5-5', '6-6', '8-15', '10-3', '10-9', '12-25'];
+  const isHoliday = holidays.includes(`${month}-${date}`);
+
+  let slot = 'day';
+  if (hour >= 5 && hour < 9) slot = 'morning';     // 아침 (출근)
+  else if (hour >= 9 && hour < 12) slot = 'work';  // 오전
+  else if (hour >= 12 && hour < 14) slot = 'lunch'; // 점심
+  else if (hour >= 14 && hour < 18) slot = 'afternoon'; // 오후
+  else if (hour >= 18 && hour < 21) slot = 'evening'; // 저녁 (퇴근)
+  else if (hour >= 21 && hour < 24) slot = 'night'; // 밤
+  else slot = 'lateNight'; // 심야 0~5시
+
+  return { slot, isWeekend, isHoliday, hour, day };
+}
+
+const greetings = {
+  // 평일 시간대별
+  morning: {
+    bar: "좋은 아침이에요 ☀️ 오늘도 좋은 결정 함께 그려봐요",
+    speech: "좋은 아침이에요! ☀️\n오늘 N-Score 확인하셨어요?",
+    kaitalk: "아침이에요 ☕ 오늘 출근길 어떠세요? 골든타임 알림 1건이 있어요. ✦"
+  },
+  work: {
+    bar: "오전 잘 보내고 계세요? ✨ 카이가 좌표를 살피고 있어요",
+    speech: "오전이네요 ✦\n집중력의 시간이에요",
+    kaitalk: "오전 시간이에요. 오늘의 결정 좌표를 함께 살펴볼까요? ✨"
+  },
+  lunch: {
+    bar: "맛있는 점심 드세요 🍱 오늘 소비 패턴 좌표 알림 있어요",
+    speech: "점심시간이에요 🍱\n소비 패턴 보러 갈까요?",
+    kaitalk: "점심시간이네요 🍱 오늘 점심 결제 패턴이 평소와 달라요. 확인해볼까요?"
+  },
+  afternoon: {
+    bar: "오후의 흐름 ✦ 카이가 곁에 있어요",
+    speech: "오후예요 ✦\n잠시 카이와 대화 어때요?",
+    kaitalk: "오후 시간 — 잠시 한숨 돌리세요. 96 좌표에 작은 변화가 있어요."
+  },
+  evening: {
+    bar: "퇴근하셨나요? 🌆 오늘 N-Score 변화를 같이 봐요",
+    speech: "퇴근 시간이에요 🌆\n오늘 좌표 확인해요",
+    kaitalk: "퇴근하셨나요 🌆 오늘의 96 좌표 변화를 정리해드릴게요. ✦"
+  },
+  night: {
+    bar: "오늘 하루 수고하셨어요 🌙 카이가 내일 좌표를 준비 중이에요",
+    speech: "오늘 수고하셨어요 🌙\n내일 좌표 보실래요?",
+    kaitalk: "수고 많으셨어요 🌙 내일의 골든타임 알림을 미리 확인하시겠어요?"
+  },
+  lateNight: {
+    bar: "아직 깨어 계세요? 🌌 카이는 항상 곁에 있어요 (편안한 밤 되세요)",
+    speech: "아직 안 주무세요?\n편안한 밤 되세요 🌌",
+    kaitalk: "심야네요 🌌 너무 늦지 않게 쉬세요. 좌표는 카이가 지키고 있을게요."
+  },
+  // 주말
+  weekend: {
+    bar: "주말이에요 🌿 카이도 쉬엄쉬엄 — 여가 좌표 확인하실래요?",
+    speech: "주말이네요 🌿\n여가 좌표 봐요!",
+    kaitalk: "주말이에요 🌿 여가·여행 도메인 좌표가 활성화돼 있어요. 둘러보실래요?"
+  },
+  // 공휴일
+  holiday: {
+    bar: "공휴일이에요 🎏 오늘은 인생 좌표 점검의 날 어떠세요?",
+    speech: "공휴일이에요 🎏\n좋은 시간 보내세요",
+    kaitalk: "공휴일이네요 🎏 오늘은 96 좌표 전체를 천천히 둘러보기 좋은 날이에요."
+  }
+};
+
+function applyDynamicGreeting() {
+  const ctx = getTimeContext();
+  let g;
+
+  if (ctx.isHoliday) g = greetings.holiday;
+  else if (ctx.isWeekend) g = greetings.weekend;
+  else g = greetings[ctx.slot] || greetings.work;
+
+  // 1) 상단 인사 바
+  document.getElementById('greetingText').textContent = g.bar;
+  const time = new Date();
+  const hh = String(time.getHours()).padStart(2,'0');
+  const mm = String(time.getMinutes()).padStart(2,'0');
+  document.getElementById('greetingTime').textContent = `${hh}:${mm}`;
+
+  // 2) Hero 카이 말풍선
+  document.getElementById('kaiSpeech').innerHTML = g.speech.replace(/\n/g,'<br>');
+
+  // 3) 카이톡 첫 인사
+  document.getElementById('firstGreetingText').textContent = g.kaitalk;
+}
+
+// 페이지 로드 즉시 + 1분마다 갱신
+applyDynamicGreeting();
+setInterval(applyDynamicGreeting, 60000);
+
+// ============================================================
+// 카이톡 위젯
+// ============================================================
+const widget = document.getElementById('kaitalk');
+function toggleKai() { widget.classList.toggle('open'); }
+
+const stageNames = ['input','fusion','evolve','output'];
+const statusMap = {input:'대화를 듣고 있어요',fusion:'데이터를 융합 중',evolve:'모델을 진화 중',output:'답변을 만드는 중'};
+
+function activateStage(name) {
+  document.querySelectorAll('.agi-stage').forEach(el => el.classList.remove('active'));
+  const t = document.querySelector(`.agi-stage[data-stage="${name}"]`);
+  if (t) { t.classList.add('active'); document.getElementById('kaitalk-status').textContent = statusMap[name]; }
+}
+function markDone(name) {
+  const t = document.querySelector(`.agi-stage[data-stage="${name}"]`);
+  if (t) { t.classList.remove('active'); t.classList.add('done'); }
+}
+function resetStages() {
+  document.querySelectorAll('.agi-stage').forEach(el => el.classList.remove('active','done'));
+  document.getElementById('kaitalk-status').textContent = '대기 중';
+}
+
+async function sendKai() {
+  const input = document.getElementById('kaitalk-input');
+  const body = document.getElementById('kaitalk-body');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const userMsg = document.createElement('div');
+  userMsg.className = 'kaitalk-msg user';
+  userMsg.textContent = text;
+  body.appendChild(userMsg);
+  input.value = '';
+  body.scrollTop = body.scrollHeight;
+
+  resetStages();
+  for (let i = 0; i < stageNames.length; i++) {
+    activateStage(stageNames[i]);
+    await sleep(700);
+    if (i < stageNames.length - 1) markDone(stageNames[i]);
+  }
+
+  const reply = document.createElement('div');
+  reply.className = 'kaitalk-msg kai';
+  reply.innerHTML = `<div class="micro">◇ 카이 · 자율진화 1회 완료</div>당신의 메시지에서 의도·감정·맥락을 읽었어요. 카이의 모델이 한 번 더 진화했습니다. ✦`;
+  body.appendChild(reply);
+  body.scrollTop = body.scrollHeight;
+
+  await sleep(800);
+  markDone('output');
+  await sleep(1200);
+  resetStages();
+}
+
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+function startJourney() {
+  const y = document.getElementById('bYear').value;
+  const m = document.getElementById('bMonth').value;
+  const d = document.getElementById('bDay').value;
+  if (!y || !m || !d) { alert('생년월일을 입력해주세요'); return; }
+
+  // 개인화 라벨 갱신
+  document.getElementById('matrixLiveLabel').innerHTML = `LIVE · ${y}년생 좌표`;
+
+  document.querySelector('.matrix-section').scrollIntoView({behavior:'smooth'});
+  setTimeout(() => {
+    if (!widget.classList.contains('open')) widget.classList.add('open');
+    const body = document.getElementById('kaitalk-body');
+    const reply = document.createElement('div');
+    reply.className = 'kaitalk-msg kai';
+    reply.innerHTML = `<div class="micro">◇ 시작 좌표 수신</div>${y}년 ${m}월 ${d}일 — 시작점을 받았어요. 96 매트릭스에 당신만의 좌표를 표시했습니다. 붉은 셀이 지금 당신이에요. ✦`;
+    body.appendChild(reply);
+    body.scrollTop = body.scrollHeight;
+  }, 1500);
+}
+
+function openPayment(tier, price) {
+  const modal = document.getElementById('paymentModal');
+  const tierName = {spark:'Spark',living:'Living',vip:'VIP'}[tier];
+  document.getElementById('modalTier').textContent = tierName;
+  const priceText = '₩' + price.toLocaleString();
+  document.getElementById('modalPrice1').textContent = priceText;
+  document.getElementById('modalPrice2').textContent = priceText;
+  modal.classList.add('open');
+}
+function closePayment() { document.getElementById('paymentModal').classList.remove('open'); }
+
+async function processPayment(method) {
+  alert('결제 연동 영역\n\n실제 라이브: Stripe + 카카오페이\n결제 후 카카오 채널 자동 안내');
+  closePayment();
+  if (!widget.classList.contains('open')) widget.classList.add('open');
+  const body = document.getElementById('kaitalk-body');
+  resetStages();
+  for (let i = 0; i < stageNames.length; i++) {
+    activateStage(stageNames[i]);
+    await sleep(500);
+    if (i < stageNames.length - 1) markDone(stageNames[i]);
+  }
+  const reply = document.createElement('div');
+  reply.className = 'kaitalk-msg kai';
+  reply.innerHTML = `<div class="micro">◇ 결제 완료 · 시그니처 ID 발급</div>당신의 시그니처 ID는 <strong style="color:var(--gold-400)">NK-7261-S4D04-2026</strong>입니다. PDF 리포트가 30초 안에 발송돼요. 카카오 채널 추가하시면 매월 좌표 갱신을 알려드릴게요 ✦`;
+  body.appendChild(reply);
+  body.scrollTop = body.scrollHeight;
+  markDone('output');
+}
+
+let inactivityTimer;
+function resetInactivity() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    if (!widget.classList.contains('open')) {
+      const status = document.getElementById('kaitalk-status');
+      status.textContent = '도와드릴까요? ✦';
+      status.style.color = 'var(--gold-300)';
+    }
+  }, 8000);
+}
+['scroll','mousemove','keydown'].forEach(ev => document.addEventListener(ev, resetInactivity));
+resetInactivity();
+</script>
+
+</body>
+</html>
